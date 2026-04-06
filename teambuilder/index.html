@@ -708,8 +708,8 @@
 
         function getItemSpriteUrl(item) {
             if (!item) return '';
-            const clean = item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
-            return `https://play.pokemonshowdown.com/sprites/itemicons/${clean}.png`;
+            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
         }
 
 
@@ -961,14 +961,34 @@
                 const head = lines[0];
                 const itemSplit = head.split('@');
                 if (itemSplit[1]) slot.item = itemSplit[1].trim();
+
                 let namePart = itemSplit[0].trim();
-                if (namePart.includes('(')) {
-                    const match = namePart.match(/\(([^)]+)\)/);
-                    if (match) {
-                        slot.nickname = namePart.split('(')[0].trim();
-                        slot.species = match[1].trim();
+                const brackets = [];
+                const bracketRegex = /\(([^)]+)\)/g;
+                let match;
+                while ((match = bracketRegex.exec(namePart)) !== null) {
+                    brackets.push(match[1].trim());
+                }
+
+                // Remove brackets from namePart to get the first identifier
+                let mainName = namePart.split('(')[0].trim();
+
+                if (brackets.length === 2) {
+                    slot.nickname = mainName;
+                    slot.species = brackets[0];
+                    slot.gender = brackets[1];
+                } else if (brackets.length === 1) {
+                    const b = brackets[0];
+                    if (b === 'M' || b === 'F') {
+                        slot.species = mainName;
+                        slot.gender = b;
+                    } else {
+                        slot.nickname = mainName;
+                        slot.species = b;
                     }
-                } else { slot.species = namePart; }
+                } else {
+                    slot.species = mainName;
+                }
 
                 lines.slice(1).forEach(line => {
                     if (line.startsWith('Ability:')) slot.ability = line.split(':')[1].trim();
