@@ -620,6 +620,14 @@
                 <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 5px;">STRATEGIC INSIGHTS</h2>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of your team's coverage, roles, and synergy.</p>
 
+                <!-- Strategy Overview AI Report -->
+                <div class="analysis-card" id="strategy-overview-card" style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
+                    <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">🧠</span> Strategy Overview
+                    </h3>
+                    <p id="strategy-overview-text" style="font-size: 0.85rem; color: #ddd; line-height: 1.6; margin-top: 15px;"></p>
+                </div>
+
                 <div class="analysis-grid">
                     <!-- Left: Coverage & Synergy -->
                     <div style="display: flex; flex-direction: column; gap: 25px;">
@@ -2156,31 +2164,41 @@
             const roles = [];
             const moves = p.moves.map(m => m.toLowerCase());
             const hasMove = (list) => list.some(m => moves.includes(m));
+            const ability = (p.ability || '').toLowerCase();
+            const item = (p.item || '').toLowerCase();
 
             // Offense
             if (stats.atk > 150 && stats.spe > 130) roles.push('Physical Sweeper');
             if (stats.spa > 150 && stats.spe > 130) roles.push('Special Sweeper');
             if (stats.atk > 180 || stats.spa > 180) roles.push('Wallbreaker');
+            if (item === 'choice scarf') roles.push('Revenge Killer');
             
             // Defense
             if (stats.hp > 180 && stats.def > 130) roles.push('Physical Wall');
             if (stats.hp > 180 && stats.spd > 130) roles.push('Special Wall');
             
-            // Utility
+            // VGC & Utility
+            if (hasMove(['fake out'])) roles.push('Fake Out Pressure');
+            if (hasMove(['follow me', 'rage powder', 'ally switch'])) roles.push('Redirection');
+            if (ability === 'intimidate') roles.push('Intimidate Support');
+            if (hasMove(['trick room'])) roles.push('Trick Room Setter');
+            if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) roles.push('Speed Control');
             if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) roles.push('Pivot');
-            if (hasMove(['tailwind', 'trick room', 'icy wind', 'electroweb'])) roles.push('Speed Control');
             if (hasMove(['reflect', 'light screen', 'aurora veil'])) roles.push('Screener');
-            if (hasMove(['helping hand', 'fake out', 'follow me', 'rage powder'])) roles.push('Support');
             if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web'])) roles.push('Hazard Setter');
-            if (hasMove(['rapid spin', 'defog', 'mortal spin'])) roles.push('Hazard Remover');
-            if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance'])) roles.push('Set-up Sweeper');
-            if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn'])) roles.push('Disruptor');
-            if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled'])) roles.push('Cleric/Healer');
+            if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) roles.push('Hazard Control');
+            if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) roles.push('Setup Sweeper');
+            if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) roles.push('Disruptor');
+            if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled', 'pollen puff'])) roles.push('Cleric/Healer');
+            if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) roles.push('Phazer/Hazer');
             
             // Weather/Terrain
-            const ability = (p.ability || '').toLowerCase();
             if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ability)) roles.push('Weather Setter');
             if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ability)) roles.push('Terrain Setter');
+
+            // Restricted / Legendary
+            const bst = Object.keys(keys).reduce((sum, k) => sum + parseInt(db[keys[k]] || 0), 0);
+            if (bst >= 670) roles.push('Restricted Legendary');
 
             return roles.length > 0 ? roles : ['Generalist'];
         }
@@ -2221,7 +2239,7 @@
                 const div = document.createElement('div');
                 div.className = 'synergy-item';
                 div.innerHTML = `
-                    <img src="${getSpriteUrl(p)}" style="width:40px; height:40px; object-fit:contain;">
+                    <img src="${getSpriteUrl(p)}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})" style="width:40px; height:40px; object-fit:contain;">
                     <div style="flex:1;">
                         <div style="font-weight:900; font-size:0.8rem;">${p.species}</div>
                         <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;">
@@ -2240,8 +2258,18 @@
             activeMons.forEach(p => {
                 const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+                const ability = (p.ability || '').toLowerCase();
+                
                 Object.keys(TYPE_CHART).forEach(atkType => {
-                    const eff = getEffectiveness(atkType, pTypes);
+                    let eff = getEffectiveness(atkType, pTypes);
+                    // Account for immunity abilities
+                    if (atkType === 'Ground' && (ability === 'levitate' || p.item === 'Air Balloon')) eff = 0;
+                    if (atkType === 'Water' && ['water absorb', 'storm drain', 'dry skin'].includes(ability)) eff = 0;
+                    if (atkType === 'Fire' && ['flash fire', 'well-baked body'].includes(ability)) eff = 0;
+                    if (atkType === 'Electric' && ['volt absorb', 'lightning rod', 'motor drive'].includes(ability)) eff = 0;
+                    if (atkType === 'Grass' && ability === 'sap sipper') eff = 0;
+                    if (ability === 'wonder guard' && eff <= 1) eff = 0;
+
                     if (eff < 1) resistances[atkType]++;
                 });
             });
@@ -2249,22 +2277,91 @@
             const issues = [];
             Object.entries(weaknessCounts).forEach(([type, count]) => {
                 if (count >= 3 && resistances[type] < 2) {
-                    issues.push({ type, count, severity: 'high', text: `Severe weakness to ${type}! Only ${resistances[type]} resistance(s).` });
+                    issues.push({ type, count, severity: 'high', text: `Severe weakness to ${type}! Only ${resistances[type]} resistance/immunity found.` });
+                } else if (count >= 3 && resistances[type] >= 2) {
+                    issues.push({ type, count, severity: 'medium', text: `Vulnerable to ${type} (${count} weak), but you have defensive switch-ins.` });
                 } else if (count >= 2 && resistances[type] === 0) {
-                    issues.push({ type, count, severity: 'medium', text: `Team is vulnerable to ${type}. No resistances found.` });
+                    issues.push({ type, count, severity: 'medium', text: `Team lacks resistances to ${type} despite multiple weaknesses.` });
                 }
             });
 
+            // Specific VGC synergies
+            const allRoles = roles.flat();
+            if (!allRoles.includes('Speed Control') && !allRoles.includes('Trick Room Setter')) {
+                issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'No Speed Control (Tailwind, Trick Room, Icy Wind) detected.' });
+            }
+            if (!allRoles.includes('Fake Out Pressure') && activeMons.length >= 4) {
+                // In VGC, Fake out is highly recommended but not strictly a warning, so we add a tip style
+                issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Consider adding Fake Out for early pressure and positioning.' });
+            }
+
+            // --- Famous Archetypes/Cores ---
+            const allTypesArr = activeMons.flatMap(p => {
+                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                return [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+            });
+            const teamTypesStr = allTypesArr.map(t => (t || '').toLowerCase());
+            const hasType = (t) => teamTypesStr.includes(t.toLowerCase());
+
+            if (hasType('Fire') && hasType('Water') && hasType('Grass')) {
+                issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Classic Fire/Water/Grass core detected.', tip: 'Excellent fundamental defensive and offensive synergy.', icon: '🌟', color: '#4CAF50' });
+            }
+            if (hasType('Fairy') && hasType('Dragon') && hasType('Steel')) {
+                issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Fantasy Core (Fairy/Dragon/Steel) detected.', tip: 'Very strong defensive backbone against most the meta.', icon: '🛡️', color: '#9c27b0' });
+            }
+
+            const allMovesArr = activeMons.flatMap(p => p.moves.map(m => m.toLowerCase()));
+            const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee'));
+            if (hasIndeedee && allMovesArr.includes('expanding force')) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected (Indeedee + Expanding Force).', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
+            }
+
+            const hasDondozo = activeMons.some(p => p.species.toLowerCase() === 'dondozo');
+            const hasTatsugiri = activeMons.some(p => p.species.toLowerCase() === 'tatsugiri');
+            if (hasDondozo && hasTatsugiri) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Commander Core (Dondozo + Tatsugiri).', tip: 'Huge stat boosts for Dondozo when Tatsugiri enters its mouth.', icon: '🍣', color: '#00bcd4' });
+            }
+
+            const hasTrappers = activeMons.some(p => ['shadow tag', 'arena trap'].includes((p.ability || '').toLowerCase()));
+            if (allMovesArr.includes('perish song') && hasTrappers) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Perish Trap strategy detected.', tip: 'Lock opponents in and stall the Perish count.', icon: '☠️', color: '#735797' });
+            }
+
+            if (allMovesArr.includes('discharge') && allMovesArr.includes('earthquake')) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'DisQuake Combo detected.', tip: 'Discharge + Earthquake provides great spread pressure.', icon: '⚡', color: '#F7D02C' });
+            }
+
             if (issues.length === 0) {
-                synergyBox.innerHTML = '<div class="synergy-item"><div class="synergy-icon">🛡️</div><div><div style="font-weight:800;">Elite Defensive Synergy</div><div style="font-size:0.7rem; opacity:0.5;">No major overlapping weaknesses detected.</div></div></div>';
+                synergyBox.innerHTML = '<div class="synergy-item"><div class="synergy-icon">🛡️</div><div><div style="font-weight:800;">Elite Defensive Synergy</div><div style="font-size:0.7rem; opacity:0.5;">No major overlapping weaknesses detected, and strong speed control present.</div></div></div>';
             } else {
                 issues.forEach(issue => {
+                    let color = 'var(--primary-red)';
+                    let icon = '⚠️';
+                    let tip = 'Consider adjusting your team structure.';
+
+                    if (issue.severity === 'synergy') {
+                        color = issue.color || '#4CAF50';
+                        icon = issue.icon || '🌟';
+                        tip = issue.tip;
+                    } else if (issue.severity === 'medium') {
+                        color = '#FF9800';
+                        icon = '⚡';
+                        if (issue.type !== 'Utility') tip = `Consider adding a ${issue.type} resistant teammate or immunity.`;
+                        else tip = 'Speed control is crucial in double battles.';
+                    } else if (issue.severity === 'low') {
+                        color = '#4CAF50';
+                        icon = '💡';
+                        if (issue.type === 'Utility') tip = 'Fake Out provides excellent immediate pressure.';
+                    } else {
+                        tip = `Consider adding a ${issue.type} resistant teammate or immunity.`;
+                    }
+
                     synergyBox.innerHTML += `
-                        <div class="synergy-item" style="border-left: 4px solid ${issue.severity === 'high' ? 'var(--primary-red)' : '#FF9800'};">
-                            <div class="synergy-icon">${issue.severity === 'high' ? '⚠️' : '⚡'}</div>
+                        <div class="synergy-item" style="border-left: 4px solid ${color};">
+                            <div class="synergy-icon">${icon}</div>
                             <div>
-                                <div style="font-weight:800; color: ${issue.severity === 'high' ? 'var(--primary-red)' : '#fff'};">${issue.text}</div>
-                                <div style="font-size:0.7rem; opacity:0.5;">Consider adding a ${type} resistant teammate.</div>
+                                <div style="font-weight:800; color: ${color};">${issue.text}</div>
+                                <div style="font-size:0.7rem; opacity:0.5;">${tip}</div>
                             </div>
                         </div>
                     `;
@@ -2287,6 +2384,98 @@
                 <div class="coverage-meter"><div class="coverage-fill" style="width:${diversityPerc}%"></div></div>
                 <p style="font-size:0.7rem; opacity:0.5; margin-top:10px;">Your team utilizes ${allMoveTypes.size} different move types across 6 slots.</p>
             `;
+
+            // --- Strategy Overview Generation ---
+            const strategyCard = document.getElementById('strategy-overview-card');
+            const strategyText = document.getElementById('strategy-overview-text');
+            
+            if (activeMons.length > 0) {
+                strategyCard.style.display = 'block';
+                
+                // Identify main themes
+                let hasSpeedControl = allRoles.includes('Speed Control') || allRoles.includes('Trick Room Setter');
+                let hasRedirection = allRoles.includes('Redirection');
+                let hasFakeOut = allRoles.includes('Fake Out Pressure');
+                let hasPivots = allRoles.includes('Pivot');
+                let hasHazards = allRoles.includes('Hazard Setter');
+                let isSetup = allRoles.includes('Setup Sweeper');
+                let isWeatherTerrain = allRoles.includes('Weather Setter') || allRoles.includes('Terrain Setter');
+                
+                let playstyle = 'Balanced';
+                if (isSetup || hasRedirection) playstyle = 'Hyper-Offensive Setup';
+                if (allRoles.includes('Trick Room Setter')) playstyle = 'Trick Room';
+                if (isWeatherTerrain) playstyle = 'Weather/Terrain-centric';
+                if (allRoles.includes('Physical Wall') && allRoles.includes('Special Wall')) playstyle = 'Bulky Offense';
+                if (allRoles.includes('Phazer/Hazer') && hasHazards) playstyle = 'Stall & Hazard-Stacking';
+
+                // Paragraph 1: Identity & Core Synergy
+                let p1 = `At its core, this appears to be a highly orchestrated <strong>${playstyle}</strong> team. `;
+                let synergies = issues.filter(i => i.severity === 'synergy');
+                if (synergies.length > 0) {
+                    let synNames = synergies.map(i => `<strong>${i.text.replace(' detected.', '').replace(' strategy', '').trim()}</strong>`);
+                    if (synNames.length === 1) {
+                        p1 += `The foundation of the squad is built around a defining ${synNames[0]}, giving the roster a clear structural advantage right out of the gate.`;
+                    } else {
+                        p1 += `The roster is incredibly layered, stacking multiple elite meta concepts like the ${synNames.slice(0, -1).join(', ')} and the ${synNames[synNames.length - 1]}.`;
+                    }
+                } else {
+                    p1 += `Rather than relying on pre-packaged meta combos, this roster leans on raw individual flexibility and custom strategic matchups.`;
+                }
+
+                // Paragraph 2: The Sword (Win Conditions)
+                let offensiveMons = activeMons.filter((p, i) => roles[i].some(r => r.includes('Sweeper') || r.includes('Wallbreaker') || r.includes('Revenge Killer') || r.includes('Restricted Legendary')));
+                let p2 = '';
+                if (offensiveMons.length > 0) {
+                    let offNames = offensiveMons.map(p => p.species);
+                    let offList = offNames.length > 1 ? `${offNames.slice(0, -1).join(', ')} and ${offNames[offNames.length - 1]}` : offNames[0];
+                    p2 = `<strong>The Win Conditions:</strong> Offensively, the team funnels its momentum into <strong>${offList}</strong>. `;
+                    if (isSetup) p2 += `With setup sweepers present, the goal is to clear threats or force switches, creating that one crucial turn to boost stats and sweep. `;
+                    if (allRoles.includes('Wallbreaker')) p2 += `Dedicated wallbreakers are deployed to punch holes in bulky defensive cores, softening targets for late-game cleaners.`;
+                } else {
+                    p2 = `<strong>The Win Conditions:</strong> The team lacks traditional heavy hitters, suggesting a "death by a thousand cuts" stall or chip-damage approach.`;
+                }
+
+                // Paragraph 3: The Shield (Defensive Backbone & Utility)
+                let defensiveMons = activeMons.filter((p, i) => roles[i].some(r => r.includes('Wall') || r.includes('Cleric') || r.includes('Intimidate')));
+                let p3 = '';
+                if (defensiveMons.length > 0) {
+                    let defNames = defensiveMons.map(p => p.species);
+                    let defList = defNames.length > 1 ? `${defNames.slice(0, -1).join(', ')} and ${defNames[defNames.length - 1]}` : defNames[0];
+                    p3 = `<strong>The Defensive Backbone:</strong> To absorb incoming pressure, the team relies heavily on <strong>${defList}</strong>. `;
+                    if (allRoles.includes('Cleric/Healer')) p3 += `Healing utility keeps these anchors healthy across prolonged matches. `;
+                    if (allRoles.includes('Intimidate Support')) p3 += `Intimidate cycling provides a massive buffer against physical attackers. `;
+                } else {
+                    p3 = `<strong>The Defensive Backbone:</strong> This squad essentially foregoes dedicated walls, embracing a "kill or be killed" mentality that demands perfect positioning.`;
+                }
+
+                // Paragraph 4: Momentum & Positioning
+                let p4 = `<strong>Momentum & Control:</strong> `;
+                let positionTools = [];
+                if (hasSpeedControl) positionTools.push('potent speed control');
+                if (hasFakeOut) positionTools.push('immediate Fake Out pressure');
+                if (hasRedirection) positionTools.push('strategic Redirection');
+                if (hasPivots) positionTools.push('VoltTurn pivoting');
+                if (hasHazards) positionTools.push('entry hazards');
+
+                if (positionTools.length > 0) {
+                    let toolList = positionTools.length > 1 ? `${positionTools.slice(0, -1).join(', ')} and ${positionTools[positionTools.length - 1]}` : positionTools[0];
+                    p4 += `Mastery of this team hinges on utilizing its <strong>${toolList}</strong>. `;
+                    if (hasPivots) p4 += `Pivoting constantly forces unfavorable matchups for the opponent while keeping your win conditions safe. `;
+                    if (hasSpeedControl && hasFakeOut) p4 += `The combination of Fake Out and speed manipulation makes it extremely easy to dictate the pacing and steal early KOs.`;
+                } else {
+                    p4 += `The team lacks traditional positioning tools like speed control, pivoting, or redirection. Every switch is a hard read, making this a high-risk, high-reward composition.`;
+                }
+
+                strategyText.innerHTML = `
+                    <p style="margin-bottom: 12px;">${p1}</p>
+                    <p style="margin-bottom: 12px;">${p2}</p>
+                    <p style="margin-bottom: 12px;">${p3}</p>
+                    <p>${p4}</p>
+                `;
+            } else {
+                strategyCard.style.display = 'none';
+            }
+
         }
 
         window.onclick = (e) => { if (e.target.className === 'overlay') e.target.style.display = 'none'; };
