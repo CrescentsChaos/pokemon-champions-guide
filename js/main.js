@@ -12,13 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${prefix}index.html" class="logo">
                     <span style="color:white">CHAMPIONS</span><span style="color:var(--primary-red)">GUIDE</span>
                 </a>
+                <button id="menu-toggle" class="menu-btn" aria-label="Toggle Menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
                 <nav class="nav-links">
                     <a href="${prefix}index.html" data-page="home">Home</a>
                     <a href="${prefix}pokedex/index.html" data-page="pokedex">Pokedex</a>
                     <a href="${prefix}teambuilder/index.html" data-page="teambuilder">Builder</a>
                     <a href="${prefix}guides/index.html" data-page="guides">Guides</a>
+                    <div class="mobile-only" style="margin-top: 2rem;">
+                        <a href="${prefix}teambuilder/index.html" class="btn" style="width: 100%; text-align: center;">Build Team</a>
+                    </div>
                 </nav>
-                <div class="header-action">
+                <div class="header-action desktop-only">
                     <a href="${prefix}teambuilder/index.html" class="btn" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;">Build Team</a>
                 </div>
             </div>
@@ -66,6 +74,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('footer')) {
         body.insertAdjacentHTML('beforeend', footerHTML);
     }
+
+    // Menu logic
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinksContainer = document.querySelector('.nav-links');
+    
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinksContainer.classList.toggle('active');
+            document.body.style.overflow = navLinksContainer.classList.contains('active') ? 'hidden' : '';
+        });
+    }
+
+    // Close menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navLinksContainer.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
 
     // Scroll effect
     window.addEventListener('scroll', () => {
