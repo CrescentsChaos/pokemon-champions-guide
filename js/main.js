@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Determine path prefix (more robust for file:// URLs)
-    const isSub = window.location.pathname.toLowerCase().includes('guides/') || 
-                  window.location.pathname.toLowerCase().includes('pokedex/') ||
-                  window.location.pathname.toLowerCase().includes('teambuilder/');
+    const subDirs = ['guides/', 'pokedex/', 'teambuilder/', 'builds/'];
+    const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
 
     // Header Injection

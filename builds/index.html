@@ -178,6 +178,63 @@
             } catch (e) { console.error("Data load failed", e); }
         }
 
+        function handleSpriteError(img, name) {
+            const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!img.src.includes('xy')) {
+                img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
+            } else if (!img.src.includes('dex/media/sprites/gen5')) {
+                img.src = `https://www.smogon.com/dex/media/sprites/gen5/${clean}.png`;
+            } else {
+                img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+            }
+            img.onerror = null; 
+        }
+
+        function handleItemError(img) {
+            img.style.display = 'none';
+            img.onerror = null;
+        }
+
+        function getSpriteUrl(name, shiny) {
+            let clean = name.toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/\./g, '')
+                .replace(/'/g, '')
+                .replace(/:/g, '')
+                .replace(/%/g, '');
+            
+            if (clean === 'giratina-altered') clean = 'giratina-origin';
+            if (clean === 'mimikyu-disguised') clean = 'mimikyu';
+            
+            const basePath = shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${basePath}/${clean}.gif`;
+        }
+
+        function getItemSpriteUrl(item) {
+            if (!item) return '';
+            let clean = item.toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/'/g, '')
+                .replace(/\./g, '')
+                .replace(/[^a-z0-9-]/g, '');
+            
+            if (clean === 'choice-specs') clean = 'choicespecs';
+            if (clean === 'choice-scarf') clean = 'choicescarf';
+            if (clean === 'choice-band') clean = 'choiceband';
+            if (clean === 'focus-sash') clean = 'focussash';
+            if (clean === 'life-orb') clean = 'lifeorb';
+            if (clean === 'sitrus-berry') clean = 'sitrusberry';
+            if (clean === 'lum-berry') clean = 'lumberry';
+            if (clean === 'assault-vest') clean = 'assaultvest';
+            if (clean === 'booster-energy') clean = 'boosterenergy';
+            if (clean === 'clear-amulet') clean = 'clearamulet';
+            if (clean === 'covert-cloak') clean = 'covertcloak';
+            if (clean === 'safety-goggles') clean = 'safetygoggles';
+            if (clean === 'leftovers') clean = 'leftovers';
+            
+            return `https://play.pokemonshowdown.com/sprites/itemicons/${clean}.png`;
+        }
+
         function calculateStat(base, iv, ev, level, natureType, statKey) {
             if (!base || isNaN(base)) return '--';
             const lvl = parseInt(level) || 50;
@@ -209,9 +266,11 @@
             lines.slice(1).forEach(line => {
                 if (line.startsWith('Ability:')) slot.ability = line.split(':')[1].trim();
                 else if (line.startsWith('Level:')) slot.level = parseInt(line.split(':')[1].trim());
+                else if (line.startsWith('Shiny:')) slot.shiny = line.split(':')[1].trim().toLowerCase() === 'yes';
                 else if (line.startsWith('Tera Type:')) slot.tera = line.split(':')[1].trim();
                 else if (line.startsWith('EVs:')) {
-                    line.split(':')[1].split('/').forEach(p => {
+                    const evParts = line.split(':')[1].split('/');
+                    evParts.forEach(p => {
                         const [val, s] = p.trim().split(' ');
                         let key = s.toLowerCase();
                         if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(val);
@@ -267,14 +326,14 @@
                 `;
             }).join('');
 
-            const spriteUrl = `https://play.pokemonshowdown.com/sprites/ani/${p.species.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '')}.gif`;
-            const itemSprite = p.item ? `https://play.pokemonshowdown.com/sprites/itemicons/${p.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '')}.png` : '';
+            const itemSprite = getItemSpriteUrl(p.item);
 
             card.innerHTML = `
                 <div style="display:flex; gap:12px; align-items:center; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1);">
                     <div style="position:relative; width:60px; height:60px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <img src="${spriteUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'">
-                        ${itemSprite ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px;">` : ''}
+                        <img src="${getSpriteUrl(p.species, p.shiny)}" style="width:100%; height:100%; object-fit:contain;" 
+                             onerror="handleSpriteError(this, '${p.species}')">
+                        ${itemSprite ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px;" onerror="handleItemError(this)">` : ''}
                     </div>
                     <div style="flex:1; min-width:0;">
                         <div style="font-weight:900; font-size:1.1rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.species}</div>
