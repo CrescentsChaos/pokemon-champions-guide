@@ -3,30 +3,51 @@
         "id": "01",
         "pokemon": "Darmanitan",
         "build": "Darmanitan @ Choice Scarf\nAbility: Sheer Force\nTera Type: Fire\nEVs: 6 HP / 252 Atk / 252 Spe\nAdamant Nature\nIVs: 19 HP / 24 Def / 21 SpA / 24 SpD\n- Flare Blitz\n- Earthquake\n- U-turn\n- Superpower",
-        "synergy": ["02", "03"]
+        "synergy": [
+            "02",
+            "03"
+        ]
     },
     {
         "id": "02",
         "pokemon": "Miraidon",
         "build": "Miraidon @ Choice Specs\nAbility: Hadron Engine\nTera Type: Electric\nEVs: 4 HP / 252 SpA / 252 Spe\nModest Nature\nIVs: 0 Atk\n- Electro Drift\n- Draco Meteor\n- Volt Switch\n- Dazzling Gleam",
-        "synergy": ["03", "04"]
+        "synergy": [
+            "03",
+            "04"
+        ]
     },
     {
         "id": "03",
         "pokemon": "Incineroar",
         "build": "Incineroar @ Sitrus Berry\nAbility: Intimidate\nTera Type: Ghost\nEVs: 252 HP / 100 Def / 156 SpD\nImpish Nature\n- Fake Out\n- Flare Blitz\n- Parting Shot\n- Knock Off",
-        "synergy": ["01", "04"]
+        "synergy": [
+            "01",
+            "04"
+        ]
     },
     {
         "id": "04",
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nTera Type: Fairy\nEVs: 116 HP / 124 Def / 116 SpA / 4+ SpD / 148 Spe\nModest Nature\nIVs: 0 Atk\n- Moonblast\n- Shadow Ball\n- Icy Wind\n- Protect",
-        "synergy": ["02", "05"]
+        "synergy": [
+            "02",
+            "05"
+        ]
     },
     {
         "id": "05",
         "pokemon": "Calyrex-Shadow",
         "build": "Calyrex-Shadow @ Focus Sash\nAbility: As One (Spectrier)\nTera Type: Stellar\nEVs: 4 HP / 252 SpA / 252 Spe\nTimid Nature\nIVs: 0 Atk\n- Astral Barrage\n- Psyshock\n- Nasty Plot\n- Protect",
-        "synergy": ["03", "04"]
+        "synergy": [
+            "03",
+            "04"
+        ]
+    },
+    {
+        "id": "06",
+        "pokemon": "Cofagrigus",
+        "build": "Cofagrigus @ Leftovers\nTrait: Mummy\nEVs: 252HP / 128 Def / 128 SDef\nCareful Nature\n- Night Shade\n- Haze\n- Protect\n- Will-O-Wisp",
+        "synergy": []
     }
 ]

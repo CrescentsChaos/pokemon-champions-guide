@@ -1404,7 +1404,6 @@
 
         // Binding Search Overlays
         speciesIn.onclick = () => openSearch('species');
-        document.getElementById('ability-input').onclick = () => openSearch('ability');
         document.querySelectorAll('.move-in').forEach(el => {
             el.onclick = (e) => openSearch(`move-${e.target.dataset.idx}`);
         });
