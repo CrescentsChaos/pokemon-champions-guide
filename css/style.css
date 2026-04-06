@@ -731,7 +731,7 @@ footer {
     }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 991px) {
     #team-grid {
         grid-template-columns: 1fr !important;
     }
@@ -740,7 +740,9 @@ footer {
         grid-template-columns: 1fr !important;
         gap: 1.5rem;
     }
+}
 
+@media (max-width: 768px) {
     .section-title h2 {
         font-size: 2rem;
     }
@@ -828,4 +830,29 @@ footer {
     .hero h1 {
         font-size: 2.5rem !important;
     }
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--primary-red);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    z-index: 5000;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), var(--accent-glow);
+}
+
+.toast.active {
+    transform: translateX(-50%) translateY(0);
 }

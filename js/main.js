@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="${prefix}index.html" data-page="home">Home</a>
                     <a href="${prefix}pokedex/index.html" data-page="pokedex">Pokedex</a>
                     <a href="${prefix}teambuilder/index.html" data-page="teambuilder">Builder</a>
+                    <a href="${prefix}builds/index.html" data-page="builds">Builds</a>
                     <a href="${prefix}guides/index.html" data-page="guides">Guides</a>
                     <div class="mobile-only" style="margin-top: 2rem;">
                         <a href="${prefix}teambuilder/index.html" class="btn" style="width: 100%; text-align: center;">Build Team</a>
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <ul style="list-style: none;">
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}index.html" style="color: var(--text-muted); text-decoration: none;">Home</a></li>
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}pokedex/index.html" style="color: var(--text-muted); text-decoration: none;">Elite Pokedex</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}builds/index.html" style="color: var(--text-muted); text-decoration: none;">Competitve Builds</a></li>
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}teambuilder/index.html" style="color: var(--text-muted); text-decoration: none;">Team Builder</a></li>
                         </ul>
                     </div>
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
         const page = link.getAttribute('data-page');
-        if (currentPath.includes(page) || (page === 'home' && (currentPath === '/' || currentPath.includes('index.html') && !currentPath.includes('pokedex') && !currentPath.includes('teambuilder')))) {
+        if (currentPath.includes(page) || (page === 'home' && (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html')) && !currentPath.includes('pokedex') && !currentPath.includes('builds') && !currentPath.includes('teambuilder'))) {
             link.style.color = 'var(--primary-red)';
             link.style.textShadow = 'var(--accent-glow)';
         }
