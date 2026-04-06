@@ -291,7 +291,7 @@
                 <div class="pokemon-config">
                     <div class="config-header">
                         <div class="big-sprite-box">
-                            <img src="" id="current-big-sprite" class="big-sprite">
+                            <img src="" id="current-big-sprite" class="big-sprite" onerror="handleSpriteError(this, team[currentSlot].species, team[currentSlot].shiny)">
                         </div>
                         <div style="flex-grow: 1;">
                             <div class="input-group">
@@ -328,7 +328,10 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-group">
                             <span class="input-label">Item</span>
-                            <input type="text" id="item-input" class="builder-input" placeholder="No Item">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <img src="" id="item-sprite-preview" style="width: 32px; height: 32px; object-fit: contain; display: none;">
+                                <input type="text" id="item-input" class="builder-input" placeholder="No Item">
+                            </div>
                         </div>
                         <div class="input-group">
                             <span class="input-label">Ability</span>
@@ -422,6 +425,17 @@
         </div>
     </div>
 
+    <!-- Paste Export Overlay -->
+    <div class="overlay" id="export-overlay">
+        <div class="overlay-content">
+            <h2>Export PokePaste</h2>
+            <textarea id="export-textarea" class="builder-input" style="height: 300px; margin-top: 20px;" readonly></textarea>
+            <div style="text-align: right; margin-top: 20px;">
+                <button onclick="copyExport()" class="analyze-btn">COPY TO CLIPBOARD</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/main.js"></script>
     <script>
         // Data & State
@@ -501,9 +515,9 @@
                 
                 const p = team[i];
                 tab.innerHTML = `
-                    <img src="${getSpriteUrl(p)}" class="tab-sprite" id="tab-sprite-${i}">
+                    <img src="${getSpriteUrl(p)}" class="tab-sprite" id="tab-sprite-${i}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     <div class="tab-info">
-                        <span class="tab-name" id="tab-name-${i}">${p.species || 'Empty'}</span>
+                        <span class="tab-name" id="tab-name-${i}">${p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty')}</span>
                         <span class="tab-role">Slot ${i+1}</span>
                     </div>
                 `;
@@ -629,12 +643,17 @@
                 card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:52px; height:52px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:22px; height:22px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
-                            <div style="font-weight:900; font-size:1.1rem; color:#fff; line-height:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">${p.nickname || p.species}</div>
-                            <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+                            <div style="font-weight:900; font-size:0.95rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
+                                ${p.nickname ? `${p.nickname} <span style="font-size:0.75rem; opacity:0.6; font-weight:400;">(${p.species})</span>` : p.species}
+                            </div>
+                            <div style="font-size:0.65rem; color:rgba(255,255,255,0.6); margin-top:2px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                ${p.item ? `Held: ${p.item}` : 'No Item'}
+                            </div>
+                            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
                                 <div style="display:flex; gap:3px;">
                                     <span style="background:${typeColors[t1]}; color:#fff; font-size:0.55rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t1.toUpperCase()}</span>
                                     ${t2 ? `<span style="background:${typeColors[t2]}; color:#fff; font-size:0.55rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t2.toUpperCase()}</span>` : ''}
@@ -746,6 +765,14 @@
 
         searchInput.oninput = (e) => updateSearchResults(e.target.value);
 
+        function handleSpriteError(img, species, shiny) {
+            if (!species || img.dataset.fallback === 'true') return;
+            img.dataset.fallback = 'true'; // Prevent infinite loops
+            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const folder = shiny ? 'xy-shiny' : 'xy';
+            img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+        }
+
         function getSpriteUrl(p) {
             if (!p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
@@ -787,10 +814,21 @@
             document.getElementById('gender-input').value = p.gender;
             levelIn.value = p.level;
             natureIn.value = p.nature;
-            document.getElementById('current-big-sprite').src = getSpriteUrl(p);
+            const bigSprite = document.getElementById('current-big-sprite');
+            bigSprite.dataset.fallback = 'false';
+            bigSprite.src = getSpriteUrl(p);
 
-            document.getElementById(`tab-name-${currentSlot}`).textContent = p.species || 'Empty';
+            const displayName = p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty');
+            document.getElementById(`tab-name-${currentSlot}`).textContent = displayName;
             document.getElementById(`tab-sprite-${currentSlot}`).src = getSpriteUrl(p);
+
+            const itemSpr = document.getElementById('item-sprite-preview');
+            if (p.item) {
+                itemSpr.src = getItemSpriteUrl(p.item);
+                itemSpr.style.display = 'block';
+            } else {
+                itemSpr.style.display = 'none';
+            }
 
             const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
             let totalEVs = 0;
@@ -845,6 +883,67 @@
             parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
             document.getElementById('import-overlay').style.display = 'none';
             setupTabs(); syncUI();
+        };
+
+        document.getElementById('export-paste-btn').onclick = () => {
+            let fullPaste = '';
+            team.forEach(p => {
+                if (!p.species) return;
+                
+                // Header: Nickname (Species) (Gender) @ Item
+                let line = p.nickname ? `${p.nickname} (${p.species})` : p.species;
+                if (p.gender && p.gender !== '-') line += ` (${p.gender})`;
+                if (p.item) line += ` @ ${p.item}`;
+                fullPaste += line + '\n';
+                
+                if (p.ability) fullPaste += `Ability: ${p.ability}\n`;
+                if (p.level && p.level != 100) fullPaste += `Level: ${p.level}\n`;
+                if (p.shiny) fullPaste += `Shiny: Yes\n`;
+                if (p.tera) fullPaste += `Tera Type: ${p.tera}\n`;
+                
+                // EVs
+                const evs = [];
+                if (p.evs.hp) evs.push(`${p.evs.hp} HP`);
+                if (p.evs.atk) evs.push(`${p.evs.atk} Atk`);
+                if (p.evs.def) evs.push(`${p.evs.def} Def`);
+                if (p.evs.spa) evs.push(`${p.evs.spa} SpA`);
+                if (p.evs.spd) evs.push(`${p.evs.spd} SpD`);
+                if (p.evs.spe) evs.push(`${p.evs.spe} Spe`);
+                if (evs.length > 0) fullPaste += `EVs: ${evs.join(' / ')}\n`;
+                
+                fullPaste += `${p.nature} Nature\n`;
+                
+                // IVs (only if not 31)
+                const ivs = [];
+                if (p.ivs.hp !== 31) ivs.push(`${p.ivs.hp} HP`);
+                if (p.ivs.atk !== 31) ivs.push(`${p.ivs.atk} Atk`);
+                if (p.ivs.def !== 31) ivs.push(`${p.ivs.def} Def`);
+                if (p.ivs.spa !== 31) ivs.push(`${p.ivs.spa} SpA`);
+                if (p.ivs.spd !== 31) ivs.push(`${p.ivs.spd} SpD`);
+                if (p.ivs.spe !== 31) ivs.push(`${p.ivs.spe} Spe`);
+                if (ivs.length > 0) fullPaste += `IVs: ${ivs.join(' / ')}\n`;
+
+                p.moves.forEach(m => {
+                    if (m) fullPaste += `- ${m}\n`;
+                });
+                
+                fullPaste += '\n';
+            });
+            
+            document.getElementById('export-textarea').value = fullPaste.trim();
+            document.getElementById('export-overlay').style.display = 'flex';
+        };
+
+        window.copyExport = async () => {
+            const area = document.getElementById('export-textarea');
+            try {
+                await navigator.clipboard.writeText(area.value);
+                alert('Paste copied to clipboard!');
+            } catch (err) {
+                area.select();
+                document.execCommand('copy');
+                alert('Paste copied to clipboard!');
+            }
         };
 
         function parsePaste(text) {

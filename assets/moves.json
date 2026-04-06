@@ -3120,7 +3120,7 @@
     "damage_class": "Status"
   },
   {
-    "name": "Will O Wisp",
+    "name": "Will-O-Wisp",
     "id": 261,
     "accuracy": 85,
     "pp": 15,
@@ -9693,6 +9693,18 @@
     "type": "Psychic",
     "generation": "Generation Viii",
     "short_descripton": "Inflicts regular damage with no additional effect.",
+    "damage_class": "Special"
+  },
+  {
+    "name": "Armor Cannon",
+    "id": 370,
+    "accuracy": 100,
+    "pp": 5,
+    "power": 120,
+    "priority": 0,
+    "type": "Fire",
+    "generation": "Generation IX",
+    "short_descripton": "Lowers the user's Defense and Special Defense by one stage after inflicting damage.",
     "damage_class": "Special"
   }
 ]
