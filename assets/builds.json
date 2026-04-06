@@ -26,7 +26,7 @@
     {
         "id": "05",
         "pokemon": "Calyrex-Shadow",
-        "build": "Calyrex-Shadow @ Focus Sash\nAbility: As One (Spectrier)\nTera Type: Stellar\nEVs: 4 HP / 252 SpA / 252 Spe\nTimed Nature\nIVs: 0 Atk\n- Astral Barrage\n- Psyshock\n- Nasty Plot\n- Protect",
+        "build": "Calyrex-Shadow @ Focus Sash\nAbility: As One (Spectrier)\nTera Type: Stellar\nEVs: 4 HP / 252 SpA / 252 Spe\nTimid Nature\nIVs: 0 Atk\n- Astral Barrage\n- Psyshock\n- Nasty Plot\n- Protect",
         "synergy": ["03", "04"]
     }
 ]

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .builds-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 8rem 2rem;
         }
@@ -46,29 +46,10 @@
             transform: translateY(-5px);
         }
 
-        .build-card-wrapper.selected .pokemon-config {
+        .build-card-wrapper.selected .pokemon-card-premium {
             border-color: var(--primary-red) !important;
             box-shadow: var(--accent-glow), 0 20px 40px rgba(0,0,0,0.6) !important;
-            background: rgba(255, 51, 51, 0.08) !important;
-        }
-
-        .copy-btn-mini {
-            background: var(--primary-red);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 1px;
-        }
-
-        .copy-btn-mini:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 15px rgba(255,62,62,0.4);
+            background: rgba(255, 51, 51, 0.06) !important;
         }
 
         /* Synergy Section */
@@ -89,16 +70,121 @@
         #builds-grid, #synergy-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 2.5rem;
+        }
+
+        /* Premium Card Styles (Sync with Teambuilder) */
+        .pokemon-card-premium {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.4));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 480px;
+        }
+
+        .card-sprite-area {
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-sprite {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        .tera-badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tera-icon {
+            width: 14px;
+            height: 14px;
+            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 18% 100%, 0% 35%);
+        }
+
+        .type-badges-row {
+            display: flex;
+            gap: 8px;
+            margin-top: -5px;
+        }
+
+        .move-pill {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 6px 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .move-pill span {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #eee;
+        }
+
+        .stat-bar-mini {
+            height: 5px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            flex: 1;
+            overflow: hidden;
+            margin: 0 8px;
+        }
+
+        .stat-fill-mini {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease-out;
         }
 
         @media (max-width: 1200px) {
             #builds-grid, #synergy-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        @media (max-width: 991px) {
+        @media (max-width: 850px) {
             #builds-grid, #synergy-grid { grid-template-columns: 1fr !important; }
             .synergy-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+
+        /* Empty Slot */
+        .empty-slot-premium {
+            border: 2px dashed rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.01);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 480px;
+            color: rgba(255,255,255,0.1);
+            gap: 15px;
         }
     </style>
 </head>
@@ -146,7 +232,7 @@
             grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
             ground: '#E2BF65', flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
             rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
-            fairy: '#D685AD', dark: '#705746'
+            fairy: '#D685AD', dark: '#705746', stellar: '#70DBFF'
         };
 
         const natureMap = {
@@ -157,9 +243,7 @@
             'Modest': { pos: 'spa', neg: 'atk' }, 'Naive': { pos: 'spe', neg: 'spd' },
             'Quiet': { pos: 'spa', neg: 'spe' }, 'Rash': { pos: 'spa', neg: 'spd' },
             'Relaxed': { pos: 'def', neg: 'spe' }, 'Sassy': { pos: 'spd', neg: 'spe' },
-            'Timid': { pos: 'spe', neg: 'atk' }, 'Serious': { pos: '', neg: '' },
-            'Docile': { pos: '', neg: '' }, 'Bashful': { pos: '', neg: '' },
-            'Hardy': { pos: '', neg: '' }, 'Quirky': { pos: '', neg: '' }
+            'Timid': { pos: 'spe', neg: 'atk' }
         };
 
         async function loadData() {
@@ -180,63 +264,24 @@
 
         function handleSpriteError(img, name) {
             const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (!img.src.includes('xy')) {
-                img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
-            } else if (!img.src.includes('dex/media/sprites/gen5')) {
-                img.src = `https://www.smogon.com/dex/media/sprites/gen5/${clean}.png`;
-            } else {
+            img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
+            img.onerror = () => {
                 img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
-            }
-            img.onerror = null; 
-        }
-
-        function handleItemError(img) {
-            img.style.display = 'none';
-            img.onerror = null;
-        }
-
-        function getSpriteUrl(name, shiny) {
-            let clean = name.toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/\./g, '')
-                .replace(/'/g, '')
-                .replace(/:/g, '')
-                .replace(/%/g, '');
-            
-            if (clean === 'giratina-altered') clean = 'giratina-origin';
-            if (clean === 'mimikyu-disguised') clean = 'mimikyu';
-            
-            const basePath = shiny ? 'ani-shiny' : 'ani';
-            return `https://play.pokemonshowdown.com/sprites/${basePath}/${clean}.gif`;
+            };
         }
 
         function getItemSpriteUrl(item) {
             if (!item) return '';
-            let clean = item.toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/'/g, '')
-                .replace(/\./g, '')
-                .replace(/[^a-z0-9-]/g, '');
-            
-            if (clean === 'choice-specs') clean = 'choicespecs';
-            if (clean === 'choice-scarf') clean = 'choicescarf';
-            if (clean === 'choice-band') clean = 'choiceband';
-            if (clean === 'focus-sash') clean = 'focussash';
-            if (clean === 'life-orb') clean = 'lifeorb';
-            if (clean === 'sitrus-berry') clean = 'sitrusberry';
-            if (clean === 'lum-berry') clean = 'lumberry';
-            if (clean === 'assault-vest') clean = 'assaultvest';
-            if (clean === 'booster-energy') clean = 'boosterenergy';
-            if (clean === 'clear-amulet') clean = 'clearamulet';
-            if (clean === 'covert-cloak') clean = 'covertcloak';
-            if (clean === 'safety-goggles') clean = 'safetygoggles';
-            if (clean === 'leftovers') clean = 'leftovers';
-            
-            return `https://play.pokemonshowdown.com/sprites/itemicons/${clean}.png`;
+            let clean = item.toLowerCase().replace(/ /g, '-').replace(/'/g, '').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const shortcuts = {
+                'choice-specs': 'choicespecs', 'choice-scarf': 'choicescarf', 'choice-band': 'choiceband',
+                'focus-sash': 'focussash', 'life-orb': 'lifeorb', 'sitrus-berry': 'sitrusberry',
+                'assault-vest': 'assaultvest', 'clear-amulet': 'clearamulet', 'covert-cloak': 'covertcloak'
+            };
+            return `https://play.pokemonshowdown.com/sprites/itemicons/${shortcuts[clean] || clean.replace(/-/g, '')}.png`;
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
-            if (!base || isNaN(base)) return '--';
             const lvl = parseInt(level) || 50;
             const evBonus = Math.floor(parseInt(ev || 0) / 4);
             const ivVal = parseInt(iv || 31);
@@ -245,9 +290,11 @@
                 return Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + lvl + 10;
             }
             let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + 5;
-            const nature = natureMap[natureType] || { pos: '', neg: '' };
-            if (nature.pos === statKey) val = Math.floor(val * 1.1);
-            if (nature.neg === statKey) val = Math.floor(val * 0.9);
+            const nature = natureMap[natureType];
+            if (nature) {
+                if (nature.pos === statKey) val = Math.floor(val * 1.1);
+                if (nature.neg === statKey) val = Math.floor(val * 0.9);
+            }
             return val;
         }
 
@@ -255,144 +302,134 @@
             const lines = text.trim().split('\n').map(l => l.trim());
             const slot = {
                 species: '', item: '', ability: '', level: 50, shiny: false,
-                tera: '', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+                tera: 'Normal', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
                 ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
                 nature: 'Serious', moves: []
             };
-            const head = lines[0];
-            if (!head) return slot;
+            const head = lines[0] || '';
             const itemSplit = head.split('@');
             if (itemSplit[1]) slot.item = itemSplit[1].trim();
-            
-            // Handle species with nickname format: Nickname (Species)
             const speciesPart = itemSplit[0].trim();
-            if (speciesPart.includes('(')) {
-                slot.species = speciesPart.split('(')[1].split(')')[0].trim();
-            } else {
-                slot.species = speciesPart;
-            }
+            slot.species = speciesPart.includes('(') ? speciesPart.split('(')[1].split(')')[0].trim() : speciesPart;
 
-            lines.slice(1).forEach(line => {
-                const l = line.trim();
-                if (l.startsWith('Ability:')) slot.ability = l.split(':')[1].trim();
-                else if (l.startsWith('Level:')) slot.level = parseInt(l.split(':')[1].trim());
-                else if (l.startsWith('Shiny:')) slot.shiny = l.split(':')[1].trim().toLowerCase() === 'yes';
-                else if (l.startsWith('Tera Type:')) slot.tera = l.split(':')[1].trim();
-                else if (l.startsWith('EVs:')) {
-                    const evParts = l.split(':')[1].split('/');
-                    evParts.forEach(p => {
+            lines.slice(1).forEach(l => {
+                const line = l.trim();
+                if (line.startsWith('Ability:')) slot.ability = line.split(':')[1].trim();
+                else if (line.startsWith('Level:')) slot.level = parseInt(line.split(':')[1].trim());
+                else if (line.startsWith('Tera Type:')) slot.tera = line.split(':')[1].trim();
+                else if (line.startsWith('EVs:')) {
+                    line.split(':')[1].split('/').forEach(p => {
                         const parts = p.trim().split(' ');
-                        if (parts.length >= 2) {
-                            const val = parts[0];
-                            let key = parts[1].toLowerCase();
-                            if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(val);
-                        }
+                        const key = parts[1]?.toLowerCase();
+                        if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(parts[0]);
                     });
-                } else if (l.includes('Nature')) slot.nature = l.split('Nature')[0].trim();
-                else if (l.startsWith('-')) slot.moves.push(l.substring(1).trim());
+                } else if (line.includes('Nature')) slot.nature = line.split('Nature')[0].trim();
+                else if (line.startsWith('-')) slot.moves.push(line.substring(1).trim());
             });
             while (slot.moves.length < 4) slot.moves.push('');
             return slot;
         }
 
-        function createEmptyCard() {
+        function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
-            card.className = 'pokemon-config empty-card';
-            card.style.cssText = `
-                padding: 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; 
-                justify-content: center; gap: 10px; opacity: 0.2; 
-                border: 2px dashed rgba(255,255,255,0.2); background: rgba(255,255,255,0.02);
-                min-height: 280px; transition: var(--transition);
-            `;
-            card.innerHTML = `
-                <div style="font-size: 2.5rem; color: rgba(255,255,255,0.3);">+</div>
-                <div style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.5); letter-spacing: 1px;">SLOT EMPTY</div>
-            `;
-            return card;
-        }
-        function createTeamCard(p, dbRef, t1, t2, rawBuild) {
-            const card = document.createElement('div');
-            card.className = 'pokemon-config';
-            card.style.cssText = `
-                padding: 12px 16px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px;
-                background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.6));
-                border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden;
-                backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px ${typeColors[t1] || '#777'}22;
-                min-height: 280px; transition: var(--transition);
-            `;
-
+            card.className = 'pokemon-card-premium fade-in';
+            const t1 = (dbRef?.Type_1 || 'Normal').toLowerCase();
+            const t2 = dbRef?.Type_2?.toLowerCase();
+            
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
             const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
-            const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
-            const statOrder = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
+            const statColors = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
+            const statKeys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
 
             const statsHtml = statsArr.map((s, idx) => {
-                const base = dbRef ? (parseInt(dbRef[keys[s]]) || 0) : 0;
+                const base = dbRef ? (parseInt(dbRef[statKeys[s]]) || 0) : 0;
                 const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
                 const nature = natureMap[p.nature] || { pos: '', neg: '' };
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
                 return `
-                    <div style="display:flex; align-items:center; gap:6px; font-size:0.6rem; margin-bottom:2px; height:12px;">
-                        <span style="width:22px; color:rgba(255,255,255,0.3); font-weight:900;">${statLabels[idx]}</span>
-                        <div style="flex:1; height:3px; background:rgba(0,0,0,0.2); border-radius:1px; overflow:hidden;">
-                            <div style="height:100%; width:${Math.min(100, (val/250)*100)}%; background:${statOrder[idx]};"></div>
-                        </div>
-                        <span style="width:25px; text-align:right; font-weight:900; color:${color}">${val}</span>
+                    <div style="display:flex; align-items:center; font-size:0.65rem; margin-bottom:4px;">
+                        <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
+                        <div class="stat-bar-mini"><div class="stat-fill-mini" style="width:${Math.min(100, (val/250)*100)}%; background:${statColors[idx]};"></div></div>
+                        <span style="width:30px; text-align:right; font-weight:900; color:${color}">${val}</span>
                     </div>
                 `;
             }).join('');
 
             const movesHtml = p.moves.map(m => {
-                if (!m) return '';
-                const moveRef = (allMoves || []).find(x => x.name.toLowerCase() === m.toLowerCase()) || { type: 'Normal' };
-                const type = moveRef.type.toLowerCase();
+                if (!m) return `<div class="move-pill" style="opacity:0.2;"><span>EMPTY SLOT</span></div>`;
+                const moveData = allMoves.find(x => x.name.toLowerCase() === m.toLowerCase()) || { type: 'Normal' };
+                const mt = moveData.type.toLowerCase();
                 return `
-                    <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 5px; border-radius:4px; border:1px solid rgba(255,255,255,0.03);">
-                        <span style="font-size:0.6rem; color:#eee; font-weight:700; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.toUpperCase()}</span>
-                        <div style="width:6px; height:6px; border-radius:50%; background:${typeColors[type]};"></div>
+                    <div class="move-pill">
+                        <span>${m.toUpperCase()}</span>
+                        <div style="width:8px; height:8px; border-radius:50%; background:${typeColors[mt]}; box-shadow: 0 0 8px ${typeColors[mt]}88;"></div>
                     </div>
                 `;
             }).join('');
 
-            const itemSprite = getItemSpriteUrl(p.item);
+            const spriteUrl = `https://play.pokemonshowdown.com/sprites/ani${p.shiny ? '-shiny' : ''}/${p.species.toLowerCase().replace(/ /g, '-')}.gif`;
 
             card.innerHTML = `
-                <div style="display:flex; gap:10px; align-items:center; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <div style="position:relative; width:48px; height:48px; background:rgba(255,255,255,0.03); border-radius:8px; display:flex; align-items:center; justify-content:center;">
-                        <img src="${getSpriteUrl(p.species, p.shiny)}" style="width:90%; height:90%; object-fit:contain;" 
-                             onerror="handleSpriteError(this, '${p.species}')">
-                        ${itemSprite ? `<img src="${itemSprite}" style="position:absolute; bottom:-3px; right:-3px; width:20px; height:20px;" onerror="handleItemError(this)">` : ''}
+                <div class="card-sprite-area">
+                    <img class="premium-sprite" src="${spriteUrl}" onerror="handleSpriteError(this, '${p.species}')">
+                    <div class="tera-badge">
+                        <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
+                        <span style="font-size:0.6rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
                     </div>
-                    <div style="flex:1; min-width:0;">
-                        <div style="font-weight:900; font-size:0.95rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; letter-spacing:0.5px;">${p.species.toUpperCase()}</div>
-                        <div style="font-size:0.65rem; color:rgba(255,255,255,0.4); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700;">${(p.item || 'NO ITEM').toUpperCase()}</div>
+                    ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" style="position:absolute; bottom:15px; left:15px; width:36px; height:36px; filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));">` : ''}
+                </div>
+
+                <div style="padding:0 5px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px;">
+                        <h3 style="font-size:1.4rem; color:white; letter-spacing:-0.5px;">${p.species}</h3>
+                        <div class="type-badges-row">
+                            <span class="type-tag type-${t1}">${t1}</span>
+                            ${t2 ? `<span class="type-tag type-${t2}">${t2}</span>` : ''}
+                        </div>
+                    </div>
+                    <div style="font-size:0.7rem; color:rgba(255,255,255,0.4); font-weight:700; display:flex; gap:10px;">
+                        <span>LVL ${p.level}</span>
+                        <span>HELD: <span style="color:#eee">${(p.item || 'NONE').toUpperCase()}</span></span>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:12px; margin-top:8px;">
-                    <div>${movesHtml}</div>
-                    <div style="background:rgba(0,0,0,0.1); padding:6px; border-radius:8px;">${statsHtml}</div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin:5px 0;">
+                    <div class="moves-column">${movesHtml}</div>
+                    <div class="stats-column" style="background:rgba(0,0,0,0.2); padding:12px; border-radius:15px;">${statsHtml}</div>
                 </div>
-                <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:space-between;">
-                    <div style="font-size:0.55rem; color:rgba(255,255,255,0.25); font-weight:800; letter-spacing:0.5px;">ID: ${rawBuild.id} // ${p.nature.toUpperCase()}</div>
-                    <button class="copy-btn-mini" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
+
+                <div style="margin-top:auto; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:0.65rem; color:rgba(255,255,255,0.3); font-weight:800;">
+                        ${p.nature.toUpperCase()} NATURE<br>
+                        ABILITY: <span style="color:rgba(255,255,255,0.6)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
+                    </div>
+                    <button class="btn" style="padding:8px 15px; font-size:0.65rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
             `;
             return card;
         }
 
+        function createEmptyCard() {
+            const el = document.createElement('div');
+            el.className = 'empty-slot-premium fade-in';
+            el.innerHTML = `
+                <div style="font-size:3rem; opacity:0.2;">+</div>
+                <div style="font-weight:900; font-size:0.7rem; letter-spacing:2px; opacity:0.3;">EMPTY SLOT</div>
+            `;
+            return el;
+        }
+
         function renderBuilds() {
             const grid = document.getElementById('builds-grid');
             grid.innerHTML = '';
-            const search = document.getElementById('build-search').value.toLowerCase();
+            const searchInput = document.getElementById('build-search');
+            const search = searchInput.value.toLowerCase();
 
             allBuilds.forEach(build => {
                 const p = parsePaste(build.build);
-                if (!p.species.toLowerCase().includes(search)) return;
+                if (search && !p.species.toLowerCase().includes(search)) return;
 
                 const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
-                const t1 = dbRef ? (dbRef.Type_1 || 'Normal').toLowerCase() : 'normal';
-                const t2 = dbRef && dbRef.Type_2 ? dbRef.Type_2.toLowerCase() : null;
-
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
@@ -401,13 +438,12 @@
                     selectBuild(build.id);
                 };
                 
-                const card = createTeamCard(p, dbRef, t1, t2, build);
-                wrapper.appendChild(card);
+                wrapper.appendChild(createTeamCard(p, dbRef, build));
                 grid.appendChild(wrapper);
             });
         }
 
-        async function selectBuild(id) {
+        function selectBuild(id) {
             selectedBuildId = id;
             document.querySelectorAll('.build-card-wrapper').forEach(el => el.classList.remove('selected'));
             const card = document.getElementById(`build-${id}`);
@@ -416,8 +452,9 @@
             const build = allBuilds.find(b => b.id === id);
             if (build) {
                 renderSynergy(build.synergy);
-                document.getElementById('synergy-container').style.display = 'block';
-                document.getElementById('synergy-container').scrollIntoView({ behavior: 'smooth' });
+                const container = document.getElementById('synergy-container');
+                container.style.display = 'block';
+                setTimeout(() => container.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }
         }
 
@@ -431,7 +468,6 @@
             const grid = document.getElementById('synergy-grid');
             grid.innerHTML = '';
             
-            // Loop 6 times to always show 6 slots
             for (let i = 0; i < 6; i++) {
                 const sid = (synergyIds || [])[i];
                 const build = sid ? allBuilds.find(b => b.id === sid) : null;
@@ -439,11 +475,7 @@
                 if (build) {
                     const p = parsePaste(build.build);
                     const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
-                    const t1 = dbRef ? (dbRef.Type_1 || 'Normal').toLowerCase() : 'normal';
-                    const t2 = dbRef && dbRef.Type_2 ? dbRef.Type_2.toLowerCase() : null;
-                    
-                    const card = createTeamCard(p, dbRef, t1, t2, build);
-                    grid.appendChild(card);
+                    grid.appendChild(createTeamCard(p, dbRef, build));
                 } else {
                     grid.appendChild(createEmptyCard());
                 }
@@ -458,7 +490,7 @@
             });
         }
 
-        document.getElementById('build-search').addEventListener('input', (e) => renderBuilds(e.target.value));
+        document.getElementById('build-search').addEventListener('input', renderBuilds);
         loadData();
     </script>
 </body>
