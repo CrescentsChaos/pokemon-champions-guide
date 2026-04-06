@@ -2276,6 +2276,7 @@
 
             const issues = [];
             Object.entries(weaknessCounts).forEach(([type, count]) => {
+                // Negative issues
                 if (count >= 3 && resistances[type] < 2) {
                     issues.push({ type, count, severity: 'high', text: `Severe weakness to ${type}! Only ${resistances[type]} resistance/immunity found.` });
                 } else if (count >= 3 && resistances[type] >= 2) {
@@ -2283,16 +2284,42 @@
                 } else if (count >= 2 && resistances[type] === 0) {
                     issues.push({ type, count, severity: 'medium', text: `Team lacks resistances to ${type} despite multiple weaknesses.` });
                 }
+                
+                // Positive defensive synergies
+                if (count <= 1 && resistances[type] >= 3) {
+                    issues.push({ type, count, severity: 'synergy', text: `Excellent ${type} defense!`, tip: `Your team features ${resistances[type]} resistances/immunities to ${type} with almost no weaknesses.`, icon: '🛡️', color: '#4CAF50' });
+                }
             });
 
-            // Specific VGC synergies
+            // Expanded Utility & VGC synergies
             const allRoles = roles.flat();
+            const allMovesArr = activeMons.flatMap(p => p.moves.map(m => m.toLowerCase()));
+            const allAbilitiesArr = activeMons.map(p => (p.ability || '').toLowerCase());
+
             if (!allRoles.includes('Speed Control') && !allRoles.includes('Trick Room Setter')) {
-                issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'No Speed Control (Tailwind, Trick Room, Icy Wind) detected.' });
+                issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'No Speed Control detected.' });
             }
             if (!allRoles.includes('Fake Out Pressure') && activeMons.length >= 4) {
-                // In VGC, Fake out is highly recommended but not strictly a warning, so we add a tip style
-                issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Consider adding Fake Out for early pressure and positioning.' });
+                issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Consider adding Fake Out for positioning.' });
+            }
+
+            // New expanded suggestions
+            const priorityMoves = ['extreme speed', 'sucker punch', 'aqua jet', 'mach punch', 'bullet punch', 'ice shard', 'shadow sneak', 'fake out', 'first impression', 'grassy glide', 'vacuum wave'];
+            const removalMoves = ['defog', 'rapid spin', 'mortal spin', 'tidy up'];
+            const pivotMoves = ['u-turn', 'volt switch', 'parting shot', 'flip turn', 'chilly reception'];
+
+            const hasPriority = allMovesArr.some(m => priorityMoves.includes(m));
+            const hasRemoval = allMovesArr.some(m => removalMoves.includes(m));
+            const hasPivotMove = allMovesArr.some(m => pivotMoves.includes(m));
+
+            if (!hasPriority) {
+                 issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking Priority Moves.', tip: 'Priority (e.g., Sucker Punch, Extreme Speed) acts as emergency speed control.'});
+            }
+            if (weaknessCounts['Rock'] >= 2 && !hasRemoval) {
+                 issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'Weak to Stealth Rock w/ no hazard removal.', tip: 'Add Defog or Rapid Spin to protect your weak members.'});
+            }
+            if (!hasPivotMove) {
+                 issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking momentum/pivoting moves.', tip: 'U-Turn or Volt Switch maintains offensive tempo.'});
             }
 
             // --- Famous Archetypes/Cores ---
@@ -2309,11 +2336,10 @@
             if (hasType('Fairy') && hasType('Dragon') && hasType('Steel')) {
                 issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Fantasy Core (Fairy/Dragon/Steel) detected.', tip: 'Very strong defensive backbone against most the meta.', icon: '🛡️', color: '#9c27b0' });
             }
-
-            const allMovesArr = activeMons.flatMap(p => p.moves.map(m => m.toLowerCase()));
-            const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee'));
+            
+            const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee') || p.species.toLowerCase().includes('tapu lele'));
             if (hasIndeedee && allMovesArr.includes('expanding force')) {
-                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected (Indeedee + Expanding Force).', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected.', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
             }
 
             const hasDondozo = activeMons.some(p => p.species.toLowerCase() === 'dondozo');
@@ -2322,13 +2348,51 @@
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Commander Core (Dondozo + Tatsugiri).', tip: 'Huge stat boosts for Dondozo when Tatsugiri enters its mouth.', icon: '🍣', color: '#00bcd4' });
             }
 
-            const hasTrappers = activeMons.some(p => ['shadow tag', 'arena trap'].includes((p.ability || '').toLowerCase()));
-            if (allMovesArr.includes('perish song') && hasTrappers) {
+            if (allMovesArr.includes('perish song') && activeMons.some(p => ['shadow tag', 'arena trap'].includes((p.ability || '').toLowerCase()))) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Perish Trap strategy detected.', tip: 'Lock opponents in and stall the Perish count.', icon: '☠️', color: '#735797' });
             }
 
             if (allMovesArr.includes('discharge') && allMovesArr.includes('earthquake')) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'DisQuake Combo detected.', tip: 'Discharge + Earthquake provides great spread pressure.', icon: '⚡', color: '#F7D02C' });
+            }
+
+            // --- Weather Abuse Detections ---
+            if (allAbilitiesArr.some(a => ['drizzle', 'primordial sea'].includes(a)) && allAbilitiesArr.includes('swift swim')) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Rain Abuse strategy detected.', tip: 'Overpower teams with Swift Swim speed control and boosted Water attacks.', icon: '🌧️', color: '#2196F3' });
+            }
+            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) && allAbilitiesArr.some(a => ['chlorophyll', 'protosynthesis'].includes(a))) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Sun Abuse strategy detected.', tip: 'Fast Chlorophyll/Protosynthesis pressure under harsh sunlight.', icon: '☀️', color: '#FF9800' });
+            }
+            if (allAbilitiesArr.includes('sand stream') && allAbilitiesArr.some(a => ['sand rush', 'sand force'].includes(a))) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Sand Abuse strategy detected.', tip: 'Sand Rush sweeping capabilities paired with residual Sandstorm chip.', icon: '🏜️', color: '#795548' });
+            }
+            if (allAbilitiesArr.includes('snow warning') && (allAbilitiesArr.includes('slush rush') || allMovesArr.includes('aurora veil'))) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Snow Abuse strategy detected.', tip: 'Utilizing Snow for defense buffs, Aurora Veil, or Slush Rush speed.', icon: '🌨️', color: '#00BCD4' });
+            }
+
+            // --- Specific VGC Combos ---
+            if (allMovesArr.includes('beat up') && allAbilitiesArr.includes('justified')) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Beat Up + Justified combo.', tip: 'Proc Justified 4 times by hitting your own teammate with Beat Up.', icon: '⚔️', color: '#FF5722' });
+            }
+
+            // TR Imprison (on the same pokemon)
+            const hasTRImprison = activeMons.some(p => {
+                const moves = p.moves.map(m => m.toLowerCase());
+                return moves.includes('trick room') && moves.includes('imprison');
+            });
+            if (hasTRImprison) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Trick Room Imprison strategy.', tip: 'Allows you to securely block opponents from setting up OR reversing Trick Room.', icon: '🚫', color: '#E91E63' });
+            }
+
+            // Status Abuse
+            const hasStatusAbuse = activeMons.some(p => {
+                const abil = (p.ability || '').toLowerCase();
+                const item = (p.item || '').toLowerCase();
+                return ['guts', 'poison heal', 'toxic boost', 'flare boost', 'marvel scale', 'quick feet'].includes(abil) && 
+                       (item === 'flame orb' || item === 'toxic orb');
+            });
+            if (hasStatusAbuse) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Status Orb Abuse detected.', tip: 'Self-inflicting status to activate massive ability buffs while being immune to spore.', icon: '🔥', color: '#FF5722' });
             }
 
             if (issues.length === 0) {
@@ -2400,13 +2464,16 @@
                 let hasHazards = allRoles.includes('Hazard Setter');
                 let isSetup = allRoles.includes('Setup Sweeper');
                 let isWeatherTerrain = allRoles.includes('Weather Setter') || allRoles.includes('Terrain Setter');
-                
-                let playstyle = 'Balanced';
-                if (isSetup || hasRedirection) playstyle = 'Hyper-Offensive Setup';
-                if (allRoles.includes('Trick Room Setter')) playstyle = 'Trick Room';
-                if (isWeatherTerrain) playstyle = 'Weather/Terrain-centric';
-                if (allRoles.includes('Physical Wall') && allRoles.includes('Special Wall')) playstyle = 'Bulky Offense';
-                if (allRoles.includes('Phazer/Hazer') && hasHazards) playstyle = 'Stall & Hazard-Stacking';
+                let hasHeavyOffense = allRoles.includes('Setup Sweeper') || allRoles.includes('Wallbreaker') || allRoles.includes('Sweeper');
+                let hasHeavyDefense = allRoles.includes('Physical Wall') || allRoles.includes('Special Wall');
+
+                let playstyle = 'Balance';
+                if (hasHeavyOffense && !hasHeavyDefense) playstyle = 'HO (Hyper Offense)';
+                if (hasHeavyOffense && hasHeavyDefense) playstyle = 'BO (Bulky Offense)';
+                if (isSetup || hasRedirection) playstyle = 'Setup-centric HO';
+                if (allRoles.includes('Trick Room Setter')) playstyle = 'Hard Trick Room';
+                if (isWeatherTerrain) playstyle = 'Weather/Terrain Abuse';
+                if (allRoles.includes('Phazer/Hazer') && hasHazards && !hasHeavyOffense) playstyle = 'Hard Stall';
 
                 // Paragraph 1: Identity & Core Synergy
                 let p1 = `At its core, this appears to be a highly orchestrated <strong>${playstyle}</strong> team. `;
@@ -2419,20 +2486,27 @@
                         p1 += `The roster is incredibly layered, stacking multiple elite meta concepts like the ${synNames.slice(0, -1).join(', ')} and the ${synNames[synNames.length - 1]}.`;
                     }
                 } else {
-                    p1 += `Rather than relying on pre-packaged meta combos, this roster leans on raw individual flexibility and custom strategic matchups.`;
+                    if (playstyle === 'Balance' || playstyle === 'BO (Bulky Offense)') {
+                        p1 += `This roster leans heavily into a "Goodstuffs" mentality—relying on the raw individual viability and flexibility of each Pokemon rather than pre-packaged meta combos.`;
+                    } else {
+                        p1 += `Rather than relying on pre-packaged meta combos, this roster leans on raw individual flexibility and custom strategic matchups.`;
+                    }
                 }
 
                 // Paragraph 2: The Sword (Win Conditions)
                 let offensiveMons = activeMons.filter((p, i) => roles[i].some(r => r.includes('Sweeper') || r.includes('Wallbreaker') || r.includes('Revenge Killer') || r.includes('Restricted Legendary')));
+                let sweepers = activeMons.filter((p, i) => roles[i].some(r => r.includes('Sweeper')));
+                let breakers = activeMons.filter((p, i) => roles[i].some(r => r.includes('Wallbreaker')));
+                
                 let p2 = '';
                 if (offensiveMons.length > 0) {
                     let offNames = offensiveMons.map(p => p.species);
                     let offList = offNames.length > 1 ? `${offNames.slice(0, -1).join(', ')} and ${offNames[offNames.length - 1]}` : offNames[0];
-                    p2 = `<strong>The Win Conditions:</strong> Offensively, the team funnels its momentum into <strong>${offList}</strong>. `;
-                    if (isSetup) p2 += `With setup sweepers present, the goal is to clear threats or force switches, creating that one crucial turn to boost stats and sweep. `;
-                    if (allRoles.includes('Wallbreaker')) p2 += `Dedicated wallbreakers are deployed to punch holes in bulky defensive cores, softening targets for late-game cleaners.`;
+                    p2 = `<strong>Primary WinCons:</strong> Offensively, the team funnels its momentum into <strong>${offList}</strong>. `;
+                    if (breakers.length > 0) p2 += `Early-game, it uses its dedicated Wallbreakers to punch holes through opposing defensive cores. `;
+                    if (sweepers.length > 0) p2 += `Once the opposing checks are chipped or eliminated, the Late-game Cleaners can boost their stats and sweep the remaining board. `;
                 } else {
-                    p2 = `<strong>The Win Conditions:</strong> The team lacks traditional heavy hitters, suggesting a "death by a thousand cuts" stall or chip-damage approach.`;
+                    p2 = `<strong>Primary WinCons:</strong> The team lacks traditional heavy hitters, suggesting a "death by a thousand cuts" Stall approach relying on residual/chip damage.`;
                 }
 
                 // Paragraph 3: The Shield (Defensive Backbone & Utility)
@@ -2441,29 +2515,29 @@
                 if (defensiveMons.length > 0) {
                     let defNames = defensiveMons.map(p => p.species);
                     let defList = defNames.length > 1 ? `${defNames.slice(0, -1).join(', ')} and ${defNames[defNames.length - 1]}` : defNames[0];
-                    p3 = `<strong>The Defensive Backbone:</strong> To absorb incoming pressure, the team relies heavily on <strong>${defList}</strong>. `;
-                    if (allRoles.includes('Cleric/Healer')) p3 += `Healing utility keeps these anchors healthy across prolonged matches. `;
-                    if (allRoles.includes('Intimidate Support')) p3 += `Intimidate cycling provides a massive buffer against physical attackers. `;
+                    p3 = `<strong>The Defensive Backbone:</strong> To absorb incoming pressure, the team utilizes a defensive core anchored by <strong>${defList}</strong>. `;
+                    if (allRoles.includes('Cleric/Healer')) p3 += `Clerical utility provides wish-passing and status-clearing to ensure longevity. `;
+                    if (allRoles.includes('Intimidate Support')) p3 += `Intimidate cycling offers a massive buffer, neutering physical threats upon switch-in. `;
                 } else {
-                    p3 = `<strong>The Defensive Backbone:</strong> This squad essentially foregoes dedicated walls, embracing a "kill or be killed" mentality that demands perfect positioning.`;
+                    p3 = `<strong>The Defensive Backbone:</strong> This squad essentially foregoes dedicated walls. It embraces a "kill or be killed" HO mentality that demands perfect offensive reads.`;
                 }
 
                 // Paragraph 4: Momentum & Positioning
                 let p4 = `<strong>Momentum & Control:</strong> `;
                 let positionTools = [];
-                if (hasSpeedControl) positionTools.push('potent speed control');
+                if (hasSpeedControl) positionTools.push('Speed Control (Tailwind/Trick Room)');
                 if (hasFakeOut) positionTools.push('immediate Fake Out pressure');
-                if (hasRedirection) positionTools.push('strategic Redirection');
+                if (hasRedirection) positionTools.push('tactical Redirection (Follow Me/Rage Powder)');
                 if (hasPivots) positionTools.push('VoltTurn pivoting');
                 if (hasHazards) positionTools.push('entry hazards');
 
                 if (positionTools.length > 0) {
                     let toolList = positionTools.length > 1 ? `${positionTools.slice(0, -1).join(', ')} and ${positionTools[positionTools.length - 1]}` : positionTools[0];
                     p4 += `Mastery of this team hinges on utilizing its <strong>${toolList}</strong>. `;
-                    if (hasPivots) p4 += `Pivoting constantly forces unfavorable matchups for the opponent while keeping your win conditions safe. `;
-                    if (hasSpeedControl && hasFakeOut) p4 += `The combination of Fake Out and speed manipulation makes it extremely easy to dictate the pacing and steal early KOs.`;
+                    if (hasPivots) p4 += `The VoltTurn chain maintains offensive momentum, forcing unfavorable matchups while bringing WinCons in unharmed. `;
+                    if (hasSpeedControl && hasFakeOut) p4 += `Combining Fake Out with Speed Control makes it extremely easy to dictate board-positioning and steal early KOs in VGC formats.`;
                 } else {
-                    p4 += `The team lacks traditional positioning tools like speed control, pivoting, or redirection. Every switch is a hard read, making this a high-risk, high-reward composition.`;
+                    p4 += `The team lacks standard positioning tools like Speed Control, VoltTurn pivoting, or Redirection. Every switch is a hard read, making this a high-risk composition that requires precise execution.`;
                 }
 
                 strategyText.innerHTML = `
