@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Competitive Pokemon Builds Library: Browse and export top-tier strategies for Scarlet and Violet.">
+    <meta name="description"
+        content="Competitive Pokemon Builds Library: Browse and export top-tier strategies for Scarlet and Violet.">
     <title>Competitive Builds | Pokemon Champions Guide</title>
-    
+
     <!-- Preload critical datasets -->
     <link rel="preload" href="../assets/builds.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
@@ -289,10 +290,42 @@
         function handleSpriteError(img, species, shiny) {
             if (!species || img.dataset.fallback === 'true') return;
             img.dataset.fallback = 'true'; // Prevent infinite loops
+            img.classList.remove('mega-toggle');
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const folder = shiny ? 'xy-shiny' : 'xy';
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
         }
+
+        function getMegaSpriteUrl(p) {
+            if (!p || !p.species || !p.item) return null;
+            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+            if (it === 'eviolite' || it === 'meteorite') return null;
+
+            let suffix = '-mega';
+            if (it.endsWith('itex')) suffix = '-megax';
+            else if (it.endsWith('itey')) suffix = '-megay';
+
+            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+            const base = p.shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
+        }
+
+        setInterval(() => {
+            document.querySelectorAll('img.mega-toggle').forEach(img => {
+                if (img.dataset.fallback === 'true') {
+                    img.classList.remove('mega-toggle');
+                    return;
+                }
+                if (img.dataset.currentSrc !== 'mega') {
+                    img.src = img.dataset.mega;
+                    img.dataset.currentSrc = 'mega';
+                } else {
+                    img.src = img.dataset.base;
+                    img.dataset.currentSrc = 'base';
+                }
+            });
+        }, 3000);
 
         function getSpriteUrl(p) {
             if (!p || !p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
@@ -345,7 +378,7 @@
                 species: '', item: '', ability: '', level: 50, shiny: false,
                 tera: 'Normal', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
                 ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-                nature: 'Serious', moves: []
+                nature: 'Serious', moves: [], nickname: '', gender: ''
             };
             if (lines.length === 0) return slot;
 
@@ -365,12 +398,12 @@
                         const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
                         if (match) {
                             let key = match[2].toLowerCase();
-                            if(key === 'hp') key = 'hp';
-                            else if(key === 'atk') key = 'atk';
-                            else if(key === 'def') key = 'def';
-                            else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
-                            else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
-                            else if(key === 'spe' || key === 'speed') key = 'spe';
+                            if (key === 'hp') key = 'hp';
+                            else if (key === 'atk') key = 'atk';
+                            else if (key === 'def') key = 'def';
+                            else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                            else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                            else if (key === 'spe' || key === 'speed') key = 'spe';
                             if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(match[1]);
                         }
                     });
@@ -379,12 +412,12 @@
                         const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
                         if (match) {
                             let key = match[2].toLowerCase();
-                            if(key === 'hp') key = 'hp';
-                            else if(key === 'atk') key = 'atk';
-                            else if(key === 'def') key = 'def';
-                            else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
-                            else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
-                            else if(key === 'spe' || key === 'speed') key = 'spe';
+                            if (key === 'hp') key = 'hp';
+                            else if (key === 'atk') key = 'atk';
+                            else if (key === 'def') key = 'def';
+                            else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                            else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                            else if (key === 'spe' || key === 'speed') key = 'spe';
                             if (slot.ivs[key] !== undefined) slot.ivs[key] = parseInt(match[1]);
                         }
                     });
@@ -435,9 +468,12 @@
                 `;
             }).join('');
 
+            const spriteUrl = getSpriteUrl(p);
+            const megaUrl = getMegaSpriteUrl(p);
+
             card.innerHTML = `
                 <div class="card-sprite-area">
-                    <img class="premium-sprite" src="${getSpriteUrl(p)}" alt="${p.species}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                    <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     <div class="tera-badge">
                         <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
                         <span style="font-size:0.55rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
@@ -520,7 +556,7 @@
             if (build) {
                 const titleEl = document.getElementById('synergy-title');
                 if (titleEl) titleEl.innerText = `STRATEGIC SYNERGY FOR ${build.pokemon.toUpperCase()}`;
-                
+
                 renderSynergy(build.synergy);
                 const container = document.getElementById('synergy-container');
                 container.style.display = 'block';

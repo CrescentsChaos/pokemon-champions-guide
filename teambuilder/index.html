@@ -618,33 +618,45 @@
             <!-- Team Analysis Section -->
             <div id="analysis-view" style="display: none; margin-top: 20px;">
                 <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 5px;">STRATEGIC INSIGHTS</h2>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of your team's coverage, roles, and synergy.</p>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of
+                    your team's coverage, roles, and synergy.</p>
 
                 <!-- Strategy Overview AI Report -->
-                <div class="analysis-card" id="strategy-overview-card" style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
-                    <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
+                <div class="analysis-card" id="strategy-overview-card"
+                    style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
+                    <h3
+                        style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
                         <span style="font-size: 1.2rem;">🧠</span> Strategy Overview
                     </h3>
-                    <p id="strategy-overview-text" style="font-size: 0.85rem; color: #ddd; line-height: 1.6; margin-top: 15px;"></p>
+                    <p id="strategy-overview-text"
+                        style="font-size: 0.85rem; color: #ddd; line-height: 1.6; margin-top: 15px;"></p>
                 </div>
 
                 <div class="analysis-grid">
                     <!-- Left: Coverage & Synergy -->
                     <div style="display: flex; flex-direction: column; gap: 25px;">
                         <div class="analysis-card">
-                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-red);">Offensive Coverage</h3>
-                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">How many Pokemon can hit each type super effectively.</p>
+                            <h3
+                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-red);">
+                                Offensive Coverage</h3>
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">How many Pokemon can hit each
+                                type super effectively.</p>
                             <div class="type-badge-grid" id="offensive-coverage"></div>
                         </div>
 
                         <div class="analysis-card">
-                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #2196F3;">Defensive Weaknesses</h3>
-                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Cumulative team weaknesses to each attacking type.</p>
+                            <h3
+                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #2196F3;">
+                                Defensive Weaknesses</h3>
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Cumulative team weaknesses to
+                                each attacking type.</p>
                             <div class="type-badge-grid" id="defensive-coverage"></div>
                         </div>
 
                         <div class="analysis-card">
-                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #4CAF50;">Team Synergy</h3>
+                            <h3
+                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #4CAF50;">
+                                Team Synergy</h3>
                             <div id="synergy-insights" style="margin-top: 20px;"></div>
                         </div>
                     </div>
@@ -652,12 +664,18 @@
                     <!-- Right: Roles & Archetypes -->
                     <div style="display: flex; flex-direction: column; gap: 25px;">
                         <div class="analysis-card">
-                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #FF9800;">Pokemon Roles</h3>
-                            <div id="pokemon-roles" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;"></div>
+                            <h3
+                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #FF9800;">
+                                Pokemon Roles</h3>
+                            <div id="pokemon-roles"
+                                style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;"></div>
                         </div>
 
-                        <div class="analysis-card" style="background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.4)); border-color: rgba(255, 51, 51, 0.2);">
-                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Move Diversity</h3>
+                        <div class="analysis-card"
+                            style="background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.4)); border-color: rgba(255, 51, 51, 0.2);">
+                            <h3
+                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">
+                                Move Diversity</h3>
                             <div id="move-diversity" style="margin-top: 20px;"></div>
                         </div>
                     </div>
@@ -712,7 +730,8 @@
                             <span class="input-label">Item</span>
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <img src="" id="item-sprite-preview"
-                                    style="width: 32px; height: 32px; object-fit: contain; display: none;" onerror="handleItemError(this, this.dataset.item)">
+                                    style="width: 32px; height: 32px; object-fit: contain; display: none;"
+                                    onerror="handleItemError(this, this.dataset.item)">
                                 <input type="text" id="item-input" class="builder-input" placeholder="No Item">
                             </div>
                         </div>
@@ -1049,6 +1068,7 @@
                     }) || {};
 
                     const sprite = getSpriteUrl(p);
+                    const megaSprite = getMegaSpriteUrl(p);
                     const itemSprite = getItemSpriteUrl(p.item);
                     const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
                     const t2 = (dbRef.Type_2 || '').toLowerCase();
@@ -1108,7 +1128,7 @@
                     card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                            <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
@@ -1312,10 +1332,43 @@
         function handleSpriteError(img, species, shiny) {
             if (!species || img.dataset.fallback === 'true') return;
             img.dataset.fallback = 'true'; // Prevent infinite loops
+            img.classList.remove('mega-toggle');
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const folder = shiny ? 'xy-shiny' : 'xy';
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
         }
+
+        function getMegaSpriteUrl(p) {
+            if (!p.species || !p.item) return null;
+            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+            if (it === 'eviolite' || it === 'meteorite') return null;
+
+            let suffix = '-mega';
+            if (it.endsWith('itex')) suffix = '-megax';
+            else if (it.endsWith('itey')) suffix = '-megay';
+
+            let clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+            if (clean === 'zacian-crowned') clean = 'zacian-crowned';
+            const base = p.shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
+        }
+
+        setInterval(() => {
+            document.querySelectorAll('img.mega-toggle').forEach(img => {
+                if (img.dataset.fallback === 'true') {
+                    img.classList.remove('mega-toggle');
+                    return;
+                }
+                if (img.dataset.currentSrc !== 'mega') {
+                    img.src = img.dataset.mega;
+                    img.dataset.currentSrc = 'mega';
+                } else {
+                    img.src = img.dataset.base;
+                    img.dataset.currentSrc = 'base';
+                }
+            });
+        }, 3000);
 
         function getSpriteUrl(p) {
             if (!p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
@@ -1350,22 +1403,42 @@
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0
             };
 
-            speciesIn.value = p.species;
-            document.getElementById('nickname-input').value = p.nickname;
-            document.getElementById('item-input').value = p.item;
-            document.getElementById('ability-input').value = p.ability;
-            document.getElementById('tera-input').value = p.tera;
+            speciesIn.value = p.species || '';
+            document.getElementById('nickname-input').value = p.nickname || '';
+            document.getElementById('item-input').value = p.item || '';
+            document.getElementById('ability-input').value = p.ability || '';
+            document.getElementById('tera-input').value = p.tera || '';
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
-            document.getElementById('gender-input').value = p.gender;
+            document.getElementById('gender-input').value = p.gender || '';
             levelIn.value = p.level;
             natureIn.value = p.nature;
             const bigSprite = document.getElementById('current-big-sprite');
+            const megaUrl = getMegaSpriteUrl(p);
+            const baseSprite = getSpriteUrl(p);
             bigSprite.dataset.fallback = 'false';
-            bigSprite.src = getSpriteUrl(p);
+            bigSprite.src = baseSprite;
+            bigSprite.className = megaUrl ? 'mega-toggle' : '';
+            if (megaUrl) {
+                bigSprite.dataset.base = baseSprite;
+                bigSprite.dataset.mega = megaUrl;
+                bigSprite.dataset.currentSrc = 'base';
+            } else {
+                bigSprite.dataset.mega = '';
+            }
 
             const displayName = p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty');
             document.getElementById(`tab-name-${currentSlot}`).textContent = displayName;
-            document.getElementById(`tab-sprite-${currentSlot}`).src = getSpriteUrl(p);
+            
+            const tabSprite = document.getElementById(`tab-sprite-${currentSlot}`);
+            tabSprite.src = baseSprite;
+            tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite'; // Assuming it might have a class, but we don't have one globally. It didn't have one so we just set it. Wait, I'll just set mega-toggle.
+            if (megaUrl) {
+                tabSprite.dataset.base = baseSprite;
+                tabSprite.dataset.mega = megaUrl;
+                tabSprite.dataset.currentSrc = 'base';
+            } else {
+                tabSprite.dataset.mega = '';
+            }
 
             const itemSpr = document.getElementById('item-sprite-preview');
             if (p.item) {
@@ -1633,7 +1706,7 @@
                     species: '', item: '', ability: '', level: 50, shiny: false,
                     tera: '', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
                     ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-                    nature: 'Serious', moves: []
+                    nature: 'Serious', moves: [], nickname: '', gender: ''
                 };
                 const head = lines[0];
                 const itemSplit = head.split('@');
@@ -1678,12 +1751,12 @@
                             const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
                             if (match) {
                                 let key = match[2].toLowerCase();
-                                if(key === 'hp') key = 'hp';
-                                else if(key === 'atk') key = 'atk';
-                                else if(key === 'def') key = 'def';
-                                else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
-                                else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
-                                else if(key === 'spe' || key === 'speed') key = 'spe';
+                                if (key === 'hp') key = 'hp';
+                                else if (key === 'atk') key = 'atk';
+                                else if (key === 'def') key = 'def';
+                                else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                                else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                                else if (key === 'spe' || key === 'speed') key = 'spe';
                                 if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(match[1]);
                             }
                         });
@@ -1692,12 +1765,12 @@
                             const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
                             if (match) {
                                 let key = match[2].toLowerCase();
-                                if(key === 'hp') key = 'hp';
-                                else if(key === 'atk') key = 'atk';
-                                else if(key === 'def') key = 'def';
-                                else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
-                                else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
-                                else if(key === 'spe' || key === 'speed') key = 'spe';
+                                if (key === 'hp') key = 'hp';
+                                else if (key === 'atk') key = 'atk';
+                                else if (key === 'def') key = 'def';
+                                else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                                else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                                else if (key === 'spe' || key === 'speed') key = 'spe';
                                 if (slot.ivs[key] !== undefined) slot.ivs[key] = parseInt(match[1]);
                             }
                         });
@@ -1966,7 +2039,7 @@
                         roundedRect(cx + 14, moveY - 1, leftColW, 18, 4);
                         ctx.fillStyle = 'rgba(0,0,0,0.25)';
                         ctx.fill();
-                        
+
                         // Type dot
                         ctx.beginPath();
                         ctx.arc(cx + 22, moveY + 8, 3, 0, Math.PI * 2);
@@ -2211,11 +2284,11 @@
             if (stats.spa > 150 && stats.spe > 130) roles.push('Special Sweeper');
             if (stats.atk > 180 || stats.spa > 180) roles.push('Wallbreaker');
             if (item === 'choice scarf') roles.push('Revenge Killer');
-            
+
             // Defense
             if (stats.hp > 180 && stats.def > 130) roles.push('Physical Wall');
             if (stats.hp > 180 && stats.spd > 130) roles.push('Special Wall');
-            
+
             // VGC & Utility
             if (hasMove(['fake out'])) roles.push('Fake Out Pressure');
             if (hasMove(['follow me', 'rage powder', 'ally switch'])) roles.push('Redirection');
@@ -2230,7 +2303,7 @@
             if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) roles.push('Disruptor');
             if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled', 'pollen puff'])) roles.push('Cleric/Healer');
             if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) roles.push('Phazer/Hazer');
-            
+
             // Weather/Terrain
             if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ability)) roles.push('Weather Setter');
             if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ability)) roles.push('Terrain Setter');
@@ -2255,7 +2328,7 @@
             synergyBox.innerHTML = '';
             moveBox.innerHTML = '';
 
-            Object.entries(off).sort((a,b) => b[1] - a[1]).forEach(([type, count]) => {
+            Object.entries(off).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
                 badge.className = 'type-badge';
                 badge.style.background = typeColors[type.toLowerCase()];
@@ -2264,7 +2337,7 @@
                 offBox.appendChild(badge);
             });
 
-            Object.entries(def).sort((a,b) => b[1] - a[1]).forEach(([type, count]) => {
+            Object.entries(def).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
                 badge.className = 'type-badge';
                 badge.style.background = typeColors[type.toLowerCase()];
@@ -2298,7 +2371,7 @@
                 const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
                 const ability = (p.ability || '').toLowerCase();
-                
+
                 Object.keys(TYPE_CHART).forEach(atkType => {
                     let eff = getEffectiveness(atkType, pTypes);
                     // Account for immunity abilities
@@ -2323,7 +2396,7 @@
                 } else if (count >= 2 && resistances[type] === 0) {
                     issues.push({ type, count, severity: 'medium', text: `Team lacks resistances to ${type} despite multiple weaknesses.` });
                 }
-                
+
                 // Positive defensive synergies
                 if (count <= 1 && resistances[type] >= 3) {
                     issues.push({ type, count, severity: 'synergy', text: `Excellent ${type} defense!`, tip: `Your team features ${resistances[type]} resistances/immunities to ${type} with almost no weaknesses.`, icon: '🛡️', color: '#4CAF50' });
@@ -2352,13 +2425,13 @@
             const hasPivotMove = allMovesArr.some(m => pivotMoves.includes(m));
 
             if (!hasPriority) {
-                 issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking Priority Moves.', tip: 'Priority (e.g., Sucker Punch, Extreme Speed) acts as emergency speed control.'});
+                issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking Priority Moves.', tip: 'Priority (e.g., Sucker Punch, Extreme Speed) acts as emergency speed control.' });
             }
             if (weaknessCounts['Rock'] >= 2 && !hasRemoval) {
-                 issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'Weak to Stealth Rock w/ no hazard removal.', tip: 'Add Defog or Rapid Spin to protect your weak members.'});
+                issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'Weak to Stealth Rock w/ no hazard removal.', tip: 'Add Defog or Rapid Spin to protect your weak members.' });
             }
             if (!hasPivotMove) {
-                 issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking momentum/pivoting moves.', tip: 'U-Turn or Volt Switch maintains offensive tempo.'});
+                issues.push({ type: 'Utility', count: 0, severity: 'low', text: 'Lacking momentum/pivoting moves.', tip: 'U-Turn or Volt Switch maintains offensive tempo.' });
             }
 
             // --- Famous Archetypes/Cores ---
@@ -2375,7 +2448,7 @@
             if (hasType('Fairy') && hasType('Dragon') && hasType('Steel')) {
                 issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Fantasy Core (Fairy/Dragon/Steel) detected.', tip: 'Very strong defensive backbone against most the meta.', icon: '🛡️', color: '#9c27b0' });
             }
-            
+
             const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee') || p.species.toLowerCase().includes('tapu lele'));
             if (hasIndeedee && allMovesArr.includes('expanding force')) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected.', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
@@ -2427,8 +2500,8 @@
             const hasStatusAbuse = activeMons.some(p => {
                 const abil = (p.ability || '').toLowerCase();
                 const item = (p.item || '').toLowerCase();
-                return ['guts', 'poison heal', 'toxic boost', 'flare boost', 'marvel scale', 'quick feet'].includes(abil) && 
-                       (item === 'flame orb' || item === 'toxic orb');
+                return ['guts', 'poison heal', 'toxic boost', 'flare boost', 'marvel scale', 'quick feet'].includes(abil) &&
+                    (item === 'flame orb' || item === 'toxic orb');
             });
             if (hasStatusAbuse) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Status Orb Abuse detected.', tip: 'Self-inflicting status to activate massive ability buffs while being immune to spore.', icon: '🔥', color: '#FF5722' });
@@ -2491,10 +2564,10 @@
             // --- Strategy Overview Generation ---
             const strategyCard = document.getElementById('strategy-overview-card');
             const strategyText = document.getElementById('strategy-overview-text');
-            
+
             if (activeMons.length > 0) {
                 strategyCard.style.display = 'block';
-                
+
                 // Identify main themes
                 let hasSpeedControl = allRoles.includes('Speed Control') || allRoles.includes('Trick Room Setter');
                 let hasRedirection = allRoles.includes('Redirection');
@@ -2536,7 +2609,7 @@
                 let offensiveMons = activeMons.filter((p, i) => roles[i].some(r => r.includes('Sweeper') || r.includes('Wallbreaker') || r.includes('Revenge Killer') || r.includes('Restricted Legendary')));
                 let sweepers = activeMons.filter((p, i) => roles[i].some(r => r.includes('Sweeper')));
                 let breakers = activeMons.filter((p, i) => roles[i].some(r => r.includes('Wallbreaker')));
-                
+
                 let p2 = '';
                 if (offensiveMons.length > 0) {
                     let offNames = offensiveMons.map(p => p.species);
