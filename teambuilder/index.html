@@ -116,19 +116,62 @@
             letter-spacing: 1px;
         }
 
-        .builder-input {
+        .builder-input, select {
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 10px 15px;
+            border-radius: 12px;
+            padding: 14px 20px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 1rem;
             outline: none;
-            transition: all 0.2s ease;
+            transition: var(--transition);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
-        .builder-input:focus { border-color: var(--primary-red); }
+        .builder-input:focus, select:focus { 
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
+        }
+
+        /* Nature Dropdown Styling */
+        select option {
+            background-color: #1a1a1c;
+            color: white;
+            padding: 12px;
+        }
+
+        #nature-input {
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Scaled Team Preview */
+        #team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .pokemon-config {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.6));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 2rem !important; /* Increased padding */
+            backdrop-filter: blur(15px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 380px; /* Better height for visibility */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pokemon-config:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
 
         .moves-grid {
             display: grid;
@@ -279,7 +322,7 @@
 
             <!-- Team Preview Grid -->
             <div id="team-view" style="display: none; margin-top: 20px;">
-                <div id="team-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div id="team-grid">
                     <!-- Team cards injected via JS -->
                 </div>
             </div>
@@ -456,14 +499,31 @@
         }));
 
         const natureMap = {
-            'Adamant': { pos: 'atk', neg: 'spa' }, 'Bashful': {}, 'Bold': { pos: 'def', neg: 'atk' },
-            'Brave': { pos: 'atk', neg: 'spe' }, 'Calm': { pos: 'spd', neg: 'atk' }, 'Careful': { pos: 'spd', neg: 'spa' },
-            'Docile': {}, 'Gentle': { pos: 'spd', neg: 'def' }, 'Hardy': {}, 'Hasty': { pos: 'spe', neg: 'def' },
-            'Impish': { pos: 'def', neg: 'spa' }, 'Jolly': { pos: 'spe', neg: 'spa' }, 'Lax': { pos: 'def', neg: 'spd' },
-            'Lonely': { pos: 'atk', neg: 'def' }, 'Mild': { pos: 'spa', neg: 'def' }, 'Modest': { pos: 'spa', neg: 'atk' },
-            'Naive': { pos: 'spe', neg: 'spd' }, 'Naughty': { pos: 'atk', neg: 'spd' }, 'Quiet': { pos: 'spa', neg: 'spe' },
-            'Quirky': {}, 'Rash': { pos: 'spa', neg: 'spd' }, 'Relaxed': { pos: 'def', neg: 'spe' },
-            'Sassy': { pos: 'spd', neg: 'spe' }, 'Serious': {}, 'Timid': { pos: 'spe', neg: 'atk' }
+            'Adamant': { pos: 'atk', neg: 'spa', color: '#f44336' },
+            'Bashful': { pos: '', neg: '', color: '#ddd' },
+            'Bold': { pos: 'def', neg: 'atk', color: '#ff9800' },
+            'Brave': { pos: 'atk', neg: 'spe', color: '#f44336' },
+            'Calm': { pos: 'spd', neg: 'atk', color: '#ffeb3b' },
+            'Careful': { pos: 'spd', neg: 'spa', color: '#ffeb3b' },
+            'Docile': { pos: '', neg: '', color: '#ddd' },
+            'Gentle': { pos: 'spd', neg: 'def', color: '#ffeb3b' },
+            'Hardy': { pos: '', neg: '', color: '#ddd' },
+            'Hasty': { pos: 'spe', neg: 'def', color: '#00bcd4' },
+            'Impish': { pos: 'def', neg: 'spa', color: '#ff9800' },
+            'Jolly': { pos: 'spe', neg: 'spa', color: '#00bcd4' },
+            'Lax': { pos: 'def', neg: 'spd', color: '#ff9800' },
+            'Lonely': { pos: 'atk', neg: 'def', color: '#f44336' },
+            'Mild': { pos: 'spa', neg: 'def', color: '#9c27b0' },
+            'Modest': { pos: 'spa', neg: 'atk', color: '#9c27b0' },
+            'Naive': { pos: 'spe', neg: 'spd', color: '#00bcd4' },
+            'Naughty': { pos: 'atk', neg: 'spd', color: '#f44336' },
+            'Quiet': { pos: 'spa', neg: 'spe', color: '#9c27b0' },
+            'Quirky': { pos: '', neg: '', color: '#ddd' },
+            'Rash': { pos: 'spa', neg: 'spd', color: '#9c27b0' },
+            'Relaxed': { pos: 'def', neg: 'spe', color: '#ff9800' },
+            'Sassy': { pos: 'spd', neg: 'spe', color: '#ffeb3b' },
+            'Serious': { pos: '', neg: '', color: '#ddd' },
+            'Timid': { pos: 'spe', neg: 'atk', color: '#00bcd4' }
         };
 
         // DOM Elements
@@ -612,16 +672,15 @@
                     const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
                     const isPos = natureMap[p.nature].pos === s;
                     const isNeg = natureMap[p.nature].neg === s;
-                    const natureSuffix = isPos ? '+' : (isNeg ? '-' : '');
                     const color = isPos ? '#00ffcc' : (isNeg ? '#ff4d4d' : '#ddd');
                     
                     return `
-                        <div style="display:flex; align-items:center; gap:6px; font-size:0.6rem; margin-bottom:2px; height:12px;">
-                            <span style="width:20px; color:rgba(255,255,255,0.3); font-weight:900; font-family:monospace;">${statLabels[idx]}</span>
-                            <div style="flex:1; height:4px; background:rgba(0,0,0,0.4); border-radius:2px; overflow:hidden;">
-                                <div style="height:100%; width:${Math.min(100, (val/250)*100)}%; background:${statOrder[idx]}; border-radius:2px; box-shadow: 0 0 8px ${statOrder[idx]}aa;"></div>
+                        <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; margin-bottom:4px; height:18px;">
+                            <span style="width:30px; color:rgba(255,255,255,0.4); font-weight:900; font-family:monospace;">${statLabels[idx]}</span>
+                            <div style="flex:1; height:6px; background:rgba(0,0,0,0.4); border-radius:3px; overflow:hidden;">
+                                <div style="height:100%; width:${Math.min(100, (val/250)*100)}%; background:${statOrder[idx]}; border-radius:3px; box-shadow: 0 0 12px ${statOrder[idx]}aa;"></div>
                             </div>
-                            <span style="width:32px; text-align:right; font-weight:900; color:${color}; font-size:0.75rem; letter-spacing:-0.5px;">${val}</span>
+                            <span style="width:40px; text-align:right; font-weight:900; color:${color}; font-size:0.9rem; letter-spacing:-0.5px;">${val}</span>
                         </div>
                     `;
                 }).join('');
@@ -641,61 +700,63 @@
                 }).join('');
 
                 card.innerHTML = `
-                    <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <div style="position:relative; width:52px; height:52px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
-                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:22px; height:22px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
+                    <div style="display:flex; gap:16px; align-items:center; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <div style="position:relative; width:70px; height:70px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-6px; right:-6px; width:28px; height:28px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
-                            <div style="font-weight:900; font-size:0.95rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
-                                ${p.nickname ? `${p.nickname} <span style="font-size:0.75rem; opacity:0.6; font-weight:400;">(${p.species})</span>` : p.species}
+                            <div style="font-weight:900; font-size:1.2rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
+                                ${p.nickname ? `${p.nickname} <span style="font-size:0.85rem; opacity:0.6; font-weight:400;">(${p.species})</span>` : p.species}
                             </div>
-                            <div style="font-size:0.65rem; color:rgba(255,255,255,0.6); margin-top:2px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            <div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:4px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                                 ${p.item ? `Held: ${p.item}` : 'No Item'}
                             </div>
-                            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
-                                <div style="display:flex; gap:3px;">
-                                    <span style="background:${typeColors[t1]}; color:#fff; font-size:0.55rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t1.toUpperCase()}</span>
-                                    ${t2 ? `<span style="background:${typeColors[t2]}; color:#fff; font-size:0.55rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t2.toUpperCase()}</span>` : ''}
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                                <div style="display:flex; gap:4px;">
+                                    <span style="background:${typeColors[t1]}; color:#fff; font-size:0.65rem; padding:3px 8px; border-radius:5px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t1.toUpperCase()}</span>
+                                    ${t2 ? `<span style="background:${typeColors[t2]}; color:#fff; font-size:0.65rem; padding:3px 8px; border-radius:5px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t2.toUpperCase()}</span>` : ''}
                                 </div>
-                                <span style="font-size:0.6rem; color:rgba(255,255,255,0.4); font-weight:900; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
+                                <span style="font-size:0.75rem; color:rgba(255,255,255,0.4); font-weight:900; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
                             </div>
                         </div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; flex:1;">
+                    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:20px; flex:1; margin-top:10px;">
                         <div style="display:flex; flex-direction:column;">
-                            <div style="font-size:0.5rem; text-transform:uppercase; color:rgba(255,255,255,0.2); font-weight:900; margin-bottom:6px; letter-spacing:1px;">Core Moves</div>
-                            ${movesHtml}
+                            <div style="font-size:0.65rem; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:900; margin-bottom:8px; letter-spacing:1px;">Core Moves</div>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                ${movesHtml}
+                            </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; border-left:1px solid rgba(255,255,255,0.05); padding-left:10px;">
-                            <div style="font-size:0.5rem; text-transform:uppercase; color:rgba(255,255,255,0.2); font-weight:900; margin-bottom:6px; letter-spacing:1px;">Battle Stats</div>
+                        <div style="display:flex; flex-direction:column; border-left:1px solid rgba(255,255,255,0.1); padding-left:14px;">
+                            <div style="font-size:0.65rem; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:900; margin-bottom:8px; letter-spacing:1px;">Battle Stats</div>
                             ${statsHtml}
                         </div>
                     </div>
-                    <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between;">
-                        <div style="display:flex; gap:6px; align-items:center;">
+                    <div style="margin-top:auto; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; gap:10px; align-items:center;">
                             ${p.tera ? `
                                 <div style="
                                     background: linear-gradient(135deg, ${typeColors[p.tera.toLowerCase()]}ee, ${typeColors[p.tera.toLowerCase()]}88);
                                     color: #fff;
-                                    font-size: 0.52rem;
+                                    font-size: 0.65rem;
                                     font-weight: 900;
-                                    padding: 2px 10px;
-                                    border-radius: 6px;
+                                    padding: 3px 12px;
+                                    border-radius: 8px;
                                     box-shadow: 0 0 15px ${typeColors[p.tera.toLowerCase()]}66, inset 0 0 5px rgba(255,255,255,0.5);
                                     text-transform: uppercase;
                                     letter-spacing: 1px;
                                     border: 1px solid rgba(255,255,255,0.4);
                                     display: flex;
                                     align-items: center;
-                                    gap: 3px;
+                                    gap: 4px;
                                 ">
                                     <span style="filter: drop-shadow(0 0 2px white);">💎</span> ${p.tera}
                                 </div>
                             ` : ''}
-                            <span style="font-size:0.6rem; color:rgba(255,255,255,0.5); font-weight:800; text-transform:uppercase;">${p.nature}</span>
+                            <span style="font-size:0.8rem; color:${natureMap[p.nature].color}; font-weight:900; text-transform:uppercase; text-shadow: 0 0 10px ${natureMap[p.nature].color}44;">${p.nature}</span>
                         </div>
-                        <span style="font-size:0.6rem; color:rgba(255,255,255,0.2); font-weight:700; text-transform:uppercase;">${p.ability || 'No Ability'}</span>
+                        <span style="font-size:0.75rem; color:rgba(255,255,255,0.6); font-weight:800; text-transform:uppercase;">${p.ability || 'No Ability'}</span>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -722,7 +783,8 @@
             
             document.getElementById('overlay-title').textContent = 
                 type === 'species' ? 'Select Pokemon' : 
-                type === 'item' ? 'Select Item' : 'Select Move';
+                type === 'item' ? 'Select Item' : 
+                type === 'ability' ? 'Select Ability' : 'Select Move';
             
             updateSearchResults('');
         }
@@ -732,17 +794,77 @@
             let data = [];
             if (overlayTarget === 'species') data = allPokemon;
             else if (overlayTarget === 'item') data = allItems;
-            else data = allMoves;
+            else if (overlayTarget === 'ability') {
+                const p = team[currentSlot];
+                const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                
+                // Mapping for common competitive mons (eligible filtering)
+                const speciesAbilities = {
+                    'indeedeef': ['Psychic Surge', 'Own Tempo', 'Synchronize'],
+                    'indeedee': ['Inner Focus', 'Synchronize', 'Psychic Surge'],
+                    'pelipper': ['Drizzle', 'Keen Eye', 'Rain Dish'],
+                    'torkoal': ['Drought', 'White Smoke', 'Shell Armor'],
+                    'fluttermane': ['Protosynthesis'],
+                    'ironhands': ['Quark Drive'],
+                    'incineroar': ['Intimidate', 'Blaze'],
+                    'rillaboom': ['Grassy Surge', 'Overgrow'],
+                    'amoonguss': ['Regenerator', 'Effect Spore'],
+                    'urshifu': ['Unseen Fist'],
+                    'urshifurapidstrike': ['Unseen Fist'],
+                    'kingambit': ['Supreme Overlord', 'Defiant', 'Pressure'],
+                    'gholdengo': ['Good as Gold'],
+                    'dragonite': ['Multiscale', 'Inner Focus'],
+                    'ogerpon': ['Defiant'],
+                    'ogerponwellspring': ['Water Absorb'],
+                    'ogerponhearthflame': ['Mold Breaker'],
+                    'ogerponcornerstone': ['Sturdy'],
+                    'whimsicott': ['Prankster', 'Infiltrator', 'Chlorophyll'],
+                    'tornadus': ['Prankster', 'Defiant'],
+                    'landorus': ['Sand Force', 'Sheer Force'],
+                    'landorustherian': ['Intimidate'],
+                    'grimmsnarl': ['Prankster', 'Frisk', 'Pickpocket']
+                };
+
+                const eligible = speciesAbilities[species] || [];
+                const commonAbilities = [
+                    'Intimidate', 'Psychic Surge', 'Grassy Surge', 'Misty Surge', 'Electric Surge',
+                    'Levitate', 'Prankster', 'Regenerator', 'Swift Swim', 'Chlorophyll',
+                    'Sand Rush', 'Snow Cloak', 'Slush Rush', 'Magic Bounce', 'Shadow Tag',
+                    'Huge Power', 'Guts', 'Defiant', 'Competitive', 'Unnerve', 'Inner Focus',
+                    'Libero', 'Protean', 'Beast Boost', 'Soul-Heart', 'Teravolt', 'Turboblaze',
+                    'Multiscale', 'Sturdy', 'Focus Sash', 'Mold Breaker', 'Sheer Force',
+                    'Serene Grace', 'Iron Fist', 'Strong Jaw', 'Tough Claws', 'Adaptability',
+                    'Technician', 'Skill Link', 'No Guard', 'Lightning Rod', 'Storm Drain',
+                    'Water Absorb', 'Flash Fire', 'Volt Absorb', 'Sap Sipper', 'Clear Body',
+                    'Full Metal Body', 'Prism Armor', 'Mirror Armor', 'Unaware', 'Infiltrator',
+                    'Contrary', 'Solar Power', 'Drought', 'Drizzle', 'Sand Stream', 'Snow Warning'
+                ];
+
+                if (eligible.length > 0) {
+                    // Filter: Only show eligible or all if searching specifically
+                    if (!q) {
+                        data = eligible.map(n => ({ name: n, description: '✅ Eligible Ability', eligible: true }));
+                    } else {
+                        data = [...new Set([...eligible, ...commonAbilities])].map(n => ({
+                            name: n, 
+                            description: eligible.includes(n) ? '✅ Eligible Ability' : 'Common Ability',
+                            eligible: eligible.includes(n)
+                        }));
+                    }
+                } else {
+                    data = commonAbilities.map(n => ({ name: n, description: 'Common competitive ability.' }));
+                }
+            } else data = allMoves;
 
             const filtered = data.filter(x => 
                 (x.Name || x.name).toLowerCase().includes(q.toLowerCase())
-            ).slice(0, 100);
+            ).sort((a,b) => (b.eligible ? 1 : 0) - (a.eligible ? 1 : 0)).slice(0, 100);
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'search-item';
                 const name = item.Name || item.name;
-                card.innerHTML = `<div style="font-weight:900;">${name}</div>`;
+                card.innerHTML = `<div style="font-weight:900; ${item.eligible ? 'color: var(--primary-red);' : ''}">${name} ${item.eligible ? '⭐' : ''}</div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2||''}</div>`;
                 if (item.description) card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
                 
@@ -755,6 +877,7 @@
             const p = team[currentSlot];
             if (overlayTarget === 'species') p.species = name;
             else if (overlayTarget === 'item') p.item = name;
+            else if (overlayTarget === 'ability') p.ability = name;
             else {
                 const idx = overlayTarget.split('-')[1];
                 p.moves[idx] = name;
@@ -840,11 +963,33 @@
                 document.querySelector(`.ev-slider[data-stat="${key}"]`).value = ev;
                 document.querySelector(`.ev-input[data-stat="${key}"]`).value = ev;
                 document.getElementById(`fill-${key}`).style.width = (ev / 252 * 100) + '%';
+                
                 const act = calculateStat(base, p.ivs[key], ev, p.level, p.nature, key);
-                document.getElementById(`act-${key}`).textContent = act;
+                const actEl = document.getElementById(`act-${key}`);
+                actEl.textContent = act;
+                
+                // Stat Color highlighting for nature
+                const nature = natureMap[p.nature] || {};
+                if (nature.pos === key) actEl.style.color = '#00ffcc';
+                else if (nature.neg === key) actEl.style.color = '#ff4d4d';
+                else actEl.style.color = '#fff';
             });
+
+            // Nature Input Style Sync
+            natureIn.style.color = natureMap[p.nature].color;
+            natureIn.style.borderColor = natureMap[p.nature].color + '44';
+            natureIn.style.boxShadow = `0 0 15px ${natureMap[p.nature].color}22`;
             document.getElementById('rem-ev').textContent = 508 - totalEVs;
 
+            document.getElementById('item-input').value = p.item || '';
+            const itemSprite = document.getElementById('item-sprite-preview');
+            if (p.item) {
+                itemSprite.src = getItemSpriteUrl(p.item);
+                itemSprite.style.display = 'block';
+            } else {
+                itemSprite.style.display = 'none';
+            }
+            
             p.moves.forEach((m, i) => {
                 document.querySelector(`.move-in[data-idx="${i}"]`).value = m;
             });
@@ -852,10 +997,27 @@
 
         // Binding Search Overlays
         speciesIn.onclick = () => openSearch('species');
-        document.getElementById('item-input').onclick = () => openSearch('item');
+        document.getElementById('ability-input').onclick = () => openSearch('ability');
         document.querySelectorAll('.move-in').forEach(el => {
             el.onclick = (e) => openSearch(`move-${e.target.dataset.idx}`);
         });
+
+        // Manual Item Entry
+        const itemInput = document.getElementById('item-input');
+        itemInput.oninput = (e) => {
+            team[currentSlot].item = e.target.value;
+            const sprite = document.getElementById('item-sprite-preview');
+            if (e.target.value) {
+                sprite.src = getItemSpriteUrl(e.target.value);
+                sprite.style.display = 'block';
+            } else {
+                sprite.style.display = 'none';
+            }
+        };
+        itemInput.onfocus = () => {
+            // Optional: Show search if empty or on a specific trigger? 
+            // For now, let's keep it purely typable as requested.
+        };
 
         [document.getElementById('nickname-input'), document.getElementById('ability-input'), 
          document.getElementById('tera-input'), document.getElementById('shiny-input'), 

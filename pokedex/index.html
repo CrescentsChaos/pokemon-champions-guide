@@ -138,6 +138,18 @@
             }
         }
 
+        function handleSpriteError(img, name) {
+            const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            // First fallback: XY static sprite (more reliable than animated)
+            // Second fallback: Unown interrogation gif
+            if (!img.src.includes('xy')) {
+                img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
+            } else {
+                img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+            }
+            img.onerror = null; 
+        }
+
         function getSpriteUrl(name) {
             let clean = name.toLowerCase()
                 .replace(/ /g, '-')
@@ -178,7 +190,7 @@
             card.innerHTML = `
                 <span class="pokemon-number">#${String(pokemon.id).padStart(4, '0')}</span>
                 <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="pokemon-img" 
-                     onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'; this.onerror=null;">
+                     onerror="handleSpriteError(this, '${pokemon.Name}')">
                 <h3 style="color: white; font-size: 1.4rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">${pokemon.Name}</h3>
                 <div style="margin-bottom: 1.5rem;">
                     <span class="type-tag type-${pokemon.Type_1.toLowerCase()}">${pokemon.Type_1}</span>
@@ -241,7 +253,7 @@
                     <div class="modal-header-section">
                         <div class="modal-sprite-container">
                             <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="modal-sprite"
-                                 onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';">
+                                 onerror="handleSpriteError(this, '${pokemon.Name}')">
                         </div>
                         <h2 style="font-size: 2.5rem; color: white; margin-bottom: 0.5rem;">${pokemon.Name}</h2>
                         <p style="color: var(--primary-red); font-weight: 700; font-family: 'JetBrains Mono';">#${String(pokemon.id).padStart(4, '0')}</p>

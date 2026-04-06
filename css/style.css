@@ -105,23 +105,38 @@ nav {
     box-shadow: var(--accent-glow);
 }
 
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 3rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.8rem;
     transition: var(--transition);
     text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.header-action {
+    display: flex;
+    align-items: center;
 }
 
 .nav-links a:hover {
-    color: var(--primary-red);
-    text-shadow: var(--accent-glow);
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 /* Hero Section */
