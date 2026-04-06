@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Determine path prefix (more robust for file:// URLs)
     const isSub = window.location.pathname.toLowerCase().includes('guides/') || 
-                  window.location.pathname.toLowerCase().includes('pokedex/');
+                  window.location.pathname.toLowerCase().includes('pokedex/') ||
+                  window.location.pathname.toLowerCase().includes('teambuilder/');
     const prefix = isSub ? '../' : '';
 
     // Header Injection
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <nav class="nav-links">
                     <a href="${prefix}index.html">Home</a>
                     <a href="${prefix}pokedex/index.html">Pokedex</a>
+                    <a href="${prefix}teambuilder/index.html">Team Importer</a>
                     <a href="${prefix}guides/index.html">Guides</a>
                 </nav>
             </div>

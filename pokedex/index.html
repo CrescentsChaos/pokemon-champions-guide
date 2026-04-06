@@ -93,10 +93,21 @@
         </div>
     </section>
 
+    <!-- Pokemon Detail Modal -->
+    <div id="pokemon-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div id="modal-body">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
     <script src="../js/main.js"></script>
     <script>
         let allPokemon = [];
         let filteredPokemon = [];
+        let allMoves = [];
         const ITEMS_PER_PAGE = 24;
         let currentPage = 0;
         let isLoading = false;
@@ -105,11 +116,21 @@
         const searchInput = document.getElementById('pokedex-search');
         const sentinel = document.getElementById('sentinel');
         const loader = document.getElementById('loader');
+        const modal = document.getElementById('pokemon-modal');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.getElementById('close-modal');
 
         async function initPokedex() {
             try {
-                const response = await fetch('../assets/pokemon.json');
-                allPokemon = await response.json();
+                // Load Pokemon and Moves in parallel
+                const [pokeRes, movesRes] = await Promise.all([
+                    fetch('../assets/pokemon.json'),
+                    fetch('../assets/moves.json')
+                ]);
+                
+                allPokemon = await pokeRes.json();
+                allMoves = await movesRes.json();
+                
                 filteredPokemon = [...allPokemon];
                 loadMore();
             } catch (err) {
@@ -125,8 +146,9 @@
                 .replace(/:/g, '')
                 .replace(/%/g, '');
             
-            if (clean === 'giratina-altered') clean = 'giratina';
+            if (clean === 'giratina-altered') clean = 'giratina-origin';
             if (clean === 'mimikyu-disguised') clean = 'mimikyu';
+            if (clean.includes('noctowl')) clean = 'noctowl';
             
             return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
         }
@@ -134,6 +156,7 @@
         function createPokemonCard(pokemon) {
             const card = document.createElement('div');
             card.className = 'pokedex-card';
+            card.onclick = () => showPokemonDetails(pokemon);
             
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
@@ -168,6 +191,133 @@
             return card;
         }
 
+        function showPokemonDetails(pokemon) {
+            // Find moves of the same types
+            const compatibleMoves = allMoves.filter(m => 
+                (m.type && (m.type.toLowerCase() === pokemon.Type_1.toLowerCase() || 
+                (pokemon.Type_2 && m.type.toLowerCase() === pokemon.Type_2.toLowerCase())))
+            ).slice(0, 10); // Show top 10 relevant moves
+
+            const movesHtml = compatibleMoves.length > 0 ? compatibleMoves.map(m => `
+                <div class="move-card">
+                    <div class="move-header">
+                        <div class="move-name-wrap">
+                            <span class="move-name">${m.name}</span>
+                            <span class="move-type-badge type-${m.type ? m.type.toLowerCase() : 'normal'}">${m.type || 'Normal'}</span>
+                        </div>
+                        <div class="move-stats">
+                            <span class="move-stat-item">PWR: <b>${m.power || '--'}</b></span>
+                            <span class="move-stat-item">ACC: <b>${m.accuracy || '--'}</b></span>
+                            <span class="move-stat-item">PP: <b>${m.pp || '--'}</b></span>
+                        </div>
+                    </div>
+                    <p class="move-description">${m.short_description || 'No description available.'}</p>
+                </div>
+            `).join('') : '<p>No specific moves found for these types.</p>';
+
+            const stats = [
+                { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
+                { label: 'Attack', val: pokemon.Attack, class: 'atk', max: 190 },
+                { label: 'Defense', val: pokemon.Defense, class: 'def', max: 230 },
+                { label: 'Sp. Atk', val: pokemon['Sp.Atk'], class: 'spa', max: 194 },
+                { label: 'Sp. Def', val: pokemon['Sp.Def'], class: 'spd', max: 230 },
+                { label: 'Speed', val: pokemon.Speed, class: 'spe', max: 200 }
+            ];
+
+            const detailedStatsHtml = stats.map(s => `
+                <div class="modal-stat-row">
+                    <div class="modal-stat-header">
+                        <span>${s.label}</span>
+                        <span>${s.val}</span>
+                    </div>
+                    <div class="modal-stat-bar-container">
+                        <div class="modal-stat-bar stat-${s.class}" style="width: ${(s.val / s.max) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            modalBody.innerHTML = `
+                <div class="modal-grid">
+                    <div class="modal-header-section">
+                        <div class="modal-sprite-container">
+                            <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="modal-sprite"
+                                 onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';">
+                        </div>
+                        <h2 style="font-size: 2.5rem; color: white; margin-bottom: 0.5rem;">${pokemon.Name}</h2>
+                        <p style="color: var(--primary-red); font-weight: 700; font-family: 'JetBrains Mono';">#${String(pokemon.id).padStart(4, '0')}</p>
+                        
+                        <div class="modal-badge-group">
+                            <span class="type-tag type-${pokemon.Type_1.toLowerCase()}" style="font-size: 1rem; padding: 8px 20px;">${pokemon.Type_1}</span>
+                            ${pokemon.Type_2 ? `<span class="type-tag type-${pokemon.Type_2.toLowerCase()}" style="font-size: 1rem; padding: 8px 20px;">${pokemon.Type_2}</span>` : ''}
+                        </div>
+
+                        <div class="modal-badge-group" style="margin-top: 15px;">
+                            ${pokemon.Is_Legendary ? '<span class="special-badge badge-legendary">Legendary</span>' : ''}
+                            ${pokemon.Is_Mythical ? '<span class="special-badge badge-mythical">Mythical</span>' : ''}
+                            ${pokemon.Is_Pseudo_Legendary ? '<span class="special-badge badge-pseudo">Pseudo-Legendary</span>' : ''}
+                        </div>
+
+                        <div class="modal-info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Height</span>
+                                <span class="info-value">${pokemon['Height(m)']}m</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Weight</span>
+                                <span class="info-value">${pokemon['Weight{kg}']}kg</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Generation</span>
+                                <span class="info-value">${pokemon.Generation || '1'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Catch Rate</span>
+                                <span class="info-value">${pokemon.Capture_Rate || '--'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Egg Group 1</span>
+                                <span class="info-value">${pokemon.Egg_Group_1 || 'Unknown'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Base Happiness</span>
+                                <span class="info-value">${pokemon.Base_Happiness || '--'}</span>
+                            </div>
+                        </div>
+
+                        <div class="total-stats-pill">
+                            TOTAL STATS: ${pokemon.Total_Stats || 'N/A'}
+                        </div>
+                    </div>
+
+                    <div class="modal-details-section">
+                        <div class="modal-stats-section">
+                            <h3>BASE STATS</h3>
+                            ${detailedStatsHtml}
+                        </div>
+
+                        <div class="modal-moves-section" style="margin-top: 40px;">
+                            <h3>COMPATIBLE MOVES</h3>
+                            <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-bottom: 15px;">Moves of matching elemental types.</p>
+                            <div class="modal-moves-list">
+                                ${movesHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalHandler() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModal.onclick = closeModalHandler;
+        window.onclick = (e) => { if (e.target === modal) closeModalHandler(); };
+
         function loadMore() {
             if (isLoading) return;
             isLoading = true;
@@ -195,7 +345,7 @@
                 p.Name.toLowerCase().includes(query) || 
                 p.Type_1.toLowerCase().includes(query) || 
                 (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
-                (p.Generation && p.Generation.toLowerCase().includes(query))
+                (p.Generation && String(p.Generation).toLowerCase().includes(query))
             );
             grid.innerHTML = '';
             currentPage = 0;
