@@ -11,6 +11,7 @@
     <link rel="preload" href="../assets/moves.json" as="fetch" crossorigin="anonymous">
     
     <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         .builder-container {
             max-width: 1300px;
@@ -375,6 +376,11 @@
 
             <!-- Team Preview Grid -->
             <div id="team-view" style="display: none; margin-top: 20px;">
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <button onclick="downloadTeamImage()" id="download-btn" class="analyze-btn" style="background: var(--primary-red); border: none; padding: 12px 25px; font-weight: 800; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 51, 51, 0.2);">
+                        DOWNLOAD TEAM IMAGE 📸
+                    </button>
+                </div>
                 <div id="team-grid">
                     <!-- Team cards injected via JS -->
                 </div>
@@ -1334,6 +1340,49 @@
             });
             return team;
         }
+
+        window.downloadTeamImage = async () => {
+            const grid = document.getElementById('team-grid');
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerText;
+            
+            try {
+                btn.innerText = "CAPTURING... ⏳";
+                btn.disabled = true;
+                btn.style.opacity = "0.7";
+
+                const canvas = await html2canvas(grid, {
+                    backgroundColor: '#0f0f11', // Match theme background
+                    useCORS: true,             // Crucial for cross-domain sprites
+                    scale: 2,                  // High-quality export
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        // Ensure cloned elements are visible for capture
+                        const clonedGrid = clonedDoc.getElementById('team-grid');
+                        clonedGrid.style.display = 'grid';
+                    }
+                });
+
+                const link = document.createElement('a');
+                link.download = `team-preview-${Date.now()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                btn.innerText = "SUCCESS! ✅";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                }, 2000);
+
+            } catch (err) {
+                console.error("Capture Error:", err);
+                alert("Failed to capture image. Please try again or use a screenshot.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        };
 
         window.onclick = (e) => { if (e.target.className === 'overlay') e.target.style.display = 'none'; };
         init();
