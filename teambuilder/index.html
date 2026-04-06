@@ -1648,21 +1648,42 @@
                     slot.species = mainName;
                 }
 
-                lines.slice(1).forEach(line => {
-                    if (line.startsWith('Ability:')) slot.ability = line.split(':')[1].trim();
-                    else if (line.startsWith('Level:')) slot.level = parseInt(line.split(':')[1].trim());
-                    else if (line.startsWith('Shiny:')) slot.shiny = line.split(':')[1].trim().toLowerCase() === 'yes';
-                    else if (line.startsWith('Tera Type:')) slot.tera = line.split(':')[1].trim();
-                    else if (line.startsWith('EVs:')) {
-                        const parts = line.split(':')[1].split('/');
-                        parts.forEach(p => {
-                            const [val, s] = p.trim().split(' ');
-                            let key = s.toLowerCase();
-                            if (key === 'spa') key = 'spa'; if (key === 'spd') key = 'spd';
-                            if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(val);
+                lines.slice(1).forEach(l => {
+                    const line = l.trim();
+                    if (line.match(/^Ability\s*:/i)) slot.ability = line.split(':')[1].trim();
+                    else if (line.match(/^Level\s*:/i)) slot.level = parseInt(line.split(':')[1].trim());
+                    else if (line.match(/^Shiny\s*:/i)) slot.shiny = line.split(':')[1].trim().toLowerCase() === 'yes';
+                    else if (line.match(/^Tera Type\s*:/i)) slot.tera = line.split(':')[1].trim();
+                    else if (line.match(/^EVs\s*:/i)) {
+                        line.split(':')[1].split('/').forEach(p => {
+                            const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                            if (match) {
+                                let key = match[2].toLowerCase();
+                                if(key === 'hp') key = 'hp';
+                                else if(key === 'atk') key = 'atk';
+                                else if(key === 'def') key = 'def';
+                                else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                                else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                                else if(key === 'spe' || key === 'speed') key = 'spe';
+                                if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(match[1]);
+                            }
+                        });
+                    } else if (line.match(/^IVs\s*:/i)) {
+                        line.split(':')[1].split('/').forEach(p => {
+                            const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                            if (match) {
+                                let key = match[2].toLowerCase();
+                                if(key === 'hp') key = 'hp';
+                                else if(key === 'atk') key = 'atk';
+                                else if(key === 'def') key = 'def';
+                                else if(key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                                else if(key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                                else if(key === 'spe' || key === 'speed') key = 'spe';
+                                if (slot.ivs[key] !== undefined) slot.ivs[key] = parseInt(match[1]);
+                            }
                         });
                     }
-                    else if (line.includes('Nature')) slot.nature = line.split('Nature')[0].trim();
+                    else if (line.toLowerCase().endsWith('nature')) slot.nature = line.substring(0, line.length - 6).trim();
                     else if (line.startsWith('-')) slot.moves.push(line.substring(1).trim());
                 });
                 while (slot.moves.length < 4) slot.moves.push('');
