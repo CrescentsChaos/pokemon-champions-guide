@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pokemon Champions Guide Team Builder: Create, analyze, and save competitive Pokemon builds for Scarlet and Violet.">
     <title>Team Builder | Pokemon Champions Guide</title>
+    
+    <!-- Preload critical data to improve LCP/Performance -->
+    <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="../assets/moves.json" as="fetch" crossorigin="anonymous">
+    
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .builder-container {
@@ -302,8 +308,52 @@
             margin-bottom: 20px;
         }
 
-        @media (max-width: 1024px) {
-            .builder-main { grid-template-columns: 1fr; }
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .builder-container { padding: 5rem 20px; }
+            .builder-main { grid-template-columns: 1fr; gap: 20px; }
+            .stat-rows { padding: 25px; }
+        }
+
+        @media (max-width: 768px) {
+            .builder-container { padding: 4rem 15px; }
+            .config-header { gap: 15px; margin-bottom: 20px; }
+            .big-sprite-box { width: 120px; height: 120px; }
+            .big-sprite { width: 90px; height: 90px; }
+            .stat-row { grid-template-columns: 70px 35px 1fr 50px 50px; gap: 10px; }
+            .team-tab { min-width: 130px; padding: 8px 15px; }
+            .overlay-content { padding: 25px; width: 95%; }
+        }
+
+        @media (max-width: 600px) {
+            .import-export-row { flex-direction: column; gap: 10px; }
+            .config-header { flex-direction: column; align-items: center; text-align: center; }
+            .big-sprite-box { width: 100%; height: 180px; }
+            .big-sprite { width: 150px; height: 150px; }
+            
+            .stat-row { 
+                grid-template-columns: 1fr 1fr; 
+                grid-template-areas: "label actual" "slider slider" "base ev";
+                gap: 10px;
+                padding: 15px;
+                background: rgba(255,255,255,0.02);
+                border-radius: 12px;
+                margin-bottom: 15px;
+            }
+            .stat-label { grid-area: label; }
+            .actual-stat { grid-area: actual; }
+            .slider-wrap { grid-area: slider; margin: 5px 0; }
+            .base-val { grid-area: base; text-align: left; }
+            .ev-input { grid-area: ev; width: 60px !important; margin-left: auto; }
+            
+            .moves-grid { grid-template-columns: 1fr; }
+            .search-results { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+
+        @media (max-width: 400px) {
+            .builder-container { padding: 3rem 10px; }
+            .team-tab { min-width: 110px; padding: 6px 12px; font-size: 0.75rem; }
+            .tab-sprite { width: 30px; height: 30px; }
         }
     </style>
 </head>
@@ -316,7 +366,7 @@
                     <button id="main-import-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem;">IMPORT PASTE</button>
                     <button id="export-paste-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT PASTE</button>
                 </div>
-                <button onclick="toggleLibrary()" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY LIBRARY 📚</button>
+                <button onclick="toggleLibrary()" class="analyze-btn" aria-label="Open My Saved Builds Library" style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY LIBRARY 📚</button>
             </div>
 
             <div class="team-tabs" id="team-tabs">
@@ -496,7 +546,7 @@
         </div>
     </div>
 
-    <script src="../js/main.js"></script>
+    <script src="../js/main.js" defer></script>
     <script>
         // Data & State
         let allPokemon = [];
@@ -592,7 +642,9 @@
                 
                 const p = team[i];
                 tab.innerHTML = `
-                    <img src="${getSpriteUrl(p)}" class="tab-sprite" id="tab-sprite-${i}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                    <div class="preview-sprite-box">
+                        <img src="${getSpriteUrl(p)}" alt="${p.species}" class="preview-sprite" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                    </div>
                     <div class="tab-info">
                         <span class="tab-name" id="tab-name-${i}">${p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty')}</span>
                         <span class="tab-role">Slot ${i+1}</span>
@@ -1179,7 +1231,7 @@
                     <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4);">${item.timestamp}</div>
                     <div style="display: flex; gap: 5px; width: 100%; margin-top: 10px;">
                         <button onclick="loadFromLibrary(${item.id})" class="analyze-btn" style="flex: 1; padding: 5px; font-size: 0.7rem;">LOAD</button>
-                        <button onclick="deleteFromLibrary(${item.id})" class="analyze-btn" style="flex: 0; padding: 5px; font-size: 0.7rem; background: rgba(255,51,51,0.2); border-color: rgba(255,51,51,0.3);">🗑️</button>
+                        <button onclick="deleteFromLibrary(${item.id})" class="analyze-btn" aria-label="Delete this build" style="flex: 0; padding: 5px; font-size: 0.7rem; background: rgba(255,51,51,0.2); border-color: rgba(255,51,51,0.3);">🗑️</button>
                     </div>
                 `;
                 grid.appendChild(card);

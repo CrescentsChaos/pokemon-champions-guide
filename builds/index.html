@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Competitive Pokemon Builds Library: Browse and export top-tier strategies for Scarlet and Violet.">
     <title>Competitive Builds | Pokemon Champions Guide</title>
+    
+    <!-- Preload critical datasets -->
+    <link rel="preload" href="../assets/builds.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
+
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .builds-container {
@@ -389,7 +395,7 @@
 
             card.innerHTML = `
                 <div class="card-sprite-area">
-                    <img class="premium-sprite" src="${getSpriteUrl(p)}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                    <img class="premium-sprite" src="${getSpriteUrl(p)}" alt="${p.species}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     <div class="tera-badge">
                         <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
                         <span style="font-size:0.6rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
