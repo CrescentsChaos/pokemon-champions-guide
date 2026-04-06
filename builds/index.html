@@ -470,6 +470,9 @@
 
             const build = allBuilds.find(b => b.id === id);
             if (build) {
+                const titleEl = document.getElementById('synergy-title');
+                if (titleEl) titleEl.innerText = `STRATEGIC SYNERGY FOR ${build.pokemon.toUpperCase()}`;
+                
                 renderSynergy(build.synergy);
                 const container = document.getElementById('synergy-container');
                 container.style.display = 'block';

@@ -312,8 +312,11 @@
     <section class="builder-container">
         <div class="container">
             <div class="import-export-row">
-                <button id="main-import-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem;">IMPORT PASTE</button>
-                <button id="export-paste-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT PASTE</button>
+                <div style="display: flex; gap: 10px;">
+                    <button id="main-import-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem;">IMPORT PASTE</button>
+                    <button id="export-paste-btn" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT PASTE</button>
+                </div>
+                <button onclick="toggleLibrary()" class="analyze-btn" style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY LIBRARY 📚</button>
             </div>
 
             <div class="team-tabs" id="team-tabs">
@@ -473,8 +476,22 @@
         <div class="overlay-content">
             <h2>Export PokePaste</h2>
             <textarea id="export-textarea" class="builder-input" style="height: 300px; margin-top: 20px;" readonly></textarea>
-            <div style="text-align: right; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button onclick="saveToLibrary()" class="analyze-btn" style="background: #2196F3;">SAVE TO LIBRARY</button>
                 <button onclick="copyExport()" class="analyze-btn">COPY TO CLIPBOARD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library Overlay -->
+    <div class="overlay" id="library-overlay">
+        <div class="overlay-content" style="max-width: 900px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>My Local Library</h2>
+                <button onclick="document.getElementById('library-overlay').style.display='none'" class="analyze-btn" style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE</button>
+            </div>
+            <div id="library-grid" class="search-results" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                <!-- Saved items injected here -->
             </div>
         </div>
     </div>
@@ -1107,6 +1124,96 @@
                 document.execCommand('copy');
                 alert('Paste copied to clipboard!');
             }
+        };
+
+        window.toggleLibrary = () => {
+            const lib = document.getElementById('library-overlay');
+            lib.style.display = lib.style.display === 'flex' ? 'none' : 'flex';
+            if (lib.style.display === 'flex') {
+                renderLibrary();
+            }
+        };
+
+        function saveToLibrary() {
+            const text = document.getElementById('export-textarea').value;
+            if (!text) return;
+            
+            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const p = team[currentSlot === -1 ? 0 : currentSlot]; // Get info from first slot if team view
+            
+            const entry = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString(),
+                pokemon: p.species || 'Unknown',
+                paste: text
+            };
+            
+            library.unshift(entry);
+            localStorage.setItem('pkm_library', JSON.stringify(library));
+            alert('Build saved to your local library!');
+        }
+
+        function renderLibrary() {
+            const grid = document.getElementById('library-grid');
+            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            grid.innerHTML = '';
+            
+            if (library.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.3); padding: 40px;">No saved builds found. Create a build and click "Save to Library" to see it here.</p>';
+                return;
+            }
+
+            library.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'search-item';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.alignItems = 'center';
+                card.style.gap = '10px';
+                
+                const pTemp = parsePaste(item.paste)[0];
+                
+                card.innerHTML = `
+                    <img src="${getSpriteUrl(pTemp)}" style="width: 80px; height: 80px; object-fit: contain;">
+                    <div style="font-weight: 800;">${item.pokemon.toUpperCase()}</div>
+                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4);">${item.timestamp}</div>
+                    <div style="display: flex; gap: 5px; width: 100%; margin-top: 10px;">
+                        <button onclick="loadFromLibrary(${item.id})" class="analyze-btn" style="flex: 1; padding: 5px; font-size: 0.7rem;">LOAD</button>
+                        <button onclick="deleteFromLibrary(${item.id})" class="analyze-btn" style="flex: 0; padding: 5px; font-size: 0.7rem; background: rgba(255,51,51,0.2); border-color: rgba(255,51,51,0.3);">🗑️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.loadFromLibrary = (id) => {
+            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const item = library.find(x => x.id === id);
+            if (!item) return;
+            
+            const importedTeam = parsePaste(item.paste);
+            if (importedTeam.length === 1) {
+                team[currentSlot === -1 ? 0 : currentSlot] = importedTeam[0];
+                if (currentSlot === -1) switchSlot(0);
+                else syncUI();
+            } else {
+                for (let i = 0; i < Math.min(importedTeam.length, 6); i++) {
+                    team[i] = importedTeam[i];
+                }
+                syncUI();
+            }
+            
+            document.getElementById('library-overlay').style.display = 'none';
+            setupTabs();
+            alert('Build loaded successfully!');
+        };
+
+        window.deleteFromLibrary = (id) => {
+            if (!confirm('Are you sure you want to delete this build from your library?')) return;
+            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const filtered = library.filter(x => x.id !== id);
+            localStorage.setItem('pkm_library', JSON.stringify(filtered));
+            renderLibrary();
         };
 
         function parsePaste(text) {
