@@ -274,18 +274,18 @@
             </div>
 
             <div class="team-tabs" id="team-tabs">
-                <!-- 6 pokemon slots -->
-                <div class="team-tab active" onclick="switchSlot(0)">
-                    <img src="https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif" class="tab-sprite" id="tab-sprite-0">
-                    <div class="tab-info">
-                        <span class="tab-name" id="tab-name-0">Empty</span>
-                        <span class="tab-role">Slot 1</span>
-                    </div>
-                </div>
-                <!-- Repeat for other slots -->
+                <!-- 6 pokemon slots (plus Team View) -->
             </div>
 
-            <div class="builder-main">
+            <!-- Team Preview Grid -->
+            <div id="team-view" style="display: none; margin-top: 30px;">
+                <div id="team-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <!-- Team cards injected via JS -->
+                </div>
+            </div>
+
+            <div class="builder-main" id="builder-view">
+
                 <!-- Left Column: Identity & Moves -->
                 <div class="pokemon-config">
                     <div class="config-header">
@@ -353,10 +353,10 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                         <span class="input-label" style="font-size: 1.2rem; color: white;">Base Stats & EV Spread</span>
                         <select id="nature-input" class="builder-input" style="width: 150px; background: rgba(255,51,51,0.1); border-color: var(--primary-red);">
-                            <option value="Serious">Adamant</option>
                             <!-- Natures loaded via JS -->
                         </select>
                     </div>
+
 
                     <div class="stat-row">
                         <span class="stat-label">HP</span><span class="base-val" id="base-hp">--</span>
@@ -486,6 +486,8 @@
         function setupTabs() {
             const container = document.getElementById('team-tabs');
             container.innerHTML = '';
+            
+            // Slots 1-6
             for(let i=0; i<6; i++) {
                 const tab = document.createElement('div');
                 tab.className = `team-tab ${i === currentSlot ? 'active' : ''}`;
@@ -502,15 +504,99 @@
                 `;
                 container.appendChild(tab);
             }
+
+            // Team View Tab
+            const teamTab = document.createElement('div');
+            teamTab.className = `team-tab ${currentSlot === -1 ? 'active' : ''}`;
+            teamTab.style.borderStyle = 'dashed';
+            teamTab.onclick = () => switchSlot(-1);
+            teamTab.innerHTML = `
+                <div class="tab-sprite" style="display:flex; align-items:center; justify-content:center; font-size:1.5rem;">📋</div>
+                <div class="tab-info">
+                    <span class="tab-name">TEAM VIEW</span>
+                    <span class="tab-role">Overview</span>
+                </div>
+            `;
+            container.appendChild(teamTab);
         }
 
         function switchSlot(idx) {
             currentSlot = idx;
-            Array.from(document.querySelectorAll('.team-tab')).forEach((t, i) => {
-                t.classList.toggle('active', i === idx);
-            });
-            syncUI();
+            setupTabs();
+            
+            if (idx === -1) {
+                document.getElementById('builder-view').style.display = 'none';
+                document.getElementById('team-view').style.display = 'block';
+                renderTeamPreview();
+            } else {
+                document.getElementById('builder-view').style.display = 'grid';
+                document.getElementById('team-view').style.display = 'none';
+                syncUI();
+            }
         }
+
+        function renderTeamPreview() {
+            const grid = document.getElementById('team-grid');
+            grid.innerHTML = '';
+            
+            team.forEach((p, i) => {
+                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === (p.species || '').toLowerCase()) || {};
+                const sprite = getSpriteUrl(p);
+                
+                const card = document.createElement('div');
+                card.className = 'pokemon-config fade-in';
+                card.style.cursor = 'pointer';
+                card.style.margin = '0';
+                card.onclick = () => switchSlot(i);
+                
+                let movesHtml = p.moves.map(m => `<div style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-bottom:2px;">• ${m || '---'}</div>`).join('');
+                
+                const stats = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+                const statLabels = ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'];
+                const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
+                
+                let statsHtml = stats.map((s, idx) => {
+                    const base = dbRef[keys[s]] || 0;
+                    const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                    const ev = p.evs[s];
+                    const natureSuffix = natureMap[p.nature].pos === s ? '+' : (natureMap[p.nature].neg === s ? '-' : '');
+                    return `
+                        <div style="display:flex; align-items:center; gap:8px; font-size:0.7rem; margin-bottom:2px;">
+                            <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
+                            <div style="flex:1; height:4px; background:rgba(255,255,255,0.05); border-radius:2px;">
+                                <div style="height:100%; border-radius:2px; background:var(--primary-red); opacity:0.6; width:${Math.min(100, (base/200)*100)}%;"></div>
+                            </div>
+                            <span style="width:30px; text-align:right; font-weight:800;">${val}${natureSuffix}</span>
+                            <span style="width:25px; text-align:right; color:rgba(255,255,255,0.3); font-size:0.6rem;">${ev || ''}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    <div style="display: flex; gap: 15px;">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <img src="${sprite}" style="width: 60px; height: 60px; object-fit: contain;">
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 800; font-size: 1rem; color: white;">${p.species || 'Empty Slot'}</div>
+                            <div style="font-size: 0.7rem; color: var(--primary-red); text-transform: uppercase;">Lvl ${p.level} • ${p.item || 'No Item'}</div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div>
+                            <div class="input-label" style="margin-bottom:8px;">Moves</div>
+                            ${movesHtml}
+                        </div>
+                        <div>
+                            <div class="input-label" style="margin-bottom:8px;">Stats</div>
+                            ${statsHtml}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
 
         function openSearch(type, currentVal) {
             overlayTarget = type;
@@ -572,17 +658,22 @@
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
             if (!base) return '--';
-            const evBonus = Math.floor(ev / 4);
+            const lvl = parseInt(level) || 50;
+            const evBonus = Math.floor(parseInt(ev || 0) / 4);
+            const ivVal = parseInt(iv || 31);
+            
             if (statKey === 'hp') {
-                if (base === 1) return 1;
-                return Math.floor(((2 * base + iv + evBonus) * level) / 100) + parseInt(level) + 10;
+                if (base === 1) return 1; // Shedinja
+                return Math.floor(((2 * base + ivVal + evBonus) * lvl) / 100) + lvl + 10;
             }
-            let val = Math.floor(((2 * base + iv + evBonus) * level) / 100) + 5;
-            const nature = natureMap[natureType];
+            
+            let val = Math.floor(((2 * base + ivVal + evBonus) * lvl) / 100) + 5;
+            const nature = natureMap[natureType] || {};
             if (nature.pos === statKey) val = Math.floor(val * 1.1);
             if (nature.neg === statKey) val = Math.floor(val * 0.9);
             return val;
         }
+
 
         function syncUI() {
             const p = team[currentSlot];
