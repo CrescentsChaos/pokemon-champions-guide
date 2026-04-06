@@ -262,23 +262,25 @@
             } catch (e) { console.error("Data load failed", e); }
         }
 
-        function handleSpriteError(img, name) {
-            const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-            img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
-            img.onerror = () => {
-                img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
-            };
+        function handleSpriteError(img, species, shiny) {
+            if (!species || img.dataset.fallback === 'true') return;
+            img.dataset.fallback = 'true'; // Prevent infinite loops
+            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const folder = shiny ? 'xy-shiny' : 'xy';
+            img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+        }
+
+        function getSpriteUrl(p) {
+            if (!p || !p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+            const base = p.shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
         }
 
         function getItemSpriteUrl(item) {
-            if (!item) return '';
-            let clean = item.toLowerCase().replace(/ /g, '-').replace(/'/g, '').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            const shortcuts = {
-                'choice-specs': 'choicespecs', 'choice-scarf': 'choicescarf', 'choice-band': 'choiceband',
-                'focus-sash': 'focussash', 'life-orb': 'lifeorb', 'sitrus-berry': 'sitrusberry',
-                'assault-vest': 'assaultvest', 'clear-amulet': 'clearamulet', 'covert-cloak': 'covertcloak'
-            };
-            return `https://play.pokemonshowdown.com/sprites/itemicons/${shortcuts[clean] || clean.replace(/-/g, '')}.png`;
+            if (!item || item.toLowerCase() === 'none') return '';
+            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
@@ -367,11 +369,9 @@
                 `;
             }).join('');
 
-            const spriteUrl = `https://play.pokemonshowdown.com/sprites/ani${p.shiny ? '-shiny' : ''}/${p.species.toLowerCase().replace(/ /g, '-')}.gif`;
-
             card.innerHTML = `
                 <div class="card-sprite-area">
-                    <img class="premium-sprite" src="${spriteUrl}" onerror="handleSpriteError(this, '${p.species}')">
+                    <img class="premium-sprite" src="${getSpriteUrl(p)}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     <div class="tera-badge">
                         <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
                         <span style="font-size:0.6rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
@@ -429,7 +429,8 @@
                 const p = parsePaste(build.build);
                 if (search && !p.species.toLowerCase().includes(search)) return;
 
-                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
@@ -474,7 +475,8 @@
                 
                 if (build) {
                     const p = parsePaste(build.build);
-                    const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
+                    const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
                     grid.appendChild(createTeamCard(p, dbRef, build));
                 } else {
                     grid.appendChild(createEmptyCard());

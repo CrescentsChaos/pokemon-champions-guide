@@ -638,7 +638,7 @@
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = (allPokemon || []).find(x => {
                     const n = (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                    return n === speciesSearch || n.includes(speciesSearch) || speciesSearch.includes(n);
+                    return n === speciesSearch;
                 }) || {};
 
                 const sprite = getSpriteUrl(p);
@@ -924,7 +924,8 @@
 
         function syncUI() {
             const p = team[currentSlot];
-            const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {
+            const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0
             };
 
