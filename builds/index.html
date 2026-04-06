@@ -303,8 +303,23 @@
 
         function getItemSpriteUrl(item) {
             if (!item || item.toLowerCase() === 'none') return '';
-            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
             return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+        }
+
+        function handleItemError(img, item) {
+            if (img.dataset.fallback === 'true' || !item) {
+                img.style.display = 'none';
+                return;
+            }
+            img.dataset.fallback = 'true';
+            if (item.toLowerCase().endsWith('ite')) {
+                const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
@@ -427,7 +442,7 @@
                         <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
                         <span style="font-size:0.55rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
                     </div>
-                    ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" style="position:absolute; bottom:10px; left:10px; width:30px; height:30px; filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));">` : ''}
+                    ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:10px; left:10px; width:30px; height:30px; filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));">` : ''}
                 </div>
 
                 <div style="padding:0 2px;">

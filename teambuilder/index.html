@@ -712,7 +712,7 @@
                             <span class="input-label">Item</span>
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <img src="" id="item-sprite-preview"
-                                    style="width: 32px; height: 32px; object-fit: contain; display: none;">
+                                    style="width: 32px; height: 32px; object-fit: contain; display: none;" onerror="handleItemError(this, this.dataset.item)">
                                 <input type="text" id="item-input" class="builder-input" placeholder="No Item">
                             </div>
                         </div>
@@ -1109,7 +1109,7 @@
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
                             <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
-                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
+                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
                             <div style="font-weight:900; font-size:1.1rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
@@ -1175,8 +1175,23 @@
 
         function getItemSpriteUrl(item) {
             if (!item) return '';
-            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
             return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+        }
+
+        function handleItemError(img, item) {
+            if (img.dataset.fallback === 'true' || !item) {
+                img.style.display = 'none';
+                return;
+            }
+            img.dataset.fallback = 'true';
+            if (item.toLowerCase().endsWith('ite')) {
+                const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
         }
 
 
@@ -1391,6 +1406,8 @@
             document.getElementById('item-input').value = p.item || '';
             const itemSprite = document.getElementById('item-sprite-preview');
             if (p.item) {
+                itemSprite.dataset.fallback = 'false';
+                itemSprite.dataset.item = p.item;
                 itemSprite.src = getItemSpriteUrl(p.item);
                 itemSprite.style.display = 'block';
             } else {
@@ -1414,6 +1431,8 @@
             team[currentSlot].item = e.target.value;
             const sprite = document.getElementById('item-sprite-preview');
             if (e.target.value) {
+                sprite.dataset.fallback = 'false';
+                sprite.dataset.item = e.target.value;
                 sprite.src = getItemSpriteUrl(e.target.value);
                 sprite.style.display = 'block';
             } else {
