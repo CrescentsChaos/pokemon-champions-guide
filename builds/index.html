@@ -390,8 +390,8 @@
                 if (!p.species.toLowerCase().includes(search)) return;
 
                 const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
-                const t1 = dbRef ? dbRef.Type1.toLowerCase() : 'normal';
-                const t2 = dbRef && dbRef.Type2 ? dbRef.Type2.toLowerCase() : null;
+                const t1 = dbRef ? (dbRef.Type_1 || 'Normal').toLowerCase() : 'normal';
+                const t2 = dbRef && dbRef.Type_2 ? dbRef.Type_2.toLowerCase() : null;
 
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
@@ -439,8 +439,8 @@
                 if (build) {
                     const p = parsePaste(build.build);
                     const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase());
-                    const t1 = dbRef ? dbRef.Type1.toLowerCase() : 'normal';
-                    const t2 = dbRef && dbRef.Type2 ? dbRef.Type2.toLowerCase() : null;
+                    const t1 = dbRef ? (dbRef.Type_1 || 'Normal').toLowerCase() : 'normal';
+                    const t2 = dbRef && dbRef.Type_2 ? dbRef.Type_2.toLowerCase() : null;
                     
                     const card = createTeamCard(p, dbRef, t1, t2, build);
                     grid.appendChild(card);
