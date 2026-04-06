@@ -393,7 +393,7 @@
                 <div class="pokemon-config">
                     <div class="config-header">
                         <div class="big-sprite-box">
-                            <img src="" id="current-big-sprite" class="big-sprite" onerror="handleSpriteError(this, team[currentSlot].species, team[currentSlot].shiny)">
+                            <img src="" id="current-big-sprite" class="big-sprite" crossorigin="anonymous" onerror="handleSpriteError(this, team[currentSlot].species, team[currentSlot].shiny)">
                         </div>
                         <div style="flex-grow: 1;">
                             <div class="input-group">
@@ -430,9 +430,10 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-group">
                             <span class="input-label">Item</span>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="item-sprite-preview" style="width: 32px; height: 32px; object-fit: contain; display: none;">
-                                <input type="text" id="item-input" class="builder-input" placeholder="No Item">
+                            <div id="stat-main">
+                            <div id="item-sprite-box">
+                                <img id="item-sprite-preview" crossorigin="anonymous" style="width: 40px; height: 40px; display: none;">
+                            </div>    <input type="text" id="item-input" class="builder-input" placeholder="No Item">
                             </div>
                         </div>
                         <div class="input-group">
@@ -649,7 +650,7 @@
                 const p = team[i];
                 tab.innerHTML = `
                     <div class="preview-sprite-box">
-                        <img src="${getSpriteUrl(p)}" alt="${p.species}" class="preview-sprite" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                        <img src="${getSpriteUrl(p)}" alt="${p.species}" class="preview-sprite" crossorigin="anonymous" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     </div>
                     <div class="tab-info">
                         <span class="tab-name" id="tab-name-${i}">${p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty')}</span>
@@ -777,8 +778,8 @@
                 card.innerHTML = `
                     <div style="display:flex; gap:16px; align-items:center; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:70px; height:70px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
-                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-6px; right:-6px; width:28px; height:28px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
+                            <img src="${sprite}" crossorigin="anonymous" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                            ${p.item ? `<img src="${itemSprite}" crossorigin="anonymous" style="position:absolute; bottom:-6px; right:-6px; width:28px; height:28px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
                             <div style="font-weight:900; font-size:1.2rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
@@ -844,8 +845,9 @@
 
         function getItemSpriteUrl(item) {
             if (!item) return '';
+            // Showdown item sprites are usually lowercase with no special characters
             const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
-            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+            return `https://play.pokemonshowdown.com/sprites/itemicons/${clean}.png`;
         }
 
 
@@ -968,6 +970,7 @@
             img.dataset.fallback = 'true'; // Prevent infinite loops
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const folder = shiny ? 'xy-shiny' : 'xy';
+            img.crossOrigin = "anonymous"; // Ensure CORS is maintained for fallback
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
         }
 
