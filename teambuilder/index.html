@@ -655,7 +655,25 @@
                     </div>
                     <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between;">
                         <div style="display:flex; gap:6px; align-items:center;">
-                            ${p.tera ? `<div style="background:linear-gradient(135deg, #00eeff, #0077ff); color:#fff; font-size:0.5rem; font-weight:900; padding:2px 8px; border-radius:10px; box-shadow:0 0 10px rgba(0,238,255,0.4); text-transform:uppercase; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3);">TERA ${p.tera}</div>` : ''}
+                            ${p.tera ? `
+                                <div style="
+                                    background: linear-gradient(135deg, ${typeColors[p.tera.toLowerCase()]}ee, ${typeColors[p.tera.toLowerCase()]}88);
+                                    color: #fff;
+                                    font-size: 0.52rem;
+                                    font-weight: 900;
+                                    padding: 2px 10px;
+                                    border-radius: 6px;
+                                    box-shadow: 0 0 15px ${typeColors[p.tera.toLowerCase()]}66, inset 0 0 5px rgba(255,255,255,0.5);
+                                    text-transform: uppercase;
+                                    letter-spacing: 1px;
+                                    border: 1px solid rgba(255,255,255,0.4);
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 3px;
+                                ">
+                                    <span style="filter: drop-shadow(0 0 2px white);">💎</span> ${p.tera}
+                                </div>
+                            ` : ''}
                             <span style="font-size:0.6rem; color:rgba(255,255,255,0.5); font-weight:800; text-transform:uppercase;">${p.nature}</span>
                         </div>
                         <span style="font-size:0.6rem; color:rgba(255,255,255,0.2); font-weight:700; text-transform:uppercase;">${p.ability || 'No Ability'}</span>
