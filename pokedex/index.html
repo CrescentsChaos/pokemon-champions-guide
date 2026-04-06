@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Pokedex | Pokemon Champions Guide</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .search-container {
+            width: 100%;
+            margin-bottom: 4rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.25rem;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+        .search-input:focus {
+            border-color: var(--primary-red);
+            box-shadow: var(--accent-glow);
+        }
+        .pokemon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .pokedex-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pokedex-card:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        .pokemon-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.05);
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+        }
+        .pokemon-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+        }
+    </style>
+</head>
+<body>
+
+    <section style="padding-top: 10rem; min-height: 100vh;">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2 style="font-size: 4rem;">ELITE <span style="color: var(--primary-red)">POKEDEX</span></h2>
+                <p>Fast, high-performance database optimized for competitive lookup.</p>
+            </div>
+
+            <div class="search-container fade-in">
+                <input type="text" id="pokedex-search" class="search-input" placeholder="Search by name, type, or generation...">
+            </div>
+
+            <div id="pokedex-grid" class="pokemon-grid">
+                <!-- Dynamic cards will be injected here -->
+            </div>
+
+            <div id="sentinel" style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="loader" id="loader" style="display: none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let allPokemon = [];
+        let filteredPokemon = [];
+        const ITEMS_PER_PAGE = 24;
+        let currentPage = 0;
+        let isLoading = false;
+
+        const grid = document.getElementById('pokedex-grid');
+        const searchInput = document.getElementById('pokedex-search');
+        const sentinel = document.getElementById('sentinel');
+        const loader = document.getElementById('loader');
+
+        async function initPokedex() {
+            try {
+                const response = await fetch('../assets/pokemon.json');
+                allPokemon = await response.json();
+                filteredPokemon = [...allPokemon];
+                loadMore();
+            } catch (err) {
+                console.error('Failed to load Pokedex data:', err);
+            }
+        }
+
+        function getSpriteUrl(name) {
+            let clean = name.toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/\./g, '')
+                .replace(/'/g, '')
+                .replace(/:/g, '')
+                .replace(/%/g, '');
+            
+            if (clean === 'giratina-altered') clean = 'giratina';
+            if (clean === 'mimikyu-disguised') clean = 'mimikyu';
+            
+            return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        }
+
+        function createPokemonCard(pokemon) {
+            const card = document.createElement('div');
+            card.className = 'pokedex-card';
+            
+            const stats = [
+                { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
+                { label: 'ATK', val: pokemon.Attack, class: 'atk', max: 190 },
+                { label: 'DEF', val: pokemon.Defense, class: 'def', max: 230 },
+                { label: 'SPE', val: pokemon.Speed, class: 'spe', max: 200 }
+            ];
+
+            const statHtml = stats.map(s => `
+                <div class="stat-row">
+                    <span class="stat-label">${s.label}</span>
+                    <div class="stat-bar-bg">
+                        <div class="stat-bar-fill stat-${s.class}" style="width: ${(s.val / s.max) * 100}%"></div>
+                    </div>
+                    <span style="width: 25px; text-align: right;">${s.val}</span>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <span class="pokemon-number">#${String(pokemon.id).padStart(4, '0')}</span>
+                <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="pokemon-img" 
+                     onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'; this.onerror=null;">
+                <h3 style="color: white; font-size: 1.4rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">${pokemon.Name}</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <span class="type-tag type-${pokemon.Type_1.toLowerCase()}">${pokemon.Type_1}</span>
+                    ${pokemon.Type_2 ? `<span class="type-tag type-${pokemon.Type_2.toLowerCase()}">${pokemon.Type_2}</span>` : ''}
+                </div>
+                <div class="stat-container">
+                    ${statHtml}
+                </div>
+            `;
+            return card;
+        }
+
+        function loadMore() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const start = currentPage * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const nextBatch = filteredPokemon.slice(start, end);
+
+            if (nextBatch.length === 0) {
+                isLoading = false;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            nextBatch.forEach(p => fragment.appendChild(createPokemonCard(p)));
+            grid.appendChild(fragment);
+
+            currentPage++;
+            isLoading = false;
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            filteredPokemon = allPokemon.filter(p => 
+                p.Name.toLowerCase().includes(query) || 
+                p.Type_1.toLowerCase().includes(query) || 
+                (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
+                (p.Generation && p.Generation.toLowerCase().includes(query))
+            );
+            grid.innerHTML = '';
+            currentPage = 0;
+            loadMore();
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMore();
+            }
+        }, { rootMargin: '200px' });
+
+        observer.observe(sentinel);
+        initPokedex();
+    </script>
+</body>
+</html>
