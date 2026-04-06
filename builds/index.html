@@ -36,82 +36,39 @@
             box-shadow: var(--accent-glow);
         }
 
-        .build-card {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            transition: var(--transition);
+        /* Build Card Wrapper */
+        .build-card-wrapper {
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            transition: var(--transition);
         }
 
-        .build-card:hover {
-            border-color: var(--primary-red);
-            background: rgba(255, 255, 255, 0.05);
+        .build-card-wrapper:hover {
             transform: translateY(-5px);
         }
 
-        .build-card.selected {
-            border-color: var(--primary-red);
-            box-shadow: var(--accent-glow);
-            background: rgba(255, 51, 51, 0.05);
+        .build-card-wrapper.selected .pokemon-config {
+            border-color: var(--primary-red) !important;
+            box-shadow: var(--accent-glow), 0 20px 40px rgba(0,0,0,0.6) !important;
+            background: rgba(255, 51, 51, 0.08) !important;
         }
 
-        .build-card-header {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .build-sprite {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(255,62,62,0.3));
-        }
-
-        .build-meta h3 {
-            font-size: 1.8rem;
-            color: white;
-            margin-bottom: 0.2rem;
-        }
-
-        .paste-box {
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            color: var(--text-muted);
-            white-space: pre-wrap;
-            max-height: 250px;
-            overflow-y: auto;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .copy-btn {
+        .copy-btn-mini {
             background: var(--primary-red);
             color: white;
             border: none;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: 800;
             text-transform: uppercase;
+            font-size: 0.65rem;
             cursor: pointer;
             transition: var(--transition);
-            width: 100%;
-            margin-top: auto;
+            letter-spacing: 1px;
         }
 
-        .copy-btn:hover {
+        .copy-btn-mini:hover {
             filter: brightness(1.2);
-            box-shadow: var(--accent-glow);
+            box-shadow: 0 0 15px rgba(255,62,62,0.4);
         }
 
         /* Synergy Section */
@@ -129,37 +86,35 @@
             align-items: flex-end;
         }
 
-        #synergy-grid {
+        #builds-grid, #synergy-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
         }
 
-        @media (max-width: 991px) {
-            #synergy-grid { grid-template-columns: 1fr !important; }
-            .synergy-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        @media (max-width: 1200px) {
+            #builds-grid, #synergy-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        @media (max-width: 600px) {
-            .build-card { padding: 1.5rem; }
-            .build-card-header { flex-direction: column; text-align: center; }
-            .build-meta h3 { font-size: 1.5rem; }
+        @media (max-width: 991px) {
+            #builds-grid, #synergy-grid { grid-template-columns: 1fr !important; }
+            .synergy-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
         }
     </style>
 </head>
 <body>
     <div class="builds-container">
         <div class="section-title fade-in">
-            <h2>PRO BUILD FINDER</h2>
-            <p style="color: var(--text-muted);">Explore tournament-winning sets and their perfect partners.</p>
+            <h2>BUILD FINDER</h2>
+            <p style="color: var(--text-muted);">Visualized competitive sets from the world's best trainers.</p>
         </div>
 
         <div class="search-wrapper fade-in">
             <input type="text" id="build-search" placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
         </div>
 
-        <div id="builds-grid" class="grid fade-in">
-            <!-- Builds will be injected here -->
+        <div id="builds-grid" class="fade-in">
+            <!-- Builds will be injected here as high-fidelity cards -->
         </div>
 
         <div id="synergy-container" class="fade-in">
@@ -176,7 +131,7 @@
         </div>
     </div>
 
-    <div id="toast" class="toast">Build Copied to Clipboard!</div>
+    <div id="toast" class="toast">Build Paste Copied!</div>
 
     <script src="../js/main.js"></script>
     <script>
@@ -220,9 +175,7 @@
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
                 renderBuilds();
-            } catch (e) {
-                console.error("Data load failed", e);
-            }
+            } catch (e) { console.error("Data load failed", e); }
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
@@ -249,12 +202,10 @@
                 ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
                 nature: 'Serious', moves: []
             };
-            
             const head = lines[0];
             const itemSplit = head.split('@');
             if (itemSplit[1]) slot.item = itemSplit[1].trim();
             slot.species = itemSplit[0].split('(')[0].trim();
-
             lines.slice(1).forEach(line => {
                 if (line.startsWith('Ability:')) slot.ability = line.split(':')[1].trim();
                 else if (line.startsWith('Level:')) slot.level = parseInt(line.split(':')[1].trim());
@@ -263,99 +214,24 @@
                     line.split(':')[1].split('/').forEach(p => {
                         const [val, s] = p.trim().split(' ');
                         let key = s.toLowerCase();
-                        if (key === 'atk') key = 'atk'; if (key === 'spa') key = 'spa';
                         if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(val);
                     });
-                }
-                else if (line.includes('Nature')) slot.nature = line.split('Nature')[0].trim();
+                } else if (line.includes('Nature')) slot.nature = line.split('Nature')[0].trim();
                 else if (line.startsWith('-')) slot.moves.push(line.substring(1).trim());
             });
             while (slot.moves.length < 4) slot.moves.push('');
             return slot;
         }
 
-        function getSpriteUrl(name, shiny) {
-            const clean = name.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
-            const base = shiny ? 'ani-shiny' : 'ani';
-            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
-        }
-
-        function getItemSpriteUrl(item) {
-            if (!item) return '';
-            const clean = item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
-            return `https://play.pokemonshowdown.com/sprites/itemicons/${clean}.png`;
-        }
-
-        function renderBuilds(filter = '') {
-            const grid = document.getElementById('builds-grid');
-            grid.innerHTML = '';
-            const filtered = allBuilds.filter(b => b.pokemon.toLowerCase().includes(filter.toLowerCase()));
-            
-            filtered.forEach(b => {
-                const card = document.createElement('div');
-                card.className = `build-card ${selectedBuildId === b.id ? 'selected' : ''}`;
-                card.onclick = (e) => {
-                    if (e.target.tagName === 'BUTTON') return;
-                    selectBuild(b.id);
-                };
-                card.innerHTML = `
-                    <div class="build-card-header">
-                        <img src="${getSpriteUrl(b.pokemon)}" class="build-sprite" onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'">
-                        <div class="build-meta">
-                            <h3>${b.pokemon}</h3>
-                            <span class="type-tag" style="background:rgba(255,255,255,0.05); font-size:0.75rem;">Build ID: ${b.id}</span>
-                        </div>
-                    </div>
-                    <div class="paste-box">${b.build}</div>
-                    <button class="copy-btn" onclick="copyBuild(\`${b.build.replace(/`/g, '\\`')}\`)">Copy Build Paste</button>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function selectBuild(id) {
-            selectedBuildId = id;
-            renderBuilds(document.getElementById('build-search').value);
-            const build = allBuilds.find(b => b.id === id);
-            if (build) renderSynergy(build);
-            
-            document.getElementById('synergy-container').style.display = 'block';
-            document.getElementById('synergy-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function closeSynergy() {
-            selectedBuildId = null;
-            document.getElementById('synergy-container').style.display = 'none';
-            renderBuilds(document.getElementById('build-search').value);
-        }
-
-        function renderSynergy(build) {
-            const grid = document.getElementById('synergy-grid');
-            grid.innerHTML = '';
-            document.getElementById('synergy-title').textContent = `${build.pokemon.toUpperCase()} SYNERGIES`;
-
-            (build.synergy || []).forEach(synId => {
-                const synBuild = allBuilds.find(b => b.id === synId);
-                if (synBuild) {
-                    const p = parsePaste(synBuild.build);
-                    const dbRef = (allPokemon || []).find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
-                    const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
-                    const t2 = (dbRef.Type_2 || '').toLowerCase();
-                    
-                    const card = createTeamCard(p, dbRef, t1, t2);
-                    grid.appendChild(card);
-                }
-            });
-        }
-
-        function createTeamCard(p, dbRef, t1, t2) {
+        function createTeamCard(p, dbRef, t1, t2, rawBuild) {
             const card = document.createElement('div');
-            card.className = 'pokemon-config fade-in';
+            card.className = 'pokemon-config';
             card.style.cssText = `
-                padding: 14px; border-radius: 20px; display: flex; flex-direction: column; gap: 12px;
+                padding: 18px; border-radius: 20px; display: flex; flex-direction: column; gap: 14px;
                 background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.6));
                 border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden;
                 backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px ${typeColors[t1]}22;
+                height: 100%; transition: var(--transition);
             `;
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -385,21 +261,24 @@
                 const type = moveRef.type.toLowerCase();
                 return `
                     <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.03);">
-                        <span style="font-size:0.65rem; color:#eee; font-weight:700; flex:1;">${m}</span>
-                        <span style="font-size:0.4rem; color:${typeColors[type]}; font-weight:900; text-transform:uppercase;">${type}</span>
+                        <span style="font-size:0.65rem; color:#eee; font-weight:700; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m}</span>
+                        <span style="font-size:0.4rem; color:${typeColors[type]}; font-weight:800; text-transform:uppercase;">${type}</span>
                     </div>
                 `;
             }).join('');
 
+            const spriteUrl = `https://play.pokemonshowdown.com/sprites/ani/${p.species.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '')}.gif`;
+            const itemSprite = p.item ? `https://play.pokemonshowdown.com/sprites/itemicons/${p.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '')}.png` : '';
+
             card.innerHTML = `
                 <div style="display:flex; gap:12px; align-items:center; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1);">
                     <div style="position:relative; width:60px; height:60px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <img src="${getSpriteUrl(p.species, p.shiny)}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'">
-                        ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px;">` : ''}
+                        <img src="${spriteUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif'">
+                        ${itemSprite ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px;">` : ''}
                     </div>
-                    <div style="flex:1;">
-                        <div style="font-weight:900; font-size:1.1rem; color:#fff;">${p.species}</div>
-                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.5);">${p.item || 'No Item'}</div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:900; font-size:1.1rem; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.species}</div>
+                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.item || 'No Item'}</div>
                         <div style="display:flex; gap:4px; margin-top:4px;">
                             <span style="background:${typeColors[t1]}; color:#fff; font-size:0.5rem; padding:2px 6px; border-radius:4px; font-weight:900;">${t1.toUpperCase()}</span>
                             ${t2 ? `<span style="background:${typeColors[t2]}; color:#fff; font-size:0.5rem; padding:2px 6px; border-radius:4px; font-weight:900;">${t2.toUpperCase()}</span>` : ''}
@@ -410,29 +289,75 @@
                     <div>${movesHtml}</div>
                     <div>${statsHtml}</div>
                 </div>
-                <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); font-size:0.65rem; color:rgba(255,255,255,0.3); font-weight:800;">
-                    ${p.ability} / ${p.nature} Nature
+                <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:space-between;">
+                    <div style="font-size:0.6rem; color:rgba(255,255,255,0.3); font-weight:800;">Build ID: ${rawBuild.id} / ${p.nature}</div>
+                    <button class="copy-btn-mini" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">Copy Paste</button>
                 </div>
             `;
             return card;
         }
 
-        function copyBuild(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast();
+        function renderBuilds(filter = '') {
+            const grid = document.getElementById('builds-grid');
+            grid.innerHTML = '';
+            const filtered = allBuilds.filter(b => b.pokemon.toLowerCase().includes(filter.toLowerCase()));
+            filtered.forEach(b => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === b.id ? 'selected' : ''}`;
+                wrapper.onclick = () => selectBuild(b.id);
+                
+                const p = parsePaste(b.build);
+                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
+                const t2 = (dbRef.Type_2 || '').toLowerCase();
+                
+                wrapper.appendChild(createTeamCard(p, dbRef, t1, t2, b));
+                grid.appendChild(wrapper);
             });
         }
 
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('active');
-            setTimeout(() => { toast.classList.remove('active'); }, 3000);
+        function selectBuild(id) {
+            selectedBuildId = id;
+            renderBuilds(document.getElementById('build-search').value);
+            const build = allBuilds.find(b => b.id === id);
+            if (build) {
+                renderSynergy(build);
+                document.getElementById('synergy-container').style.display = 'block';
+                document.getElementById('synergy-container').scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
-        document.getElementById('build-search').addEventListener('input', (e) => {
-            renderBuilds(e.target.value);
-        });
+        function closeSynergy() {
+            selectedBuildId = null;
+            document.getElementById('synergy-container').style.display = 'none';
+            renderBuilds(document.getElementById('build-search').value);
+        }
 
+        function renderSynergy(build) {
+            const grid = document.getElementById('synergy-grid');
+            grid.innerHTML = '';
+            document.getElementById('synergy-title').textContent = `${build.pokemon.toUpperCase()} SYNERGIES`;
+            (build.synergy || []).forEach(synId => {
+                const synBuild = allBuilds.find(b => b.id === synId);
+                if (synBuild) {
+                    const p = parsePaste(synBuild.build);
+                    const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                    const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
+                    const t2 = (dbRef.Type_2 || '').toLowerCase();
+                    grid.appendChild(createTeamCard(p, dbRef, t1, t2, synBuild));
+                }
+            });
+        }
+
+        function copyPaste(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('active');
+                setTimeout(() => toast.classList.remove('active'), 3000);
+            });
+        }
+
+        document.getElementById('build-search').addEventListener('input', (e) => renderBuilds(e.target.value));
         loadData();
     </script>
 </body>
