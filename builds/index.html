@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +49,7 @@
 
         .build-card-wrapper.selected .pokemon-card-premium {
             border-color: var(--primary-red) !important;
-            box-shadow: var(--accent-glow), 0 20px 40px rgba(0,0,0,0.6) !important;
+            box-shadow: var(--accent-glow), 0 20px 40px rgba(0, 0, 0, 0.6) !important;
             background: rgba(255, 51, 51, 0.06) !important;
         }
 
@@ -56,7 +57,7 @@
         #synergy-container {
             margin-top: 5rem;
             padding-top: 5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: none;
         }
 
@@ -67,7 +68,8 @@
             align-items: flex-end;
         }
 
-        #builds-grid, #synergy-grid {
+        #builds-grid,
+        #synergy-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2.5rem;
@@ -75,8 +77,8 @@
 
         /* Premium Card Styles (Sync with Teambuilder) */
         .pokemon-card-premium {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.4));
-            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.4));
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 20px;
             position: relative;
@@ -89,7 +91,7 @@
         }
 
         .card-sprite-area {
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 16px;
             height: 180px;
             display: flex;
@@ -103,7 +105,7 @@
             width: 140px;
             height: 140px;
             object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
         }
 
         .tera-badge {
@@ -113,10 +115,10 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             padding: 4px 10px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tera-icon {
@@ -132,8 +134,8 @@
         }
 
         .move-pill {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 6px 12px;
             border-radius: 10px;
             display: flex;
@@ -151,7 +153,7 @@
 
         .stat-bar-mini {
             height: 5px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
             flex: 1;
             overflow: hidden;
@@ -165,29 +167,43 @@
         }
 
         @media (max-width: 1200px) {
-            #builds-grid, #synergy-grid { grid-template-columns: 1fr 1fr; }
+
+            #builds-grid,
+            #synergy-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 850px) {
-            #builds-grid, #synergy-grid { grid-template-columns: 1fr !important; }
-            .synergy-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+
+            #builds-grid,
+            #synergy-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .synergy-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
         }
 
         /* Empty Slot */
         .empty-slot-premium {
-            border: 2px dashed rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.01);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.01);
             border-radius: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 480px;
-            color: rgba(255,255,255,0.1);
+            color: rgba(255, 255, 255, 0.1);
             gap: 15px;
         }
     </style>
 </head>
+
 <body>
     <div class="builds-container">
         <div class="section-title fade-in">
@@ -206,10 +222,12 @@
         <div id="synergy-container" class="fade-in">
             <div class="synergy-header">
                 <div>
-                    <h2 id="synergy-title" style="color: white; font-size: 2.2rem; margin-bottom: 0.5rem;">STRATEGIC SYNERGY</h2>
+                    <h2 id="synergy-title" style="color: white; font-size: 2.2rem; margin-bottom: 0.5rem;">STRATEGIC
+                        SYNERGY</h2>
                     <p style="color: var(--text-muted);">The best partners for your selected build.</p>
                 </div>
-                <button onclick="closeSynergy()" class="btn btn-secondary" style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE VIEW</button>
+                <button onclick="closeSynergy()" class="btn btn-secondary"
+                    style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE VIEW</button>
             </div>
             <div id="synergy-grid">
                 <!-- Synergy cards injected here -->
@@ -337,7 +355,7 @@
             card.className = 'pokemon-card-premium fade-in';
             const t1 = (dbRef?.Type_1 || 'Normal').toLowerCase();
             const t2 = dbRef?.Type_2?.toLowerCase();
-            
+
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
             const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
             const statColors = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
@@ -351,7 +369,7 @@
                 return `
                     <div style="display:flex; align-items:center; font-size:0.65rem; margin-bottom:4px;">
                         <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
-                        <div class="stat-bar-mini"><div class="stat-fill-mini" style="width:${Math.min(100, (val/250)*100)}%; background:${statColors[idx]};"></div></div>
+                        <div class="stat-bar-mini"><div class="stat-fill-mini" style="width:${Math.min(100, (val / 250) * 100)}%; background:${statColors[idx]};"></div></div>
                         <span style="width:30px; text-align:right; font-weight:900; color:${color}">${val}</span>
                     </div>
                 `;
@@ -438,7 +456,7 @@
                     if (e.target.tagName === 'BUTTON') return;
                     selectBuild(build.id);
                 };
-                
+
                 wrapper.appendChild(createTeamCard(p, dbRef, build));
                 grid.appendChild(wrapper);
             });
@@ -468,11 +486,11 @@
         function renderSynergy(synergyIds) {
             const grid = document.getElementById('synergy-grid');
             grid.innerHTML = '';
-            
+
             for (let i = 0; i < 6; i++) {
                 const sid = (synergyIds || [])[i];
                 const build = sid ? allBuilds.find(b => b.id === sid) : null;
-                
+
                 if (build) {
                     const p = parsePaste(build.build);
                     const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -496,4 +514,5 @@
         loadData();
     </script>
 </body>
+
 </html>
