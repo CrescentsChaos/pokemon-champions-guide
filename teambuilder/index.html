@@ -462,11 +462,7 @@
             }
         }
 
-        @media (max-width: 400px) {
-            .builder-container {
-                padding: 3rem 10px;
-            }
-
+        @media (max-width: 500px) {
             .team-tab {
                 min-width: 110px;
                 padding: 6px 12px;
@@ -476,6 +472,110 @@
             .tab-sprite {
                 width: 30px;
                 height: 30px;
+            }
+        }
+
+        /* Analysis Styles */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .analysis-card {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            transition: transform 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .type-badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .type-badge {
+            padding: 8px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .type-score {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .role-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 100px;
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--primary-red);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            text-transform: uppercase;
+        }
+
+        .synergy-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .synergy-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .coverage-meter {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .coverage-fill {
+            height: 100%;
+            background: var(--primary-red);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 900px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -512,6 +612,47 @@
                 </div>
                 <div id="team-grid">
                     <!-- Team cards injected via JS -->
+                </div>
+            </div>
+
+            <!-- Team Analysis Section -->
+            <div id="analysis-view" style="display: none; margin-top: 20px;">
+                <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 5px;">STRATEGIC INSIGHTS</h2>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of your team's coverage, roles, and synergy.</p>
+
+                <div class="analysis-grid">
+                    <!-- Left: Coverage & Synergy -->
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div class="analysis-card">
+                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-red);">Offensive Coverage</h3>
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">How many Pokemon can hit each type super effectively.</p>
+                            <div class="type-badge-grid" id="offensive-coverage"></div>
+                        </div>
+
+                        <div class="analysis-card">
+                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #2196F3;">Defensive Weaknesses</h3>
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Cumulative team weaknesses to each attacking type.</p>
+                            <div class="type-badge-grid" id="defensive-coverage"></div>
+                        </div>
+
+                        <div class="analysis-card">
+                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #4CAF50;">Team Synergy</h3>
+                            <div id="synergy-insights" style="margin-top: 20px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Roles & Archetypes -->
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div class="analysis-card">
+                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #FF9800;">Pokemon Roles</h3>
+                            <div id="pokemon-roles" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;"></div>
+                        </div>
+
+                        <div class="analysis-card" style="background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.4)); border-color: rgba(255, 51, 51, 0.2);">
+                            <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Move Diversity</h3>
+                            <div id="move-diversity" style="margin-top: 20px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -834,6 +975,20 @@
                 </div>
             `;
             container.appendChild(teamTab);
+
+            // Analysis Tab
+            const analysisTab = document.createElement('div');
+            analysisTab.className = `team-tab ${currentSlot === -2 ? 'active' : ''}`;
+            analysisTab.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            analysisTab.onclick = () => switchSlot(-2);
+            analysisTab.innerHTML = `
+                <div class="tab-sprite">📊</div>
+                <div class="tab-info">
+                    <span class="tab-name">ANALYSIS</span>
+                    <span class="tab-role">STRATEGY</span>
+                </div>
+            `;
+            container.appendChild(analysisTab);
         }
 
         function switchSlot(idx) {
@@ -843,10 +998,17 @@
             if (idx === -1) {
                 document.getElementById('builder-view').style.display = 'none';
                 document.getElementById('team-view').style.display = 'block';
+                document.getElementById('analysis-view').style.display = 'none';
                 renderTeamPreview();
+            } else if (idx === -2) {
+                document.getElementById('builder-view').style.display = 'none';
+                document.getElementById('team-view').style.display = 'none';
+                document.getElementById('analysis-view').style.display = 'block';
+                analyzeTeam();
             } else {
                 document.getElementById('builder-view').style.display = 'grid';
                 document.getElementById('team-view').style.display = 'none';
+                document.getElementById('analysis-view').style.display = 'none';
                 syncUI();
             }
             function renderTeamPreview() {
@@ -1896,6 +2058,236 @@
                 btn.style.opacity = "1";
             }
         };
+
+        // --- ANALYSIS LOGIC ---
+        const TYPE_CHART = {
+            'Normal': { 'Rock': 0.5, 'Ghost': 0, 'Steel': 0.5 },
+            'Fire': { 'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 2, 'Bug': 2, 'Rock': 0.5, 'Dragon': 0.5, 'Steel': 2 },
+            'Water': { 'Fire': 2, 'Water': 0.5, 'Grass': 0.5, 'Ground': 2, 'Rock': 2, 'Dragon': 0.5 },
+            'Electric': { 'Water': 2, 'Electric': 0.5, 'Grass': 0.5, 'Ground': 0, 'Flying': 2, 'Dragon': 0.5 },
+            'Grass': { 'Fire': 0.5, 'Water': 2, 'Grass': 0.5, 'Poison': 0.5, 'Ground': 2, 'Flying': 0.5, 'Bug': 0.5, 'Rock': 2, 'Dragon': 0.5, 'Steel': 0.5 },
+            'Ice': { 'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 0.5, 'Ground': 2, 'Flying': 2, 'Dragon': 2, 'Steel': 0.5 },
+            'Fighting': { 'Normal': 2, 'Ice': 2, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 0.5, 'Bug': 0.5, 'Rock': 2, 'Ghost': 0, 'Dark': 2, 'Steel': 2, 'Fairy': 0.5 },
+            'Poison': { 'Grass': 2, 'Poison': 0.5, 'Ground': 0.5, 'Rock': 0.5, 'Ghost': 0.5, 'Steel': 0, 'Fairy': 2 },
+            'Ground': { 'Fire': 2, 'Electric': 2, 'Grass': 0.5, 'Poison': 2, 'Flying': 0, 'Bug': 0.5, 'Rock': 2, 'Steel': 2 },
+            'Flying': { 'Electric': 0.5, 'Grass': 2, 'Fighting': 2, 'Bug': 2, 'Rock': 0.5, 'Steel': 0.5 },
+            'Psychic': { 'Fighting': 2, 'Poison': 2, 'Psychic': 0.5, 'Dark': 0, 'Steel': 0.5 },
+            'Bug': { 'Fire': 0.5, 'Grass': 2, 'Fighting': 0.5, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 2, 'Ghost': 0.5, 'Dark': 2, 'Steel': 0.5, 'Fairy': 0.5 },
+            'Rock': { 'Fire': 2, 'Ice': 2, 'Fighting': 0.5, 'Ground': 0.5, 'Flying': 2, 'Bug': 2, 'Steel': 0.5 },
+            'Ghost': { 'Normal': 0, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5 },
+            'Dragon': { 'Dragon': 2, 'Steel': 0.5, 'Fairy': 0 },
+            'Dark': { 'Fighting': 0.5, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5, 'Fairy': 0.5 },
+            'Steel': { 'Fire': 0.5, 'Water': 0.5, 'Electric': 0.5, 'Ice': 2, 'Rock': 2, 'Steel': 0.5, 'Fairy': 2 },
+            'Fairy': { 'Fire': 0.5, 'Fighting': 2, 'Poison': 0.5, 'Dragon': 2, 'Dark': 2, 'Steel': 0.5 }
+        };
+
+        const typeColors = {
+            normal: '#A8A77A', fire: '#EE8130', water: '#6390F0', electric: '#F7D02C',
+            grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
+            ground: '#E2BF65', flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
+            rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
+            fairy: '#D685AD', dark: '#705746'
+        };
+
+        function getEffectiveness(attackType, defenseTypes) {
+            let mult = 1;
+            defenseTypes.forEach(t => {
+                if (!t) return;
+                const chart = TYPE_CHART[capitalize(attackType)];
+                if (chart && chart[capitalize(t)] !== undefined) {
+                    mult *= chart[capitalize(t)];
+                }
+            });
+            return mult;
+        }
+
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
+
+        function analyzeTeam() {
+            const activeMons = team.filter(p => p.species);
+            if (activeMons.length === 0) {
+                document.getElementById('offensive-coverage').innerHTML = '<p style="grid-column:1/-1; opacity:0.3; text-align:center;">Add Pokemon to see analysis.</p>';
+                return;
+            }
+
+            const offensive = {};
+            const defensive = {};
+            const roles = [];
+            const types = Object.keys(TYPE_CHART);
+
+            types.forEach(t => { offensive[t] = 0; defensive[t] = 0; });
+
+            activeMons.forEach((p, idx) => {
+                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+
+                // --- Offensive Coverage ---
+                const moveTypes = p.moves.map(m => {
+                    const moveRef = allMoves.find(x => x.name.toLowerCase() === m.toLowerCase());
+                    return moveRef ? moveRef.type : null;
+                }).filter(x => x);
+
+                types.forEach(defType => {
+                    const canHit = moveTypes.some(moveType => getEffectiveness(moveType, [defType]) > 1);
+                    if (canHit) offensive[defType]++;
+                });
+
+                // --- Defensive Weaknesses ---
+                types.forEach(atkType => {
+                    const eff = getEffectiveness(atkType, pTypes);
+                    if (eff > 1) defensive[atkType]++;
+                });
+
+                // --- Role Detection ---
+                roles.push(detectRole(p, dbRef));
+            });
+
+            renderAnalysis(offensive, defensive, roles, activeMons);
+        }
+
+        function detectRole(p, db) {
+            const stats = {};
+            const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
+            Object.entries(keys).forEach(([k, dk]) => {
+                const base = parseInt(db[dk]) || 0;
+                stats[k] = calculateStat(base, p.ivs[k], p.evs[k], p.level, p.nature, k);
+            });
+
+            const roles = [];
+            const moves = p.moves.map(m => m.toLowerCase());
+            const hasMove = (list) => list.some(m => moves.includes(m));
+
+            // Offense
+            if (stats.atk > 150 && stats.spe > 130) roles.push('Physical Sweeper');
+            if (stats.spa > 150 && stats.spe > 130) roles.push('Special Sweeper');
+            if (stats.atk > 180 || stats.spa > 180) roles.push('Wallbreaker');
+            
+            // Defense
+            if (stats.hp > 180 && stats.def > 130) roles.push('Physical Wall');
+            if (stats.hp > 180 && stats.spd > 130) roles.push('Special Wall');
+            
+            // Utility
+            if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) roles.push('Pivot');
+            if (hasMove(['tailwind', 'trick room', 'icy wind', 'electroweb'])) roles.push('Speed Control');
+            if (hasMove(['reflect', 'light screen', 'aurora veil'])) roles.push('Screener');
+            if (hasMove(['helping hand', 'fake out', 'follow me', 'rage powder'])) roles.push('Support');
+            if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web'])) roles.push('Hazard Setter');
+            if (hasMove(['rapid spin', 'defog', 'mortal spin'])) roles.push('Hazard Remover');
+            if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance'])) roles.push('Set-up Sweeper');
+            if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn'])) roles.push('Disruptor');
+            if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled'])) roles.push('Cleric/Healer');
+            
+            // Weather/Terrain
+            const ability = (p.ability || '').toLowerCase();
+            if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ability)) roles.push('Weather Setter');
+            if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ability)) roles.push('Terrain Setter');
+
+            return roles.length > 0 ? roles : ['Generalist'];
+        }
+
+        function renderAnalysis(off, def, roles, activeMons) {
+            const offBox = document.getElementById('offensive-coverage');
+            const defBox = document.getElementById('defensive-coverage');
+            const roleBox = document.getElementById('pokemon-roles');
+            const synergyBox = document.getElementById('synergy-insights');
+            const moveBox = document.getElementById('move-diversity');
+
+            offBox.innerHTML = '';
+            defBox.innerHTML = '';
+            roleBox.innerHTML = '';
+            synergyBox.innerHTML = '';
+            moveBox.innerHTML = '';
+
+            Object.entries(off).sort((a,b) => b[1] - a[1]).forEach(([type, count]) => {
+                const badge = document.createElement('div');
+                badge.className = 'type-badge';
+                badge.style.background = typeColors[type.toLowerCase()];
+                badge.style.opacity = count > 0 ? '1' : '0.2';
+                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                offBox.appendChild(badge);
+            });
+
+            Object.entries(def).sort((a,b) => b[1] - a[1]).forEach(([type, count]) => {
+                const badge = document.createElement('div');
+                badge.className = 'type-badge';
+                badge.style.background = typeColors[type.toLowerCase()];
+                badge.style.border = count > 2 ? '2px solid var(--primary-red)' : '1px solid rgba(255,255,255,0.1)';
+                badge.style.opacity = count > 0 ? '1' : '0.2';
+                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                defBox.appendChild(badge);
+            });
+
+            activeMons.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = 'synergy-item';
+                div.innerHTML = `
+                    <img src="${getSpriteUrl(p)}" style="width:40px; height:40px; object-fit:contain;">
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:0.8rem;">${p.species}</div>
+                        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;">
+                            ${roles[i].map(r => `<span class="role-tag">${r}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                roleBox.appendChild(div);
+            });
+
+            // --- Synergy Logic ---
+            const weaknessCounts = def;
+            const resistances = {};
+            Object.keys(TYPE_CHART).forEach(t => resistances[t] = 0);
+
+            activeMons.forEach(p => {
+                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+                Object.keys(TYPE_CHART).forEach(atkType => {
+                    const eff = getEffectiveness(atkType, pTypes);
+                    if (eff < 1) resistances[atkType]++;
+                });
+            });
+
+            const issues = [];
+            Object.entries(weaknessCounts).forEach(([type, count]) => {
+                if (count >= 3 && resistances[type] < 2) {
+                    issues.push({ type, count, severity: 'high', text: `Severe weakness to ${type}! Only ${resistances[type]} resistance(s).` });
+                } else if (count >= 2 && resistances[type] === 0) {
+                    issues.push({ type, count, severity: 'medium', text: `Team is vulnerable to ${type}. No resistances found.` });
+                }
+            });
+
+            if (issues.length === 0) {
+                synergyBox.innerHTML = '<div class="synergy-item"><div class="synergy-icon">🛡️</div><div><div style="font-weight:800;">Elite Defensive Synergy</div><div style="font-size:0.7rem; opacity:0.5;">No major overlapping weaknesses detected.</div></div></div>';
+            } else {
+                issues.forEach(issue => {
+                    synergyBox.innerHTML += `
+                        <div class="synergy-item" style="border-left: 4px solid ${issue.severity === 'high' ? 'var(--primary-red)' : '#FF9800'};">
+                            <div class="synergy-icon">${issue.severity === 'high' ? '⚠️' : '⚡'}</div>
+                            <div>
+                                <div style="font-weight:800; color: ${issue.severity === 'high' ? 'var(--primary-red)' : '#fff'};">${issue.text}</div>
+                                <div style="font-size:0.7rem; opacity:0.5;">Consider adding a ${type} resistant teammate.</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // --- Move Diversity ---
+            const allMoveTypes = new Set();
+            activeMons.forEach(p => p.moves.forEach(m => {
+                const moveRef = allMoves.find(x => x.name.toLowerCase() === m.toLowerCase());
+                if (moveRef) allMoveTypes.add(moveRef.type);
+            }));
+
+            const diversityPerc = (allMoveTypes.size / 18) * 100;
+            moveBox.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-size:0.8rem; font-weight:800;">Type Coverage Score</span>
+                    <span style="font-size:0.8rem; font-weight:900; color:var(--primary-red);">${Math.round(diversityPerc)}%</span>
+                </div>
+                <div class="coverage-meter"><div class="coverage-fill" style="width:${diversityPerc}%"></div></div>
+                <p style="font-size:0.7rem; opacity:0.5; margin-top:10px;">Your team utilizes ${allMoveTypes.size} different move types across 6 slots.</p>
+            `;
+        }
 
         window.onclick = (e) => { if (e.target.className === 'overlay') e.target.style.display = 'none'; };
         init();
