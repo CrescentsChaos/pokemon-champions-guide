@@ -92,5 +92,37 @@
         "pokemon": "Raging Bolt",
         "build": "Raging Bolt @ Assault Vest\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Draco Meteor\n- Electroweb\n- Volt Switch",
         "synergy": []
+    },
+    {
+        "id": "15",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Leftovers\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Dragon Pulse\n- Calm Mind\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "16",
+        "pokemon": "Indeedee-F",
+        "build": "Indeedee-F @ Psychic Seed\nLevel: 50\nAbility: Psychic Surge\nEVs: 252 HP / 252 Def / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fairy\nRelaxed Nature\n- Follow Me\n- Trick Room\n- Helping Hand\n- Psychic",
+        "synergy": []
+    },
+    {
+        "id": "17",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 28 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
+        "synergy": [
+            "16"
+        ]
+    },
+    {
+        "id": "18",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Life Orb\nLevel: 50\nAbility: Magic Bounce\nEVs: 244 HP / 44 Def / 220 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Expanding Force\n- Dazzling Gleam\n- Trick Room\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "19",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
+        "synergy": []
     }
 ]
