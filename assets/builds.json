@@ -264,5 +264,35 @@
         "build": "Tyranitar @ Smooth Rock\nAbility: Sand Stream\nEVs: 252 HP / 16 Def / 240 SpD\nTera Type: Flying\nSassy Nature\n- Stealth Rock\n- Knock Off\n- Ice Beam\n- Roar",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "37",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "38",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 236 HP / 164 Def / 108 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "39",
+        "pokemon": "Miraidon",
+        "build": "Miraidon @ Choice Specs\nLevel: 50\nAbility: Hadron Engine\nEVs: 4 HP / 252 SpA / 252 Spe\nTera Type: Fairy\nModest Nature\n- Electro Drift\n- Draco Meteor\n- Volt Switch\n- Dazzling Gleam",
+        "synergy": [
+            "38"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "40",
+        "pokemon": "Miraidon",
+        "build": "Miraidon @ Assault Vest\nLevel: 50\nAbility: Hadron Engine\nEVs: 252 HP / 20 Def / 212 SpA / 4 SpD / 20 Spe\nTera Type: Electric\nModest Nature\n- Electro Drift\n- Volt Switch\n- Draco Meteor\n- Snarl",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
