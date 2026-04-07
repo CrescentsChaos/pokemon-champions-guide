@@ -124,5 +124,47 @@
         "pokemon": "Hatterene",
         "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
         "synergy": []
+    },
+    {
+        "id": "20",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
+        "synergy": []
+    },
+    {
+        "id": "21",
+        "pokemon": "Arcanine",
+        "build": "Arcanine @ Leftovers\nAbility: Intimidate\nEVs: 160 HP / 252 Atk / 96 Spe\nTera Type: Normal\nAdamant Nature\n- Curse\n- Extreme Speed\n- Flare Blitz\n- Morning Sun",
+        "synergy": []
+    },
+    {
+        "id": "22",
+        "pokemon": "Arcanine",
+        "build": "Arcanine @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Flare Blitz\n- Close Combat\n- Extreme Speed\n- Raging Fury",
+        "synergy": []
+    },
+    {
+        "id": "23",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Heavy-Duty Boots\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Stealth Rock",
+        "synergy": []
+    },
+    {
+        "id": "24",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Clear Amulet\nLevel: 50\nAbility: Intimidate\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Extreme Speed\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "25",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Mirror Herb\nLevel: 50\nAbility: Intimidate\nEVs: 180 HP / 44 Atk / 12 Def / 20 SpD / 252 Spe\nTera Type: Fairy\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Close Combat\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "26",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Close Combat",
+        "synergy": []
     }
 ]
