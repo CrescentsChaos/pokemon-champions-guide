@@ -166,5 +166,55 @@
         "pokemon": "Arcanine-Hisui",
         "build": "Arcanine-Hisui @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Close Combat",
         "synergy": []
+    },
+    {
+        "id": "27",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Grass\nTimid Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
+        "synergy": []
+    },
+    {
+        "id": "28",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 84 Def / 156 SpA / 20 SpD / 20 Spe\nTera Type: Grass\nModest Nature\n- Heat Wave\n- Flash Cannon\n- Earth Power\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "29",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 HP / 4 Def / 212 SpD / 40 Spe\nTera Type: Grass\nCalm Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
+        "synergy": []
+    },
+    {
+        "id": "30",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Assault Vest\nLevel: 50\nAbility: Sand Stream\nEVs: 140 HP / 252 Atk / 4 Def / 4 SpD / 108 Spe\nTera Type: Flying\nAdamant Nature\n- Knock Off\n- Rock Slide\n- Tera Blast\n- Low Kick",
+        "synergy": []
+    },
+    {
+        "id": "31",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Choice Band\nAbility: Sand Stream\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Flying\nAdamant Nature\n- Knock Off\n- Stone Edge\n- Low Kick\n- Ice Punch",
+        "synergy": []
+    },
+    {
+        "id": "32",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Smooth Rock\nAbility: Sand Stream\nEVs: 252 HP / 16 Def / 240 SpD\nTera Type: Flying\nSassy Nature\n- Stealth Rock\n- Knock Off\n- Ice Beam\n- Roar",
+        "synergy": []
+    },
+    {
+        "id": "33",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Air Balloon\nAbility: Sand Rush\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Earthquake\n- Rapid Spin\n- Rock Slide\n- Swords Dance",
+        "synergy": [
+            "0y"
+        ]
+    },
+    {
+        "id": "34",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 24 HP / 56 Atk / 252 SpD / 176 Spe\nTera Type: Ghost\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
+        "synergy": []
     }
 ]

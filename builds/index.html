@@ -21,8 +21,41 @@
         }
 
         .search-wrapper {
-            margin-bottom: 4rem;
-            position: relative;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .filter-select option {
+            background: #1a1a1a;
+            color: white;
         }
 
         #build-search {
@@ -30,7 +63,7 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
-            padding: 1.5rem 2rem;
+            padding: 1.2rem 2rem;
             color: white;
             font-size: 1.1rem;
             outline: none;
@@ -79,7 +112,7 @@
         #synergy-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         /* Premium Card Styles (Sync with Teambuilder) */
@@ -87,68 +120,101 @@
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.4));
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 12px;
+            padding: 16px;
             position: relative;
             transition: var(--transition);
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            min-height: 420px;
+            gap: 8px;
+            min-height: 480px; /* Adjusted for compact info */
+        }
+
+        .card-header {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
         }
 
         .card-sprite-area {
             background: rgba(255, 255, 255, 0.02);
             border-radius: 12px;
-            height: 140px;
+            width: 100px;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .premium-sprite {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
             filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
         }
 
+        .header-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .roles-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .role-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
         .tera-badge {
             position: absolute;
-            top: 10px;
-            right: 12px;
+            top: 5px;
+            right: 5px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 2px 6px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tera-icon {
-            width: 14px;
-            height: 14px;
+            width: 10px;
+            height: 10px;
             clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 18% 100%, 0% 35%);
         }
 
         .type-badges-row {
             display: flex;
-            gap: 8px;
-            margin-top: -5px;
+            gap: 6px;
         }
 
         .move-pill {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .move-pill span {
@@ -174,7 +240,6 @@
         }
 
         @media (max-width: 1200px) {
-
             #builds-grid,
             #synergy-grid {
                 grid-template-columns: 1fr 1fr;
@@ -182,7 +247,6 @@
         }
 
         @media (max-width: 850px) {
-
             #builds-grid,
             #synergy-grid {
                 grid-template-columns: 1fr !important;
@@ -204,7 +268,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 420px;
+            height: 480px;
             color: rgba(255, 255, 255, 0.1);
             gap: 12px;
         }
@@ -220,6 +284,14 @@
 
         <div class="search-wrapper fade-in">
             <input type="text" id="build-search" placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
+            <div class="filter-row">
+                <select id="type-filter" class="filter-select">
+                    <option value="">All Types</option>
+                </select>
+                <select id="role-filter" class="filter-select">
+                    <option value="">All Roles</option>
+                </select>
+            </div>
         </div>
 
         <div id="builds-grid" class="fade-in">
@@ -260,6 +332,15 @@
             fairy: '#D685AD', dark: '#705746', stellar: '#70DBFF'
         };
 
+        const rolesList = [
+            'Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Revenge Killer',
+            'Physical Wall', 'Special Wall', 'Fake Out Pressure', 'Redirection',
+            'Intimidate Support', 'Trick Room Setter', 'Speed Control', 'Pivot',
+            'Screener', 'Hazard Setter', 'Hazard Control', 'Setup Sweeper',
+            'Disruptor', 'Cleric/Healer', 'Phazer/Hazer', 'Weather Setter',
+            'Terrain Setter', 'Restricted Legendary', 'Generalist'
+        ];
+
         const natureMap = {
             'Adamant': { pos: 'atk', neg: 'spa' }, 'Bold': { pos: 'def', neg: 'atk' },
             'Brave': { pos: 'atk', neg: 'spe' }, 'Calm': { pos: 'spd', neg: 'atk' },
@@ -283,13 +364,79 @@
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
+
+                populateFilters();
                 renderBuilds();
             } catch (e) { console.error("Data load failed", e); }
         }
 
+        function populateFilters() {
+            const typeFilter = document.getElementById('type-filter');
+            Object.keys(typeColors).forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+                typeFilter.appendChild(opt);
+            });
+
+            const roleFilter = document.getElementById('role-filter');
+            rolesList.sort().forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r;
+                opt.textContent = r;
+                roleFilter.appendChild(opt);
+            });
+        }
+
+        function detectRole(p, db) {
+            const stats = {
+                hp: calculateStat(db?.HP || 0, p.ivs.hp, p.evs.hp, p.level, p.nature, 'hp'),
+                atk: calculateStat(db?.Attack || 0, p.ivs.atk, p.evs.atk, p.level, p.nature, 'atk'),
+                def: calculateStat(db?.Defense || 0, p.ivs.def, p.evs.def, p.level, p.nature, 'def'),
+                spa: calculateStat(db?.['Sp.Atk'] || 0, p.ivs.spa, p.evs.spa, p.level, p.nature, 'spa'),
+                spd: calculateStat(db?.['Sp.Def'] || 0, p.ivs.spd, p.evs.spd, p.level, p.nature, 'spd'),
+                spe: calculateStat(db?.Speed || 0, p.ivs.spe, p.evs.spe, p.level, p.nature, 'spe')
+            };
+
+            const ability = (p.ability || '').toLowerCase();
+            const item = (p.item || '').toLowerCase();
+            const moves = p.moves.map(m => m.toLowerCase());
+            const bst = db?.Total_Stats || 0;
+
+            const hasMove = (list) => list.some(m => moves.includes(m));
+            const roles = [];
+
+            if (stats.atk > 150 && stats.spe > 130) roles.push('Physical Sweeper');
+            if (stats.spa > 150 && stats.spe > 130) roles.push('Special Sweeper');
+            if (stats.atk > 180 || stats.spa > 180) roles.push('Wallbreaker');
+            if (item === 'choice scarf') roles.push('Revenge Killer');
+            if (stats.hp > 180 && stats.def > 130) roles.push('Physical Wall');
+            if (stats.hp > 180 && stats.spd > 130) roles.push('Special Wall');
+
+            if (hasMove(['fake out'])) roles.push('Fake Out Pressure');
+            if (hasMove(['follow me', 'rage powder', 'ally switch'])) roles.push('Redirection');
+            if (ability === 'intimidate') roles.push('Intimidate Support');
+            if (hasMove(['trick room'])) roles.push('Trick Room Setter');
+            if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) roles.push('Speed Control');
+            if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) roles.push('Pivot');
+            if (hasMove(['reflect', 'light screen', 'aurora veil'])) roles.push('Screener');
+            if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web'])) roles.push('Hazard Setter');
+            if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) roles.push('Hazard Control');
+            if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) roles.push('Setup Sweeper');
+            if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) roles.push('Disruptor');
+            if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled', 'pollen puff'])) roles.push('Cleric/Healer');
+            if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) roles.push('Phazer/Hazer');
+
+            if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ability)) roles.push('Weather Setter');
+            if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ability)) roles.push('Terrain Setter');
+            if (bst >= 670) roles.push('Restricted Legendary');
+
+            return roles.length > 0 ? roles : ['Generalist'];
+        }
+
         function handleSpriteError(img, species, shiny) {
             if (!species || img.dataset.fallback === 'true') return;
-            img.dataset.fallback = 'true'; // Prevent infinite loops
+            img.dataset.fallback = 'true';
             img.classList.remove('mega-toggle');
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const folder = shiny ? 'xy-shiny' : 'xy';
@@ -437,6 +584,9 @@
             const t1 = (dbRef?.Type_1 || 'Normal').toLowerCase();
             const t2 = dbRef?.Type_2?.toLowerCase();
 
+            const roles = detectRole(p, dbRef);
+            const rolesHtml = roles.map(r => `<span class="role-badge">${r}</span>`).join('');
+
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
             const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
             const statColors = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
@@ -472,40 +622,43 @@
             const megaUrl = getMegaSpriteUrl(p);
 
             card.innerHTML = `
-                <div class="card-sprite-area">
-                    <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
-                    <div class="tera-badge">
-                        <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
-                        <span style="font-size:0.55rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
+                <div class="card-header">
+                    <div class="card-sprite-area">
+                        <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                        <div class="tera-badge">
+                            <div class="tera-icon" style="background:${typeColors[p.tera.toLowerCase()] || '#fff'}"></div>
+                            <span style="font-size:0.5rem; font-weight:900; color:white;">${p.tera.toUpperCase()}</span>
+                        </div>
+                        ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
-                    ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:10px; left:10px; width:30px; height:30px; filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));">` : ''}
+                    <div class="header-info">
+                        <h3 style="font-size:1.1rem; color:white; margin:0;">${p.species}</h3>
+                        <div class="type-badges-row">
+                            <span class="type-tag type-${t1}" style="font-size:0.55rem; padding:1px 5px;">${t1}</span>
+                            ${t2 ? `<span class="type-tag type-${t2}" style="font-size:0.55rem; padding:1px 5px;">${t2}</span>` : ''}
+                        </div>
+                        <div class="roles-row">${rolesHtml}</div>
+                    </div>
                 </div>
 
-                <div style="padding:0 2px;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
-                        <h3 style="font-size:1.2rem; color:white; letter-spacing:-0.5px;">${p.species}</h3>
-                        <div class="type-badges-row">
-                            <span class="type-tag type-${t1}" style="font-size:0.6rem; padding:2px 6px;">${t1}</span>
-                            ${t2 ? `<span class="type-tag type-${t2}" style="font-size:0.6rem; padding:2px 6px;">${t2}</span>` : ''}
-                        </div>
-                    </div>
+                <div style="margin-top:4px;">
                     <div style="font-size:0.65rem; color:rgba(255,255,255,0.4); font-weight:700; display:flex; gap:8px;">
                         <span>LVL ${p.level}</span>
                         <span>Item: <span style="color:#eee">${(p.item || 'None').toUpperCase()}</span></span>
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin:4px 0;">
+                <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px; margin:4px 0; align-items: start;">
                     <div class="moves-column">${movesHtml}</div>
-                    <div class="stats-column" style="background:rgba(0,0,0,0.2); padding:8px; border-radius:12px;">${statsHtml}</div>
+                    <div class="stats-column" style="background:rgba(0,0,0,0.2); padding:6px; border-radius:10px;">${statsHtml}</div>
                 </div>
 
-                <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-size:0.6rem; color:rgba(255,255,255,0.3); font-weight:800; line-height:1.2;">
                         ${p.nature.toUpperCase()} NATURE<br>
                         ABILITY: <span style="color:rgba(255,255,255,0.6)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
                     </div>
-                    <button class="btn" style="padding:6px 12px; font-size:0.6rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
+                    <button class="btn" style="padding:4px 10px; font-size:0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
             `;
             return card;
@@ -524,15 +677,29 @@
         function renderBuilds() {
             const grid = document.getElementById('builds-grid');
             grid.innerHTML = '';
+            
             const searchInput = document.getElementById('build-search');
             const search = searchInput.value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value.toLowerCase();
+            const roleFilter = document.getElementById('role-filter').value;
 
             allBuilds.forEach(build => {
                 const p = parsePaste(build.build);
-                if (search && !p.species.toLowerCase().includes(search)) return;
-
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+                
+                // Filters
+                if (search && !p.species.toLowerCase().includes(search)) return;
+                
+                if (typeFilter) {
+                    const t1 = (dbRef?.Type_1 || '').toLowerCase();
+                    const t2 = (dbRef?.Type_2 || '').toLowerCase();
+                    if (t1 !== typeFilter && t2 !== typeFilter) return;
+                }
+
+                const buildRoles = detectRole(p, dbRef);
+                if (roleFilter && !buildRoles.includes(roleFilter)) return;
+
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
@@ -598,6 +765,8 @@
         }
 
         document.getElementById('build-search').addEventListener('input', renderBuilds);
+        document.getElementById('type-filter').addEventListener('change', renderBuilds);
+        document.getElementById('role-filter').addEventListener('change', renderBuilds);
         loadData();
     </script>
 </body>
