@@ -369,6 +369,32 @@
             'Terrain Setter', 'Restricted Legendary', 'Generalist'
         ];
 
+        const roleDescriptions = {
+            'Physical Sweeper': 'Uses high Attack and Speed to knock out multiple opponents with direct physical damage.',
+            'Special Sweeper': 'Uses high Special Attack and Speed to knock out multiple opponents with direct special damage.',
+            'Wallbreaker': 'Possesses extremely high offensive stats meant to break through even the sturdiest defensive Pokemon.',
+            'Revenge Killer': 'A fast Pokemon (often with a Choice Scarf) that enters after a teammate faints to finish off weakened foes.',
+            'Physical Wall': 'High HP and Defense investment used to stop physical attackers in their tracks.',
+            'Special Wall': 'High HP and Special Defense investment used to absorb special attacks.',
+            'Fake Out Pressure': 'Uses the move Fake Out to flinch an opponent on the first turn, disrupting their strategy.',
+            'Redirection': 'Uses moves like Follow Me or Rage Powder to force opponents to attack them instead of their partner.',
+            'Intimidate Support': 'Lowers the Attack of both opponents upon entering the field, providing immediate defensive value.',
+            'Trick Room Setter': 'Uses Trick Room to reverse the turn order, allowing slow Pokemon to move first for 5 turns.',
+            'Speed Control': 'Uses moves like Tailwind, Icy Wind, or Electroweb to manipulate the Speed of Pokemon on the field.',
+            'Pivot': 'Uses moves like U-turn, Volt Switch, or Parting Shot to switch out while dealing damage or debuffing.',
+            'Screener': 'Sets up Reflect, Light Screen, or Aurora Veil to halve the damage taken by the team.',
+            'Hazard Setter': 'Sets up entry hazards like Stealth Rock or Spikes that damage opponents when they switch in.',
+            'Hazard Control': 'Removes entry hazards from the field using moves like Rapid Spin or Defog.',
+            'Setup Sweeper': 'Uses boosting moves like Swords Dance or Calm Mind to become an unstoppable offensive threat.',
+            'Disruptor': 'Uses status moves like Spore, Thunder Wave, or Will-O-Wisp to cripple the opposing team.',
+            'Cleric/Healer': 'Uses moves like Wish, Heal Bell, or Pollen Puff to restore HP or cure status for teammates.',
+            'Phazer/Hazer': 'Forces opponents to switch out (Roar) or resets their stat boosts (Haze) to prevent sweeps.',
+            'Weather Setter': 'Changes the weather (Rain, Sun, Sand, Snow) via an ability or move to benefit the team.',
+            'Terrain Setter': 'Changes the terrain (Electric, Grassy, Misty, Psychic) to provide various battlefield bonuses.',
+            'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
+            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.'
+        };
+
         const natureMap = {
             'Adamant': { pos: 'atk', neg: 'spa' }, 'Bold': { pos: 'def', neg: 'atk' },
             'Brave': { pos: 'atk', neg: 'spe' }, 'Calm': { pos: 'spd', neg: 'atk' },
@@ -637,7 +663,7 @@
             const t2 = dbRef?.Type_2?.toLowerCase();
 
             const roles = detectRole(p, dbRef);
-            const rolesHtml = roles.map(r => `<span class="role-badge">${r}</span>`).join('');
+            const rolesHtml = roles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('');
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
             const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
@@ -735,6 +761,7 @@
             if (!append) {
                 grid.innerHTML = '';
                 displayedCount = batchSize;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             
             const searchInput = document.getElementById('build-search');
@@ -823,7 +850,16 @@
             const grid = document.getElementById('synergy-grid');
             grid.innerHTML = '';
 
-            for (let i = 0; i < 6; i++) {
+            // First slot: The selected build itself
+            const pSelf = parsePaste(build.build);
+            const speciesSelf = pSelf.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const dbSelf = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSelf);
+            const selfCard = createTeamCard(pSelf, dbSelf, build);
+            selfCard.style.border = '2px solid var(--primary-red)';
+            selfCard.style.boxShadow = '0 0 20px rgba(255, 51, 51, 0.3)';
+            grid.appendChild(selfCard);
+
+            for (let i = 0; i < 5; i++) {
                 const sid = (synergyIds || [])[i];
                 const build = sid ? allBuilds.find(b => b.id === sid) : null;
 
