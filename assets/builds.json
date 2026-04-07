@@ -86,34 +86,6 @@
         "format": "Doubles"
     },
     {
-        "id": "44",
-        "pokemon": "Charizard",
-        "build": "Charizard @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Ground\nTimid Nature\n- Hurricane\n- Flamethrower\n- Scorching Sands\n- Will-O-Wisp",
-        "synergy": [],
-        "format": "Singles"
-    },
-    {
-        "id": "45",
-        "pokemon": "Charizard",
-        "build": "Charizard @ Choice Specs\nLevel: 50\nAbility: Solar Power\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Heat Wave\n- Weather Ball\n- Overheat\n- Air Slash",
-        "synergy": [],
-        "format": "Doubles"
-    },
-    {
-        "id": "46",
-        "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y\nAbility: Drought\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
-        "synergy": [],
-        "format": "Doubles"
-    },
-    {
-        "id": "47",
-        "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite X\nAbility: Blaze\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Dragon Dance\n- Flare Blitz\n- Dragon Claw\n- Earthquake",
-        "synergy": [],
-        "format": "Singles"
-    },
-    {
         "id": "33",
         "pokemon": "Excadrill",
         "build": "Excadrill @ Air Balloon\nAbility: Sand Rush\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Earthquake\n- Rapid Spin\n- Rock Slide\n- Swords Dance",
@@ -135,20 +107,6 @@
         "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 172 HP / 252 SpD / 84 Spe\nTera Type: Ghost\nJolly Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
         "synergy": [],
         "format": "Singles"
-    },
-    {
-        "id": "37",
-        "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
-        "synergy": [],
-        "format": "Singles"
-    },
-    {
-        "id": "38",
-        "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 236 HP / 164 Def / 108 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
-        "synergy": [],
-        "format": "Doubles"
     },
     {
         "id": "06",
@@ -252,22 +210,6 @@
         "format": "Doubles"
     },
     {
-        "id": "39",
-        "pokemon": "Miraidon",
-        "build": "Miraidon @ Choice Specs\nLevel: 50\nAbility: Hadron Engine\nEVs: 4 HP / 252 SpA / 252 Spe\nTera Type: Fairy\nModest Nature\n- Electro Drift\n- Draco Meteor\n- Volt Switch\n- Dazzling Gleam",
-        "synergy": [
-            "38"
-        ],
-        "format": "Doubles"
-    },
-    {
-        "id": "40",
-        "pokemon": "Miraidon",
-        "build": "Miraidon @ Assault Vest\nLevel: 50\nAbility: Hadron Engine\nEVs: 252 HP / 20 Def / 212 SpA / 4 SpD / 20 Spe\nTera Type: Electric\nModest Nature\n- Electro Drift\n- Volt Switch\n- Draco Meteor\n- Snarl",
-        "synergy": [],
-        "format": "Doubles"
-    },
-    {
         "id": "12",
         "pokemon": "Raging Bolt",
         "build": "Raging Bolt @ Magnet\nLevel: 50\nAbility: Protosynthesis\nEVs: 188 HP / 76 Def / 180 SpA / 4 SpD / 60 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderbolt\n- Draco Meteor\n- Thunderclap\n- Protect",
@@ -324,6 +266,36 @@
         "format": "Singles"
     },
     {
+        "id": "37",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "38",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 236 HP / 164 Def / 108 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "39",
+        "pokemon": "Miraidon",
+        "build": "Miraidon @ Choice Specs\nLevel: 50\nAbility: Hadron Engine\nEVs: 4 HP / 252 SpA / 252 Spe\nTera Type: Fairy\nModest Nature\n- Electro Drift\n- Draco Meteor\n- Volt Switch\n- Dazzling Gleam",
+        "synergy": [
+            "38"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "40",
+        "pokemon": "Miraidon",
+        "build": "Miraidon @ Assault Vest\nLevel: 50\nAbility: Hadron Engine\nEVs: 252 HP / 20 Def / 212 SpA / 4 SpD / 20 Spe\nTera Type: Electric\nModest Nature\n- Electro Drift\n- Volt Switch\n- Draco Meteor\n- Snarl",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
         "id": "41",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Leftovers\nAbility: Overgrow\nEVs: 252 HP / 168 Def / 88 Spe\nTera Type: Water\nBold Nature\n- Giga Drain\n- Sludge Bomb\n- Knock Off\n- Synthesis",
@@ -341,6 +313,62 @@
         "id": "43",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Venusaurite\nAbility: Chlorophyll\nEVs: 252 HP / 156 SpA / 100 Spe\nIVs: 0 Atk\nModest Nature\n- Giga Drain\n- Sludge Bomb\n- Earth Power\n- Synthesis",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "44",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Ground\nTimid Nature\n- Hurricane\n- Flamethrower\n- Scorching Sands\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "45",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Choice Specs\nLevel: 50\nAbility: Solar Power\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Heat Wave\n- Weather Ball\n- Overheat\n- Air Slash",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "46",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite Y\nAbility: Drought\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "47",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite X\nAbility: Blaze\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Dragon Dance\n- Flare Blitz\n- Dragon Claw\n- Earthquake",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "48",
+        "pokemon": "Blastoise",
+        "build": "Blastoise @ White Herb\nAbility: Torrent\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Electric\nModest Nature\n- Shell Smash\n- Surf\n- Ice Beam\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "49",
+        "pokemon": "Blastoise",
+        "build": "Blastoise @ Blastoisinite\nAbility: Rain Dish\nEVs: 104 HP / 252 SpA / 152 Spe\nModest Nature\n- Water Pulse\n- Dark Pulse\n- Aura Sphere\n- Ice Beam",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "50",
+        "pokemon": "Butterfree",
+        "build": "Butterfree @ Leftovers\nAbility: Compound Eyes\nEVs: 200 HP / 28 Def / 52 SpA / 228 Spe\nTimid Nature\n- Quiver Dance\n- Hurricane\n- Sleep Powder\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "51",
+        "pokemon": "Beedrill",
+        "build": "Beedrill @ Beedrillite\nAbility: Swarm\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- U-turn\n- Poison Jab\n- Drill Run\n- Knock Off",
         "synergy": [],
         "format": "Singles"
     }
