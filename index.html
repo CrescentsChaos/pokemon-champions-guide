@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Champions Guide | Professional VGC & Competitive Resource</title>
     <meta name="description" content="Master the art of competitive Pokemon battling. The ultimate guide for VGC and Smogon champions.">
+    <link rel="icon" type="image/png" href="assets/champions-logo.png">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,11 +13,12 @@
     <section class="hero">
         <img src="assets/hero_bg.png" alt="Pokemon Champion Arena" class="hero-image">
         <div class="container hero-content">
-            <h1 class="fade-in">Master the Meta</h1>
-            <p class="fade-in">The definitive resource for professional Pokemon trainers. Strategies, team building, and data-driven insights to help you become a Champion.</p>
+            <img src="assets/champions-logo.png" alt="Champions Guide Logo" class="feature-img fade-in" style="max-width: 300px; margin-bottom: 2rem; filter: drop-shadow(0 0 30px rgba(255, 62, 62, 0.4));">
+            <h1 class="fade-in" style="background: linear-gradient(180deg, #fff 0%, var(--primary-red) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">MASTER THE META</h1>
+            <p class="fade-in">The definitive resource for elite Pokemon trainers. Expert strategies, data-driven teambuilding, and the ultimate competitive library.</p>
             <div class="fade-in">
-                <a href="guides/index.html" class="btn">Explore Guides</a>
-                <a href="pokedex/index.html" class="btn" style="background: transparent; border: 2px solid var(--primary-red); margin-left: 1rem;">Browse Pokedex</a>
+                <a href="builds/" class="btn">View Builds</a>
+                <a href="teambuilder/" class="btn" style="background: transparent; border: 2px solid var(--primary-red); margin-left: 1rem;">Go to Builder</a>
             </div>
         </div>
     </section>
@@ -24,22 +26,26 @@
     <section id="features">
         <div class="container">
             <div class="section-title fade-in">
-                <h2>CHAMPIONSHIP FEATURES</h2>
-                <p style="color: var(--text-muted)">Everything you need to climb the ladder.</p>
+                <h2>CHAMPIONSHIP MODULES</h2>
+                <p style="color: var(--text-muted)">The professional toolkit for VGC and Smogon champions.</p>
             </div>
             
             <div class="grid">
-                <div class="card glass fade-in">
+                <div class="card glass fade-in" onclick="window.location.href='teambuilder/'" style="cursor: pointer;">
                     <h3>Team Builder</h3>
-                    <p>Construct perfect synergies with our advanced move and ability coverage analysis.</p>
+                    <p>Construct competitive squads with advanced coverage analysis and synergy detection.</p>
                 </div>
-                <div class="card glass fade-in">
-                    <h3>Meta Statistics</h3>
-                    <p>Real-time usage data from the highest ranks of competitive play.</p>
+                <div class="card glass fade-in" onclick="window.location.href='builds/'" style="cursor: pointer;">
+                    <h3>Builds Library</h3>
+                    <p>Access curated, tournament-ready sets from the highest ranks of the current meta.</p>
                 </div>
-                <div class="card glass fade-in">
-                    <h3>Damage Calculator</h3>
-                    <p>Precision calculations for the most critical turn-by-turn math.</p>
+                <div class="card glass fade-in" onclick="window.location.href='pokedex/'" style="cursor: pointer;">
+                    <h3>Elite Pokedex</h3>
+                    <p>High-performance database optimized for speed and precise competitive lookup.</p>
+                </div>
+                <div class="card glass fade-in" onclick="window.location.href='guides/'" style="cursor: pointer;">
+                    <h3>Expert Guides</h3>
+                    <p>Master complex mechanics, tier breakdowns, and team pilot strategies from the pros.</p>
                 </div>
             </div>
         </div>
@@ -48,8 +54,8 @@
     <section id="meta">
         <div class="container" style="display: flex; align-items: center; gap: 4rem;">
             <div style="flex: 1" class="fade-in">
-                <h2 style="font-size: 3rem; margin-bottom: 2rem;">DATA DRIVEN<br><span style="color: var(--primary-red)">DOMINANCE</span></h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Our platform analyzes over 100,000 battles daily to provide you with the most accurate move set recommendations and counterplay strategies.</p>
+                <h2 style="font-size: 3rem; margin-bottom: 2rem;">STATE OF THE ART<br><span style="color: var(--primary-red)">DOMINANCE</span></h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Our platform provides you with the most accurate move set recommendations and counterplay strategies, giving you the edge in every best-of-three series.</p>
                 <div class="mono" style="font-size: 0.9rem; border-left: 2px solid var(--primary-red); padding-left: 1rem;">
                     > RUNNING_LATEST_META_ANALYSIS...<br>
                     > UPDATING_USAGE_STATS...<br>

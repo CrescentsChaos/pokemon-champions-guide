@@ -342,7 +342,7 @@
         "pokemon": "Charizard",
         "build": "Charizard @ Charizardite X\nAbility: Blaze\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Dragon Dance\n- Flare Blitz\n- Dragon Claw\n- Earthquake",
         "synergy": [],
-        "format": "Doubles"
+        "format": "Singles"
     },
     {
         "id": "48",
@@ -369,6 +369,13 @@
         "id": "51",
         "pokemon": "Beedrill",
         "build": "Beedrill @ Beedrillite\nAbility: Swarm\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- U-turn\n- Poison Jab\n- Drill Run\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "52",
+        "pokemon": "Pidgeot",
+        "build": "Pidgeot @ Pidgeotite\nAbility: Tangled Feet\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Hurricane\n- Heat Wave\n- Roost\n- Toxic",
         "synergy": [],
         "format": "Singles"
     }

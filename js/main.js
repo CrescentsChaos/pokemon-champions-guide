@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerHTML = `
         <header id="main-header">
             <div class="container nav-container">
-                <a href="${prefix}index.html" class="logo">
-                    <span style="color:white">CHAMPIONS</span><span style="color:var(--primary-red)">GUIDE</span>
+                <a href="${prefix}" class="logo">
+                    <img src="${prefix}assets/champions-logo.png" alt="Logo" style="height: 32px; width: auto; filter: drop-shadow(0 0 10px rgba(255, 62, 62, 0.3));">
+                    <span style="color:white; margin-left: 10px;">CHAMPIONS</span><span style="color:var(--primary-red)">GUIDE</span>
                 </a>
                 <button id="menu-toggle" class="menu-btn" aria-label="Toggle Menu">
                     <span class="bar"></span>
@@ -18,17 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="bar"></span>
                 </button>
                 <nav class="nav-links">
-                    <a href="${prefix}index.html" data-page="home">Home</a>
-                    <a href="${prefix}pokedex/index.html" data-page="pokedex">Pokedex</a>
-                    <a href="${prefix}teambuilder/index.html" data-page="teambuilder">Builder</a>
-                    <a href="${prefix}builds/index.html" data-page="builds">Builds</a>
-                    <a href="${prefix}guides/index.html" data-page="guides">Guides</a>
+                    <a href="${prefix}" data-page="home">Home</a>
+                    <a href="${prefix}pokedex/" data-page="pokedex">Pokedex</a>
+                    <a href="${prefix}teambuilder/" data-page="teambuilder">Builder</a>
+                    <a href="${prefix}builds/" data-page="builds">Builds</a>
+                    <a href="${prefix}guides/" data-page="guides">Guides</a>
                     <div class="mobile-only" style="margin-top: 2rem;">
-                        <a href="${prefix}teambuilder/index.html" class="btn" style="width: 100%; text-align: center;">Build Team</a>
+                        <a href="${prefix}teambuilder/" class="btn" style="width: 100%; text-align: center;">Build Team</a>
                     </div>
                 </nav>
                 <div class="header-action desktop-only">
-                    <a href="${prefix}teambuilder/index.html" class="btn" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;">Build Team</a>
+                    <a href="${prefix}teambuilder/" class="btn" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;">Build Team</a>
                 </div>
             </div>
         </header>
@@ -36,19 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const footerHTML = `
         <footer style="margin-top: 8rem; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
-            <div class="container" style="padding: 6rem 2rem;">
+            <div class="container" style="padding: 6rem 1.2rem;">
                 <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem;">
                     <div>
-                        <a href="${prefix}index.html" class="logo" style="margin-bottom: 1.5rem;">CHAMPIONS GUIDE</a>
+                        <a href="${prefix}" class="logo" style="margin-bottom: 1.5rem; display: flex; align-items: center;">
+                            <img src="${prefix}assets/champions-logo.png" alt="Logo" style="height: 40px; margin-right: 15px;">
+                            CHAMPIONS GUIDE
+                        </a>
                         <p style="color: var(--text-muted); max-width: 400px; font-size: 0.95rem;">The world's most advanced competitive Pokemon resource. Built for VGC Masters and Smogon Enthusiasts alike. Precision data, elite strategies, and professional tools.</p>
                     </div>
                     <div>
                         <h4 style="color: white; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">Navigation</h4>
                         <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}index.html" style="color: var(--text-muted); text-decoration: none;">Home</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}pokedex/index.html" style="color: var(--text-muted); text-decoration: none;">Elite Pokedex</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}builds/index.html" style="color: var(--text-muted); text-decoration: none;">Competitve Builds</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}teambuilder/index.html" style="color: var(--text-muted); text-decoration: none;">Team Builder</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}" style="color: var(--text-muted); text-decoration: none;">Home</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}pokedex/" style="color: var(--text-muted); text-decoration: none;">Elite Pokedex</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}builds/" style="color: var(--text-muted); text-decoration: none;">Competitive Builds</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}teambuilder/" style="color: var(--text-muted); text-decoration: none;">Team Builder</a></li>
                         </ul>
                     </div>
                     <div>
