@@ -52,5 +52,27 @@
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nEVs: 244 HP / 236 Def / 28 Spe\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Thunder Wave\n- Moonblast\n- Icy Wind\n- Taunt",
         "synergy": []
+    },
+    {
+        "id": "10",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Safety Goggles\nLevel: 50\nAbility: Intimidate\nEVs: 228 HP / 28 Atk / 92 Def / 76 SpD / 84 Spe\nTera Type: Ghost\nCareful Nature\n- Fake Out\n- Knock Off\n- Flare Blitz\n- Parting Shot",
+        "synergy": [
+            "06",
+            "07",
+            "08",
+            "09"
+        ]
+    },
+    {
+        "id": "11",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Assault Vest\nLevel: 50\nAbility: Intimidate\nEVs: 244 HP / 60 Atk / 44 Def / 44 SpD / 116 Spe\nTera Type: Grass\nAdamant Nature\n- Flare Blitz\n- Knock Off\n- Fake Out\n- U-turn",
+        "synergy": [
+            "06",
+            "07",
+            "08",
+            "09"
+        ]
     }
 ]
