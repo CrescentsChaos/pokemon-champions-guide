@@ -74,5 +74,23 @@
             "08",
             "09"
         ]
+    },
+    {
+        "id": "12",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Magnet\nLevel: 50\nAbility: Protosynthesis\nEVs: 188 HP / 76 Def / 180 SpA / 4 SpD / 60 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderbolt\n- Draco Meteor\n- Thunderclap\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "13",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Booster Energy\nAbility: Protosynthesis\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 20 Atk\nTera Type: Fairy\nModest Nature\n- Calm Mind\n- Thunderclap\n- Dragon Pulse\n- Thunderbolt",
+        "synergy": []
+    },
+    {
+        "id": "14",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Assault Vest\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Draco Meteor\n- Electroweb\n- Volt Switch",
+        "synergy": []
     }
 ]
