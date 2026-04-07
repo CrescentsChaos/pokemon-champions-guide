@@ -49,5 +49,11 @@
         "pokemon": "Cofagrigus",
         "build": "Cofagrigus @ Leftovers\nAbility: Mummy\nEVs: 252HP / 128 Def / 128 SDef\nCareful Nature\n- Night Shade\n- Haze\n- Protect\n- Will-O-Wisp",
         "synergy": []
+    },
+    {
+        "id": "07",
+        "pokemon": "Abomasnow",
+        "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 248 HP / 252 SpA / 8 SpD\nIVs: 0 Atk\nTera Type: Water\nModest Nature\n- Aurora Veil\n- Blizzard\n- Giga Drain\n- Earth Power",
+        "synergy": []
     }
 ]

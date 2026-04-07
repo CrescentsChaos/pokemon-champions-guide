@@ -4416,7 +4416,7 @@
     "damage_class": "Physical"
   },
   {
-    "name": "U Turn",
+    "name": "U-turn",
     "id": 369,
     "accuracy": 100,
     "pp": 20,
