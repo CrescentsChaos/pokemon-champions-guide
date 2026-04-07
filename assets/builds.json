@@ -28,5 +28,29 @@
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 248 HP / 252 Def / 8 SpD\nRelaxed Nature\n- Aurora Veil\n- Blizzard\n- Ice Shard\n- Body Press",
         "synergy": []
+    },
+    {
+        "id": "06",
+        "pokemon": "Flutter Mane",
+        "build": "Flutter Mane @ Focus Sash\nLevel: 50\nAbility: Protosynthesis\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Normal\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Icy Wind\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "07",
+        "pokemon": "Flutter Mane",
+        "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 116 HP / 76 Def / 116 SpA / 4 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
+        "synergy": []
+    },
+    {
+        "id": "08",
+        "pokemon": "Flutter Mane",
+        "build": "Flutter Mane @ Choice Specs\nAbility: Protosynthesis\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Psyshock\n- Power Gem",
+        "synergy": []
+    },
+    {
+        "id": "09",
+        "pokemon": "Flutter Mane",
+        "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nEVs: 244 HP / 236 Def / 28 Spe\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Thunder Wave\n- Moonblast\n- Icy Wind\n- Taunt",
+        "synergy": []
     }
 ]
