@@ -25,6 +25,14 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            position: sticky;
+            top: 5rem;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .filter-row {
@@ -171,15 +179,26 @@
         }
 
         .role-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.6);
             padding: 2px 8px;
             border-radius: 6px;
             font-size: 0.6rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .format-badge {
+            background: var(--primary-red);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.55rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .tera-badge {
@@ -291,12 +310,19 @@
                 <select id="role-filter" class="filter-select">
                     <option value="">All Roles</option>
                 </select>
+                <select id="format-filter" class="filter-select">
+                    <option value="">All Formats</option>
+                    <option value="Singles">Singles</option>
+                    <option value="Doubles">Doubles</option>
+                </select>
             </div>
         </div>
 
-        <div id="builds-grid" class="fade-in">
+        <div id="builds-grid" class="fade-in" style="margin-bottom: 2rem;">
             <!-- Builds will be injected here as high-fidelity cards -->
         </div>
+
+        <div id="load-more-sentinel" style="height: 50px; margin-top: 1rem;"></div>
 
         <div id="synergy-container" class="fade-in">
             <div class="synergy-header">
@@ -323,6 +349,8 @@
         let allMoves = [];
         let allItems = [];
         let selectedBuildId = null;
+        let displayedCount = 12;
+        const batchSize = 12;
 
         const typeColors = {
             normal: '#A8A77A', fire: '#EE8130', water: '#6390F0', electric: '#F7D02C',
@@ -365,9 +393,33 @@
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
 
+                // Sort Alphabetically
+                allBuilds.sort((a, b) => a.pokemon.localeCompare(b.pokemon));
+
                 populateFilters();
+                setupInfiniteScroll();
                 renderBuilds();
             } catch (e) { console.error("Data load failed", e); }
+        }
+
+        function setupInfiniteScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadMore();
+                }
+            }, { rootMargin: '200px' });
+            observer.observe(document.getElementById('load-more-sentinel'));
+        }
+
+        function loadMore() {
+            const search = document.getElementById('build-search').value.trim();
+            const typeFilter = document.getElementById('type-filter').value;
+            const roleFilter = document.getElementById('role-filter').value;
+            const formatFilter = document.getElementById('format-filter').value;
+
+            // Only increase if we filter results are larger than displayed
+            displayedCount += batchSize;
+            renderBuilds(true);
         }
 
         function populateFilters() {
@@ -620,6 +672,7 @@
 
             const spriteUrl = getSpriteUrl(p);
             const megaUrl = getMegaSpriteUrl(p);
+            const format = rawBuild.format || 'SINGLES';
 
             card.innerHTML = `
                 <div class="card-header">
@@ -632,8 +685,11 @@
                         ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
                     <div class="header-info">
-                        <h3 style="font-size:1.1rem; color:white; margin:0;">${p.species}</h3>
-                        <div class="type-badges-row">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 style="font-size:1.1rem; color:white; margin:0;">${p.species}</h3>
+                            <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}">${format[0]}</span>
+                        </div>
+                        <div class="type-badges-row" style="margin-top:2px;">
                             <span class="type-tag type-${t1}" style="font-size:0.55rem; padding:1px 5px;">${t1}</span>
                             ${t2 ? `<span class="type-tag type-${t2}" style="font-size:0.55rem; padding:1px 5px;">${t2}</span>` : ''}
                         </div>
@@ -674,16 +730,21 @@
             return el;
         }
 
-        function renderBuilds() {
+        function renderBuilds(append = false) {
             const grid = document.getElementById('builds-grid');
-            grid.innerHTML = '';
+            if (!append) {
+                grid.innerHTML = '';
+                displayedCount = batchSize;
+            }
             
             const searchInput = document.getElementById('build-search');
             const search = searchInput.value.toLowerCase().trim();
             const typeFilter = document.getElementById('type-filter').value.toLowerCase();
             const roleFilter = document.getElementById('role-filter').value;
+            const formatFilter = document.getElementById('format-filter').value.toLowerCase();
 
-            allBuilds.forEach(build => {
+            let count = 0;
+            const filtered = allBuilds.filter(build => {
                 const p = parsePaste(build.build);
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
@@ -692,25 +753,28 @@
                 const t2 = (dbRef?.Type_2 || '').toLowerCase();
                 const ability = (p.ability || '').toLowerCase();
                 const moves = p.moves.map(m => m.toLowerCase());
+                const format = (build.format || 'Singles').toLowerCase();
 
-                // Comprehensive Search (Name, Types, Ability, Moves)
                 if (search) {
-                    const searchPool = [
-                        p.species.toLowerCase(),
-                        t1,
-                        t2,
-                        ability,
-                        ...moves
-                    ];
-                    if (!searchPool.some(val => val.includes(search))) return;
+                    const searchPool = [p.species.toLowerCase(), t1, t2, ability, ...moves];
+                    if (!searchPool.some(val => val.includes(search))) return false;
                 }
-                
-                // Dropdown Filters
-                if (typeFilter && t1 !== typeFilter && t2 !== typeFilter) return;
-
+                if (typeFilter && t1 !== typeFilter && t2 !== typeFilter) return false;
                 const buildRoles = detectRole(p, dbRef);
-                if (roleFilter && !buildRoles.includes(roleFilter)) return;
+                if (roleFilter && !buildRoles.includes(roleFilter)) return false;
+                if (formatFilter && format !== formatFilter) return false;
 
+                return true;
+            });
+
+            // If appending, only render the next slice
+            const toRender = append ? filtered.slice(displayedCount - batchSize, displayedCount) : filtered.slice(0, displayedCount);
+
+            toRender.forEach(build => {
+                const p = parsePaste(build.build);
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+                
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
@@ -722,6 +786,13 @@
                 wrapper.appendChild(createTeamCard(p, dbRef, build));
                 grid.appendChild(wrapper);
             });
+
+            const sentinel = document.getElementById('load-more-sentinel');
+            if (displayedCount >= filtered.length) {
+                sentinel.style.display = 'none';
+            } else {
+                sentinel.style.display = 'block';
+            }
         }
 
         function selectBuild(id) {
@@ -775,9 +846,10 @@
             });
         }
 
-        document.getElementById('build-search').addEventListener('input', renderBuilds);
-        document.getElementById('type-filter').addEventListener('change', renderBuilds);
-        document.getElementById('role-filter').addEventListener('change', renderBuilds);
+        document.getElementById('build-search').addEventListener('input', () => renderBuilds());
+        document.getElementById('type-filter').addEventListener('change', () => renderBuilds());
+        document.getElementById('role-filter').addEventListener('change', () => renderBuilds());
+        document.getElementById('format-filter').addEventListener('change', () => renderBuilds());
         loadData();
     </script>
 </body>

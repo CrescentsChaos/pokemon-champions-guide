@@ -3,55 +3,180 @@
         "id": "01",
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 248 HP / 252 SpA / 8 SpD\nIVs: 0 Atk\nTera Type: Water\nModest Nature\n- Aurora Veil\n- Blizzard\n- Giga Drain\n- Earth Power",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "02",
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Aurora Veil\n- Blizzard\n- Giga Drain\n- Earth Power",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "03",
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ground\nTimid Nature\n- Blizzard\n- Giga Drain\n- Earth Power\n- Leech Seed",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "04",
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Eject Pack\nAbility: Snow Warning\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Aurora Veil\n- Leaf Storm\n- Blizzard\n- Earth Power",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "05",
         "pokemon": "Abomasnow",
         "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 248 HP / 252 Def / 8 SpD\nRelaxed Nature\n- Aurora Veil\n- Blizzard\n- Ice Shard\n- Body Press",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "21",
+        "pokemon": "Arcanine",
+        "build": "Arcanine @ Leftovers\nAbility: Intimidate\nEVs: 160 HP / 252 Atk / 96 Spe\nTera Type: Normal\nAdamant Nature\n- Curse\n- Extreme Speed\n- Flare Blitz\n- Morning Sun",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "22",
+        "pokemon": "Arcanine",
+        "build": "Arcanine @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Flare Blitz\n- Close Combat\n- Extreme Speed\n- Raging Fury",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "23",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Heavy-Duty Boots\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "24",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Clear Amulet\nLevel: 50\nAbility: Intimidate\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Extreme Speed\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "25",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Mirror Herb\nLevel: 50\nAbility: Intimidate\nEVs: 180 HP / 44 Atk / 12 Def / 20 SpD / 252 Spe\nTera Type: Fairy\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Close Combat\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "26",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "17",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 28 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
+        "synergy": [
+            "16"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "33",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Air Balloon\nAbility: Sand Rush\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Earthquake\n- Rapid Spin\n- Rock Slide\n- Swords Dance",
+        "synergy": [
+            "0y"
+        ],
+        "format": "Singles"
+    },
+    {
+        "id": "34",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 24 HP / 56 Atk / 252 SpD / 176 Spe\nTera Type: Ghost\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "35",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 172 HP / 252 SpD / 84 Spe\nTera Type: Ghost\nJolly Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "06",
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Focus Sash\nLevel: 50\nAbility: Protosynthesis\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Normal\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Icy Wind\n- Protect",
-        "synergy": []
+        "synergy": [],
+        "format": "Doubles"
     },
     {
         "id": "07",
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 116 HP / 76 Def / 116 SpA / 4 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
-        "synergy": []
+        "synergy": [],
+        "format": "Doubles"
     },
     {
         "id": "08",
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Choice Specs\nAbility: Protosynthesis\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Psyshock\n- Power Gem",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "09",
         "pokemon": "Flutter Mane",
         "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nEVs: 244 HP / 236 Def / 28 Spe\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Thunder Wave\n- Moonblast\n- Icy Wind\n- Taunt",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "18",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Life Orb\nLevel: 50\nAbility: Magic Bounce\nEVs: 244 HP / 44 Def / 220 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Expanding Force\n- Dazzling Gleam\n- Trick Room\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "19",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "20",
+        "pokemon": "Hatterene",
+        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "27",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Grass\nTimid Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "28",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 84 Def / 156 SpA / 20 SpD / 20 Spe\nTera Type: Grass\nModest Nature\n- Heat Wave\n- Flash Cannon\n- Earth Power\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "29",
+        "pokemon": "Heatran",
+        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 HP / 4 Def / 212 SpD / 40 Spe\nTera Type: Grass\nCalm Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "10",
@@ -62,7 +187,8 @@
             "07",
             "08",
             "09"
-        ]
+        ],
+        "format": "Doubles"
     },
     {
         "id": "11",
@@ -73,154 +199,70 @@
             "07",
             "08",
             "09"
-        ]
-    },
-    {
-        "id": "12",
-        "pokemon": "Raging Bolt",
-        "build": "Raging Bolt @ Magnet\nLevel: 50\nAbility: Protosynthesis\nEVs: 188 HP / 76 Def / 180 SpA / 4 SpD / 60 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderbolt\n- Draco Meteor\n- Thunderclap\n- Protect",
-        "synergy": []
-    },
-    {
-        "id": "13",
-        "pokemon": "Raging Bolt",
-        "build": "Raging Bolt @ Booster Energy\nAbility: Protosynthesis\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 20 Atk\nTera Type: Fairy\nModest Nature\n- Calm Mind\n- Thunderclap\n- Dragon Pulse\n- Thunderbolt",
-        "synergy": []
-    },
-    {
-        "id": "14",
-        "pokemon": "Raging Bolt",
-        "build": "Raging Bolt @ Assault Vest\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Draco Meteor\n- Electroweb\n- Volt Switch",
-        "synergy": []
-    },
-    {
-        "id": "15",
-        "pokemon": "Raging Bolt",
-        "build": "Raging Bolt @ Leftovers\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Dragon Pulse\n- Calm Mind\n- Protect",
-        "synergy": []
+        ],
+        "format": "Doubles"
     },
     {
         "id": "16",
         "pokemon": "Indeedee-F",
         "build": "Indeedee-F @ Psychic Seed\nLevel: 50\nAbility: Psychic Surge\nEVs: 252 HP / 252 Def / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fairy\nRelaxed Nature\n- Follow Me\n- Trick Room\n- Helping Hand\n- Psychic",
-        "synergy": []
+        "synergy": [],
+        "format": "Doubles"
     },
     {
-        "id": "17",
-        "pokemon": "Armarouge",
-        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 28 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
-        "synergy": [
-            "16"
-        ]
+        "id": "12",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Magnet\nLevel: 50\nAbility: Protosynthesis\nEVs: 188 HP / 76 Def / 180 SpA / 4 SpD / 60 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderbolt\n- Draco Meteor\n- Thunderclap\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     },
     {
-        "id": "18",
-        "pokemon": "Hatterene",
-        "build": "Hatterene @ Life Orb\nLevel: 50\nAbility: Magic Bounce\nEVs: 244 HP / 44 Def / 220 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Expanding Force\n- Dazzling Gleam\n- Trick Room\n- Protect",
-        "synergy": []
+        "id": "13",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Booster Energy\nAbility: Protosynthesis\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 20 Atk\nTera Type: Fairy\nModest Nature\n- Calm Mind\n- Thunderclap\n- Dragon Pulse\n- Thunderbolt",
+        "synergy": [],
+        "format": "Singles"
     },
     {
-        "id": "19",
-        "pokemon": "Hatterene",
-        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
-        "synergy": []
+        "id": "14",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Assault Vest\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Draco Meteor\n- Electroweb\n- Volt Switch",
+        "synergy": [],
+        "format": "Singles"
     },
     {
-        "id": "20",
-        "pokemon": "Hatterene",
-        "build": "Hatterene @ Rocky Helmet\nAbility: Magic Bounce\nEVs: 248 HP / 252 Def / 8 Spe\nTera Type: Water\nBold Nature\n- Nuzzle\n- Psychic Noise\n- Pain Split\n- Healing Wish",
-        "synergy": []
+        "id": "15",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Leftovers\nAbility: Protosynthesis\nEVs: 240 HP / 200 SpA / 68 Spe\nIVs: 20 Atk\nTera Type: Electric\nModest Nature\n- Thunderclap\n- Dragon Pulse\n- Calm Mind\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     },
     {
-        "id": "21",
-        "pokemon": "Arcanine",
-        "build": "Arcanine @ Leftovers\nAbility: Intimidate\nEVs: 160 HP / 252 Atk / 96 Spe\nTera Type: Normal\nAdamant Nature\n- Curse\n- Extreme Speed\n- Flare Blitz\n- Morning Sun",
-        "synergy": []
-    },
-    {
-        "id": "22",
-        "pokemon": "Arcanine",
-        "build": "Arcanine @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Flare Blitz\n- Close Combat\n- Extreme Speed\n- Raging Fury",
-        "synergy": []
-    },
-    {
-        "id": "23",
-        "pokemon": "Arcanine-Hisui",
-        "build": "Arcanine-Hisui @ Heavy-Duty Boots\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Stealth Rock",
-        "synergy": []
-    },
-    {
-        "id": "24",
-        "pokemon": "Arcanine-Hisui",
-        "build": "Arcanine-Hisui @ Clear Amulet\nLevel: 50\nAbility: Intimidate\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Extreme Speed\n- Protect",
-        "synergy": []
-    },
-    {
-        "id": "25",
-        "pokemon": "Arcanine-Hisui",
-        "build": "Arcanine-Hisui @ Mirror Herb\nLevel: 50\nAbility: Intimidate\nEVs: 180 HP / 44 Atk / 12 Def / 20 SpD / 252 Spe\nTera Type: Fairy\nJolly Nature\n- Flare Blitz\n- Rock Slide\n- Close Combat\n- Protect",
-        "synergy": []
-    },
-    {
-        "id": "26",
-        "pokemon": "Arcanine-Hisui",
-        "build": "Arcanine-Hisui @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Head Smash\n- Flare Blitz\n- Extreme Speed\n- Close Combat",
-        "synergy": []
-    },
-    {
-        "id": "27",
-        "pokemon": "Heatran",
-        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Grass\nTimid Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
-        "synergy": []
-    },
-    {
-        "id": "28",
-        "pokemon": "Heatran",
-        "build": "Heatran @ Leftovers\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 84 Def / 156 SpA / 20 SpD / 20 Spe\nTera Type: Grass\nModest Nature\n- Heat Wave\n- Flash Cannon\n- Earth Power\n- Protect",
-        "synergy": []
-    },
-    {
-        "id": "29",
-        "pokemon": "Heatran",
-        "build": "Heatran @ Leftovers\nAbility: Flash Fire\nEVs: 252 HP / 4 Def / 212 SpD / 40 Spe\nTera Type: Grass\nCalm Nature\n- Magma Storm\n- Earth Power\n- Taunt\n- Stealth Rock",
-        "synergy": []
+        "id": "36",
+        "pokemon": "Rotom-Wash",
+        "build": "Rotom-Wash @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 212 Def / 44 Spe\nTera Type: Steel\nBold Nature\n- Volt Switch\n- Hydro Pump\n- Pain Split\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "30",
         "pokemon": "Tyranitar",
         "build": "Tyranitar @ Assault Vest\nLevel: 50\nAbility: Sand Stream\nEVs: 140 HP / 252 Atk / 4 Def / 4 SpD / 108 Spe\nTera Type: Flying\nAdamant Nature\n- Knock Off\n- Rock Slide\n- Tera Blast\n- Low Kick",
-        "synergy": []
+        "synergy": [],
+        "format": "Doubles"
     },
     {
         "id": "31",
         "pokemon": "Tyranitar",
         "build": "Tyranitar @ Choice Band\nAbility: Sand Stream\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Flying\nAdamant Nature\n- Knock Off\n- Stone Edge\n- Low Kick\n- Ice Punch",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     },
     {
         "id": "32",
         "pokemon": "Tyranitar",
         "build": "Tyranitar @ Smooth Rock\nAbility: Sand Stream\nEVs: 252 HP / 16 Def / 240 SpD\nTera Type: Flying\nSassy Nature\n- Stealth Rock\n- Knock Off\n- Ice Beam\n- Roar",
-        "synergy": []
-    },
-    {
-        "id": "33",
-        "pokemon": "Excadrill",
-        "build": "Excadrill @ Air Balloon\nAbility: Sand Rush\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Earthquake\n- Rapid Spin\n- Rock Slide\n- Swords Dance",
-        "synergy": [
-            "0y"
-        ]
-    },
-    {
-        "id": "34",
-        "pokemon": "Excadrill",
-        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 24 HP / 56 Atk / 252 SpD / 176 Spe\nTera Type: Ghost\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
-        "synergy": []
-    },
-    {
-        "id": "35",
-        "pokemon": "Excadrill",
-        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 172 HP / 252 SpD / 84 Spe\nTera Type: Ghost\nJolly Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
-        "synergy": []
+        "synergy": [],
+        "format": "Singles"
     }
 ]

@@ -93,7 +93,13 @@ async function main() {
             console.warn(`\n[WARNING] "${pokemonName}" not found in assets/pokemon.json!`);
         }
 
-        // 4. Get Synergies
+        // 4. Get Format
+        const formatInput = await new Promise(resolve => {
+            rl.question(`\nIs this for Singles or Doubles? (s/d) [default: d]: `, resolve);
+        });
+        const format = (formatInput.toLowerCase() === 's') ? 'Singles' : 'Doubles';
+
+        // 5. Get Synergies
         const synergiesInput = await new Promise(resolve => {
             rl.question(`\nEnter synergy IDs (comma-separated, e.g. 01, 02) or leave blank: `, resolve);
         });
@@ -102,7 +108,7 @@ async function main() {
             ? synergiesInput.split(',').map(s => s.trim().padStart(2, '0')).filter(s => s !== '')
             : [];
 
-        // 5. Generate New ID
+        // 6. Generate New ID
         let maxId = 0;
         buildsData.forEach(b => {
             const idNum = parseInt(b.id, 10);
@@ -110,20 +116,21 @@ async function main() {
         });
         const nextId = String(maxId + 1).padStart(2, '0');
 
-        // 6. Create New Build Object
+        // 7. Create New Build Object
         const newBuild = {
             id: nextId,
             pokemon: pokemonName,
             build: paste.trim(),
-            synergy: synergies
+            synergy: synergies,
+            format: format
         };
 
-        // 7. Save
+        // 8. Save
         buildsData.push(newBuild);
         try {
             fs.writeFileSync(buildsPath, JSON.stringify(buildsData, null, 4), 'utf8');
             console.log(`\n--- Success! ---`);
-            console.log(`Added build for ${pokemonName} with ID: ${nextId}`);
+            console.log(`Added build for ${pokemonName} [${format}] with ID: ${nextId}`);
         } catch (err) {
             console.error('Error saving builds.json:', err.message);
         }
