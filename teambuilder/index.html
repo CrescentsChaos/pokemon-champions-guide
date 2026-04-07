@@ -1298,14 +1298,16 @@
             } else data = allMoves;
 
             const filtered = data.filter(x =>
-                (x.Name || x.name).toLowerCase().includes(q.toLowerCase())
+                (x.Name || x.name || '').toLowerCase().includes(q.toLowerCase()) || 
+                (x.id && String(x.id).includes(q))
             ).sort((a, b) => (b.eligible ? 1 : 0) - (a.eligible ? 1 : 0)).slice(0, 100);
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'search-item';
                 const name = item.Name || item.name;
-                card.innerHTML = `<div style="font-weight:900; ${item.eligible ? 'color: var(--primary-red);' : ''}">${name} ${item.eligible ? '⭐' : ''}</div>`;
+                const idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
+                card.innerHTML = `<div style="font-weight:900; ${item.eligible ? 'color: var(--primary-red);' : ''}">${idStr}${name} ${item.eligible ? '⭐' : ''}</div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
                 if (item.description) card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
 

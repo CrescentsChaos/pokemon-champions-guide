@@ -355,6 +355,7 @@
             const query = e.target.value.toLowerCase();
             filteredPokemon = allPokemon.filter(p => 
                 p.Name.toLowerCase().includes(query) || 
+                String(p.id).includes(query) ||
                 p.Type_1.toLowerCase().includes(query) || 
                 (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
                 (p.Generation && String(p.Generation).toLowerCase().includes(query))

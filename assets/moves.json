@@ -9697,7 +9697,7 @@
   },
   {
     "name": "Armor Cannon",
-    "id": 370,
+    "id": 827,
     "accuracy": 100,
     "pp": 5,
     "power": 120,
@@ -9706,5 +9706,17 @@
     "generation": "Generation IX",
     "short_descripton": "Lowers the user's Defense and Special Defense by one stage after inflicting damage.",
     "damage_class": "Special"
+  },
+  {
+    "name": "Headlong Rush",
+    "id": 828,
+    "accuracy": 100,
+    "pp": 5,
+    "power": 120,
+    "priority": 0,
+    "type": "Ground",
+    "generation": "Generation IX",
+    "short_descripton": "Lowers the user's Defense and Special Defense by one stage after inflicting damage.",
+    "damage_class": "Physical"
   }
 ]
