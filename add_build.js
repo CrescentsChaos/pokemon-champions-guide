@@ -57,14 +57,8 @@ async function main() {
     console.log('--- Pokémon Build Adder ---');
     
     // 1. Load Data
-    let buildsData = [];
     let pokemonNames = new Set();
-    
     try {
-        if (fs.existsSync(buildsPath)) {
-            buildsData = JSON.parse(fs.readFileSync(buildsPath, 'utf8'));
-        }
-        
         if (fs.existsSync(pokemonPath)) {
             const pokes = JSON.parse(fs.readFileSync(pokemonPath, 'utf8'));
             pokes.forEach(p => {
@@ -72,58 +66,77 @@ async function main() {
             });
         }
     } catch (err) {
-        console.error('Error loading data files:', err.message);
+        console.error('Error loading pokemon data file:', err.message);
         process.exit(1);
     }
 
-    // 2. Get Pokepaste
-    const paste = await askMultiLine('Paste your Pokepaste below (press ENTER on a blank line to finish):');
-    const firstLine = paste.split('\n')[0];
-    const extractedName = extractPokemonName(firstLine);
+    let adding = true;
+    while (adding) {
+        let buildsData = [];
+        try {
+            if (fs.existsSync(buildsPath)) {
+                buildsData = JSON.parse(fs.readFileSync(buildsPath, 'utf8'));
+            }
+        } catch (err) {
+            console.error('Error loading builds data:', err.message);
+            break;
+        }
 
-    // 3. Confirm Name and Validate
-    let pokemonName = extractedName;
-    if (!pokemonNames.has(pokemonName.toLowerCase())) {
-        console.warn(`\n[WARNING] "${pokemonName}" not found in assets/pokemon.json!`);
-        // We still allow it but warn.
+        // 2. Get Pokepaste
+        const paste = await askMultiLine('\nPaste your Pokepaste below (press ENTER on a blank line to finish):');
+        const firstLine = paste.split('\n')[0];
+        const extractedName = extractPokemonName(firstLine);
+
+        // 3. Confirm Name and Validate
+        let pokemonName = extractedName;
+        if (!pokemonNames.has(pokemonName.toLowerCase())) {
+            console.warn(`\n[WARNING] "${pokemonName}" not found in assets/pokemon.json!`);
+        }
+
+        // 4. Get Synergies
+        const synergiesInput = await new Promise(resolve => {
+            rl.question(`\nEnter synergy IDs (comma-separated, e.g. 01, 02) or leave blank: `, resolve);
+        });
+        
+        const synergies = synergiesInput
+            ? synergiesInput.split(',').map(s => s.trim().padStart(2, '0')).filter(s => s !== '')
+            : [];
+
+        // 5. Generate New ID
+        let maxId = 0;
+        buildsData.forEach(b => {
+            const idNum = parseInt(b.id, 10);
+            if (idNum > maxId) maxId = idNum;
+        });
+        const nextId = String(maxId + 1).padStart(2, '0');
+
+        // 6. Create New Build Object
+        const newBuild = {
+            id: nextId,
+            pokemon: pokemonName,
+            build: paste.trim(),
+            synergy: synergies
+        };
+
+        // 7. Save
+        buildsData.push(newBuild);
+        try {
+            fs.writeFileSync(buildsPath, JSON.stringify(buildsData, null, 4), 'utf8');
+            console.log(`\n--- Success! ---`);
+            console.log(`Added build for ${pokemonName} with ID: ${nextId}`);
+        } catch (err) {
+            console.error('Error saving builds.json:', err.message);
+        }
+
+        const answer = await new Promise(resolve => {
+            rl.question('\nAdd another build? (y/n): ', resolve);
+        });
+        if (answer.toLowerCase() !== 'y') {
+            adding = false;
+        }
     }
 
-    // 4. Get Synergies
-    const synergiesInput = await new Promise(resolve => {
-        rl.question(`\nEnter synergy IDs (comma-separated, e.01, 02) or leave blank: `, resolve);
-    });
-    
-    const synergies = synergiesInput
-        ? synergiesInput.split(',').map(s => s.trim().padStart(2, '0')).filter(s => s !== '')
-        : [];
-
-    // 5. Generate New ID
-    let maxId = 0;
-    buildsData.forEach(b => {
-        const idNum = parseInt(b.id, 10);
-        if (idNum > maxId) maxId = idNum;
-    });
-    const nextId = String(maxId + 1).padStart(2, '0');
-
-    // 6. Create New Build Object
-    const newBuild = {
-        id: nextId,
-        pokemon: pokemonName,
-        build: paste.trim(),
-        synergy: synergies
-    };
-
-    // 7. Save
-    buildsData.push(newBuild);
-    try {
-        fs.writeFileSync(buildsPath, JSON.stringify(buildsData, null, 4), 'utf8');
-        console.log(`\n--- Success! ---`);
-        console.log(`Added build for ${pokemonName} with ID: ${nextId}`);
-        console.log(`Stored in: ${buildsPath}`);
-    } catch (err) {
-        console.error('Error saving builds.json:', err.message);
-    }
-
+    console.log('\nGoodbye!');
     rl.close();
 }
 
