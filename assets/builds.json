@@ -378,5 +378,224 @@
         "build": "Pidgeot @ Pidgeotite\nAbility: Tangled Feet\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Hurricane\n- Heat Wave\n- Roost\n- Toxic",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "53",
+        "pokemon": "Pikachu",
+        "build": "Pikachu @ Light Ball\nAbility: Lightning Rod\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nAdamant Nature\n- Fake Out\n- Volt Tackle\n- Knock Off\n- Quick Attack",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "54",
+        "pokemon": "Pikachu",
+        "build": "Pikachu @ Light Ball\nAbility: Lightning Rod\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Thunderbolt\n- Surf\n- Volt Switch\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "55",
+        "pokemon": "Raichu",
+        "build": "Raichu @ Life Orb\nAbility: Lightning Rod\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Nasty Plot\n- Thunderbolt\n- Focus Blast\n- Surf",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "56",
+        "pokemon": "Raichu-Alola",
+        "build": "Raichu-Alola @ Life Orb\nAbility: Surge Surfer\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Rising Voltage\n- Psychic\n- Focus Blast\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "57",
+        "pokemon": "Clefable",
+        "build": "Clefable @ Leftovers\nAbility: Magic Guard\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Soft-Boiled\n- Knock Off\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "58",
+        "pokemon": "Clefairy",
+        "build": "Clefairy @ Eviolite\nAbility: Magic Guard\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Soft-Boiled\n- Moonblast\n- Knock Off\n- Toxic",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "59",
+        "pokemon": "Clefairy",
+        "build": "Clefairy @ Eviolite\nLevel: 50\nAbility: Friend Guard\nEVs: 244 HP / 180 Def / 84 SpD\nIVs: 0 Spe\nTera Type: Grass\nRelaxed Nature\n- Helping Hand\n- After You\n- Follow Me\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "60",
+        "pokemon": "Ninetales",
+        "build": "Ninetales @ Heat Rock\nAbility: Drought\nEVs: 252 HP / 4 Def / 252 Spe\nIVs: 0 Atk\nTera Type: Grass\nTimid Nature\n- Weather Ball\n- Encore\n- Healing Wish\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "61",
+        "pokemon": "Ninetales-Alola",
+        "build": "Ninetales-Alola @ Light Clay\nAbility: Snow Warning\nEVs: 252 HP / 4 Def / 252 Spe\nTera Type: Water\nTimid Nature\n- Aurora Veil\n- Encore\n- Freeze-Dry\n- Moonblast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "62",
+        "pokemon": "Ninetales-Alola",
+        "build": "Ninetales-Alola @ Focus Sash\nLevel: 50\nAbility: Snow Warning\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Blizzard\n- Freeze-Dry\n- Aurora Veil\n- Icy Wind",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "63",
+        "pokemon": "Alakazam",
+        "build": "Alakazam @ Focus Sash\nAbility: Magic Guard\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Nasty Plot\n- Psychic\n- Focus Blast\n- Shadow Ball",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "64",
+        "pokemon": "Victreebel",
+        "build": "Victreebel @ Heavy-Duty Boots\nAbility: Chlorophyll\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Water\nAdamant Nature\n- Strength Sap\n- Power Whip\n- Poison Jab\n- Knock Off",
+        "synergy": [
+            "0s"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "65",
+        "pokemon": "Slowbro",
+        "build": "Slowbro @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 252 Def / 4 SpD\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Scald\n- Psychic Noise\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "66",
+        "pokemon": "Slowbro-Galar",
+        "build": "Slowbro-Galar @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 252 Def / 4 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Calm Mind\n- Sludge Bomb\n- Flamethrower\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "67",
+        "pokemon": "Gengar",
+        "build": "Gengar @ Air Balloon\nAbility: Cursed Body\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Shadow Ball\n- Sludge Wave\n- Focus Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "68",
+        "pokemon": "Gengar",
+        "build": "Gengar @ Gengarite\nAbility: Cursed Body\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Shadow Ball\n- Sludge Wave\n- Icy Wind\n- Thunder",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "69",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan @ Kangaskhanite\nAbility: Scrappy\nEVs: 212 HP / 44 Atk / 252 Spe\nTera Type: Normal\nAdamant Nature\n- Fake Out\n- Seismic Toss\n- Sucker Punch\n- Low Kick",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "70",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan  @ Kangaskhanite Ability: Scrappy EVs: 252 Atk / 4 Def / 252 Spe Tera Type: Normal Jolly Nature - Fake Out - Return - Sucker Punch - Power-Up Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "71",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan  @ Kangaskhanite Ability: Scrappy EVs: 252 Atk / 4 Def / 252 Spe Tera Type: Normal Jolly Nature - Fake Out - Return - Sucker Punch - Power-Up Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "72",
+        "pokemon": "Starmie",
+        "build": "Starmie @ Life Orb\nAbility: Analytic\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Hydro Pump\n- Ice Beam\n- Thunderbolt\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "73",
+        "pokemon": "Starmie",
+        "build": "Starmie @ Heavy-Duty Boots\nAbility: Natural Cure\nEVs: 252 HP / 4 SpA / 252 Spe\nTimid Nature\n- Scald\n- Recover\n- Teleport\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "74",
+        "pokemon": "Pinsir",
+        "build": "Pinsir @ Pinsirite\nAbility: Moxie\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Swords Dance\n- Return\n- Quick Attack\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "75",
+        "pokemon": "Tauros",
+        "build": "Tauros @ Life Orb\nAbility: Sheer Force\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nJolly Nature\n- Body Slam\n- Close Combat\n- Throat Chop\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "76",
+        "pokemon": "Gyarados",
+        "build": "Gyarados @ Leftovers\nAbility: Moxie\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dragon\nAdamant Nature\n- Dragon Dance\n- Waterfall\n- Scale Shot\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "77",
+        "pokemon": "Ditto",
+        "build": "Ditto @ Focus Sash\nLevel: 50\nAbility: Imposter\nEVs: 252 HP / 252 Def / 4 SpD\nIVs: 0 Spe\nTera Type: Ghost\nRelaxed Nature\n- Transform",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "78",
+        "pokemon": "Vaporeon",
+        "build": "Vaporeon @ Leftovers\nAbility: Water Absorb\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Poison\nBold Nature\n- Scald\n- Wish\n- Protect\n- Flip Turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "79",
+        "pokemon": "Jolteon",
+        "build": "Jolteon @ Heavy-Duty Boots\nAbility: Volt Absorb\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Fairy\nTimid Nature\n- Calm Mind\n- Thunderbolt\n- Volt Switch\n- Alluring Voice",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "80",
+        "pokemon": "Flareon",
+        "build": "Flareon @ Toxic Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Flare Blitz\n- Facade\n- Superpower\n- Quick Attack",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "81",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Heavy-Duty Boots\nAbility: Pressure\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Stone Edge\n- Earthquake\n- Roost\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "82",
+        "pokemon": "Snorlax",
+        "build": "Snorlax @ Leftovers\nAbility: Immunity\nEVs: 12 HP / 244 Def / 252 SpD\nCareful Nature\n- Curse\n- Body Slam\n- Earthquake\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "83",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Heavy-Duty Boots\nAbility: Multiscale\nEVs: 248 HP / 24 Atk / 68 Def / 8 SpD / 160 Spe\nAdamant Nature\n- Dragon Dance\n- Earthquake\n- Dual Wingbeat\n- Roost",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
