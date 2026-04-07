@@ -216,5 +216,11 @@
         "pokemon": "Excadrill",
         "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 24 HP / 56 Atk / 252 SpD / 176 Spe\nTera Type: Ghost\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
         "synergy": []
+    },
+    {
+        "id": "35",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 172 HP / 252 SpD / 84 Spe\nTera Type: Ghost\nJolly Nature\n- Stealth Rock\n- Earthquake\n- Iron Head\n- Rapid Spin",
+        "synergy": []
     }
 ]

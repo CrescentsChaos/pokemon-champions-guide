@@ -127,7 +127,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-height: 480px; /* Adjusted for compact info */
+            min-height: auto; /* Allow card to shrink/grow naturally */
         }
 
         .card-header {
@@ -268,7 +268,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 480px;
+            height: 400px;
             color: rgba(255, 255, 255, 0.1);
             gap: 12px;
         }
@@ -653,12 +653,12 @@
                     <div class="stats-column" style="background:rgba(0,0,0,0.2); padding:6px; border-radius:10px;">${statsHtml}</div>
                 </div>
 
-                <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size:0.6rem; color:rgba(255,255,255,0.3); font-weight:800; line-height:1.2;">
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 0.6rem; color: rgba(255, 255, 255, 0.3); font-weight: 800; line-height: 1.2;">
                         ${p.nature.toUpperCase()} NATURE<br>
-                        ABILITY: <span style="color:rgba(255,255,255,0.6)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
+                        ABILITY: <span style="color: rgba(255, 255, 255, 0.6)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
                     </div>
-                    <button class="btn" style="padding:4px 10px; font-size:0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
+                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
             `;
             return card;
@@ -679,7 +679,7 @@
             grid.innerHTML = '';
             
             const searchInput = document.getElementById('build-search');
-            const search = searchInput.value.toLowerCase();
+            const search = searchInput.value.toLowerCase().trim();
             const typeFilter = document.getElementById('type-filter').value.toLowerCase();
             const roleFilter = document.getElementById('role-filter').value;
 
@@ -688,14 +688,25 @@
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
                 
-                // Filters
-                if (search && !p.species.toLowerCase().includes(search)) return;
-                
-                if (typeFilter) {
-                    const t1 = (dbRef?.Type_1 || '').toLowerCase();
-                    const t2 = (dbRef?.Type_2 || '').toLowerCase();
-                    if (t1 !== typeFilter && t2 !== typeFilter) return;
+                const t1 = (dbRef?.Type_1 || '').toLowerCase();
+                const t2 = (dbRef?.Type_2 || '').toLowerCase();
+                const ability = (p.ability || '').toLowerCase();
+                const moves = p.moves.map(m => m.toLowerCase());
+
+                // Comprehensive Search (Name, Types, Ability, Moves)
+                if (search) {
+                    const searchPool = [
+                        p.species.toLowerCase(),
+                        t1,
+                        t2,
+                        ability,
+                        ...moves
+                    ];
+                    if (!searchPool.some(val => val.includes(search))) return;
                 }
+                
+                // Dropdown Filters
+                if (typeFilter && t1 !== typeFilter && t2 !== typeFilter) return;
 
                 const buildRoles = detectRole(p, dbRef);
                 if (roleFilter && !buildRoles.includes(roleFilter)) return;
