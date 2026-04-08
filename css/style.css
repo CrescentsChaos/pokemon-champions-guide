@@ -119,10 +119,7 @@ nav {
 
 .nav-links {
     display: flex;
-    gap: 3rem;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    gap: 2rem;
     transition: var(--transition);
 }
 

@@ -1199,5 +1199,12 @@
         "build": "Arbok @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Gunk Shot\n- Earthquake\n- Crunch\n- Switcheroo",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "169",
+        "pokemon": "Machamp",
+        "build": "Machamp @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Close Combat\n- Knock Off\n- Facade\n- Bullet Punch",
+        "synergy": [],
+        "format": "Singles"
     }
 ]

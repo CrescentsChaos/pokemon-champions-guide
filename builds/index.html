@@ -261,7 +261,7 @@
         @media (max-width: 1200px) {
             #builds-grid,
             #synergy-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             }
         }
 
@@ -332,8 +332,8 @@
         <div id="synergy-container" class="fade-in">
             <div class="synergy-header">
                 <div>
-                    <h2 id="synergy-title" style="color: white; font-size: 2.2rem; margin-bottom: 0.5rem; font-weight: 900; letter-spacing: -1px;">STRATEGIC SYNERGY</h2>
-                    <p style="color: var(--text-muted);">Comprehensive analysis and recommended teammates for this build.</p>
+                    <h2 id="synergy-title" style="color: white; font-size: clamp(1.5rem, 4vw, 2.2rem); margin-bottom: 0.5rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1;">STRATEGIC SYNERGY</h2>
+                    <p style="color: var(--text-muted); font-size: clamp(0.8rem, 2vw, 1rem);">Comprehensive analysis and recommended teammates for this build.</p>
                 </div>
                 <button onclick="closeSynergy()" class="btn btn-secondary"
                     style="background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius:12px; font-weight:800;">BACK TO LIBRARY</button>
@@ -466,14 +466,31 @@
         };
 
         const natureMap = {
-            'Adamant': { pos: 'atk', neg: 'spa' }, 'Bold': { pos: 'def', neg: 'atk' },
-            'Brave': { pos: 'atk', neg: 'spe' }, 'Calm': { pos: 'spd', neg: 'atk' },
-            'Careful': { pos: 'spd', neg: 'spa' }, 'Hasty': { pos: 'spe', neg: 'def' },
-            'Impish': { pos: 'def', neg: 'spa' }, 'Jolly': { pos: 'spe', neg: 'spa' },
-            'Modest': { pos: 'spa', neg: 'atk' }, 'Naive': { pos: 'spe', neg: 'spd' },
-            'Quiet': { pos: 'spa', neg: 'spe' }, 'Rash': { pos: 'spa', neg: 'spd' },
-            'Relaxed': { pos: 'def', neg: 'spe' }, 'Sassy': { pos: 'spd', neg: 'spe' },
-            'Timid': { pos: 'spe', neg: 'atk' }
+            'Adamant': { pos: 'atk', neg: 'spa', color: '#f44336' },
+            'Bashful': { pos: '', neg: '', color: '#ddd' },
+            'Bold': { pos: 'def', neg: 'atk', color: '#ff9800' },
+            'Brave': { pos: 'atk', neg: 'spe', color: '#f44336' },
+            'Calm': { pos: 'spd', neg: 'atk', color: '#ffeb3b' },
+            'Careful': { pos: 'spd', neg: 'spa', color: '#ffeb3b' },
+            'Docile': { pos: '', neg: '', color: '#ddd' },
+            'Gentle': { pos: 'spd', neg: 'def', color: '#ffeb3b' },
+            'Hardy': { pos: '', neg: '', color: '#ddd' },
+            'Hasty': { pos: 'spe', neg: 'def', color: '#00bcd4' },
+            'Impish': { pos: 'def', neg: 'spa', color: '#ff9800' },
+            'Jolly': { pos: 'spe', neg: 'spa', color: '#00bcd4' },
+            'Lax': { pos: 'def', neg: 'spd', color: '#ff9800' },
+            'Lonely': { pos: 'atk', neg: 'def', color: '#f44336' },
+            'Mild': { pos: 'spa', neg: 'def', color: '#9c27b0' },
+            'Modest': { pos: 'spa', neg: 'atk', color: '#9c27b0' },
+            'Naive': { pos: 'spe', neg: 'spd', color: '#00bcd4' },
+            'Naughty': { pos: 'atk', neg: 'spd', color: '#f44336' },
+            'Quiet': { pos: 'spa', neg: 'spe', color: '#9c27b0' },
+            'Quirky': { pos: '', neg: '', color: '#ddd' },
+            'Rash': { pos: 'spa', neg: 'spd', color: '#9c27b0' },
+            'Relaxed': { pos: 'def', neg: 'spe', color: '#ff9800' },
+            'Sassy': { pos: 'spd', neg: 'spe', color: '#ffeb3b' },
+            'Serious': { pos: '', neg: '', color: '#ddd' },
+            'Timid': { pos: 'spe', neg: 'atk', color: '#00bcd4' }
         };
 
         async function loadData() {
@@ -1220,9 +1237,9 @@
                         ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
                     <div class="header-info">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="font-size:1.1rem; color:white; margin:0;">${p.species}</h3>
-                            <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}">${format.toUpperCase()} #${rawBuild.id}</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 10px;">
+                            <h3 style="font-size:1.1rem; color:white; margin:0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.species}</h3>
+                            <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
                             <span class="type-tag type-${t1}" style="font-size:0.55rem; padding:1px 5px;">${t1}</span>
@@ -1245,9 +1262,9 @@
                 </div>
 
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="font-size: 0.6rem; color: rgba(255, 255, 255, 0.3); font-weight: 800; line-height: 1.2;">
-                        ${p.nature.toUpperCase()} NATURE<br>
-                        ABILITY: <span style="color: rgba(255, 255, 255, 0.6)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
+                    <div style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
+                        <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
+                        ABILITY: <span style="color: rgba(255, 255, 255, 0.8)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
                     </div>
                     <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
@@ -1316,7 +1333,7 @@
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
-                    window.open(`?id=${build.id}`, '_blank');
+                    selectBuild(build.id);
                 };
 
                 wrapper.appendChild(createTeamCard(p, dbRef, build));
@@ -1349,7 +1366,11 @@
                 
                 const container = document.getElementById('synergy-container');
                 container.style.display = 'block';
-                setTimeout(() => container.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                // Trigger animation reflow
+                container.offsetHeight; 
+                setTimeout(() => {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
 
                 // Setup Export Button
                 const exportBtn = document.getElementById('export-synergy-team');
@@ -1396,6 +1417,18 @@
                     grid.appendChild(createEmptyCard());
                 }
             }
+        }
+
+        function createEmptyCard() {
+            const div = document.createElement('div');
+            div.className = 'empty-slot-premium';
+            div.innerHTML = `
+                <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center;">
+                    <span style="font-size: 1.5rem; opacity: 0.2;">+</span>
+                </div>
+                <span style="font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;">EMPTY SYNERGY SLOT</span>
+            `;
+            return div;
         }
 
         function copyPaste(text) {
