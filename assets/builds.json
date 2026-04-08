@@ -1080,5 +1080,26 @@
         "build": "Glalie @ Leftovers\nAbility: Moody\nEVs: 216 HP / 40 Def / 252 Spe\nTimid Nature\n- Protect\n- Substitute\n- Taunt\n- Frost Breath",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "153",
+        "pokemon": "Torterra",
+        "build": "Torterra @ Leftovers\nAbility: Overgrow\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Synthesis\n- Wood Hammer\n- Earthquake",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "154",
+        "pokemon": "Torterra",
+        "build": "Torterra @ Loaded Dice\nAbility: Overgrow\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nJolly Nature\n- Shell Smash\n- Earthquake\n- Bullet Seed\n- Rock Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "155",
+        "pokemon": "Torterra",
+        "build": "Torterra @ White Herb\nAbility: Overgrow\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nJolly Nature\n- Shell Smash\n- Headlong Rush\n- Wood Hammer\n- Stone Edge",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
