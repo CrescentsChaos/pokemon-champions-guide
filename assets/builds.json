@@ -1318,5 +1318,152 @@
         "build": "Rhyperior @ Choice Band\nAbility: Solid Rock\nEVs: 252 Atk / 92 SpD / 164 Spe\nAdamant Nature\n- Megahorn\n- Stone Edge\n- Earthquake\n- Ice Punch",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "186",
+        "pokemon": "Leafeon",
+        "build": "Leafeon @ Life Orb\nAbility: Chlorophyll\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nAdamant Nature\n- Swords Dance\n- Leaf Blade\n- Double-Edge\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "187",
+        "pokemon": "Glaceon",
+        "build": "Glaceon @ Choice Specs\nAbility: Ice Body\nEVs: 252 SpA / 4 SpD / 252 Spe\nModest Nature\n- Ice Beam\n- Freeze-Dry\n- Shadow Ball\n- Water Pulse",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "188",
+        "pokemon": "Gliscor",
+        "build": "Gliscor @ Toxic Orb\nAbility: Poison Heal\nEVs: 244 HP / 36 Def / 228 SpD\nTera Type: Normal\nCareful Nature\n- Swords Dance\n- Facade\n- Knock Off\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "189",
+        "pokemon": "Gliscor",
+        "build": "Gliscor @ Toxic Orb\nAbility: Poison Heal\nEVs: 244 HP / 36 Def / 228 SpD\nTera Type: Water\nCareful Nature\n- Spikes\n- Knock Off\n- Toxic\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "190",
+        "pokemon": "Mamoswine",
+        "build": "Mamoswine @ Leftovers\nAbility: Thick Fat\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Grass\nAdamant Nature\n- Substitute\n- Earthquake\n- Icicle Crash\n- Trailblaze",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "191",
+        "pokemon": "Mamoswine",
+        "build": "Mamoswine @ Choice Band\nAbility: Thick Fat\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ice\nAdamant Nature\n- Icicle Crash\n- Earthquake\n- Ice Shard\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "192",
+        "pokemon": "Gallade",
+        "build": "Gallade @ Lum Berry\nAbility: Sharpness\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Steel\nJolly Nature\n- Swords Dance\n- Sacred Sword\n- Psycho Cut\n- Leaf Blade",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "193",
+        "pokemon": "Gallade",
+        "build": "Gallade @ Life Orb\nAbility: Sharpness\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Steel\nJolly Nature\n- Shadow Sneak\n- Sacred Sword\n- Psycho Cut\n- Leaf Blade",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "194",
+        "pokemon": "Gallade",
+        "build": "Gallade @ Galladite\nAbility: Justified\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Swords Dance\n- Close Combat\n- Zen Headbutt\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "195",
+        "pokemon": "Froslass",
+        "build": "Froslass @ Focus Sash\nAbility: Cursed Body\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Spikes\n- Taunt\n- Destiny Bond\n- Icy Wind",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "196",
+        "pokemon": "Froslass",
+        "build": "Froslass @ Heavy-Duty Boots\nAbility: Cursed Body\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Triple Axel\n- Poltergeist\n- Taunt\n- Spikes",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "197",
+        "pokemon": "Serperior",
+        "build": "Serperior @ Choice Scarf\nAbility: Contrary\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Grass\nModest Nature\n- Leaf Storm\n- Knock Off\n- Giga Drain\n- Glare",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "198",
+        "pokemon": "Serperior",
+        "build": "Serperior @ Leftovers\nAbility: Contrary\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ground\nTimid Nature\n- Leaf Storm\n- Tera Blast\n- Glare\n- Dragon Pulse",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "199",
+        "pokemon": "Emboar",
+        "build": "Emboar @ Heavy-Duty Boots\nAbility: Reckless\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dark\nAdamant Nature\n- Flare Blitz\n- Close Combat\n- Sucker Punch\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "200",
+        "pokemon": "Emboar",
+        "build": "Emboar @ Choice Band \nAbility: Reckless\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dark\nJolly Nature\n- Flare Blitz\n- Close Combat\n- Sucker Punch\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "201",
+        "pokemon": "Samurott",
+        "build": "Samurott @ Heavy-Duty Boots\nAbility: Torrent\nEVs: 4 Atk / 252 SpA / 252 Spe\nTera Type: Grass\nTimid Nature\n- Hydro Pump\n- Ice Beam\n- Flip Turn\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "202",
+        "pokemon": "Samurott-Hisui",
+        "build": "Samurott-Hisui @ Assault Vest\nAbility: Sharpness\nEVs: 248 HP / 84 Atk / 124 SpD / 52 Spe\nTera Type: Poison\nAdamant Nature\n- Ceaseless Edge\n- Razor Shell\n- Sucker Punch\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "203",
+        "pokemon": "Samurott-Hisui",
+        "build": "Samurott-Hisui @ Focus Sash\nAbility: Sharpness\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Ceaseless Edge\n- Razor Shell\n- Aqua Jet\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "204",
+        "pokemon": "Samurott-Hisui",
+        "build": "Samurott-Hisui @ Heavy-Duty Boots\nAbility: Sharpness\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Poison\nJolly Nature\n- Ceaseless Edge\n- Razor Shell\n- Knock Off\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "205",
+        "pokemon": "Samurott-Hisui",
+        "build": "Samurott-Hisui @ Choice Scarf\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Water\nJolly Nature\n- Ceaseless Edge\n- Razor Shell\n- Knock Off\n- Flip Turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "206",
+        "pokemon": "Samurott-Hisui",
+        "build": "Samurott-Hisui @ Black Glasses\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dark\nAdamant Nature\n- Swords Dance\n- Ceaseless Edge\n- Razor Shell\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
