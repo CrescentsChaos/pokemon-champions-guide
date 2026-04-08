@@ -309,7 +309,11 @@
         "id": "42",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Life Orb\nAbility: Chlorophyll\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Fire\nTimid Nature\n- Growth\n- Giga Drain\n- Weather Ball\n- Sludge Bomb",
-        "synergy": [],
+        "synergy": [
+            "60",
+            "133",
+            "46"
+        ],
         "format": "Singles"
     },
     {
