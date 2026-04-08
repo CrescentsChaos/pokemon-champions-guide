@@ -1493,5 +1493,194 @@
         "build": "Liepard @ Choice Band\nAbility: Prankster\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Knock Off\n- U-turn\n- Copycat\n- Gunk Shot",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "211",
+        "pokemon": "Simipour",
+        "build": "Simipour @ Waterium Z\nAbility: Torrent\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Nasty Plot\n- Hydro Pump\n- Ice Beam\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "212",
+        "pokemon": "Simisage",
+        "build": "Simisage @ Life Orb\nAbility: Overgrow\nEVs: 4 Atk / 252 SpA / 252 Spe\nNaive Nature\n- Leaf Storm\n- Hidden Power Ice\n- Knock Off\n- Superpower",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "213",
+        "pokemon": "Simisear",
+        "build": "Simisear @ Life Orb\nAbility: Blaze\nEVs: 4 Def / 252 SpA / 252 Spe\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Taunt\n- Grass Knot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "214",
+        "pokemon": "Audino",
+        "build": "Audino @ Audinite\nAbility: Regenerator\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Wish\n- Protect\n- Heal Bell\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "215",
+        "pokemon": "Audino",
+        "build": "Audino @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Wish\n- Protect\n- Knock Off\n- Heal Bell",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "216",
+        "pokemon": "Audino",
+        "build": "Audino @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 248 HP / 252 Def / 8 SpD\nImpish Nature\n- Wish\n- Protect\n- Heal Bell\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "217",
+        "pokemon": "Conkeldurr",
+        "build": "Conkeldurr @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Drain Punch\n- Facade\n- Knock Off\n- Mach Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "218",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Choice Specs\nAbility: Infiltrator\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Energy Ball\n- U-turn\n- Switcheroo",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "219",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Heavy-Duty Boots\nAbility: Prankster\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Steel\nTimid Nature\n- Moonblast\n- Giga Drain\n- U-turn\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "220",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Covert Cloak\nLevel: 50\nAbility: Prankster\nEVs: 252 HP / 4 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Tailwind\n- Moonblast\n- Encore\n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "221",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Covert Cloak\nLevel: 50\nAbility: Prankster\nEVs: 180 HP / 108 SpD / 220 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Moonblast\n- Tailwind\n- Encore\n- Light Screen",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "222",
+        "pokemon": "Krookodile",
+        "build": "Krookodile @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nJolly Nature\n- Earthquake\n- Knock Off\n- Gunk Shot\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "223",
+        "pokemon": "Krookodile",
+        "build": "Krookodile @ Leftovers\nAbility: Intimidate\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Poison\nJolly Nature\n- Stealth Rock\n- Knock Off\n- Earthquake\n- Gunk Shot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "224",
+        "pokemon": "Cofagrigus",
+        "build": "Cofagrigus @ Chesto Berry\nAbility: Mummy\nEVs: 252 HP / 172 Def / 84 Spe\nBold Nature\n- Iron Defense\n- Body Press\n- Shadow Ball\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "225",
+        "pokemon": "Garbodor",
+        "build": "Garbodor @ Toxic Plate\nAbility: Aftermath\nEVs: 4 HP / 252 Atk / 252 Spe\nAdamant Nature\n- Gunk Shot\n- Spikes\n- Stomping Tantrum\n- Explosion",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "226",
+        "pokemon": "Garbodor",
+        "build": "Garbodor @ Black Sludge\nAbility: Aftermath\nEVs: 252 HP / 228 SpD / 28 Spe\nCareful Nature\n- Gunk Shot\n- Spikes\n- Toxic Spikes\n- Pain Split",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "227",
+        "pokemon": "Zoroark",
+        "build": "Zoroark @ Choice Specs\nAbility: Illusion\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Dark Pulse\n- Sludge Bomb\n- Trick\n- Focus Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "228",
+        "pokemon": "Zoroark",
+        "build": "Zoroark @ Heavy-Duty Boots\nAbility: Illusion\nEVs: 220 Atk / 36 SpA / 252 Spe\nNaive Nature\n- Knock Off\n- U-turn\n- Flamethrower\n- Sludge Bomb",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "229",
+        "pokemon": "Zoroark-Hisui",
+        "build": "Zoroark-Hisui @ Heavy-Duty Boots\nAbility: Illusion\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Shadow Ball\n- Focus Blast\n- Hyper Voice\n- Nasty Plot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "230",
+        "pokemon": "Reuniclus",
+        "build": "Reuniclus @ Life Orb\nAbility: Magic Guard\nEVs: 252 HP / 212 SpA / 44 Spe\nTera Type: Fighting\nModest Nature\n- Psychic Noise\n- Knock Off\n- Focus Blast\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "231",
+        "pokemon": "Reuniclus",
+        "build": "Reuniclus @ Rocky Helmet\nAbility: Magic Guard\nEVs: 252 HP / 212 Def / 44 Spe\nBold Nature\n- Calm Mind\n- Psyshock\n- Focus Blast\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "232",
+        "pokemon": "Vanilluxe",
+        "build": "Vanilluxe @ Choice Specs\nAbility: Snow Warning\nEVs: 4 HP / 252 SpA / 252 Spe\nModest Nature\n- Blizzard\n- Freeze-Dry\n- Sleep Talk\n- Icy Wind",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "233",
+        "pokemon": "Vanilluxe",
+        "build": "Vanilluxe @ Icy Rock\nAbility: Snow Warning\nEVs: 24 HP / 252 SpA / 232 Spe\nTimid Nature\n- Blizzard\n- Freeze-Dry\n- Ice Shard\n- Taunt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "234",
+        "pokemon": "Emolga",
+        "build": "Emolga @ Flying Gem\nAbility: Motor Drive\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Acrobatics\n- Knock Off\n- U-turn\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "235",
+        "pokemon": "Chandelure",
+        "build": "Chandelure @ Choice Specs\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Grass\nTimid Nature\n- Fire Blast\n- Shadow Ball\n- Energy Ball\n- Trick",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "236",
+        "pokemon": "Chandelure",
+        "build": "Chandelure @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Fire Blast\n- Shadow Ball\n- Toxic\n- Energy Ball",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "237",
+        "pokemon": "Beartic",
+        "build": "Beartic @ Choice Band\nAbility: Swift Swim\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Icicle Crash\n- Superpower\n- Aqua Jet\n- Stone Edge",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
