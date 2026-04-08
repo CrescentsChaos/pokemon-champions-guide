@@ -845,9 +845,12 @@
     <div class="overlay" id="import-overlay">
         <div class="overlay-content">
             <h2>Import PokePaste</h2>
-            <textarea id="import-textarea" class="builder-input" style="height: 300px; margin-top: 20px;"
-                placeholder="Paste team here..."></textarea>
-            <div style="text-align: right; margin-top: 20px;">
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 10px;">Paste a team export <strong>or</strong> a PokePaste URL (e.g. <code style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-size:0.8rem;">https://pokepast.es/abc123</code>)</p>
+            <textarea id="import-textarea" class="builder-input" style="height: 300px; margin-top: 15px;"
+                placeholder="Paste team text or a pokepast.es URL here..."></textarea>
+            <div id="import-status" style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 10px; display: none;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <button id="close-import" class="analyze-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.15);">CANCEL</button>
                 <button id="confirm-import" class="analyze-btn">LOAD TEAM</button>
             </div>
         </div>
@@ -1566,10 +1569,54 @@
         evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
 
         document.getElementById('main-import-btn').onclick = () => document.getElementById('import-overlay').style.display = 'flex';
-        document.getElementById('confirm-import').onclick = () => {
-            const parsed = parsePaste(document.getElementById('import-textarea').value);
-            parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
-            document.getElementById('import-overlay').style.display = 'none';
+        document.getElementById('close-import').onclick = () => document.getElementById('import-overlay').style.display = 'none';
+        document.getElementById('confirm-import').onclick = async () => {
+            const raw = document.getElementById('import-textarea').value.trim();
+            const statusEl = document.getElementById('import-status');
+            const confirmBtn = document.getElementById('confirm-import');
+
+            // Detect PokePaste URL
+            const pokepasteMatch = raw.match(/pokepast\.es\/([a-zA-Z0-9]+)/);
+            if (pokepasteMatch) {
+                const pasteId = pokepasteMatch[1];
+                statusEl.style.display = 'block';
+                statusEl.style.color = '#F7D02C';
+                statusEl.textContent = '⏳ Fetching paste from pokepast.es...';
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'LOADING...';
+
+                try {
+                    const resp = await fetch(`https://pokepast.es/${pasteId}/json`);
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const data = await resp.json();
+                    const pasteText = data.paste || '';
+                    if (!pasteText) throw new Error('Empty paste returned');
+
+                    const parsed = parsePaste(pasteText);
+                    parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
+
+                    statusEl.style.color = '#4CAF50';
+                    statusEl.textContent = `✅ Loaded ${parsed.length} Pokémon from "${data.title || 'Untitled'}" by ${data.author || 'Unknown'}`;
+                    setTimeout(() => {
+                        document.getElementById('import-overlay').style.display = 'none';
+                        statusEl.style.display = 'none';
+                        document.getElementById('import-textarea').value = '';
+                    }, 1200);
+                } catch (err) {
+                    console.error('PokePaste fetch error:', err);
+                    statusEl.style.color = 'var(--primary-red)';
+                    statusEl.textContent = `❌ Failed to fetch paste: ${err.message}. Try pasting the raw text instead.`;
+                } finally {
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'LOAD TEAM';
+                }
+            } else {
+                // Normal paste text
+                const parsed = parsePaste(raw);
+                parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
+                document.getElementById('import-overlay').style.display = 'none';
+                document.getElementById('import-textarea').value = '';
+            }
             setupTabs(); syncUI();
         };
 
