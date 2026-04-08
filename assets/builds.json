@@ -597,5 +597,488 @@
         "build": "Dragonite @ Heavy-Duty Boots\nAbility: Multiscale\nEVs: 248 HP / 24 Atk / 68 Def / 8 SpD / 160 Spe\nAdamant Nature\n- Dragon Dance\n- Earthquake\n- Dual Wingbeat\n- Roost",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "84",
+        "pokemon": "Meganium",
+        "build": "Meganium @ Leftovers\nAbility: Overgrow\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Aromatherapy\n- Giga Drain\n- Synthesis\n- Dragon Tail",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "85",
+        "pokemon": "Typhlosion",
+        "build": "Typhlosion @ Choice Specs\nAbility: Flash Fire\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Eruption\n- Fire Blast\n- Focus Blast\n- Scorching Sands",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "86",
+        "pokemon": "Typhlosion-Hisui",
+        "build": "Typhlosion-Hisui @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Eruption\n- Lava Plume\n- Infernal Parade\n- Focus Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "87",
+        "pokemon": "Feraligatr",
+        "build": "Feraligatr @ Life Orb\nAbility: Sheer Force\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nJolly Nature\n- Swords Dance\n- Aqua Jet\n- Ice Punch\n- Crunch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "88",
+        "pokemon": "Ariados",
+        "build": "Ariados @ Focus Sash\nAbility: Swarm\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Sticky Web\n- Toxic Spikes\n- Megahorn\n- Toxic Thread",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "89",
+        "pokemon": "Ampharos",
+        "build": "Ampharos @ Leftovers\nAbility: Static\nEVs: 184 HP / 252 SpA / 72 Spe\nModest Nature\n- Thunderbolt\n- Focus Blast\n- Hidden Power Ice\n- Heal Bell",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "90",
+        "pokemon": "Azumarill",
+        "build": "Azumarill @ Normalium Z\nAbility: Huge Power\nEVs: 4 HP / 252 Atk / 252 Spe\nAdamant Nature\n- Belly Drum\n- Aqua Jet\n- Play Rough\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "91",
+        "pokemon": "Azumarill",
+        "build": "Azumarill @ Sitrus Berry\nLevel: 50\nAbility: Huge Power\nEVs: 244 HP / 252 Atk / 4 Def / 4 SpD / 4 Spe\nAdamant Nature\n- Belly Drum\n- Aqua Jet\n- Play Rough\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "92",
+        "pokemon": "Azumarill",
+        "build": "Azumarill @ Assault Vest\nLevel: 50\nAbility: Huge Power\nEVs: 252 HP / 252 Atk / 4 Def\nAdamant Nature\n- Play Rough\n- Waterfall\n- Aqua Jet\n- Knock Off",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "93",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Chesto Berry\nAbility: Water Absorb\nEVs: 248 HP / 252 SpD / 8 Spe\nCalm Nature\n- Protect\n- Scald\n- Toxic\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "94",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Damp Rock\nAbility: Drizzle\nEVs: 252 HP / 188 Def / 60 SpA / 8 SpD\nCalm Nature\n- Scald\n- Helping Hand\n- Encore\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "95",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Sitrus Berry\nLevel: 50\nAbility: Drizzle\nEVs: 220 HP / 148 Def / 84 SpA / 52 SpD / 4 Spe\nCalm Nature\n- Scald\n- Ice Beam\n- Encore\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "96",
+        "pokemon": "Espeon",
+        "build": "Espeon @ Leftovers\nAbility: Magic Bounce\nEVs: 4 Def / 252 SpA / 252 Spe\nTimid Nature\n- Calm Mind\n- Psychic\n- Shadow Ball\n- Morning Sun",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "97",
+        "pokemon": "Espeon",
+        "build": "Espeon @ Shell Bell\nAbility: Magic Bounce\nEVs: 8 HP / 208 Def / 68 SpA / 224 Spe\nModest Nature\n- Baton Pass\n- Stored Power\n- Dazzling Gleam\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "98",
+        "pokemon": "Umbreon",
+        "build": "Umbreon @ Leftovers\nAbility: Synchronize\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Wish\n- Protect\n- Heal Bell\n- Foul Play",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "99",
+        "pokemon": "Umbreon",
+        "build": "Umbreon @ Sitrus Berry\nLevel: 50\nAbility: Inner Focus\nEVs: 252 HP / 204 Def / 52 SpD\nRelaxed Nature\n- Foul Play\n- Snarl\n- Helping Hand\n- Moonlight",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "100",
+        "pokemon": "Slowking",
+        "build": "Slowking @ Assault Vest\nAbility: Regenerator\nEVs: 212 HP / 252 SpA / 44 Spe\nModest Nature\n- Scald\n- Future Sight\n- Fire Blast\n- Dragon Tail",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "101",
+        "pokemon": "Slowking-Galar",
+        "build": "Slowking-Galar @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 4 Def / 252 SpD\nIVs: 0 Spe\nTera Type: Water\nSassy Nature\n- Chilly Reception\n- Sludge Bomb\n- Future Sight\n- Thunder Wave",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "102",
+        "pokemon": "Forretress",
+        "build": "Forretress @ Leftovers\nAbility: Sturdy\nEVs: 252 HP / 164 Def / 92 SpD\nTera Type: Ghost\nRelaxed Nature\n- Spikes\n- Body Press\n- Volt Switch\n- Gyro Ball",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "103",
+        "pokemon": "Steelix",
+        "build": "Steelix @ Steelixite\nAbility: Sturdy\nEVs: 252 HP / 4 Atk / 252 SpD\nImpish Nature\n- Curse\n- Heavy Slam\n- Rest\n- Sleep Talk",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "104",
+        "pokemon": "Scizor",
+        "build": "Scizor @ Heavy-Duty Boots\nAbility: Technician\nEVs: 120 HP / 252 Atk / 136 Spe\nTera Type: Steel\nAdamant Nature\n- Swords Dance\n- Bullet Punch\n- U-turn\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "105",
+        "pokemon": "Scizor",
+        "build": "Scizor @ Choice Band\nAbility: Technician\nEVs: 120 HP / 252 Atk / 136 Spe\nTera Type: Steel\nAdamant Nature\n- Bullet Punch\n- U-turn\n- Knock Off\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "106",
+        "pokemon": "Scizor",
+        "build": "Scizor @ Scizorite\nAbility: Light Metal\nEVs: 248 HP / 16 Def / 244 SpD\nImpish Nature\n- Swords Dance\n- Roost\n- Bullet Punch\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "107",
+        "pokemon": "Heracross",
+        "build": "Heracross @ Heracronite\nAbility: Moxie\nEVs: 64 HP / 252 Atk / 192 Spe\nAdamant Nature\n- Swords Dance\n- Close Combat\n- Rock Blast\n- Pin Missile",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "108",
+        "pokemon": "Heracross",
+        "build": "Heracross @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dark\nJolly Nature\n- Close Combat\n- Knock Off\n- Facade\n- Trailblaze",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "109",
+        "pokemon": "Skarmory",
+        "build": "Skarmory @ Rocky Helmet\nAbility: Sturdy\nEVs: 248 HP / 16 Def / 180 SpD / 64 Spe\nIVs: 0 Atk\nTera Type: Ghost\nImpish Nature\n- Spikes\n- Body Press\n- Whirlwind\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "110",
+        "pokemon": "Skarmory",
+        "build": "Skarmory @ Rocky Helmet\nAbility: Sturdy\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Ground\nBold Nature\n- Body Press\n- Whirlwind\n- Spikes\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "111",
+        "pokemon": "Houndoom",
+        "build": "Houndoom @ Heavy-Duty Boots\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Dark Pulse\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "112",
+        "pokemon": "Houndoom",
+        "build": "Houndoom @ Houndoominite\nAbility: Flash Fire\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Dark Pulse\n- Sludge Bomb",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "113",
+        "pokemon": "Pelipper",
+        "build": "Pelipper @ Damp Rock\nAbility: Drizzle\nEVs: 248 HP / 252 Def / 8 SpD\nIVs: 0 Spe\nTera Type: Ground\nRelaxed Nature\n- Hurricane\n- U-turn\n- Roost\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "114",
+        "pokemon": "Pelipper",
+        "build": "Pelipper @ Focus Sash\nLevel: 50\nAbility: Drizzle\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Stellar\nModest Nature\n- Hurricane\n- Weather Ball\n- Tailwind\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "115",
+        "pokemon": "Gardevoir",
+        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Psychic Noise\n- Focus Blast\n- Healing Wish",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "116",
+        "pokemon": "Gardevoir",
+        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Psychic\n- Trick\n- Healing Wish",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "117",
+        "pokemon": "Gardevoir",
+        "build": "Gardevoir @ Gardevoirite\nLevel: 50\nAbility: Trace\nEVs: 252 HP / 220 Def / 36 SpA\nIVs: 0 Atk / 0 Spe\nQuiet Nature\n- Trick Room\n- Hyper Voice\n- Psychic\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "118",
+        "pokemon": "Sableye",
+        "build": "Sableye @ Sablenite\nAbility: Prankster\nEVs: 248 HP / 8 Def / 252 SpD\nCareful Nature\n- Knock Off\n- Will-O-Wisp\n- Recover\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "119",
+        "pokemon": "Sableye",
+        "build": "Sableye @ Heavy-Duty Boots\nAbility: Prankster\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Poison\nImpish Nature\n- Encore\n- Will-O-Wisp\n- Recover\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "120",
+        "pokemon": "Aggron",
+        "build": "Aggron @ Aggronite\nAbility: Sturdy\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Heavy Slam\n- Body Press\n- Toxic",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "121",
+        "pokemon": "Aggron",
+        "build": "Aggron @ Aggronite\nAbility: Sturdy\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Curse\n- Heavy Slam\n- Rest\n- Sleep Talk",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "122",
+        "pokemon": "Aggron",
+        "build": "Aggron @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Head Smash\n- Heavy Slam\n- Aqua Tail\n- Earthquake",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "123",
+        "pokemon": "Aggron",
+        "build": "Aggron @ Leftovers\nAbility: Rock Head\nEVs: 252 HP / 4 Atk / 252 SpD\nCareful Nature\n- Stealth Rock\n- Head Smash\n- Earthquake\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "124",
+        "pokemon": "Medicham",
+        "build": "Medicham @ Choice Scarf\nAbility: Pure Power\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Close Combat\n- Zen Headbutt\n- Ice Punch\n- Trick",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "125",
+        "pokemon": "Medicham",
+        "build": "Medicham @ Life Orb\nAbility: Pure Power\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Close Combat\n- Zen Headbutt\n- Trailblaze\n- Ice Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "126",
+        "pokemon": "Medicham",
+        "build": "Medicham @ Medichamite\nAbility: Telepathy\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- High Jump Kick\n- Fake Out\n- Ice Punch\n- Zen Headbutt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "127",
+        "pokemon": "Medicham",
+        "build": "Medicham @ Medichamite\nLevel: 50\nAbility: Pure Power\nEVs: 4 HP / 252 Atk / 252 Spe\nJolly Nature\n- Fake Out\n- High Jump Kick\n- Zen Headbutt\n- Bullet Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "128",
+        "pokemon": "Manectric",
+        "build": "Manectric @ Manectite\nAbility: Lightning Rod\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Volt Switch\n- Thunderbolt\n- Overheat\n- Hidden Power Ice",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "129",
+        "pokemon": "Sharpedo",
+        "build": "Sharpedo @ Sharpedonite\nAbility: Speed Boost\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Protect\n- Crunch\n- Psychic Fangs\n- Destiny Bond",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "130",
+        "pokemon": "Camerupt",
+        "build": "Camerupt @ Leftovers\nAbility: Solid Rock\nEVs: 252 HP / 4 Def / 252 SpD\nIVs: 0 Atk\nTera Type: Water\nCalm Nature\n- Stealth Rock\n- Lava Plume\n- Earth Power\n- Roar",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "131",
+        "pokemon": "Camerupt-Mega",
+        "build": "Camerupt-Mega @ Cameruptite\nAbility: Solid Rock\nEVs: 248 HP / 4 Def / 252 SpA / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Heat Wave\n- Earth Power\n- Eruption\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "132",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Heat Rock\nAbility: Drought\nEVs: 248 HP / 252 Def / 8 SpD\nTera Type: Flying\nBold Nature\n- Lava Plume\n- Rapid Spin\n- Stealth Rock\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "133",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Eject Pack\nLevel: 50\nAbility: Drought\nEVs: 252 HP / 4 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Overheat\n- Eruption\n- Helping Hand\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "134",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Charcoal\nLevel: 50\nAbility: Drought\nEVs: 252 HP / 4 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Eruption\n- Heat Wave\n- Earth Power\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "135",
+        "pokemon": "Altaria",
+        "build": "Altaria @ Heavy-Duty Boots\nAbility: Natural Cure\nEVs: 252 HP / 240 Def / 16 Spe\nTera Type: Steel\nImpish Nature\n- Defog\n- Roost\n- Brave Bird\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "136",
+        "pokemon": "Altaria",
+        "build": "Altaria @ Altarianite\nAbility: Natural Cure\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Dragon Dance\n- Return\n- Earthquake\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "137",
+        "pokemon": "Altaria",
+        "build": "Altaria @ Altarianite\nAbility: Natural Cure\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Dragon Dance\n- Return\n- Refresh\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "138",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Leftovers\nAbility: Marvel Scale\nEVs: 252 HP / 108 Def / 148 SpD\nCalm Nature\n- Scald\n- Recover\n- Toxic\n- Refresh",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "139",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Sitrus Berry\nLevel: 50\nAbility: Competitive\nEVs: 252 HP / 76 Def / 172 SpA / 4 SpD / 4 Spe\nCalm Nature\n- Scald\n- Ice Beam\n- Recover\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "140",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Psychic Seed\nAbility: Competitive\nEVs: 252 HP / 200 Def / 56 Spe\nBold Nature\n- Scald\n- Icy Wind\n- Recover\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "141",
+        "pokemon": "Castform",
+        "build": "Castform @ Waterium Z\nAbility: Forecast\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Rain Dance\n- Hydro Pump\n- Ice Beam\n- Thunder",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "142",
+        "pokemon": "Banette",
+        "build": "Banette @ Life Orb\nAbility: Insomnia\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Shadow Claw\n- Knock Off\n- Will-O-Wisp\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "143",
+        "pokemon": "Banette",
+        "build": "Banette @ Banettite\nAbility: Insomnia\nEVs: 228 HP / 252 Atk / 28 Spe\nAdamant Nature\n- Knock Off\n- Will-O-Wisp\n- Shadow Claw\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "144",
+        "pokemon": "Banette",
+        "build": "Banette @ Banettite\nAbility: Frisk\nEVs: 252 HP / 252 Atk / 4 SpD\nAdamant Nature\n- Taunt\n- Will-O-Wisp\n- Shadow Claw\n- Destiny Bond",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "145",
+        "pokemon": "Chimecho",
+        "build": "Chimecho @ Colbur Berry\nAbility: Levitate\nEVs: 252 HP / 252 Def / 4 SpA\nIVs: 0 Spe\nRelaxed Nature\n- Trick Room\n- Taunt\n- Psyshock\n- Healing Wish",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "146",
+        "pokemon": "Chimecho",
+        "build": "Chimecho @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 252 Def / 4 SpA\nBold Nature\n- Psychic\n- Toxic\n- Recover\n- Defog",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "147",
+        "pokemon": "Chimecho",
+        "build": "Chimecho @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Healing Wish\n- Recover\n- Psychic\n- Thunder Wave",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "148",
+        "pokemon": "Absol",
+        "build": "Absol @ Absolite\nAbility: Magic Bounce\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Pursuit\n- Close Combat\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "149",
+        "pokemon": "Absol",
+        "build": "Absol @ Absolite\nAbility: Magic Bounce\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Swords Dance\n- Knock Off\n- Close Combat\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "150",
+        "pokemon": "Absol",
+        "build": "Absol @ Choice Band\nAbility: Justified\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Knock Off\n- Sucker Punch\n- Superpower\n- Pursuit",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "151",
+        "pokemon": "Glalie",
+        "build": "Glalie @ Glalitite\nAbility: Ice Body\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Spikes\n- Double-Edge\n- Earthquake\n- Explosion",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "152",
+        "pokemon": "Glalie",
+        "build": "Glalie @ Leftovers\nAbility: Moody\nEVs: 216 HP / 40 Def / 252 Spe\nTimid Nature\n- Protect\n- Substitute\n- Taunt\n- Frost Breath",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
