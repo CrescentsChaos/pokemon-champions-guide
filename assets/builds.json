@@ -299,7 +299,10 @@
         "id": "41",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Leftovers\nAbility: Overgrow\nEVs: 252 HP / 168 Def / 88 Spe\nTera Type: Water\nBold Nature\n- Giga Drain\n- Sludge Bomb\n- Knock Off\n- Synthesis",
-        "synergy": [],
+        "synergy": [
+            "60",
+            "132"
+        ],
         "format": "Singles"
     },
     {
@@ -1134,6 +1137,34 @@
         "id": "160",
         "pokemon": "Luxray",
         "build": "Luxray @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Facade\n- Wild Charge\n- Superpower\n- Crunch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "161",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ Focus Sash\nLevel: 50\nAbility: Unburden\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Stellar\nJolly Nature\n- Dire Claw\n- Close Combat\n- Fake Out\n- Rock Slide",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "162",
+        "pokemon": "Roserade",
+        "build": "Roserade @ Life Orb\nAbility: Technician\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Sludge Bomb\n- Giga Drain\n- Hidden Power Fire\n- Spikes",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "163",
+        "pokemon": "Roserade",
+        "build": "Roserade @ Heavy-Duty Boots\nAbility: Natural Cure\nEVs: 252 HP / 120 Def / 136 Spe\nIVs: 0 Atk\nBold Nature\n- Spikes\n- Giga Drain\n- Sludge Bomb\n- Synthesis",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "164",
+        "pokemon": "Rampardos",
+        "build": "Rampardos @ Life Orb\nAbility: Sheer Force\nEVs: 252 Atk / 4 SpA / 252 Spe\nNaive Nature\n- Rock Slide\n- Fire Punch\n- Ice Beam\n- Zen Headbutt",
         "synergy": [],
         "format": "Singles"
     }
