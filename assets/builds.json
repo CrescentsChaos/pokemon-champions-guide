@@ -1465,5 +1465,33 @@
         "build": "Samurott-Hisui @ Black Glasses\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dark\nAdamant Nature\n- Swords Dance\n- Ceaseless Edge\n- Razor Shell\n- Sucker Punch",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "207",
+        "pokemon": "Watchog",
+        "build": "Watchog @ Life Orb\nAbility: Analytic\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Return\n- Low Kick\n- Knock Off\n- Seed Bomb",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "208",
+        "pokemon": "Liepard",
+        "build": "Liepard @ Heat Rock\nAbility: Prankster\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Sunny Day\n- U-turn\n- Knock Off\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "209",
+        "pokemon": "Liepard",
+        "build": "Liepard @ Heavy-Duty Boots\nAbility: Prankster\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Nasty Plot\n- Dark Pulse\n- Copycat\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "210",
+        "pokemon": "Liepard",
+        "build": "Liepard @ Choice Band\nAbility: Prankster\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Knock Off\n- U-turn\n- Copycat\n- Gunk Shot",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
