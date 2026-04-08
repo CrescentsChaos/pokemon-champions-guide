@@ -329,29 +329,6 @@
             <p style="color: var(--text-muted);">Visualized competitive sets from the world's best trainers.</p>
         </div>
 
-        <div class="search-wrapper fade-in">
-            <input type="text" id="build-search" placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
-            <div class="filter-row">
-                <select id="type-filter" class="filter-select">
-                    <option value="">All Types</option>
-                </select>
-                <select id="role-filter" class="filter-select">
-                    <option value="">All Roles</option>
-                </select>
-                <select id="format-filter" class="filter-select">
-                    <option value="">All Formats</option>
-                    <option value="Singles">Singles</option>
-                    <option value="Doubles">Doubles</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="builds-grid" class="fade-in" style="margin-bottom: 2rem;">
-            <!-- Builds will be injected here as high-fidelity cards -->
-        </div>
-
-        <div id="load-more-sentinel" style="height: 50px; margin-top: 1rem;"></div>
-
         <div id="synergy-container" class="fade-in">
             <div class="synergy-header">
                 <div>
@@ -405,6 +382,31 @@
             <div id="synergy-grid">
                 <!-- Synergy cards injected here -->
             </div>
+        </div>
+
+        <div id="library-section">
+            <div class="search-wrapper fade-in">
+                <input type="text" id="build-search" placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
+                <div class="filter-row">
+                    <select id="type-filter" class="filter-select">
+                        <option value="">All Types</option>
+                    </select>
+                    <select id="role-filter" class="filter-select">
+                        <option value="">All Roles</option>
+                    </select>
+                    <select id="format-filter" class="filter-select">
+                        <option value="">All Formats</option>
+                        <option value="Singles">Singles</option>
+                        <option value="Doubles">Doubles</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="builds-grid" class="fade-in" style="margin-bottom: 2rem;">
+                <!-- Builds will be injected here as high-fidelity cards -->
+            </div>
+
+            <div id="load-more-sentinel" style="height: 50px; margin-top: 1rem;"></div>
         </div>
     </div>
 
