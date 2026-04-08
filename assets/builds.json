@@ -340,7 +340,7 @@
     {
         "id": "46",
         "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y\nAbility: Drought\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
+        "build": "Charizard @ Charizardite Y\nAbility: Solar Power\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
         "synergy": [],
         "format": "Doubles"
     },
@@ -1204,6 +1204,118 @@
         "id": "169",
         "pokemon": "Machamp",
         "build": "Machamp @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Close Combat\n- Knock Off\n- Facade\n- Bullet Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "170",
+        "pokemon": "Spiritomb",
+        "build": "Spiritomb @ Leftovers\nAbility: Infiltrator\nEVs: 252 HP / 252 SpA / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Dark\nQuiet Nature\n- Trick Room\n- Nasty Plot\n- Dark Pulse\n- Psyshock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "171",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Rocky Helmet\nAbility: Rough Skin\nEVs: 252 HP / 216 Def / 40 Spe\nTera Type: Ghost\nImpish Nature\n- Earthquake\n- Dragon Tail\n- Stealth Rock\n- Spikes",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "172",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Life Orb\nLevel: 50\nAbility: Rough Skin\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Steel\nJolly Nature\n- Stomping Tantrum\n- Earthquake\n- Dragon Claw\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "173",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Choice Scarf\nLevel: 50\nAbility: Rough Skin\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Steel\nJolly Nature\n- Rock Slide\n- Earthquake\n- Dragon Claw\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "174",
+        "pokemon": "Lucario",
+        "build": "Lucario @ Life Orb\nAbility: Inner Focus\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Normal\nJolly Nature\n- Swords Dance\n- Close Combat\n- Meteor Mash\n- Extreme Speed",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "175",
+        "pokemon": "Lucario",
+        "build": "Lucario @ Lucarionite\nAbility: Justified\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Swords Dance\n- Meteor Mash\n- Close Combat\n- Bullet Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "176",
+        "pokemon": "Hippowdon",
+        "build": "Hippowdon @ Leftovers\nAbility: Sand Stream\nEVs: 248 HP / 112 Def / 148 SpD\nTera Type: Water\nImpish Nature\n- Stealth Rock\n- Ice Fang\n- Earthquake\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "177",
+        "pokemon": "Toxicroak",
+        "build": "Toxicroak @ Rocky Helmet\nAbility: Dry Skin\nEVs: 252 HP / 204 Def / 52 Spe\nTera Type: Ghost\nImpish Nature\n- Drain Punch\n- Knock Off\n- Toxic\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "178",
+        "pokemon": "Toxicroak",
+        "build": "Toxicroak @ Life Orb\nAbility: Dry Skin\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nJolly Nature\n- Close Combat\n- Gunk Shot\n- Swords Dance\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "179",
+        "pokemon": "Weavile",
+        "build": "Weavile @ Heavy-Duty Boots\nAbility: Pickpocket\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Swords Dance\n- Triple Axel\n- Knock Off\n- Low Kick",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "180",
+        "pokemon": "Weavile",
+        "build": "Weavile @ Heavy-Duty Boots\nAbility: Pressure\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ice\nJolly Nature\n- Triple Axel\n- Knock Off\n- Ice Shard\n- Swords Dance",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "181",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Leftovers\nAbility: Solid Rock\nEVs: 252 HP / 16 Atk / 240 SpD\nTera Type: Dragon\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Stone Edge\n- Temper Flare",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "182",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Leftovers\nAbility: Solid Rock\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dragon\nAdamant Nature\n- Swords Dance\n- Earthquake\n- Stone Edge\n- Temper Flare",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "183",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Assault Vest\nAbility: Solid Rock\nEVs: 52 HP / 252 Atk / 204 Spe\nTera Type: Dragon\nAdamant Nature\n- Earthquake\n- Stone Edge\n- Ice Punch\n- Temper Flare",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "184",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Leftovers\nAbility: Solid Rock\nEVs: 252 HP / 16 Atk / 184 SpD / 56 Spe\nTera Type: Fire\nAdamant Nature\n- Stealth Rock\n- Earthquake\n- Stone Edge\n- Swords Dance",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "185",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Choice Band\nAbility: Solid Rock\nEVs: 252 Atk / 92 SpD / 164 Spe\nAdamant Nature\n- Megahorn\n- Stone Edge\n- Earthquake\n- Ice Punch",
         "synergy": [],
         "format": "Singles"
     }
