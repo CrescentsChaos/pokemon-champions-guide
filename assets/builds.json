@@ -1167,5 +1167,26 @@
         "build": "Rampardos @ Life Orb\nAbility: Sheer Force\nEVs: 252 Atk / 4 SpA / 252 Spe\nNaive Nature\n- Rock Slide\n- Fire Punch\n- Ice Beam\n- Zen Headbutt",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "165",
+        "pokemon": "Bastiodon",
+        "build": "Bastiodon @ Leftovers\nAbility: Sturdy\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Rock Slide\n- Metal Burst\n- Toxic",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "166",
+        "pokemon": "Bastiodon",
+        "build": "Bastiodon @ Leftovers\nAbility: Soundproof\nEVs: 252 HP / 4 Def / 252 SpD\nTera Type: Fairy\nCareful Nature\n- Stealth Rock\n- Body Press\n- Heavy Slam\n- Foul Play",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "167",
+        "pokemon": "Lopunny",
+        "build": "Lopunny @ Lopunnite\nAbility: Limber\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Frustration\n- Close Combat\n- Fake Out\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
