@@ -1682,5 +1682,89 @@
         "build": "Beartic @ Choice Band\nAbility: Swift Swim\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Icicle Crash\n- Superpower\n- Aqua Jet\n- Stone Edge",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "238",
+        "pokemon": "Stunfisk",
+        "build": "Stunfisk @ Leftovers\nAbility: Static\nEVs: 252 HP / 4 Def / 252 SpD\nCalm Nature\n- Stealth Rock\n- Toxic\n- Earth Power\n- Discharge",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "239",
+        "pokemon": "Stunfisk-Galar",
+        "build": "Stunfisk-Galar @ Leftovers\nAbility: Mimicry\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Earthquake\n- Rock Slide\n- Curse",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "240",
+        "pokemon": "Stunfisk-Galar",
+        "build": "Stunfisk-Galar @ Leftovers\nAbility: Mimicry\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Earthquake\n- Sludge Bomb\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "241",
+        "pokemon": "Golurk",
+        "build": "Golurk @ Choice Band\nAbility: No Guard\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nAdamant Nature\n- Poltergeist\n- Earthquake\n- Dynamic Punch\n- Ice Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "242",
+        "pokemon": "Golurk",
+        "build": "Golurk @ Choice Band\nAbility: No Guard\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Poltergeist\n- Earthquake\n- Dynamic Punch\n- Heat Crash",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "243",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Leftovers\nAbility: Levitate\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Poison\nTimid Nature\n- Nasty Plot\n- Draco Meteor\n- Flamethrower\n- Thunder Wave",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "244",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Choice Scarf\nAbility: Levitate\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Dragon\nTimid Nature\n- Draco Meteor\n- Dark Pulse\n- Fire Blast\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "245",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Choice Specs\nAbility: Levitate\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Steel\nTimid Nature\n- Dark Pulse\n- Draco Meteor\n- Flash Cannon\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "246",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Life Orb\nLevel: 50\nAbility: Levitate\nEVs: 4 HP / 252 SpA / 252 Spe\nTera Type: Fire\nModest Nature\n- Heat Wave\n- Dark Pulse\n- Snarl\n- Draco Meteor",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "247",
+        "pokemon": "Volcarona",
+        "build": "Volcarona @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 80 HP / 252 Def / 176 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Quiver Dance\n- Flamethrower\n- Morning Sun\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "248",
+        "pokemon": "Volcarona",
+        "build": "Volcarona @ Covert Cloak\nLevel: 50\nAbility: Flame Body\nEVs: 252 HP / 140 Def / 4 SpA / 4 SpD / 108 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Heat Wave\n- Tera Blast\n- Quiver Dance\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "249",
+        "pokemon": "Volcarona",
+        "build": "Volcarona @ Sitrus Berry\nLevel: 50\nAbility: Flame Body\nEVs: 156 HP / 84 Def / 12 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Overheat\n- Struggle Bug\n- Rage Powder\n- Tailwind",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
