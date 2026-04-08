@@ -1188,5 +1188,12 @@
         "build": "Lopunny @ Lopunnite\nAbility: Limber\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Frustration\n- Close Combat\n- Fake Out\n- U-turn",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "168",
+        "pokemon": "Arbok",
+        "build": "Arbok @ Choice Band\nAbility: Intimidate\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Gunk Shot\n- Earthquake\n- Crunch\n- Switcheroo",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
