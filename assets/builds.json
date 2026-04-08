@@ -1091,7 +1091,7 @@
     {
         "id": "154",
         "pokemon": "Torterra",
-        "build": "Torterra @ Loaded Dice\nAbility: Overgrow\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nJolly Nature\n- Shell Smash\n- Earthquake\n- Bullet Seed\n- Rock Blast",
+        "build": "Torterra @ Loaded Dice\nAbility: Overgrow\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nJolly Nature\n- Shell Smash\n- Headlong Rush\n- Bullet Seed\n- Rock Blast",
         "synergy": [],
         "format": "Singles"
     },
@@ -1099,6 +1099,41 @@
         "id": "155",
         "pokemon": "Torterra",
         "build": "Torterra @ White Herb\nAbility: Overgrow\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fire\nJolly Nature\n- Shell Smash\n- Headlong Rush\n- Wood Hammer\n- Stone Edge",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "156",
+        "pokemon": "Infernape",
+        "build": "Infernape @ Choice Specs\nAbility: Blaze\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Fire\nTimid Nature\n- Flamethrower\n- Overheat\n- Focus Blast\n- Vacuum Wave",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "157",
+        "pokemon": "Infernape",
+        "build": "Infernape @ Choice Scarf\nAbility: Blaze\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Flare Blitz\n- Close Combat\n- U-turn\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "158",
+        "pokemon": "Empoleon",
+        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 144 HP / 148 SpA / 216 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Surf\n- Ice Beam\n- Grass Knot\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "159",
+        "pokemon": "Empoleon",
+        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 252 HP / 4 Def / 252 SpD\nIVs: 0 Atk\nTera Type: Fairy\nCalm Nature\n- Surf\n- Roost\n- Stealth Rock\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "160",
+        "pokemon": "Luxray",
+        "build": "Luxray @ Flame Orb\nAbility: Guts\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Facade\n- Wild Charge\n- Superpower\n- Crunch",
         "synergy": [],
         "format": "Singles"
     }

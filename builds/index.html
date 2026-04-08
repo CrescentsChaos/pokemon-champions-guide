@@ -500,8 +500,7 @@
                 const buildId = urlParams.get('id');
                 if (buildId) {
                     setTimeout(() => {
-                        const numericId = parseInt(buildId, 10);
-                        selectBuild(isNaN(numericId) ? buildId : numericId);
+                        selectBuild(buildId);
                     }, 100);
                 }
             } catch (e) { console.error("Data load failed", e); }
