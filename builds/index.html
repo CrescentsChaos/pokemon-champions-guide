@@ -319,6 +319,79 @@
             font-size: 0.5rem;
             opacity: 0.7;
         }
+        /* Toggle & Shuffle Styles */
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-btn.active {
+            background: var(--primary-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        #shuffle-team {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 18px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #shuffle-team:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #shuffle-team:active {
+            transform: translateY(0);
+        }
+
+        #rcmd-team {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
+        }
+
+        #rcmd-team:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
+        }
+
+        #rcmd-team:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -376,7 +449,19 @@
 
             <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
-                <button id="export-synergy-team" class="btn" style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT FULL TEAM PASTE 📋</button>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div class="format-toggle-wrapper" style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px);">
+                        <button id="toggle-singles" class="toggle-btn" onclick="setRecommendationFormat('Singles')">SINGLES</button>
+                        <button id="toggle-doubles" class="toggle-btn" onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
+                    </div>
+                    <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
+                        <span>SMART RCMD</span> 🧠
+                    </button>
+                    <button id="shuffle-team" onclick="shuffleTeammates()">
+                        <span>SHUFFLE TEAM</span> 🎲
+                    </button>
+                    <button id="export-synergy-team" class="btn" style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT FULL TEAM PASTE 📋</button>
+                </div>
             </div>
             
             <div id="synergy-grid">
@@ -429,6 +514,10 @@
             rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
             fairy: '#D685AD', dark: '#705746', stellar: '#70DBFF'
         };
+
+        let recommendationFormat = 'Singles';
+        let currentRecommendedBuilds = [];
+        let currentMainBuild = null;
 
         const rolesList = [
             'Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Revenge Killer',
@@ -1356,13 +1445,31 @@
 
             const build = allBuilds.find(b => b.id === id);
             if (build) {
+                currentMainBuild = build;
+                recommendationFormat = build.format || 'Singles';
+                
                 const titleEl = document.getElementById('synergy-title');
                 if (titleEl) titleEl.innerText = `STRATEGIC SYNERGY FOR ${build.pokemon.toUpperCase()}`;
 
+                // Update Toggle UI
+                document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.getElementById(`toggle-${recommendationFormat.toLowerCase()}`);
+                if (activeBtn) activeBtn.classList.add('active');
+
+                // Initial Recommendations: Use pre-defined synergy or random shuffle
                 const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
                 
-                renderSynergy(build, build.synergy);
-                analyzeBuildSynergy(build, synergyBuilds);
+                const rcmdBtn = document.getElementById('rcmd-team');
+                if (synergyBuilds.length > 0) {
+                    currentRecommendedBuilds = synergyBuilds;
+                    if (rcmdBtn) rcmdBtn.style.display = 'none';
+                } else {
+                    currentRecommendedBuilds = getRecommendedTeammates(build, recommendationFormat);
+                    if (rcmdBtn) rcmdBtn.style.display = 'flex';
+                }
+                
+                renderSynergy(build, currentRecommendedBuilds);
+                analyzeBuildSynergy(build, currentRecommendedBuilds);
                 
                 const container = document.getElementById('synergy-container');
                 container.style.display = 'block';
@@ -1376,7 +1483,7 @@
                 const exportBtn = document.getElementById('export-synergy-team');
                 if (exportBtn) {
                     exportBtn.onclick = () => {
-                        const fullPaste = [build, ...synergyBuilds].map(b => b.build).join('\n\n');
+                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => b.build).join('\n\n');
                         copyPaste(fullPaste);
                         exportBtn.innerText = 'TEAM COPIED! ✅';
                         setTimeout(() => exportBtn.innerText = 'EXPORT FULL TEAM PASTE 📋', 2000);
@@ -1385,28 +1492,240 @@
             }
         }
 
+        function setRecommendationFormat(format) {
+            recommendationFormat = format;
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`toggle-${format.toLowerCase()}`).classList.add('active');
+            
+            shuffleTeammates();
+        }
+
+        function shuffleTeammates() {
+            if (!currentMainBuild) return;
+            
+            // Pulse the grid for feedback
+            const grid = document.getElementById('synergy-grid');
+            grid.style.opacity = '0.3';
+            
+            setTimeout(() => {
+                currentRecommendedBuilds = getRecommendedTeammates(currentMainBuild, recommendationFormat);
+                renderSynergy(currentMainBuild, currentRecommendedBuilds);
+                analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
+                grid.style.opacity = '1';
+            }, 200);
+        }
+
+        function getRecommendedTeammates(mainBuild, format, count = 5) {
+            const mainP = parsePaste(mainBuild.build);
+            const mainSpecies = mainP.species.toLowerCase();
+            const mainItem = (mainP.item || '').toLowerCase();
+            
+            // Filter by format
+            let pool = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
+            
+            // Exclude main species
+            pool = pool.filter(b => {
+                const p = parsePaste(b.build);
+                return p.species.toLowerCase() !== mainSpecies;
+            });
+
+            // Randomize
+            pool.sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            const usedSpecies = new Set([mainSpecies]);
+            const usedItems = new Set();
+            if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
+
+            for (const b of pool) {
+                if (selected.length >= count) break;
+                
+                const p = parsePaste(b.build);
+                const species = p.species.toLowerCase();
+                const item = (p.item || '').toLowerCase();
+                
+                // Species Clause
+                if (usedSpecies.has(species)) continue;
+                
+                // Item Clause (exclude consumables if you want, but standard is strictly unique)
+                if (item && item !== 'none' && usedItems.has(item)) continue;
+                
+                selected.push(b);
+                usedSpecies.add(species);
+                if (item && item !== 'none') usedItems.add(item);
+            }
+            
+            return selected;
+        }
+
+        function smartRecommendTeammates() {
+            if (!currentMainBuild) return;
+            
+            const grid = document.getElementById('synergy-grid');
+            grid.style.opacity = '0.3';
+            
+            setTimeout(() => {
+                currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
+                renderSynergy(currentMainBuild, currentRecommendedBuilds);
+                analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
+                grid.style.opacity = '1';
+                
+                // Special button feedback
+                const rcmdBtn = document.getElementById('rcmd-team');
+                const originalText = rcmdBtn.innerHTML;
+                rcmdBtn.style.background = 'linear-gradient(135deg, #0cebeb 0%, #20e3b2 50%, #29ffc6 100%)';
+                rcmdBtn.innerHTML = '<span>STRATEGY APPLIED!</span> ⚡';
+                setTimeout(() => {
+                    rcmdBtn.style.background = '';
+                    rcmdBtn.innerHTML = originalText;
+                }, 2000);
+            }, 300);
+        }
+
+        function getSmartRecommendations(mainBuild, format, count = 5) {
+            const pMain = parsePaste(mainBuild.build);
+            const mainSpecies = pMain.species.toLowerCase();
+            const mainItem = (pMain.item || '').toLowerCase();
+            const mainRoles = detectRole(pMain, allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies.replace(/[^a-z0-9]/g, '')));
+            
+            const typeChart = {
+                normal: { weaknesses: ['fighting'], resistances: [], immunities: ['ghost'] },
+                fire: { weaknesses: ['water', 'ground', 'rock'], resistances: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immunities: [] },
+                water: { weaknesses: ['grass', 'electric'], resistances: ['fire', 'water', 'ice', 'steel'], immunities: [] },
+                grass: { weaknesses: ['fire', 'ice', 'poison', 'flying', 'bug'], resistances: ['water', 'grass', 'electric', 'ground'], immunities: [] },
+                electric: { weaknesses: ['ground'], resistances: ['electric', 'flying', 'steel'], immunities: [] },
+                ice: { weaknesses: ['fire', 'fighting', 'rock', 'steel'], resistances: ['ice'], immunities: [] },
+                fighting: { weaknesses: ['flying', 'psychic', 'fairy'], resistances: ['bug', 'rock', 'dark'], immunities: [] },
+                poison: { weaknesses: ['ground', 'psychic'], resistances: ['grass', 'fighting', 'poison', 'bug', 'fairy'], immunities: [] },
+                ground: { weaknesses: ['water', 'grass', 'ice'], resistances: ['poison', 'rock'], immunities: ['electric'] },
+                flying: { weaknesses: ['electric', 'ice', 'rock'], resistances: ['grass', 'fighting', 'bug'], immunities: ['ground'] },
+                psychic: { weaknesses: ['bug', 'ghost', 'dark'], resistances: ['fighting', 'psychic'], immunities: [] },
+                bug: { weaknesses: ['fire', 'flying', 'rock'], resistances: ['grass', 'fighting', 'ground'], immunities: [] },
+                rock: { weaknesses: ['water', 'grass', 'fighting', 'ground', 'steel'], resistances: ['normal', 'fire', 'poison', 'flying'], immunities: [] },
+                ghost: { weaknesses: ['ghost', 'dark'], resistances: ['poison', 'bug'], immunities: ['normal', 'fighting'] },
+                dragon: { weaknesses: ['ice', 'dragon', 'fairy'], resistances: ['fire', 'water', 'grass', 'electric'], immunities: [] },
+                dark: { weaknesses: ['fighting', 'bug', 'fairy'], resistances: ['ghost', 'dark'], immunities: ['psychic'] },
+                steel: { weaknesses: ['fire', 'fighting', 'ground'], resistances: ['normal', 'grass', 'ice', 'flying', 'psychic', 'bug', 'rock', 'dragon', 'steel', 'fairy'], immunities: ['poison'] },
+                fairy: { weaknesses: ['poison', 'steel'], resistances: ['fighting', 'bug', 'dark'], immunities: ['dragon'] }
+            };
+
+            const getWeaknesses = (types) => {
+                let weak = [];
+                types.forEach(t => {
+                    if (typeChart[t]) weak = [...weak, ...typeChart[t].weaknesses];
+                });
+                return [...new Set(weak)];
+            };
+
+            const dbMain = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies.replace(/[^a-z0-9]/g, ''));
+            const mainTypes = [dbMain?.Type_1?.toLowerCase(), dbMain?.Type_2?.toLowerCase()].filter(t => t);
+            const mainWeaknesses = getWeaknesses(mainTypes);
+
+            let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
+            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase() !== mainSpecies);
+
+            const scoredCandidates = candidates.map(b => {
+                const p = parsePaste(b.build);
+                const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const db = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === species);
+                const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
+                const roles = detectRole(p, db);
+                
+                let score = 0;
+
+                // 1. Defensive Synergy: Resist main's weaknesses
+                mainWeaknesses.forEach(w => {
+                    types.forEach(t => {
+                        if (typeChart[t]?.resistances.includes(w)) score += 5;
+                        if (typeChart[t]?.immunities.includes(w)) score += 8;
+                    });
+                });
+
+                // 2. Role Balancing
+                const isMainOffensive = mainRoles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'));
+                const isMainSupport = mainRoles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Redirection'));
+
+                if (isMainOffensive) {
+                    if (roles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Pivot'))) score += 6;
+                }
+                if (isMainSupport) {
+                    if (roles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'))) score += 6;
+                }
+
+                // 3. Core Boosts
+                const hasType = (t) => mainTypes.includes(t) || types.includes(t);
+                // F/W/G
+                if (hasType('fire') && hasType('water')) score += 4;
+                if (hasType('fire') && hasType('grass')) score += 4;
+                if (hasType('water') && hasType('grass')) score += 4;
+                // S/F/D
+                if (hasType('steel') && hasType('fairy')) score += 4;
+                if (hasType('steel') && hasType('dragon')) score += 4;
+                if (hasType('fairy') && hasType('dragon')) score += 4;
+
+                // 4. Format Utility
+                if (format.toLowerCase() === 'doubles') {
+                    if (roles.includes('Fake Out Pressure')) score += 5;
+                    if (roles.includes('Redirection')) score += 5;
+                    if (roles.some(r => r.includes('Speed Control'))) score += 5;
+                } else {
+                    if (roles.includes('Hazard Setter')) score += 5;
+                    if (roles.includes('Hazard Control')) score += 5;
+                    if (roles.includes('Pivot')) score += 5;
+                }
+
+                // Random jitter to avoid same exact team every time
+                score += Math.random() * 5;
+
+                return { build: b, score, species: p.species, item: p.item };
+            });
+
+            // Sort by score
+            scoredCandidates.sort((a, b) => b.score - a.score);
+
+            const selected = [];
+            const usedSpecies = new Set([mainSpecies]);
+            const usedItems = new Set();
+            if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
+
+            for (const c of scoredCandidates) {
+                if (selected.length >= count) break;
+                
+                const s = c.species.toLowerCase();
+                const i = (c.item || '').toLowerCase();
+                
+                if (usedSpecies.has(s)) continue;
+                if (i && i !== 'none' && usedItems.has(i)) continue;
+                
+                selected.push(c.build);
+                usedSpecies.add(s);
+                if (i && i !== 'none') usedItems.add(i);
+            }
+            
+            return selected;
+        }
+
         function closeSynergy() {
             selectedBuildId = null;
             document.querySelectorAll('.build-card-wrapper').forEach(el => el.classList.remove('selected'));
             document.getElementById('synergy-container').style.display = 'none';
         }
 
-        function renderSynergy(mainBuild, synergyIds) {
+        function renderSynergy(mainBuild, buildsArr) {
             const grid = document.getElementById('synergy-grid');
             grid.innerHTML = '';
 
-            // First slot: The selected build itself (High priority display)
+            // First slot: The selected build itself
             const pSelf = parsePaste(mainBuild.build);
             const speciesSelf = pSelf.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const dbSelf = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSelf);
+            const dbSelf = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSelf);
             const selfCard = createTeamCard(pSelf, dbSelf, mainBuild);
             selfCard.style.border = '2px solid var(--primary-red)';
             selfCard.style.boxShadow = 'var(--accent-glow)';
             grid.appendChild(selfCard);
 
             for (let i = 0; i < 5; i++) {
-                const sid = (synergyIds || [])[i];
-                const build = sid ? allBuilds.find(b => b.id === sid) : null;
+                const build = buildsArr[i];
 
                 if (build) {
                     const p = parsePaste(build.build);

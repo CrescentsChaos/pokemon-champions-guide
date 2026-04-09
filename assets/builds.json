@@ -1766,5 +1766,12 @@
         "build": "Volcarona @ Sitrus Berry\nLevel: 50\nAbility: Flame Body\nEVs: 156 HP / 84 Def / 12 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Overheat\n- Struggle Bug\n- Rage Powder\n- Tailwind",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "250",
+        "pokemon": "Venusaur",
+        "build": "Venusaur @ Focus Sash  \nAbility: Chlorophyll  \nTera Type: Grass  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Sleep Powder  \n- Sludge Bomb  \n- Energy Ball  \n- Earth Power",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
