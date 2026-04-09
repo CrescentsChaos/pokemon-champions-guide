@@ -33,6 +33,15 @@
             </div>
         </div>
 
+        <div class="move-results-container fade-in">
+            <div class="move-results-column" id="p1-move-results">
+                <!-- P1 Moves vs P2 -->
+            </div>
+            <div class="move-results-column" id="p2-move-results">
+                <!-- P2 Moves vs P1 -->
+            </div>
+        </div>
+
         <div class="calc-grid">
             <!-- Pokemon 1 (Attacker) -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
@@ -103,6 +112,17 @@
                         <h4>Moves</h4>
                         <div id="p1-moves">
                             <!-- 4 move slots -->
+                        </div>
+                    </div>
+
+                    <div class="hp-row" style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label>Current HP (%)</label>
+                            <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
+                        </div>
+                        <input type="number" id="p1-hp-percent" value="100" min="0" max="100">
+                        <div class="hp-bar-wrap">
+                            <div id="p1-hp-bar" class="hp-bar" style="width: 100%;"></div>
                         </div>
                     </div>
                 </div>
@@ -250,7 +270,10 @@
                     </div>
                     
                     <div class="hp-row" style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                        <label>Current HP (%)</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label>Current HP (%)</label>
+                            <button class="import-btn" onclick="openImportModal(2)">Import Paste</button>
+                        </div>
                         <input type="number" id="p2-hp-percent" value="100" min="0" max="100">
                         <div class="hp-bar-wrap">
                             <div id="p2-hp-bar" class="hp-bar" style="width: 100%;"></div>
@@ -260,6 +283,18 @@
             </div>
         </div>
     </main>
+
+    <div id="import-modal" class="modal">
+        <div class="modal-content glass">
+            <h3>Import PokePaste</h3>
+            <p id="import-target-label">Importing for Pokemon 1</p>
+            <textarea id="paste-input" placeholder="Paste your Pokemon set here..."></textarea>
+            <div class="modal-actions">
+                <button class="field-btn" onclick="closeImportModal()">Cancel</button>
+                <button class="field-btn active" id="confirm-import">Import</button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" class="toast">Calculation Error!</div>
 

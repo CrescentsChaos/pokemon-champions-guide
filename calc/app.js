@@ -4,6 +4,10 @@ let movesDB = [];
 let itemsDB = [];
 let p1 = null;
 let p2 = null;
+let selectedMoveIdx1 = 0;
+let selectedMoveIdx2 = 0;
+let importTargetId = 1;
+
 let field = {
     format: 'Singles',
     weather: 'None',
@@ -81,48 +85,47 @@ function setupPokemonState(id) {
         evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
         nature: 'Hardy', ability: 'None', item: 'None', status: 'Healthy',
         type1: 'None', type2: 'None', tera: false, teraType: 'Normal',
-        moves: Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }))
+        moves: Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })),
+        hpPercent: 100
     };
 }
 
 function setupEventListeners() {
-    // Search inputs
     ['p1', 'p2'].forEach(p => {
-        const input = document.getElementById(`${p}-search`);
-        input.addEventListener('input', (e) => handleSearch(p, e.target.value));
+        const id = p === 'p1' ? 1 : 2;
+        const pk = id === 1 ? p1 : p2;
+
+        document.getElementById(`${p}-search`).addEventListener('input', (e) => handleSearch(p, e.target.value));
         
-        // Level
         document.getElementById(`${p}-level`).addEventListener('change', (e) => {
-            const val = parseInt(e.target.value);
-            if (p === 'p1') p1.level = val; else p2.level = val;
-            updateStatsUI(p === 'p1' ? p1 : p2);
+            pk.level = parseInt(e.target.value) || 100;
+            updateStatsUI(pk);
             recalculate();
         });
 
-        // Nature, Ability, Item, Status
+        document.getElementById(`${p}-hp-percent`).addEventListener('input', (e) => {
+            const val = parseInt(e.target.value) || 0;
+            pk.hpPercent = val;
+            updateHPBar(id, val);
+            recalculate();
+        });
+
         ['nature', 'ability', 'item', 'status'].forEach(field => {
             const el = document.getElementById(`${p}-${field}`);
             const eventType = (field === 'ability' || field === 'item') ? 'input' : 'change';
             el.addEventListener(eventType, (e) => {
-                const pk = p === 'p1' ? p1 : p2;
                 pk[field] = e.target.value;
-                if (field === 'ability' || field === 'item') {
-                    // Update stats in case of items like Choice Band or abilities like Huge Power
-                    updateStatsUI(pk);
-                }
+                if (field === 'ability' || field === 'item') updateStatsUI(pk);
                 recalculate();
             });
         });
         
-        // Tera
         document.getElementById(`${p}-tera`).addEventListener('change', (e) => {
-            const pk = p === 'p1' ? p1 : p2;
             pk.tera = e.target.checked;
             recalculate();
         });
     });
 
-    // Field Buttons
     document.querySelectorAll('.field-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const parent = btn.parentElement;
@@ -132,10 +135,15 @@ function setupEventListeners() {
             } else {
                 btn.classList.toggle('active');
             }
-            
             updateFieldState();
             recalculate();
         });
+    });
+
+    document.getElementById('confirm-import').addEventListener('click', () => {
+        const paste = document.getElementById('paste-input').value;
+        importPokePaste(importTargetId, paste);
+        closeImportModal();
     });
 }
 
@@ -170,8 +178,7 @@ function loadPokemon(id, name) {
         spa: parseInt(data['Sp.Atk']), spd: parseInt(data['Sp.Def']), spe: parseInt(data.Speed)
     };
     
-    // Auto populate ability
-    pk.ability = data.Abilities?.[0] || 'None';
+    pk.ability = data.Ability_1 || 'None';
     
     const pStr = id === 1 ? 'p1' : 'p2';
     document.getElementById(`${pStr}-search`).value = name;
@@ -186,26 +193,27 @@ function populatePokemonUI(pk) {
     const p = pk.id === 1 ? 'p1' : 'p2';
     document.getElementById(`${p}-type1`).value = pk.type1;
     document.getElementById(`${p}-type2`).value = pk.type2;
-    
-    const abilityInput = document.getElementById(`${p}-ability`);
-    const abilityList = document.getElementById(`${p}-abilities-list`);
-    
-    const pkData = pokemonDB.find(x => x.Name === pk.name);
-    const abilities = [pkData.Ability_1, pkData.Ability_2, pkData.Ability_Hidden].filter(x => x && x !== 'None');
-    
-    abilityList.innerHTML = abilities.map(a => `<option value="${a}">`).join('');
-    abilityInput.value = pk.ability;
-
+    document.getElementById(`${p}-level`).value = pk.level;
+    document.getElementById(`${p}-nature`).value = pk.nature;
+    document.getElementById(`${p}-ability`).value = pk.ability;
     document.getElementById(`${p}-item`).value = pk.item;
+    document.getElementById(`${p}-hp-percent`).value = pk.hpPercent;
+    updateHPBar(pk.id, pk.hpPercent);
+
+    const pkData = pokemonDB.find(x => x.Name === pk.name);
+    if (pkData) {
+        const abilities = [pkData.Ability_1, pkData.Ability_2, pkData.Ability_Hidden].filter(x => x && x !== 'None');
+        document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
+    }
     
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => `
         <div class="move-row">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)">
                 <option value="None">None</option>
-                ${movesDB.map(m => `<option value="${m.name}">${m.name}</option>`).join('')}
+                ${movesDB.map(m => `<option value="${m.name}" ${pk.moves[i].name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
             </select>
-            <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)"> Crit</label>
+            <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${pk.moves[i].crit ? 'checked' : ''}> Crit</label>
         </div>
     `).join('');
 }
@@ -216,11 +224,17 @@ function updateMove(pId, idx, moveName) {
     if (mData) {
         pk.moves[idx] = {
             name: mData.name, basePower: parseInt(mData.power) || 0,
-            type: mData.type, category: mData.damage_class
+            type: mData.type, category: mData.damage_class, crit: pk.moves[idx].crit
         };
     } else {
-        pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical' };
+        pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
     }
+    recalculate();
+}
+
+function toggleCrit(pId, idx, checked) {
+    const pk = pId === 1 ? p1 : p2;
+    pk.moves[idx].crit = checked;
     recalculate();
 }
 
@@ -230,7 +244,7 @@ function updateStatsUI(pk) {
     const statsKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
     
     tbody.innerHTML = statsKeys.map(k => {
-        const base = pk.baseStats[k];
+        const base = pk.baseStats[k] || 0;
         const iv = pk.ivs[k];
         const ev = pk.evs[k];
         const total = calculateStat(k, base, iv, ev, pk.level, pk.nature);
@@ -257,7 +271,7 @@ function updateStatVal(id, k, type, val) {
 
 function calculateStat(k, base, iv, ev, level, nature) {
     if (k === 'hp') {
-        if (base === 1) return 1; // Shedinja
+        if (base === 1) return 1;
         return Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + level + 10;
     }
     const val = Math.floor((Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + 5));
@@ -275,42 +289,77 @@ function getNaturesMod(natureName, stat) {
 function recalculate() {
     if (!p1 || !p2) return;
     
-    const results = p1.moves.map(m => {
-        if (m.name === 'None') return null;
-        return calculateDamage(p1, p2, m, field);
-    }).filter(x => x);
+    const p1Results = p1.moves.map(m => m.name !== 'None' ? calculateDamage(p1, p2, m, field) : null);
+    const p2Results = p2.moves.map(m => m.name !== 'None' ? calculateDamage(p2, p1, m, field) : null);
 
+    renderMoveResults(p1Results, p2Results);
+    
+    const res = p1Results[selectedMoveIdx1] || p2Results[selectedMoveIdx2];
     const banner = document.getElementById('main-result');
     const subBanner = document.getElementById('sub-result');
     
-    if (results.length === 0) {
+    if (!res) {
         banner.innerText = "Select moves to see results";
         subBanner.innerText = "(Select an attacker move)";
         return;
     }
 
-    const res = results[0]; // For now just show the first move select
-    banner.innerText = `${p1.name} ${res.move} vs ${p2.name}: ${res.minPercent}% - ${res.maxPercent}%`;
-    subBanner.innerText = `Damage rolls: (${res.rolls.join(', ')})`;
+    const attacker = res.attackerId === 1 ? p1 : p2;
+    const defender = res.attackerId === 1 ? p2 : p1;
+    banner.innerText = `${attacker.name} ${res.move} vs ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
+    subBanner.innerText = `Possible damage amounts: (${res.rolls.join(', ')})`;
+}
+
+function renderMoveResults(p1Results, p2Results) {
+    const p1Container = document.getElementById('p1-move-results');
+    const p2Container = document.getElementById('p2-move-results');
+
+    p1Container.innerHTML = `<h4>${p1.name}'s Moves</h4>` + p1Results.map((res, i) => {
+        if (!res) return '';
+        const active = selectedMoveIdx1 === i ? 'active' : '';
+        return `
+            <div class="result-move-box ${active}" onclick="selectMove(1, ${i})">
+                <span class="move-name-summary">${res.move}</span>
+                <span class="move-damage-summary">${res.minPercent}% - ${res.maxPercent}%</span>
+            </div>
+        `;
+    }).join('');
+
+    p2Container.innerHTML = `<h4>${p2.name}'s Moves</h4>` + p2Results.map((res, i) => {
+        if (!res) return '';
+        const active = selectedMoveIdx2 === i ? 'active' : '';
+        return `
+            <div class="result-move-box ${active}" onclick="selectMove(2, ${i})">
+                <span class="move-name-summary">${res.move}</span>
+                <span class="move-damage-summary">${res.minPercent}% - ${res.maxPercent}%</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function selectMove(pId, idx) {
+    if (pId === 1) {
+        selectedMoveIdx1 = idx;
+        selectedMoveIdx2 = -1;
+    } else {
+        selectedMoveIdx2 = idx;
+        selectedMoveIdx1 = -1;
+    }
+    recalculate();
 }
 
 function calculateDamage(attacker, defender, move, field) {
-    if (move.basePower === 0) return { minPercent: 0, maxPercent: 0, rolls: [0], move: move.name };
+    const res = { move: move.name, attackerId: attacker.id, minPercent: 0, maxPercent: 0, rolls: [0] };
+    if (move.basePower === 0) return res;
     
-    // Core Formula: Damage = ((((2 * Level / 5) + 2) * Power * A / D) / 50) + 2
     const level = attacker.level;
     const isSpecial = move.category === 'Special';
-    let power = move.basePower;
     let atk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
     let def = isSpecial ? defender.stats.spd : defender.stats.def;
 
-    // Field & Item Modifiers (Simplified for now)
     let modifier = 1;
-    
-    // STAB
     if (move.type === attacker.type1 || move.type === attacker.type2) modifier *= 1.5;
     
-    // Type Effectiveness
     let eff = 1;
     const defTypes = [defender.type1, defender.type2];
     defTypes.forEach(t => {
@@ -318,33 +367,28 @@ function calculateDamage(attacker, defender, move, field) {
         if (interaction !== undefined) eff *= interaction;
     });
     modifier *= eff;
+    if (eff === 0) return res;
 
-    if (eff === 0) return { minPercent: 0, maxPercent: 0, rolls: [0], move: move.name };
-
-    // Weather
     if (field.weather === 'Sun' && move.type === 'Fire') modifier *= 1.5;
     if (field.weather === 'Sun' && move.type === 'Water') modifier *= 0.5;
     if (field.weather === 'Rain' && move.type === 'Water') modifier *= 1.5;
     if (field.weather === 'Rain' && move.type === 'Fire') modifier *= 0.5;
 
-    const baseDamage = Math.floor(Math.floor(Math.floor((2 * level / 5 + 2) * power * atk / def) / 50) + 2);
+    const baseDamage = Math.floor(Math.floor(Math.floor((2 * level / 5 + 2) * move.basePower * atk / def) / 50) + 2);
     
     const rolls = [];
     for (let i = 85; i <= 100; i++) {
-        const roll = Math.floor(baseDamage * i / 100 * modifier);
-        rolls.push(roll);
+        rolls.push(Math.floor(baseDamage * i / 100 * modifier));
     }
     
     const min = rolls[0];
     const max = rolls[rolls.length - 1];
     const defHp = defender.stats.hp;
 
-    return {
-        move: move.name,
-        minPercent: (min / defHp * 100).toFixed(1),
-        maxPercent: (max / defHp * 100).toFixed(1),
-        rolls: rolls
-    };
+    res.minPercent = (min / defHp * 100).toFixed(1);
+    res.maxPercent = (max / defHp * 100).toFixed(1);
+    res.rolls = rolls;
+    return res;
 }
 
 function updateFieldState() {
@@ -355,24 +399,99 @@ function updateFieldState() {
     field.terrain = activeTerrain ? activeTerrain.getAttribute('data-terrain') : 'None';
 }
 
+function updateHPBar(id, percent) {
+    const bar = document.getElementById(`p${id}-hp-bar`);
+    bar.style.width = percent + '%';
+    if (percent > 50) bar.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
+    else if (percent > 20) bar.style.background = 'linear-gradient(90deg, #FFC107, #FFEB3B)';
+    else bar.style.background = 'linear-gradient(90deg, #F44336, #E91E63)';
+}
+
+function openImportModal(id) {
+    importTargetId = id;
+    document.getElementById('import-target-label').innerText = `Importing for Pokemon ${id}`;
+    document.getElementById('import-modal').classList.add('active');
+    document.getElementById('paste-input').value = '';
+    document.getElementById('paste-input').focus();
+}
+
+function closeImportModal() {
+    document.getElementById('import-modal').classList.remove('active');
+}
+
+function importPokePaste(id, paste) {
+    const pk = id === 1 ? p1 : p2;
+    const lines = paste.split('\n').map(l => l.trim()).filter(l => l);
+    if (!lines.length) return;
+
+    try {
+        // Line 1: Name @ Item
+        const line1 = lines[0];
+        const namePart = line1.split('@')[0].split('(')[0].trim();
+        const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : 'None';
+        
+        loadPokemon(id, namePart);
+        pk.item = itemPart;
+
+        lines.slice(1).forEach(line => {
+            if (line.startsWith('Ability:')) pk.ability = line.replace('Ability:', '').trim();
+            else if (line.startsWith('Level:')) pk.level = parseInt(line.replace('Level:', '')) || 100;
+            else if (line.startsWith('Tera Type:')) pk.teraType = line.replace('Tera Type:', '').trim();
+            else if (line.startsWith('EVs:')) {
+                const evs = line.replace('EVs:', '').split('/');
+                evs.forEach(ev => {
+                    const [val, stat] = ev.trim().split(' ');
+                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
+                    if (pk.evs[key] !== undefined) pk.evs[key] = parseInt(val) || 0;
+                });
+            }
+            else if (line.endsWith('Nature')) pk.nature = line.replace('Nature', '').trim();
+            else if (line.startsWith('IVs:')) {
+                const ivs = line.replace('IVs:', '').split('/');
+                ivs.forEach(iv => {
+                    const [val, stat] = iv.trim().split(' ');
+                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
+                    if (pk.ivs[key] !== undefined) pk.ivs[key] = parseInt(val) || 0;
+                });
+            }
+            else if (line.startsWith('-')) {
+                const moveName = line.substring(1).trim();
+                const emptyIdx = pk.moves.findIndex(m => m.name === 'None');
+                if (emptyIdx !== -1) {
+                   const mData = movesDB.find(m => m.name.toLowerCase() === moveName.toLowerCase());
+                   if (mData) {
+                       pk.moves[emptyIdx] = {
+                           name: mData.name, basePower: parseInt(mData.power) || 0,
+                           type: mData.type, category: mData.damage_class, crit: false
+                       };
+                   }
+                }
+            }
+        });
+
+        populatePokemonUI(pk);
+        updateStatsUI(pk);
+        recalculate();
+        showToast("Import successful!");
+    } catch (e) {
+        console.error("Import error", e);
+        showToast("Failed to parse PokePaste!");
+    }
+}
+
 function populateDropdowns() {
     const typeList = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
-    const selects = ['p1-type1', 'p1-type2', 'p1-tera-type', 'p2-type1', 'p2-type2', 'p2-tera-type'];
-    selects.forEach(s => {
-        const el = document.getElementById(s);
-        el.innerHTML = typeList.map(t => `<option value="${t}">${t}</option>`).join('');
+    ['p1-type1', 'p1-type2', 'p1-tera-type', 'p2-type1', 'p2-type2', 'p2-tera-type'].forEach(s => {
+        document.getElementById(s).innerHTML = typeList.map(t => `<option value="${t}">${t}</option>`).join('');
     });
 
     const natureList = Object.keys(natures);
     ['p1-nature', 'p2-nature'].forEach(s => {
-        const el = document.getElementById(s);
-        el.innerHTML = natureList.map(n => `<option value="${n}">${n}</option>`).join('');
+        document.getElementById(s).innerHTML = natureList.map(n => `<option value="${n}">${n}</option>`).join('');
     });
 
-    // Populate items datalist
     const itemsList = document.getElementById('items-list');
-    const itemOpts = itemsDB.map(i => `<option value="${i.name}">`).join('');
-    itemsList.innerHTML = `<option value="None">` + itemOpts;
+    itemsList.innerHTML = `<option value="None">` + itemsDB.map(i => `<option value="${i.name}">`).join('');
 }
 
 function showToast(msg) {
