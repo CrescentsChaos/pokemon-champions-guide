@@ -450,9 +450,16 @@
             <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <div class="format-toggle-wrapper" style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px);">
-                        <button id="toggle-singles" class="toggle-btn" onclick="setRecommendationFormat('Singles')">SINGLES</button>
-                        <button id="toggle-doubles" class="toggle-btn" onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
+                    <div class="format-toggle-wrapper" style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
+                        <div style="display: flex; gap: 2px;">
+                            <button id="toggle-singles" class="toggle-btn" onclick="setRecommendationFormat('Singles')">SINGLES</button>
+                            <button id="toggle-doubles" class="toggle-btn" onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
+                        </div>
+                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE MEGAS</span>
+                        </label>
                     </div>
                     <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
                         <span>SMART RCMD</span> 🧠
@@ -516,8 +523,14 @@
         };
 
         let recommendationFormat = 'Singles';
+        let excludeMegas = false;
         let currentRecommendedBuilds = [];
         let currentMainBuild = null;
+
+        function toggleExcludeMegas(checked) {
+            excludeMegas = checked;
+            shuffleTeammates();
+        }
 
         const rolesList = [
             'Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Revenge Killer',
@@ -1523,6 +1536,11 @@
             // Filter by format
             let pool = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
             
+            // Exclude Megas if toggled
+            if (excludeMegas) {
+                pool = pool.filter(b => !b.pokemon.toLowerCase().includes('mega'));
+            }
+
             // Exclude main species
             pool = pool.filter(b => {
                 const p = parsePaste(b.build);
@@ -1646,6 +1664,12 @@
             const mainWeaknesses = getWeaknesses(mainTypes);
 
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
+            
+            // Exclude Megas if toggled
+            if (excludeMegas) {
+                candidates = candidates.filter(b => !b.pokemon.toLowerCase().includes('mega'));
+            }
+
             candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpecies);
 
             const scoredCandidates = candidates.map(b => {
@@ -1665,8 +1689,19 @@
 
                 // 1. Weather Synergy
                 if (mainWeather && weatherAbusers[mainWeather]?.includes(ability)) score += 20;
+                
+                // Enhance Snow synergy specifically as requested
+                if (mainWeather === 'snow') {
+                    // Ice types get a huge boost in Snow (Def boost simulation)
+                    if (types.includes('ice')) score += 12;
+                    // Specific Snow abilities
+                    if (['slush rush', 'ice body', 'snow cloak'].includes(ability)) score += 20;
+                }
+
                 const candWeather = weatherSetters[ability];
                 if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
+                
+                if (candWeather === 'snow' && mainTypes.includes('ice')) score += 12;
 
                 // 2. Trick Room Synergy
                 const isCandTR = moves.includes('trick room');

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damage Calculator | Pokemon Champions Guide</title>
+    <link rel="icon" type="image/png" href="../assets/champions-logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="calc-page">
+    <nav class="glass" style="position: sticky; top: 0; z-index: 1000; padding: 1rem 5%; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; gap: 1rem; cursor: pointer;" onclick="window.location.href='../'">
+                <img src="../assets/champions-logo.png" alt="Logo" style="width: 35px; height: 35px;">
+                <span style="font-weight: 900; letter-spacing: -1px; font-size: 1.2rem; color: white;">CHAMPIONS GUIDE</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <a href="../teambuilder/" class="nav-link">Team Builder</a>
+                <a href="../builds/" class="nav-link">Builds Library</a>
+                <a href="../pokedex/" class="nav-link">Pokedex</a>
+                <a href="#" class="nav-link active">Calculator</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="damage-banner" class="glass fade-in">
+            <div class="banner-content">
+                <div id="main-result">Select moves to see damage results</div>
+                <div id="sub-result">Possible damage amounts: (0)</div>
+            </div>
+        </div>
+
+        <div class="calc-grid">
+            <!-- Pokemon 1 (Attacker) -->
+            <div class="calc-panel glass attacker-panel" id="p1-panel">
+                <div class="panel-header">
+                    <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
+                    <div class="search-results" id="p1-search-results"></div>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="config-row">
+                        <select id="p1-type1" class="type-select"></select>
+                        <select id="p1-type2" class="type-select"></select>
+                        <label class="tera-toggle">
+                            <input type="checkbox" id="p1-tera"> Tera
+                            <select id="p1-tera-type" class="type-select"></select>
+                        </label>
+                    </div>
+
+                    <div class="level-row">
+                        <span>Level</span>
+                        <input type="number" id="p1-level" value="100" min="1" max="100">
+                    </div>
+
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Base</th>
+                                <th>IVs</th>
+                                <th>EVs</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="p1-stats">
+                            <!-- Stats rows will be injected here -->
+                        </tbody>
+                    </table>
+
+                    <div class="meta-row">
+                        <div class="select-group">
+                            <label>Nature</label>
+                            <select id="p1-nature"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Ability</label>
+                            <select id="p1-ability"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Item</label>
+                            <select id="p1-item"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Status</label>
+                            <select id="p1-status">
+                                <option value="Healthy">Healthy</option>
+                                <option value="Poisoned">Poisoned</option>
+                                <option value="Badly Poisoned">Badly Poisoned</option>
+                                <option value="Burned">Burned</option>
+                                <option value="Paralyzed">Paralyzed</option>
+                                <option value="Asleep">Asleep</option>
+                                <option value="Frozen">Frozen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="moves-section">
+                        <h4>Moves</h4>
+                        <div id="p1-moves">
+                            <!-- 4 move slots -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field Controls -->
+            <div class="calc-panel middle-panel" id="field-panel">
+                <div class="field-section">
+                    <h4>Format</h4>
+                    <div class="btn-group">
+                        <button class="field-btn active" id="f-singles">Singles</button>
+                        <button class="field-btn" id="f-doubles">Doubles</button>
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <h4>Weather</h4>
+                    <div class="btn-grid">
+                        <button class="field-btn active" data-weather="None">None</button>
+                        <button class="field-btn" data-weather="Sun">Sun</button>
+                        <button class="field-btn" data-weather="Rain">Rain</button>
+                        <button class="field-btn" data-weather="Sand">Sand</button>
+                        <button class="field-btn" data-weather="Snow">Snow</button>
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <h4>Terrain</h4>
+                    <div class="btn-grid">
+                        <button class="field-btn active" data-terrain="None">None</button>
+                        <button class="field-btn" data-terrain="Electric">Electric</button>
+                        <button class="field-btn" data-terrain="Grassy">Grassy</button>
+                        <button class="field-btn" data-terrain="Misty">Misty</button>
+                        <button class="field-btn" data-terrain="Psychic">Psychic</button>
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <h4>Sides</h4>
+                    <div class="sides-row">
+                        <div class="side-controls">
+                            <h5>Side 1</h5>
+                            <button class="field-btn toggle-btn" data-effect="Reflect">Reflect</button>
+                            <button class="field-btn toggle-btn" data-effect="Light Screen">Light Screen</button>
+                            <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
+                            <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
+                        </div>
+                        <div class="side-controls">
+                            <h5>Side 2</h5>
+                            <button class="field-btn toggle-btn" data-effect="Reflect">Reflect</button>
+                            <button class="field-btn toggle-btn" data-effect="Light Screen">Light Screen</button>
+                            <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
+                            <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <h4>Game Mechanics</h4>
+                    <div class="btn-grid">
+                        <button class="field-btn toggle-btn" data-effect="Gravity">Gravity</button>
+                        <button class="field-btn toggle-btn" data-effect="Magic Room">Magic Room</button>
+                        <button class="field-btn toggle-btn" data-effect="Wonder Room">Wonder Room</button>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <label class="toggle-wrap">
+                            <input type="checkbox" id="exclude-megas-calc"> EXCLUDE MEGAS
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pokemon 2 (Defender) -->
+            <div class="calc-panel glass defender-panel" id="p2-panel">
+                <div class="panel-header">
+                    <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
+                    <div class="search-results" id="p2-search-results"></div>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="config-row">
+                        <select id="p2-type1" class="type-select"></select>
+                        <select id="p2-type2" class="type-select"></select>
+                        <label class="tera-toggle">
+                            <input type="checkbox" id="p2-tera"> Tera
+                            <select id="p2-tera-type" class="type-select"></select>
+                        </label>
+                    </div>
+
+                    <div class="level-row">
+                        <span>Level</span>
+                        <input type="number" id="p2-level" value="100" min="1" max="100">
+                    </div>
+
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Base</th>
+                                <th>IVs</th>
+                                <th>EVs</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="p2-stats">
+                            <!-- Stats rows will be injected here -->
+                        </tbody>
+                    </table>
+
+                    <div class="meta-row">
+                        <div class="select-group">
+                            <label>Nature</label>
+                            <select id="p2-nature"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Ability</label>
+                            <select id="p2-ability"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Item</label>
+                            <select id="p2-item"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Status</label>
+                            <select id="p2-status">
+                                <option value="Healthy">Healthy</option>
+                                <option value="Poisoned">Poisoned</option>
+                                <option value="Badly Poisoned">Badly Poisoned</option>
+                                <option value="Burned">Burned</option>
+                                <option value="Paralyzed">Paralyzed</option>
+                                <option value="Asleep">Asleep</option>
+                                <option value="Frozen">Frozen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="moves-section">
+                        <h4>Moves</h4>
+                        <div id="p2-moves">
+                            <!-- 4 move slots -->
+                        </div>
+                    </div>
+                    
+                    <div class="hp-row" style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                        <label>Current HP (%)</label>
+                        <input type="number" id="p2-hp-percent" value="100" min="0" max="100">
+                        <div class="hp-bar-wrap">
+                            <div id="p2-hp-bar" class="hp-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Calculation Error!</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
