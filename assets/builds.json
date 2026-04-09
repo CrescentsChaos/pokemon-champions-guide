@@ -2130,5 +2130,33 @@
         "build": "Aurorus @ Power Herb\nAbility: Refrigerate\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Meteor Beam\n- Rock Polish\n- Hyper Voice\n- Earth Power",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "302",
+        "pokemon": "Sylveon",
+        "build": "Sylveon @ Choice Specs\nAbility: Pixilate\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Fairy\nModest Nature\n- Hyper Voice\n- Psychic\n- Shadow Ball\n- Draining Kiss",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "303",
+        "pokemon": "Sylveon",
+        "build": "Sylveon @ Leftovers\nAbility: Pixilate\nEVs: 252 HP / 212 Def / 44 Spe\nTera Type: Steel\nBold Nature\n- Wish\n- Protect\n- Calm Mind\n- Hyper Voice",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "304",
+        "pokemon": "Hawlucha",
+        "build": "Hawlucha @ Grassy Seed\nAbility: Unburden\nEVs: 72 HP / 252 Atk / 60 SpD / 124 Spe\nTera Type: Flying\nAdamant Nature\n- Swords Dance\n- Close Combat\n- Acrobatics\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "305",
+        "pokemon": "Hawlucha",
+        "build": "Hawlucha @ Psychic Seed\nAbility: Unburden\nEVs: 132 HP / 252 Atk / 124 Spe\nTera Type: Fire\nAdamant Nature\n- Swords Dance\n- Close Combat\n- Acrobatics\n- Taunt",
+        "synergy": [],
+        "format": "Singles"
     }
 ]

@@ -921,7 +921,9 @@
 
         function analyzeBuildSynergy(mainBuild, synergyBuilds) {
             const activeMons = [mainBuild, ...synergyBuilds].filter(b => b).map(b => {
-                return parsePaste(b.build);
+                const isRawBuild = typeof b.build === 'string';
+                const buildInfo = isRawBuild ? b : b.build;
+                return parsePaste(buildInfo.build);
             });
 
             const offensive = {};
@@ -2018,16 +2020,21 @@
                 const item = scoredBuilds[i];
 
                 if (item) {
-                    const build = item.build;
-                    const p = parsePaste(build.build);
+                    const isRawBuild = typeof item.build === 'string';
+                    const buildInfo = isRawBuild ? item : item.build;
+                    const p = parsePaste(buildInfo.build);
                     const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
-                    const card = createTeamCard(p, dbRef, build);
+                    const card = createTeamCard(p, dbRef, buildInfo);
                     
                     // Add Score Badge
                     const scoreBadge = document.createElement('div');
                     scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
-                    scoreBadge.innerText = `SYNERGY: ${item.score}%`;
+                    if (!isRawBuild && item.score !== undefined) {
+                        scoreBadge.innerText = `SYNERGY: ${Math.floor(item.score)}%`;
+                    } else {
+                        scoreBadge.innerText = `SYNERGY: MATCH`;
+                    }
                     card.appendChild(scoreBadge);
                     
                     grid.appendChild(card);
