@@ -1584,10 +1584,39 @@
 
         function getSmartRecommendations(mainBuild, format, count = 5) {
             const pMain = parsePaste(mainBuild.build);
-            const mainSpecies = pMain.species.toLowerCase();
+            const mainSpecies = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainItem = (pMain.item || '').toLowerCase();
-            const mainRoles = detectRole(pMain, allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies.replace(/[^a-z0-9]/g, '')));
+            const mainAbility = (pMain.ability || '').toLowerCase();
+            const mainMoves = pMain.moves.map(m => (m || '').toLowerCase());
             
+            const dbMain = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies);
+            const mainStats = dbMain ? {
+                hp: parseInt(dbMain.HP), atk: parseInt(dbMain.Attack), def: parseInt(dbMain.Defense),
+                spa: parseInt(dbMain['Sp.Atk']), spd: parseInt(dbMain['Sp.Def']), spe: parseInt(dbMain.Speed)
+            } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
+            
+            const mainTypes = [dbMain?.Type_1?.toLowerCase(), dbMain?.Type_2?.toLowerCase()].filter(t => t);
+            const mainRoles = detectRole(pMain, dbMain);
+
+            const weatherSetters = {
+                'drizzle': 'rain', 'drought': 'sun', 'orichalcum pulse': 'sun',
+                'sand stream': 'sand', 'sand spit': 'sand', 'snow warning': 'snow', 'chilling neigh': 'snow'
+            };
+            const weatherAbusers = {
+                'rain': ['swift swim', 'rain dish', 'hydration', 'dry skin'],
+                'sun': ['chlorophyll', 'solar power', 'protosynthesis', 'hadron engine'],
+                'sand': ['sand rush', 'sand force', 'sand veil'],
+                'snow': ['slush rush', 'ice body', 'snow cloak']
+            };
+            const terrainSetters = {
+                'electric surge': 'electric', 'hadron engine': 'electric',
+                'grassy surge': 'grassy', 'psychic surge': 'psychic', 'misty surge': 'misty'
+            };
+            
+            const isTRSetter = mainMoves.includes('trick room');
+            const isMainSlow = mainStats.spe < 55;
+            const mainWeather = weatherSetters[mainAbility] || (mainMoves.includes('rain dance') ? 'rain' : mainMoves.includes('sunny day') ? 'sun' : null);
+
             const typeChart = {
                 normal: { weaknesses: ['fighting'], resistances: [], immunities: ['ghost'] },
                 fire: { weaknesses: ['water', 'ground', 'rock'], resistances: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immunities: [] },
@@ -1611,29 +1640,47 @@
 
             const getWeaknesses = (types) => {
                 let weak = [];
-                types.forEach(t => {
-                    if (typeChart[t]) weak = [...weak, ...typeChart[t].weaknesses];
-                });
+                types.forEach(t => { if (typeChart[t]) weak = [...weak, ...typeChart[t].weaknesses]; });
                 return [...new Set(weak)];
             };
-
-            const dbMain = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies.replace(/[^a-z0-9]/g, ''));
-            const mainTypes = [dbMain?.Type_1?.toLowerCase(), dbMain?.Type_2?.toLowerCase()].filter(t => t);
             const mainWeaknesses = getWeaknesses(mainTypes);
 
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
-            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase() !== mainSpecies);
+            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpecies);
 
             const scoredCandidates = candidates.map(b => {
                 const p = parsePaste(b.build);
-                const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const db = allPokemon.find(x => x.Name.toLowerCase().replace(/[^a-z0-9]/g, '') === species);
+                const speciesName = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const db = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesName);
                 const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                 const roles = detectRole(p, db);
+                const ability = (p.ability || '').toLowerCase();
+                const moves = p.moves.map(m => (m || '').toLowerCase());
+                const stats = db ? {
+                    hp: parseInt(db.HP), atk: parseInt(db.Attack), def: parseInt(db.Defense),
+                    spa: parseInt(db['Sp.Atk']), spd: parseInt(db['Sp.Def']), spe: parseInt(db.Speed)
+                } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
                 
                 let score = 0;
 
-                // 1. Defensive Synergy: Resist main's weaknesses
+                // 1. Weather Synergy
+                if (mainWeather && weatherAbusers[mainWeather]?.includes(ability)) score += 20;
+                const candWeather = weatherSetters[ability];
+                if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
+
+                // 2. Trick Room Synergy
+                const isCandTR = moves.includes('trick room');
+                const isCandSlow = stats.spe < 55;
+                if ((isTRSetter || isMainSlow) && isCandSlow) score += 15;
+                if (isCandTR && isMainSlow) score += 15;
+
+                // 3. Terrain Synergy
+                const mainTerrain = terrainSetters[mainAbility];
+                if (mainTerrain === 'electric' && (ability === 'quark drive' || types.includes('electric'))) score += 12;
+                if (mainTerrain === 'grassy' && (moves.includes('grassy glide') || types.includes('grass'))) score += 12;
+                if (mainTerrain === 'psychic' && (moves.includes('expanding force') || types.includes('psychic'))) score += 12;
+
+                // 4. Defensive Synergy
                 mainWeaknesses.forEach(w => {
                     types.forEach(t => {
                         if (typeChart[t]?.resistances.includes(w)) score += 5;
@@ -1641,46 +1688,25 @@
                     });
                 });
 
-                // 2. Role Balancing
+                // 5. Role Balancing
                 const isMainOffensive = mainRoles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'));
                 const isMainSupport = mainRoles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Redirection'));
+                if (isMainOffensive && roles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Pivot'))) score += 7;
+                if (isMainSupport && roles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'))) score += 7;
 
-                if (isMainOffensive) {
-                    if (roles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Pivot'))) score += 6;
-                }
-                if (isMainSupport) {
-                    if (roles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'))) score += 6;
-                }
-
-                // 3. Core Boosts
+                // 6. Core Boosts (F/W/G, S/F/D)
                 const hasType = (t) => mainTypes.includes(t) || types.includes(t);
-                // F/W/G
-                if (hasType('fire') && hasType('water')) score += 4;
-                if (hasType('fire') && hasType('grass')) score += 4;
-                if (hasType('water') && hasType('grass')) score += 4;
-                // S/F/D
-                if (hasType('steel') && hasType('fairy')) score += 4;
-                if (hasType('steel') && hasType('dragon')) score += 4;
-                if (hasType('fairy') && hasType('dragon')) score += 4;
+                if ((hasType('fire') && hasType('water')) || (hasType('fire') && hasType('grass')) || (hasType('water') && hasType('grass'))) score += 5;
+                if ((hasType('steel') && hasType('fairy')) || (hasType('steel') && hasType('dragon')) || (hasType('fairy') && hasType('dragon'))) score += 5;
 
-                // 4. Format Utility
-                if (format.toLowerCase() === 'doubles') {
-                    if (roles.includes('Fake Out Pressure')) score += 5;
-                    if (roles.includes('Redirection')) score += 5;
-                    if (roles.some(r => r.includes('Speed Control'))) score += 5;
-                } else {
-                    if (roles.includes('Hazard Setter')) score += 5;
-                    if (roles.includes('Hazard Control')) score += 5;
-                    if (roles.includes('Pivot')) score += 5;
-                }
+                // 7. Ability Utilities
+                if (ability === 'intimidate' && mainStats.def < 80) score += 5;
+                if (ability === 'friend guard' && format.toLowerCase() === 'doubles') score += 10;
 
-                // Random jitter to avoid same exact team every time
                 score += Math.random() * 5;
-
                 return { build: b, score, species: p.species, item: p.item };
             });
 
-            // Sort by score
             scoredCandidates.sort((a, b) => b.score - a.score);
 
             const selected = [];
@@ -1690,18 +1716,14 @@
 
             for (const c of scoredCandidates) {
                 if (selected.length >= count) break;
-                
-                const s = c.species.toLowerCase();
+                const s = c.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const i = (c.item || '').toLowerCase();
-                
                 if (usedSpecies.has(s)) continue;
                 if (i && i !== 'none' && usedItems.has(i)) continue;
-                
                 selected.push(c.build);
                 usedSpecies.add(s);
                 if (i && i !== 'none') usedItems.add(i);
             }
-            
             return selected;
         }
 
