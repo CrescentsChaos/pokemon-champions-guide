@@ -1766,5 +1766,124 @@
         "build": "Venusaur @ Focus Sash  \nAbility: Chlorophyll  \nTera Type: Grass  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Sleep Powder  \n- Sludge Bomb  \n- Energy Ball  \n- Earth Power",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "250",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Solar Beam  \n- Weather Ball  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "251",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Focus Sash  \nAbility: Prankster  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Sunny Day  \n- Encore  \n- Tailwind",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "252",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Yache Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Earthquake  \n- Dragon Claw  \n- Rock Slide  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "253",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ White Herb  \nAbility: Unburden  \nLevel: 50  \nTera Type: Fighting  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Close Combat  \n- Dire Claw  \n- Rock Tomb  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "254",
+        "pokemon": "Maushold",
+        "build": "Maushold @ Chople Berry  \nAbility: Friend Guard  \nLevel: 50  \nTera Type: Normal  \nEVs: 252 HP / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Super Fang  \n- Taunt  \n- Follow Me  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "255",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Sitrus Berry  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Flare Blitz  \n- Darkest Lariat  \n- Parting Shot  \n- Fake Out",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "256",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Shuca Berry  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 4 Atk / 252 SpD  \nCareful Nature  \n- Protect  \n- Throat Chop  \n- Parting Shot  \n- Fake Out",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "257",
+        "pokemon": "Gengar",
+        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nLevel: 50  \nTera Type: Ghost  \nEVs: 252 HP / 4 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Perish Song  \n- Protect  \n- Substitute",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "258",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "259",
+        "pokemon": "Kingambit",
+        "build": "Kingambit @ Chople Berry  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Iron Head  \n- Protect  \n- Low Kick  \n- Sucker Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "260",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Choice Scarf  \nAbility: Sand Stream  \nLevel: 50  \nTera Type: Rock  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Stone Edge  \n- Ice Punch  \n- Low Kick  \n- Rock Slide",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "261",
+        "pokemon": "Kommo-o",
+        "build": "Kommo-o @ Leftovers  \nAbility: Soundproof  \nLevel: 50  \nTera Type: Dragon  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Clanging Scales  \n- Clangorous Soul  \n- Aura Sphere  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "262",
+        "pokemon": "Gyarados",
+        "build": "Gyarados @ Gyaradosite  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Water  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Protect  \n- Waterfall  \n- Crunch  \n- Dragon Dance",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "263",
+        "pokemon": "Pelipper",
+        "build": "Pelipper @ Quick Claw  \nAbility: Drizzle  \nLevel: 50  \nTera Type: Water  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Protect  \n- Weather Ball  \n- Tailwind  \n- Hurricane",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "264",
+        "pokemon": "Froslass",
+        "build": "Froslass @ Froslassite  \nAbility: Snow Cloak  \nLevel: 50  \nTera Type: Ice  \nEVs: 204 HP / 4 Def / 68 SpA / 116 SpD / 116 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Aurora Veil  \n- Blizzard  \n- Shadow Ball",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "265",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 252 Def / 4 SpA  \nRelaxed Nature  \nIVs: 0 Atk  \n- Trick Room  \n- Rage Powder  \n- Imprison  \n- Matcha Gotcha",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "266",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ Bright Powder  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Aura Sphere",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
