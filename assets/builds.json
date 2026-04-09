@@ -1885,5 +1885,250 @@
         "build": "Archaludon @ Bright Powder  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Aura Sphere",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "267",
+        "pokemon": "Chesnaught",
+        "build": "Chesnaught @ Rocky Helmet\nAbility: Bulletproof\nEVs: 252 HP / 204 Def / 52 Spe\nTera Type: Ghost\nImpish Nature\n- Spikes\n- Body Press\n- Knock Off\n- Synthesis",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "268",
+        "pokemon": "Delphox",
+        "build": "Delphox @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Fairy\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Psyshock\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "269",
+        "pokemon": "Greninja",
+        "build": "Greninja @ Choice Specs\nAbility: Protean\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Surf\n- Dark Pulse\n- Ice Beam\n- Water Shuriken",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "270",
+        "pokemon": "Greninja",
+        "build": "Greninja @ Life Orb\nAbility: Battle Bond\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Water\nTimid Nature\n- Hydro Pump\n- Dark Pulse\n- Water Shuriken\n- Ice Beam",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "271",
+        "pokemon": "Diggersby",
+        "build": "Diggersby @ Choice Band\nAbility: Huge Power\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Earthquake\n- Return\n- Fire Punch\n- Quick Attack",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "272",
+        "pokemon": "Talonflame",
+        "build": "Talonflame @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 248 HP / 172 Def / 88 Spe\nTera Type: Ghost\nBold Nature\n- Flamethrower\n- Defog\n- Will-O-Wisp\n- Roost",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "273",
+        "pokemon": "Talonflame",
+        "build": "Talonflame @ Covert Cloak\nLevel: 50\nAbility: Gale Wings\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Brave Bird\n- Tailwind\n- Flare Blitz\n- Taunt",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "274",
+        "pokemon": "Vivillon",
+        "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "275",
+        "pokemon": "Floette-Eternal",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Calm Mind  \n- Moonblast  \n- Draining Kiss  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "276",
+        "pokemon": "Florges",
+        "build": "Florges @ Choice Scarf\nAbility: Flower Veil\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Synthesis\n- Trick\n- Calm Mind",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "277",
+        "pokemon": "Florges",
+        "build": "Florges @ Choice Specs\nAbility: Flower Veil\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ground\nModest Nature\n- Moonblast\n- Trick\n- Tera Blast\n- Psychic Noise",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "278",
+        "pokemon": "Florges",
+        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 252 HP / 160 Def / 96 Spe\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Moonblast\n- Psychic Noise\n- Synthesis",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "279",
+        "pokemon": "Florges",
+        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 252 HP / 200 Def / 56 Spe\nIVs: 0 Atk\nTera Type: Poison\nTimid Nature\n- Wish\n- Synthesis\n- Moonblast\n- Psychic Noise",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "280",
+        "pokemon": "Pangoro",
+        "build": "Pangoro @ Choice Band\nAbility: Scrappy\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Close Combat\n- Knock Off\n- Iron Head\n- Bullet Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "281",
+        "pokemon": "Pangoro",
+        "build": "Pangoro @ Life Orb\nAbility: Iron Fist\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Swords Dance\n- Drain Punch\n- Knock Off\n- Bullet Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "282",
+        "pokemon": "Furfrou",
+        "build": "Furfrou @ Choice Band\nAbility: Fur Coat\nEVs: 252 Atk / 4 Def / 252 Spe\nJolly Nature\n- Return\n- U-turn\n- Surf\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "283",
+        "pokemon": "Furfrou",
+        "build": "Furfrou @ Leftovers\nAbility: Fur Coat\nEVs: 32 HP / 252 Atk / 224 Spe\nJolly Nature\n- Return\n- U-turn\n- Toxic\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "284",
+        "pokemon": "Meowstic-F",
+        "build": "Meowstic-F @ Life Orb\nAbility: Competitive\nEVs: 4 Def / 252 SpA / 252 Spe\nTimid Nature\n- Psyshock\n- Signal Beam\n- Hidden Power Ground\n- Calm Mind",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "285",
+        "pokemon": "Meowstic-M",
+        "build": "Meowstic-M @ Light Clay\nAbility: Prankster\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Reflect\n- Light Screen\n- Yawn\n- Psychic",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "286",
+        "pokemon": "Aegislash",
+        "build": "Aegislash @ Leftovers\nAbility: Stance Change\nEVs: 252 HP / 56 SpA / 156 SpD / 44 Spe\nModest Nature\n- Substitute\n- Toxic\n- King's Shield\n- Shadow Ball",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "287",
+        "pokemon": "Aegislash",
+        "build": "Aegislash @ Leftovers\nAbility: Stance Change\nEVs: 240 HP / 8 Atk / 248 SpA / 12 Spe\nQuiet Nature\n- Shadow Ball\n- Close Combat\n- King's Shield\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "288",
+        "pokemon": "Aromatisse",
+        "build": "Aromatisse @ Leftovers\nAbility: Aroma Veil\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Wish\n- Protect\n- Heal Bell",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "289",
+        "pokemon": "Slurpuff",
+        "build": "Slurpuff @ Focus Sash\nAbility: Unburden\nEVs: 252 SpA / 252 Spe\nIVs: 0 HP / 0 Def / 0 SpD\nNaive Nature\n- Sticky Web\n- Magic Coat\n- Misty Explosion\n- Yawn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "290",
+        "pokemon": "Clawitzer",
+        "build": "Clawitzer @ Choice Specs\nAbility: Mega Launcher\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Dragon\nModest Nature\n- Water Pulse\n- Dragon Pulse\n- Aura Sphere\n- Dark Pulse",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "291",
+        "pokemon": "Clawitzer",
+        "build": "Clawitzer @ Life Orb\nAbility: Mega Launcher\nEVs: 252 SpA / 4 SpD / 252 Spe\nModest Nature\n- Scald\n- Ice Beam\n- Dark Pulse\n- Aura Sphere",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "292",
+        "pokemon": "Heliolisk",
+        "build": "Heliolisk @ Choice Specs\nAbility: Dry Skin\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Thunderbolt\n- Hyper Voice\n- Volt Switch\n- Dark Pulse",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "293",
+        "pokemon": "Heliolisk",
+        "build": "Heliolisk @ Choice Scarf\nAbility: Dry Skin\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Thunderbolt\n- Hyper Voice\n- Grass Knot\n- Volt Switch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "294",
+        "pokemon": "Heliolisk",
+        "build": "Heliolisk @ Life Orb\nAbility: Dry Skin\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Volt Switch\n- Thunder\n- Hyper Voice\n- Grass Knot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "295",
+        "pokemon": "Tyrantrum",
+        "build": "Tyrantrum @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Head Smash\n- Outrage\n- Close Combat\n- Dragon Claw",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "296",
+        "pokemon": "Tyrantrum",
+        "build": "Tyrantrum @ Lum Berry\nAbility: Rock Head\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Dragon Dance\n- Scale Shot\n- Head Smash\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "297",
+        "pokemon": "Tyrantrum",
+        "build": "Tyrantrum @ Choice Scarf\nAbility: Rock Head\nEVs: 4 HP / 252 Atk / 252 Spe\nJolly Nature\n- Head Smash\n- Outrage\n- Earthquake\n- Dragon Claw",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "298",
+        "pokemon": "Aurorus",
+        "build": "Aurorus @ Focus Sash\nAbility: Snow Warning\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nModest Nature\n- Stealth Rock\n- Blizzard\n- Encore\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "299",
+        "pokemon": "Aurorus",
+        "build": "Aurorus @ Power Herb\nAbility: Snow Warning\nEVs: 252 SpA / 4 SpD / 252 Spe\nModest Nature\n- Meteor Beam\n- Blizzard\n- Earth Power\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "300",
+        "pokemon": "Aurorus",
+        "build": "Aurorus @ Choice Specs\nAbility: Snow Warning\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Blizzard\n- Ancient Power\n- Earth Power\n- Freeze-Dry",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "301",
+        "pokemon": "Aurorus",
+        "build": "Aurorus @ Power Herb\nAbility: Refrigerate\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Meteor Beam\n- Rock Polish\n- Hyper Voice\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
