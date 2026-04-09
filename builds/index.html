@@ -1593,13 +1593,22 @@
             const usedItems = new Set();
             if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
 
+            let megaCount = isMega(mainBuild.pokemon, mainItem) ? 1 : 0;
+
             for (const b of pool) {
                 if (selected.length >= count) break;
                 
                 const p = parsePaste(b.build);
                 const species = p.species.toLowerCase();
                 const item = (p.item || '').toLowerCase();
+                const isCandMega = isMega(b.pokemon, item);
                 
+                // Mega Limit Logic
+                if (isCandMega) {
+                    if (megaCount >= 2) continue;
+                    if (megaCount >= 1 && Math.random() > 0.1) continue;
+                }
+
                 // Species Clause
                 if (usedSpecies.has(species)) continue;
                 
@@ -1609,6 +1618,7 @@
                 selected.push(b);
                 usedSpecies.add(species);
                 if (item && item !== 'none') usedItems.add(item);
+                if (isCandMega) megaCount++;
             }
             
             return selected;
@@ -1795,15 +1805,27 @@
             const usedItems = new Set();
             if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
 
+            let megaCount = isMega(mainBuild.pokemon, mainItem) ? 1 : 0;
+
             for (const c of scoredCandidates) {
                 if (selected.length >= count) break;
                 const s = c.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const i = (c.item || '').toLowerCase();
+                const isCandMega = isMega(c.build.pokemon, i);
+
+                // Mega Limit Logic
+                if (isCandMega) {
+                    if (megaCount >= 2) continue;
+                    if (megaCount >= 1 && Math.random() > 0.1) continue;
+                }
+
                 if (usedSpecies.has(s)) continue;
                 if (i && i !== 'none' && usedItems.has(i)) continue;
+
                 selected.push(c.build);
                 usedSpecies.add(s);
                 if (i && i !== 'none') usedItems.add(i);
+                if (isCandMega) megaCount++;
             }
             return selected;
         }
