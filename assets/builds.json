@@ -2158,5 +2158,124 @@
         "build": "Hawlucha @ Psychic Seed\nAbility: Unburden\nEVs: 132 HP / 252 Atk / 124 Spe\nTera Type: Fire\nAdamant Nature\n- Swords Dance\n- Close Combat\n- Acrobatics\n- Taunt",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "306",
+        "pokemon": "Dedenne",
+        "build": "Dedenne @ Heavy-Duty Boots\nAbility: Pickup\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTimid Nature\n- Volt Switch\n- Dazzling Gleam\n- Grass Knot\n- Super Fang",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "307",
+        "pokemon": "Goodra",
+        "build": "Goodra @ Heavy-Duty Boots\nAbility: Sap Sipper\nEVs: 76 HP / 252 SpA / 180 Spe\nTera Type: Poison\nModest Nature\n- Draco Meteor\n- Fire Blast\n- Sludge Bomb\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "308",
+        "pokemon": "Goodra",
+        "build": "Goodra @ Choice Specs\nAbility: Sap Sipper\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Poison\nTimid Nature\n- Draco Meteor\n- Fire Blast\n- Sludge Wave\n- Hydro Pump",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "309",
+        "pokemon": "Goodra",
+        "build": "Goodra @ Leftovers\nAbility: Sap Sipper\nEVs: 76 HP / 252 SpA / 180 Spe\nTera Type: Poison\nModest Nature\n- Acid Spray\n- Draco Meteor\n- Flamethrower\n- Substitute",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "310",
+        "pokemon": "Goodra-Hisui",
+        "build": "Goodra-Hisui @ Leftovers\nAbility: Sap Sipper\nEVs: 252 HP / 4 Def / 252 SpA\nTera Type: Fairy\nQuiet Nature\n- Draco Meteor\n- Heavy Slam\n- Knock Off\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "311",
+        "pokemon": "Goodra-Hisui",
+        "build": "Goodra-Hisui @ Choice Specs\nAbility: Gooey\nEVs: 40 HP / 252 SpA / 216 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Flash Cannon\n- Draco Meteor\n- Thunderbolt\n- Flamethrower",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "312",
+        "pokemon": "Goodra-Hisui",
+        "build": "Goodra-Hisui @ Leftovers\nLevel: 50\nAbility: Shell Armor\nEVs: 252 HP / 4 Atk / 244 Def / 4 SpD / 4 Spe\nTera Type: Flying\nCareful Nature\n- Heavy Slam\n- Body Press\n- Acid Armor\n- Life Dew",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "313",
+        "pokemon": "Goodra-Hisui",
+        "build": "Goodra-Hisui @ Assault Vest\nAbility: Sap Sipper\nEVs: 248 HP / 252 SpA / 8 SpD\nTera Type: Fairy\nModest Nature\n- Flash Cannon\n- Dragon Tail\n- Flamethrower\n- Ice Beam",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "314",
+        "pokemon": "Klefki",
+        "build": "Klefki @ Leftovers\nAbility: Prankster\nEVs: 252 HP / 4 Def / 252 SpD\nTera Type: Water\nCalm Nature\n- Spikes\n- Thunder Wave\n- Foul Play\n- Dazzling Gleam",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "315",
+        "pokemon": "Trevenant",
+        "build": "Trevenant @ Life Orb\nAbility: Natural Cure\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dark\nAdamant Nature\n- Poltergeist\n- Wood Hammer\n- Sucker Punch\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "316",
+        "pokemon": "Gourgeist",
+        "build": "Gourgeist @ Weakness Policy\nAbility: Frisk\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Flame Charge\n- Poltergeist\n- Power Whip\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "317",
+        "pokemon": "Avalugg",
+        "build": "Avalugg @ Heavy-Duty Boots\nAbility: Sturdy\nEVs: 252 HP / 4 Atk / 252 Def\nImpish Nature\n- Rapid Spin\n- Recover\n- Body Press\n- Avalanche",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "318",
+        "pokemon": "Avalugg",
+        "build": "Avalugg @ Heavy-Duty Boots\nAbility: Sturdy\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Icicle Spear\n- Body Press\n- Rapid Spin\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "319",
+        "pokemon": "Avalugg-Hisui",
+        "build": "Avalugg-Hisui @ Custap Berry\nAbility: Sturdy\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Stealth Rock\n- Mountain Gale\n- Body Press\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "320",
+        "pokemon": "Avalugg-Hisui",
+        "build": "Avalugg-Hisui @ Heavy-Duty Boots\nAbility: Sturdy\nEVs: 252 HP / 236 Def / 20 Spe\nTera Type: Ghost\nImpish Nature\n- Recover\n- Mountain Gale\n- Body Press\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "321",
+        "pokemon": "Noivern",
+        "build": "Noivern @ Heavy-Duty Boots\nAbility: Frisk\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Steel\nTimid Nature\n- Draco Meteor\n- Flamethrower\n- U-turn\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "322",
+        "pokemon": "Noivern",
+        "build": "Noivern @ Heavy-Duty Boots\nAbility: Frisk\nEVs: 252 HP / 4 SpA / 252 Spe\nTera Type: Steel\nTimid Nature\n- Draco Meteor\n- Super Fang\n- Taunt\n- Roost",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
