@@ -460,6 +460,11 @@
                             <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
                             <span style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE MEGAS</span>
                         </label>
+                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-bst" onchange="toggleExcludeHighBST(this.checked)" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE > 600 BST</span>
+                        </label>
                     </div>
                     <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
                         <span>SMART RCMD</span> 🧠
@@ -524,12 +529,37 @@
 
         let recommendationFormat = 'Singles';
         let excludeMegas = false;
+        let excludeHighBST = false;
         let currentRecommendedBuilds = [];
         let currentMainBuild = null;
 
         function toggleExcludeMegas(checked) {
             excludeMegas = checked;
             shuffleTeammates();
+        }
+
+        function toggleExcludeHighBST(checked) {
+            excludeHighBST = checked;
+            shuffleTeammates();
+        }
+
+        function isMega(species, item) {
+            if (!species) return false;
+            const s = species.toLowerCase();
+            const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            if (s.includes('-mega')) return true;
+            if (it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) {
+                if (it !== 'eviolite' && it !== 'meteorite') return true;
+            }
+            return false;
+        }
+
+        function getBST(species) {
+            if (!species) return 0;
+            const search = species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const db = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
+            return db ? (parseInt(db.Total_Stats) || 0) : 0;
         }
 
         const rolesList = [
@@ -1538,7 +1568,15 @@
             
             // Exclude Megas if toggled
             if (excludeMegas) {
-                pool = pool.filter(b => !b.pokemon.toLowerCase().includes('mega'));
+                pool = pool.filter(b => {
+                    const p = parsePaste(b.build);
+                    return !isMega(b.pokemon, p.item);
+                });
+            }
+
+            // Exclude High BST if toggled
+            if (excludeHighBST) {
+                pool = pool.filter(b => getBST(b.pokemon) <= 600);
             }
 
             // Exclude main species
@@ -1667,7 +1705,15 @@
             
             // Exclude Megas if toggled
             if (excludeMegas) {
-                candidates = candidates.filter(b => !b.pokemon.toLowerCase().includes('mega'));
+                candidates = candidates.filter(b => {
+                    const p = parsePaste(b.build);
+                    return !isMega(b.pokemon, p.item);
+                });
+            }
+
+            // Exclude High BST if toggled
+            if (excludeHighBST) {
+                candidates = candidates.filter(b => getBST(b.pokemon) <= 600);
             }
 
             candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpecies);
