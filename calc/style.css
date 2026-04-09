@@ -147,13 +147,24 @@ body.calc-page {
 }
 
 /* Forms & Selects */
-select {
-    background: var(--input-bg);
+.stats-table input, .config-row select, .meta-row select, .meta-row input, .move-row select {
+    width: 100%;
+    background: #15151a;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     color: white;
     padding: 8px;
     font-size: 0.8rem;
+    outline: none;
+}
+
+.stats-table input {
+    width: 60px;
+}
+
+option {
+    background: #1a1a1f;
+    color: white;
 }
 
 .config-row {

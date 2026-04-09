@@ -101,10 +101,15 @@ function setupEventListeners() {
 
         // Nature, Ability, Item, Status
         ['nature', 'ability', 'item', 'status'].forEach(field => {
-            document.getElementById(`${p}-${field}`).addEventListener('change', (e) => {
+            const el = document.getElementById(`${p}-${field}`);
+            const eventType = (field === 'ability' || field === 'item') ? 'input' : 'change';
+            el.addEventListener(eventType, (e) => {
                 const pk = p === 'p1' ? p1 : p2;
                 pk[field] = e.target.value;
-                updateStatsUI(pk);
+                if (field === 'ability' || field === 'item') {
+                    // Update stats in case of items like Choice Band or abilities like Huge Power
+                    updateStatsUI(pk);
+                }
                 recalculate();
             });
         });
@@ -182,18 +187,23 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-type1`).value = pk.type1;
     document.getElementById(`${p}-type2`).value = pk.type2;
     
-    const abilitySelect = document.getElementById(`${p}-ability`);
-    // Ideally we'd map real abilities, for now just load from DB entry
+    const abilityInput = document.getElementById(`${p}-ability`);
+    const abilityList = document.getElementById(`${p}-abilities-list`);
+    
     const pkData = pokemonDB.find(x => x.Name === pk.name);
     const abilities = [pkData.Ability_1, pkData.Ability_2, pkData.Ability_Hidden].filter(x => x && x !== 'None');
-    abilitySelect.innerHTML = abilities.map(a => `<option value="${a}">${a}</option>`).join('');
+    
+    abilityList.innerHTML = abilities.map(a => `<option value="${a}">`).join('');
+    abilityInput.value = pk.ability;
+
+    document.getElementById(`${p}-item`).value = pk.item;
     
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => `
         <div class="move-row">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)">
                 <option value="None">None</option>
-                ${movesDB.map(m => `<option value="${m.Name}">${m.Name}</option>`).join('')}
+                ${movesDB.map(m => `<option value="${m.name}">${m.name}</option>`).join('')}
             </select>
             <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)"> Crit</label>
         </div>
@@ -202,11 +212,11 @@ function populatePokemonUI(pk) {
 
 function updateMove(pId, idx, moveName) {
     const pk = pId === 1 ? p1 : p2;
-    const mData = movesDB.find(x => x.Name === moveName);
+    const mData = movesDB.find(x => x.name === moveName);
     if (mData) {
         pk.moves[idx] = {
-            name: mData.Name, basePower: parseInt(mData.Power) || 0,
-            type: mData.Type, category: mData.Category
+            name: mData.name, basePower: parseInt(mData.power) || 0,
+            type: mData.type, category: mData.damage_class
         };
     } else {
         pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical' };
@@ -359,11 +369,10 @@ function populateDropdowns() {
         el.innerHTML = natureList.map(n => `<option value="${n}">${n}</option>`).join('');
     });
 
-    // Populate items - simplified
-    const itemOpts = itemsDB.map(i => `<option value="${i.name}">${i.name}</option>`).join('');
-    ['p1-item', 'p2-item'].forEach(s => {
-        document.getElementById(s).innerHTML = `<option value="None">None</option>` + itemOpts;
-    });
+    // Populate items datalist
+    const itemsList = document.getElementById('items-list');
+    const itemOpts = itemsDB.map(i => `<option value="${i.name}">`).join('');
+    itemsList.innerHTML = `<option value="None">` + itemOpts;
 }
 
 function showToast(msg) {

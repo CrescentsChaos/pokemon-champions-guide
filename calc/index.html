@@ -78,11 +78,12 @@
                         </div>
                         <div class="select-group">
                             <label>Ability</label>
-                            <select id="p1-ability"></select>
+                            <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose Ability...">
+                            <datalist id="p1-abilities-list"></datalist>
                         </div>
                         <div class="select-group">
                             <label>Item</label>
-                            <select id="p1-item"></select>
+                            <input type="text" id="p1-item" list="items-list" placeholder="Choose Item...">
                         </div>
                         <div class="select-group">
                             <label>Status</label>
@@ -220,11 +221,12 @@
                         </div>
                         <div class="select-group">
                             <label>Ability</label>
-                            <select id="p2-ability"></select>
+                            <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose Ability...">
+                            <datalist id="p2-abilities-list"></datalist>
                         </div>
                         <div class="select-group">
                             <label>Item</label>
-                            <select id="p2-item"></select>
+                            <input type="text" id="p2-item" list="items-list" placeholder="Choose Item...">
                         </div>
                         <div class="select-group">
                             <label>Status</label>
@@ -260,6 +262,8 @@
     </main>
 
     <div id="toast" class="toast">Calculation Error!</div>
+
+    <datalist id="items-list"></datalist>
 
     <script src="app.js"></script>
 </body>
