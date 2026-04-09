@@ -1092,6 +1092,7 @@
             });
             const teamTypesStr = allTypesArr.map(t => (t || '').toLowerCase());
             const hasType = (t) => teamTypesStr.includes(t.toLowerCase());
+            const teamSpecies = activeMons.map(p => p.species.toLowerCase());
 
             if (hasType('Fire') && hasType('Water') && hasType('Grass')) {
                 issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Classic Fire/Water/Grass core detected.', tip: 'Excellent fundamental defensive and offensive synergy.', icon: '🌟', color: '#4CAF50' });
@@ -1100,9 +1101,28 @@
                 issues.push({ type: 'Core', count: 0, severity: 'synergy', text: 'Fantasy Core (Fairy/Dragon/Steel) detected.', tip: 'Very strong defensive backbone against most the meta.', icon: '🛡️', color: '#9c27b0' });
             }
 
+            // Elite Meta Pairings
+            if (teamSpecies.some(s => s.includes('pelipper')) && teamSpecies.some(s => s.includes('archaludon'))) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Rain & Steel core (Pelipper + Archaludon).', tip: 'Instant Electro Shots and boosted defense under rain.', icon: '⛈️', color: '#607D8B' });
+            }
+            if (teamSpecies.some(s => s.includes('incineroar')) && teamSpecies.some(s => s.includes('rillaboom'))) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'The VGC Firewall (Incineroar + Rillaboom).', tip: 'Unmatched field control with Intimidate, Fake Out, and Grassy Terrain.', icon: '🔥', color: '#ff5722' });
+            }
+            if (teamSpecies.some(s => s.includes('torkoal')) && (teamSpecies.some(s => s.includes('lilligant')) || teamSpecies.some(s => s.includes('flutter mane')))) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Sun Offense core detected.', tip: 'Fast Sleep Powder or Protosynthesis boosts under Sun.', icon: '☀️', color: '#fbc02d' });
+            }
+
             const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee') || p.species.toLowerCase().includes('tapu lele'));
             if (hasIndeedee && allMovesArr.includes('expanding force')) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected.', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
+            }
+
+            if (teamSpecies.some(s => s.includes('miraidon')) && teamSpecies.some(s => s.includes('iron hands'))) {
+                issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Hadron Engine core (Miraidon + Iron Hands).', tip: 'Massive damage and Quark Drive activation in Electric Terrain.', icon: '⚡', color: '#9c27b0' });
+            }
+
+            if (allAbilitiesArr.includes('neutralizing gas')) {
+                issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Ability Suppression strategy.', tip: 'Neutralizing Gas shuts down all other abilities on the field.', icon: '💨', color: '#9e9e9e' });
             }
 
             const hasDondozo = activeMons.some(p => p.species.toLowerCase() === 'dondozo');
@@ -1123,7 +1143,7 @@
             if (allAbilitiesArr.some(a => ['drizzle', 'primordial sea'].includes(a)) && allAbilitiesArr.includes('swift swim')) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Rain Abuse strategy detected.', tip: 'Overpower teams with Swift Swim speed control and boosted Water attacks.', icon: '🌧️', color: '#2196F3' });
             }
-            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) && allAbilitiesArr.some(a => ['chlorophyll', 'protosynthesis'].includes(a))) {
+            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) && allAbilitiesArr.some(a => ['chlorophyll', 'protosynthesis', 'hadron engine'].includes(a))) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Sun Abuse strategy detected.', tip: 'Fast Chlorophyll/Protosynthesis pressure under harsh sunlight.', icon: '☀️', color: '#FF9800' });
             }
             if (allAbilitiesArr.includes('sand stream') && allAbilitiesArr.some(a => ['sand rush', 'sand force'].includes(a))) {
@@ -1146,6 +1166,7 @@
             if (hasTRImprison) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Trick Room Imprison strategy.', tip: 'Allows you to securely block opponents from setting up OR reversing Trick Room.', icon: '🚫', color: '#E91E63' });
             }
+
 
             // Status Abuse
             const hasStatusAbuse = activeMons.some(p => {
@@ -1794,7 +1815,144 @@
                 if (ability === 'intimidate' && mainStats.def < 80) score += 5;
                 if (ability === 'friend guard' && format.toLowerCase() === 'doubles') score += 10;
 
+                // 8. Strategic Speed Control (Tailwind/TR)
+                const isBreaker = mainRoles.some(r => r.includes('Wallbreaker') || r.includes('Sweeper') || r.includes('Restricted'));
+                const isMidSpeed = mainStats.spe >= 70 && mainStats.spe <= 110;
+                if (isBreaker && isMidSpeed && roles.includes('Speed Control') && format.toLowerCase() === 'doubles') score += 15;
+                if (isBreaker && !isMidSpeed && stats.spe > 110 && roles.includes('Speed Control')) score += 10;
+
+                // 9. Redirection & Setup Support
+                const isSetup = mainRoles.includes('Setup Sweeper');
+                if (isSetup && roles.includes('Redirection')) score += 18;
+                if (isSetup && roles.includes('Screener')) score += 12;
+
+                // 10. Momentum/VoltTurn
+                if (isBreaker && roles.includes('Pivot')) score += 10;
+                if (mainRoles.includes('Pivot') && isBreaker) score += 10;
+
+                // 11. Format Specifics
+                if (format.toLowerCase() === 'doubles') {
+                    if (roles.includes('Fake Out Pressure')) score += 12;
+                    if (roles.includes('Intimidate Support')) score += 10;
+                    if (roles.includes('Redirection')) score += 12;
+                    if (moves.includes('helping hand')) score += 8;
+                } else {
+                    // Singles focus: Hazards & Hazard Control
+                    if (roles.includes('Hazard Setter')) score += 10;
+                    if (roles.includes('Hazard Control')) {
+                        const isSRWeak = mainWeaknesses.includes('rock');
+                        if (isSRWeak && mainItem !== 'heavy-duty boots') score += 20;
+                    }
+                    if (ability === 'regenerator' && mainAbility === 'regenerator') score += 15; // Regen Core
+                }
+
+                // 12. Psyspam & Terrain Synergy
+                const hasExpanding = mainMoves.includes('expanding force');
+                const hasPsychicSurge = mainAbility.includes('psychic surge');
+                if ((hasExpanding || hasPsychicSurge) && (moves.includes('expanding force') || ability.includes('psychic surge'))) score += 25;
+
+                // 13. Ruin Abilities Support
+                const isPhysical = stats.atk > stats.spa;
+                const isSpecial = stats.spa > stats.atk;
+                const mainIsPhysical = mainStats.atk > mainStats.spa;
+                const mainIsSpecial = mainStats.spa > mainStats.atk;
+                if (mainAbility === 'sword of ruin' && isPhysical) score += 18;
+                if (mainAbility === 'beads of ruin' && isSpecial) score += 18;
+                if (ability === 'sword of ruin' && mainIsPhysical) score += 18;
+                if (ability === 'beads of ruin' && mainIsSpecial) score += 18;
+
+                // 14. Commander Synergy
+                if ((mainSpecies === 'dondozo' && speciesName === 'tatsugiri') || (mainSpecies === 'tatsugiri' && speciesName === 'dondozo')) score += 50;
+
+                // 15. Justified & Beat Up Core
+                const hasBeatUp = mainMoves.includes('beat up') || moves.includes('beat up');
+                const hasJustified = mainAbility === 'justified' || ability === 'justified';
+                if (format.toLowerCase() === 'doubles' && hasBeatUp && hasJustified) score += 40;
+
+                // 16. Steely Spirit Synergy
+                if ((mainAbility === 'steely spirit' && types.includes('steel')) || (ability === 'steely spirit' && mainTypes.includes('steel'))) score += 20;
+
+                // 17. Neutralizing gas + bad abilities or raw stats
+                const isGas = mainAbility === 'neutralizing gas' || ability === 'neutralizing gas';
+                if (isGas) {
+                   const badAbilities = ['slow start', 'truant', 'defeatist'];
+                   if (badAbilities.includes(mainAbility) || badAbilities.includes(ability)) score += 35;
+                }
+
+                // 18. Unburden & Terrain/Seeds
+                const hasUnburden = mainAbility === 'unburden' || ability === 'unburden';
+                const hasTerrain = terrainSetters[mainAbility] || terrainSetters[ability];
+                if (hasUnburden && hasTerrain) score += 25; // Massive synergy for Hawlucha/Sneasler + Setters
+
+                // 19. Weakness Policy + Self-Proc (Doubles)
+                if (format.toLowerCase() === 'doubles') {
+                    const hasWP = mainItem === 'weakness policy' || p.item.toLowerCase() === 'weakness policy';
+                    const weakPriority = ['aqua jet', 'mach punch', 'bullet punch', 'ice shard', 'shadow sneak', 'vacuum wave'];
+                    const hasWeakPriority = mainMoves.some(m => weakPriority.includes(m)) || moves.some(m => weakPriority.includes(m));
+                    if (hasWP && hasWeakPriority) score += 30; // E.g. Coalossal + Aqua Jet
+                }
+
+                // 20. Prankster Tailwind + Full HP Nukes (Eruption / Water Spout)
+                const hasTailwind = (mainMoves.includes('tailwind') && mainAbility === 'prankster') || (moves.includes('tailwind') && ability === 'prankster');
+                const hasNukes = (mainMoves.includes('eruption') || mainMoves.includes('water spout')) || (moves.includes('eruption') || moves.includes('water spout'));
+                if (hasTailwind && hasNukes && format.toLowerCase() === 'doubles') score += 25;
+
+                // 21. Guts + Healing/Pivoting
+                const isGuts = (mainAbility === 'guts' || ability === 'guts') || (mainItem.includes('orb') || p.item.toLowerCase().includes('orb'));
+                const hasHealingWish = mainMoves.includes('healing wish') || mainMoves.includes('lunar dance') || moves.includes('healing wish') || moves.includes('lunar dance');
+                if (isGuts && hasHealingWish) score += 20;
+
+                // 22. Status (T-Spikes) + Hex/Merciless
+                const setsTSpikes = mainMoves.includes('toxic spikes') || moves.includes('toxic spikes') || mainAbility === 'toxic debris' || ability === 'toxic debris';
+                const abusesAbnormal = mainMoves.includes('hex') || mainAbility === 'merciless' || moves.includes('hex') || ability === 'merciless';
+                const abusesVenoshock = mainMoves.includes('venoshock') || moves.includes('venoshock');
+                if (setsTSpikes && (abusesAbnormal || abusesVenoshock)) score += 22;
+
+                // 23. Baton Pass + Stored Power / Power Trip
+                const hasBP = mainMoves.includes('baton pass') || moves.includes('baton pass');
+                const hasStoredPower = mainMoves.includes('stored power') || mainMoves.includes('power trip') || moves.includes('stored power') || moves.includes('power trip');
+                if (hasBP && hasStoredPower) score += 20;
+
+                // 24. Heavy Hazard Stack + Phazing
+                const hasHazards = mainMoves.includes('stealth rock') || mainMoves.includes('spikes') || moves.includes('stealth rock') || moves.includes('spikes');
+                const hasPhaze = mainMoves.includes('roar') || mainMoves.includes('whirlwind') || mainMoves.includes('dragon tail') || moves.includes('roar') || moves.includes('whirlwind') || moves.includes('dragon tail');
+                if (hasHazards && hasPhaze) score += 15;
+
+                // 25. Screens + Setup Sweeper
+                const hasScreens = (mainMoves.includes('reflect') || mainMoves.includes('light screen') || mainMoves.includes('aurora veil')) && mainItem === 'light clay' || 
+                                   (moves.includes('reflect') || moves.includes('light screen') || moves.includes('aurora veil')) && p.item.toLowerCase() === 'light clay';
+                const hasBellyDrum = mainMoves.includes('belly drum') || moves.includes('belly drum');
+                if (hasScreens && (isSetup || hasBellyDrum)) score += 22;
+
+                // 26. VoltTurn Core Completer
+                const isVoltTurn = mainMoves.includes('u-turn') || mainMoves.includes('volt switch') || mainMoves.includes('flip turn');
+                const candIsVoltTurn = moves.includes('u-turn') || moves.includes('volt switch') || moves.includes('flip turn');
+                if (isVoltTurn && candIsVoltTurn) score += 12;
+
+                // 27. Elite Meta Pairings (Hardcoded Species Logic)
+                const partnerPairs = [
+                    { a: 'pelipper', b: 'archaludon' },
+                    { a: 'pelipper', b: 'urshifu' },
+                    { a: 'torkoal', b: 'lilligant' },
+                    { a: 'torkoal', b: 'flutter mane' },
+                    { a: 'indeedee', b: 'armarouge' },
+                    { a: 'indeedee', b: 'hatterene' },
+                    { a: 'calyrex', b: 'indeedee' },
+                    { a: 'miraidon', b: 'iron hands' },
+                    { a: 'miraidon', b: 'farigiraf' },
+                    { a: 'kyogre', b: 'tornadus' },
+                    { a: 'incineroar', b: 'rillaboom' }
+                ];
+
+                partnerPairs.forEach(pair => {
+                    if ((mainSpecies.includes(pair.a) && speciesName.includes(pair.b)) || 
+                        (mainSpecies.includes(pair.b) && speciesName.includes(pair.a))) {
+                        score += 30;
+                    }
+                });
+
                 score += Math.random() * 5;
+
                 return { build: b, score, species: p.species, item: p.item };
             });
 
@@ -1822,7 +1980,7 @@
                 if (usedSpecies.has(s)) continue;
                 if (i && i !== 'none' && usedItems.has(i)) continue;
 
-                selected.push(c.build);
+                selected.push({ build: c.build, score: Math.round(c.score) });
                 usedSpecies.add(s);
                 if (i && i !== 'none') usedItems.add(i);
                 if (isCandMega) megaCount++;
@@ -1836,7 +1994,7 @@
             document.getElementById('synergy-container').style.display = 'none';
         }
 
-        function renderSynergy(mainBuild, buildsArr) {
+        function renderSynergy(mainBuild, scoredBuilds) {
             const grid = document.getElementById('synergy-grid');
             grid.innerHTML = '';
 
@@ -1847,16 +2005,32 @@
             const selfCard = createTeamCard(pSelf, dbSelf, mainBuild);
             selfCard.style.border = '2px solid var(--primary-red)';
             selfCard.style.boxShadow = 'var(--accent-glow)';
+            
+            // Add "LEAD BUILD" badge
+            const leadBadge = document.createElement('div');
+            leadBadge.style = "position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; font-size:0.6rem; font-weight:900; padding:2px 10px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(255,51,51,0.5);";
+            leadBadge.innerText = "PRIMARY BUILD";
+            selfCard.appendChild(leadBadge);
+            
             grid.appendChild(selfCard);
 
             for (let i = 0; i < 5; i++) {
-                const build = buildsArr[i];
+                const item = scoredBuilds[i];
 
-                if (build) {
+                if (item) {
+                    const build = item.build;
                     const p = parsePaste(build.build);
                     const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
-                    grid.appendChild(createTeamCard(p, dbRef, build));
+                    const card = createTeamCard(p, dbRef, build);
+                    
+                    // Add Score Badge
+                    const scoreBadge = document.createElement('div');
+                    scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
+                    scoreBadge.innerText = `SYNERGY: ${item.score}%`;
+                    card.appendChild(scoreBadge);
+                    
+                    grid.appendChild(card);
                 } else {
                     grid.appendChild(createEmptyCard());
                 }
