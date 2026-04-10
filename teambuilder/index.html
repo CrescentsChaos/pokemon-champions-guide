@@ -1664,107 +1664,6 @@
 
         evSliders.forEach(s => { s.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value); syncUI(); }; });
         evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
-
-        document.getElementById('main-import-btn').onclick = () => document.getElementById('import-overlay').style.display = 'flex';
-        document.getElementById('close-import').onclick = () => document.getElementById('import-overlay').style.display = 'none';
-        document.getElementById('confirm-import').onclick = async () => {
-            const raw = document.getElementById('import-textarea').value.trim();
-            const statusEl = document.getElementById('import-status');
-            const confirmBtn = document.getElementById('confirm-import');
-
-            // Detect PokePaste URL
-            const pokepasteMatch = raw.match(/pokepast\.es\/([a-zA-Z0-9]+)/);
-            if (pokepasteMatch) {
-                const pasteId = pokepasteMatch[1];
-                statusEl.style.display = 'block';
-                statusEl.style.color = '#F7D02C';
-                statusEl.textContent = '⏳ Fetching paste from pokepast.es...';
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = 'LOADING...';
-
-                try {
-                    const resp = await fetch(`https://pokepast.es/${pasteId}/json`);
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const data = await resp.json();
-                    const pasteText = data.paste || '';
-                    if (!pasteText) throw new Error('Empty paste returned');
-
-                    const parsed = parsePaste(pasteText);
-                    parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
-
-                    statusEl.style.color = '#4CAF50';
-                    statusEl.textContent = `✅ Loaded ${parsed.length} Pokémon from "${data.title || 'Untitled'}" by ${data.author || 'Unknown'}`;
-                    setTimeout(() => {
-                        document.getElementById('import-overlay').style.display = 'none';
-                        statusEl.style.display = 'none';
-                        document.getElementById('import-textarea').value = '';
-                    }, 1200);
-                } catch (err) {
-                    console.error('PokePaste fetch error:', err);
-                    statusEl.style.color = 'var(--primary-red)';
-                    statusEl.textContent = `❌ Failed to fetch paste: ${err.message}. Try pasting the raw text instead.`;
-                } finally {
-                    confirmBtn.disabled = false;
-                    confirmBtn.textContent = 'LOAD TEAM';
-                }
-            } else {
-                // Normal paste text
-                const parsed = parsePaste(raw);
-                parsed.forEach((p, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...p }; });
-                document.getElementById('import-overlay').style.display = 'none';
-                document.getElementById('import-textarea').value = '';
-            }
-            setupTabs(); syncUI();
-        };
-
-        document.getElementById('export-paste-btn').onclick = () => {
-            let fullPaste = '';
-            team.forEach(p => {
-                if (!p.species) return;
-
-                // Header: Nickname (Species) (Gender) @ Item
-                let line = p.nickname ? `${p.nickname} (${p.species})` : p.species;
-                if (p.gender && p.gender !== '-') line += ` (${p.gender})`;
-                if (p.item) line += ` @ ${p.item}`;
-                fullPaste += line + '\n';
-
-                if (p.ability) fullPaste += `Ability: ${p.ability}\n`;
-                if (p.level && p.level != 100) fullPaste += `Level: ${p.level}\n`;
-                if (p.shiny) fullPaste += `Shiny: Yes\n`;
-                if (p.tera) fullPaste += `Tera Type: ${p.tera}\n`;
-
-                // EVs
-                const evs = [];
-                if (p.evs.hp) evs.push(`${p.evs.hp} HP`);
-                if (p.evs.atk) evs.push(`${p.evs.atk} Atk`);
-                if (p.evs.def) evs.push(`${p.evs.def} Def`);
-                if (p.evs.spa) evs.push(`${p.evs.spa} SpA`);
-                if (p.evs.spd) evs.push(`${p.evs.spd} SpD`);
-                if (p.evs.spe) evs.push(`${p.evs.spe} Spe`);
-                if (evs.length > 0) fullPaste += `EVs: ${evs.join(' / ')}\n`;
-
-                fullPaste += `${p.nature} Nature\n`;
-
-                // IVs (only if not 31)
-                const ivs = [];
-                if (p.ivs.hp !== 31) ivs.push(`${p.ivs.hp} HP`);
-                if (p.ivs.atk !== 31) ivs.push(`${p.ivs.atk} Atk`);
-                if (p.ivs.def !== 31) ivs.push(`${p.ivs.def} Def`);
-                if (p.ivs.spa !== 31) ivs.push(`${p.ivs.spa} SpA`);
-                if (p.ivs.spd !== 31) ivs.push(`${p.ivs.spd} SpD`);
-                if (p.ivs.spe !== 31) ivs.push(`${p.ivs.spe} Spe`);
-                if (ivs.length > 0) fullPaste += `IVs: ${ivs.join(' / ')}\n`;
-
-                p.moves.forEach(m => {
-                    if (m) fullPaste += `- ${m}\n`;
-                });
-
-                fullPaste += '\n';
-            });
-
-            document.getElementById('export-textarea').value = fullPaste.trim();
-            document.getElementById('export-overlay').style.display = 'flex';
-        };
         } // end syncUI
 
         window.copyExport = async () => {
@@ -2880,6 +2779,94 @@
         }
 
         window.onclick = (e) => { if (e.target.className === 'overlay') e.target.style.display = 'none'; };
+
+        // ── Startup: wire all static UI immediately, don't wait for data ──
+        setupTabs();
+
+        // Import paste button
+        document.getElementById('main-import-btn').onclick = () => document.getElementById('import-overlay').style.display = 'flex';
+        document.getElementById('close-import').onclick  = () => document.getElementById('import-overlay').style.display = 'none';
+        document.getElementById('confirm-import').onclick = async () => {
+            const raw = document.getElementById('import-textarea').value.trim();
+            const statusEl  = document.getElementById('import-status');
+            const confirmBtn = document.getElementById('confirm-import');
+
+            const pokepasteMatch = raw.match(/pokepast\.es\/([a-zA-Z0-9]+)/);
+            if (pokepasteMatch) {
+                const pasteId = pokepasteMatch[1];
+                statusEl.style.display = 'block';
+                statusEl.style.color   = '#F7D02C';
+                statusEl.textContent   = '⏳ Fetching paste from pokepast.es...';
+                confirmBtn.disabled    = true;
+                confirmBtn.textContent = 'LOADING...';
+                try {
+                    const resp = await fetch(`https://pokepast.es/${pasteId}/json`);
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const data = await resp.json();
+                    const pasteText = data.paste || '';
+                    if (!pasteText) throw new Error('Empty paste returned');
+                    parsePaste(pasteText).forEach((pk, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...pk }; });
+                    statusEl.style.color = '#4CAF50';
+                    statusEl.textContent = `✅ Loaded from "${data.title || 'Untitled'}" by ${data.author || 'Unknown'}`;
+                    setTimeout(() => {
+                        document.getElementById('import-overlay').style.display = 'none';
+                        statusEl.style.display = 'none';
+                        document.getElementById('import-textarea').value = '';
+                    }, 1200);
+                } catch (err) {
+                    console.error('PokePaste fetch error:', err);
+                    statusEl.style.color = 'var(--primary-red)';
+                    statusEl.textContent = `❌ Failed: ${err.message}. Paste the raw text instead.`;
+                } finally {
+                    confirmBtn.disabled    = false;
+                    confirmBtn.textContent = 'LOAD TEAM';
+                }
+            } else {
+                parsePaste(raw).forEach((pk, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...pk }; });
+                document.getElementById('import-overlay').style.display = 'none';
+                document.getElementById('import-textarea').value = '';
+            }
+            setupTabs(); syncUI();
+        };
+
+        // Export paste button
+        document.getElementById('export-paste-btn').onclick = () => {
+            let fullPaste = '';
+            team.forEach(p => {
+                if (!p.species) return;
+                let line = p.nickname ? `${p.nickname} (${p.species})` : p.species;
+                if (p.gender && p.gender !== '-') line += ` (${p.gender})`;
+                if (p.item) line += ` @ ${p.item}`;
+                fullPaste += line + '\n';
+                if (p.ability) fullPaste += `Ability: ${p.ability}\n`;
+                if (p.level && p.level != 100) fullPaste += `Level: ${p.level}\n`;
+                if (p.shiny) fullPaste += `Shiny: Yes\n`;
+                if (p.tera) fullPaste += `Tera Type: ${p.tera}\n`;
+                const evParts = [];
+                if (p.evs.hp)  evParts.push(`${p.evs.hp} HP`);
+                if (p.evs.atk) evParts.push(`${p.evs.atk} Atk`);
+                if (p.evs.def) evParts.push(`${p.evs.def} Def`);
+                if (p.evs.spa) evParts.push(`${p.evs.spa} SpA`);
+                if (p.evs.spd) evParts.push(`${p.evs.spd} SpD`);
+                if (p.evs.spe) evParts.push(`${p.evs.spe} Spe`);
+                if (evParts.length) fullPaste += `EVs: ${evParts.join(' / ')}\n`;
+                fullPaste += `${p.nature} Nature\n`;
+                const ivParts = [];
+                if (p.ivs.hp  !== 31) ivParts.push(`${p.ivs.hp} HP`);
+                if (p.ivs.atk !== 31) ivParts.push(`${p.ivs.atk} Atk`);
+                if (p.ivs.def !== 31) ivParts.push(`${p.ivs.def} Def`);
+                if (p.ivs.spa !== 31) ivParts.push(`${p.ivs.spa} SpA`);
+                if (p.ivs.spd !== 31) ivParts.push(`${p.ivs.spd} SpD`);
+                if (p.ivs.spe !== 31) ivParts.push(`${p.ivs.spe} Spe`);
+                if (ivParts.length) fullPaste += `IVs: ${ivParts.join(' / ')}\n`;
+                p.moves.forEach(m => { if (m) fullPaste += `- ${m}\n`; });
+                fullPaste += '\n';
+            });
+            document.getElementById('export-textarea').value = fullPaste.trim();
+            document.getElementById('export-overlay').style.display = 'flex';
+        };
+
+        // Load data async (pokemon sprites, moves, items for search)
         init();
     </script>
 </body>
