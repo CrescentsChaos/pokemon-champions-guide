@@ -823,14 +823,14 @@
                 if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
                 if (hasMove(['fake out'])) allRoles.add('Fake Out Pressure');
                 if (hasMove(['helping hand', 'decorate', "coaching"]) || ab in ['commander', 'sword of ruin', "beads of ruin", "vessel of ruin"]) allRoles.add('Damage Amplification');
-                if (ab in ['armor tail', 'queenly majesty', 'psychic surge']) allRoles.add('Priority Denial');
+                if (['armor tail', 'queenly majesty', 'psychic surge'].includes(ab)) allRoles.add('Priority Denial');
                 if (hasMove(['follow me', 'rage powder', 'ally switch'])) allRoles.add('Redirection');
-                if (hasMove(['parting shot', 'memento', 'light screen', 'reflect', 'aurora veil', 'snarl', 'breaking swipe', 'struggle bug']) || ab in ['intimidate', 'vessel of ruin']) allRoles.add('Damage Mitigation');
+                if (hasMove(['parting shot', 'memento', 'light screen', 'reflect', 'aurora veil', 'snarl', 'breaking swipe', 'struggle bug']) || ['intimidate', 'vessel of ruin'].includes(ab)) allRoles.add('Damage Mitigation');
                 if (hasMove(['trick room'])) allRoles.add('Trick Room Setter');
                 if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) allRoles.add('Speed Control');
                 if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn', "teleport"])) allRoles.add('Pivot');
                 if (hasMove(['reflect', 'light screen', 'aurora veil', 'safeguard'])) allRoles.add('Screener');
-                if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web', 'ceaseless edge', 'stone axe']) || ab in ['toxic debris']) allRoles.add('Hazard Setter');
+                if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web', 'ceaseless edge', 'stone axe']) || ['toxic debris'].includes(ab)) allRoles.add('Hazard Setter');
                 if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) allRoles.add('Hazard Control');
                 if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense', 'focus energy'])) allRoles.add('Setup Sweeper');
                 if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
@@ -1482,7 +1482,6 @@
                 if (hasRedirection) positionTools.push('tactical Redirection (Follow Me/Rage Powder)');
                 if (hasPivots) positionTools.push('VoltTurn pivoting');
                 if (hasHazards) positionTools.push('entry hazards');
-
                 if (positionTools.length > 0) {
                     let toolList = positionTools.length > 1 ? `${positionTools.slice(0, -1).join(', ')} and ${positionTools[positionTools.length - 1]}` : positionTools[0];
                     p4 += `Mastery of this team hinges on utilizing its <strong>${toolList}</strong>. `;
