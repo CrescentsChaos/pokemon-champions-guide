@@ -1919,7 +1919,7 @@
                 if (isMainSupport && roles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'))) score += 7;
 
                 // 6. Core Boosts (F/W/G, S/F/D)
-                const hasType = (t) => mainTypes.includes(t) || types.includes(t);
+                const hasType = (t) => mainTypesArr.includes(t) || types.includes(t);
                 if ((hasType('fire') && hasType('water')) || (hasType('fire') && hasType('grass')) || (hasType('water') && hasType('grass'))) score += 5;
                 if ((hasType('steel') && hasType('fairy')) || (hasType('steel') && hasType('dragon')) || (hasType('fairy') && hasType('dragon'))) score += 5;
 
