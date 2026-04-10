@@ -1377,6 +1377,7 @@
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+                else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
 
                 // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
@@ -1475,6 +1476,7 @@
                     let suffix = '-Mega';
                     if (it.endsWith('itex')) suffix = '-Mega-X';
                     else if (it.endsWith('itey')) suffix = '-Mega-Y';
+                    else if (it.endsWith('itez')) suffix = '-Mega-Z';
 
                     const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
                     const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);

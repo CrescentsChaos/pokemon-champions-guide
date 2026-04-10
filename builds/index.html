@@ -135,7 +135,8 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-height: auto; /* Allow card to shrink/grow naturally */
+            min-height: auto;
+            /* Allow card to shrink/grow naturally */
         }
 
         .card-header {
@@ -259,6 +260,7 @@
         }
 
         @media (max-width: 1200px) {
+
             #builds-grid,
             #synergy-grid {
                 grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -266,6 +268,7 @@
         }
 
         @media (max-width: 850px) {
+
             #builds-grid,
             #synergy-grid {
                 grid-template-columns: 1fr !important;
@@ -319,6 +322,7 @@
             font-size: 0.5rem;
             opacity: 0.7;
         }
+
         /* Toggle & Shuffle Styles */
         .toggle-btn {
             background: transparent;
@@ -405,43 +409,68 @@
         <div id="synergy-container" class="fade-in">
             <div class="synergy-header">
                 <div>
-                    <h2 id="synergy-title" style="color: white; font-size: clamp(1.5rem, 4vw, 2.2rem); margin-bottom: 0.5rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1;">STRATEGIC SYNERGY</h2>
-                    <p style="color: var(--text-muted); font-size: clamp(0.8rem, 2vw, 1rem);">Comprehensive analysis and recommended teammates for this build.</p>
+                    <h2 id="synergy-title"
+                        style="color: white; font-size: clamp(1.5rem, 4vw, 2.2rem); margin-bottom: 0.5rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1;">
+                        STRATEGIC SYNERGY</h2>
+                    <p style="color: var(--text-muted); font-size: clamp(0.8rem, 2vw, 1rem);">Comprehensive analysis and
+                        recommended teammates for this build.</p>
                 </div>
                 <button onclick="closeSynergy()" class="btn btn-secondary"
-                    style="background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius:12px; font-weight:800;">BACK TO LIBRARY</button>
+                    style="background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius:12px; font-weight:800;">BACK
+                    TO LIBRARY</button>
             </div>
 
             <!-- Analysis Dashboard -->
             <div id="analysis-dashboard" style="margin-bottom: 4rem;">
                 <div class="analysis-card" id="strategy-overview-card"
                     style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
-                    <h3 style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: white;">
+                    <h3
+                        style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: white;">
                         <span style="font-size: 1.2rem;">🧠</span> Build Strategy Summary
                     </h3>
-                    <p id="strategy-overview-text" style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;"></p>
+                    <p id="strategy-overview-text"
+                        style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;">
+                    </p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
                     <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">Offensive Coverage</h3>
-                            <div class="type-badge-grid" id="offensive-coverage" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;"></div>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
+                                Offensive Coverage</h3>
+                            <div class="type-badge-grid" id="offensive-coverage"
+                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                            </div>
                         </div>
-                        <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">Defensive Weaknesses</h3>
-                            <div class="type-badge-grid" id="defensive-coverage" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;"></div>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
+                                Defensive Weaknesses</h3>
+                            <div class="type-badge-grid" id="defensive-coverage"
+                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                            </div>
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">Synergy Role Map</h3>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
+                                Synergy Role Map</h3>
                             <div id="pokemon-roles" style="display: flex; flex-direction: column; gap: 12px;"></div>
                         </div>
-                        <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">Synergy Insights</h3>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
+                                Synergy Insights</h3>
                             <div id="synergy-insights"></div>
-                            <div id="move-diversity" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);"></div>
+                            <div id="move-diversity"
+                                style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -450,20 +479,31 @@
             <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <div class="format-toggle-wrapper" style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
+                    <div class="format-toggle-wrapper"
+                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
                         <div style="display: flex; gap: 2px;">
-                            <button id="toggle-singles" class="toggle-btn" onclick="setRecommendationFormat('Singles')">SINGLES</button>
-                            <button id="toggle-doubles" class="toggle-btn" onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
+                            <button id="toggle-singles" class="toggle-btn"
+                                onclick="setRecommendationFormat('Singles')">SINGLES</button>
+                            <button id="toggle-doubles" class="toggle-btn"
+                                onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
                         </div>
                         <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
-                            <span style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE MEGAS</span>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)"
+                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span
+                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
+                                MEGAS</span>
                         </label>
                         <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="exclude-bst" onchange="toggleExcludeHighBST(this.checked)" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
-                            <span style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE > 600 BST</span>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-bst" onchange="toggleExcludeHighBST(this.checked)"
+                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span
+                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
+                                > 600 BST</span>
                         </label>
                     </div>
                     <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
@@ -472,10 +512,12 @@
                     <button id="shuffle-team" onclick="shuffleTeammates()">
                         <span>SHUFFLE TEAM</span> 🎲
                     </button>
-                    <button id="export-synergy-team" class="btn" style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT FULL TEAM PASTE 📋</button>
+                    <button id="export-synergy-team" class="btn"
+                        style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
+                        FULL TEAM PASTE 📋</button>
                 </div>
             </div>
-            
+
             <div id="synergy-grid">
                 <!-- Synergy cards injected here -->
             </div>
@@ -483,7 +525,8 @@
 
         <div id="library-section">
             <div class="search-wrapper fade-in">
-                <input type="text" id="build-search" placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
+                <input type="text" id="build-search"
+                    placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
                 <div class="filter-row">
                     <select id="type-filter" class="filter-select">
                         <option value="">All Types</option>
@@ -548,7 +591,7 @@
             if (!species) return false;
             const s = species.toLowerCase();
             const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-            
+
             if (s.includes('-mega')) return true;
             if (it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) {
                 if (it !== 'eviolite' && it !== 'meteorite') return true;
@@ -710,6 +753,7 @@
                     let suffix = '-Mega';
                     if (it.endsWith('itex')) suffix = '-Mega-X';
                     else if (it.endsWith('itey')) suffix = '-Mega-Y';
+                    else if (it.endsWith('itez')) suffix = '-Mega-Z';
 
                     const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
                     const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);
@@ -740,7 +784,7 @@
                 const bst = db.Total_Stats || 0;
 
                 const hasMove = (list) => list.some(m => moves.includes(m));
-                
+
                 // Effective ability for this form
                 const dbAbilities = getPokemonAbilities(db);
                 const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
@@ -781,7 +825,7 @@
 
         function handleSpriteError(img, species, shiny) {
             if (!species || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
-            
+
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
 
@@ -790,13 +834,14 @@
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
-                
+                else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
+
                 // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
                 const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
-                
-                if(img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
+
+                if (img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
                 return;
             }
 
@@ -995,7 +1040,7 @@
             activeMons.forEach((p) => {
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
-                
+
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
 
                 // --- Offensive Coverage ---
@@ -1082,7 +1127,7 @@
                 const dbMega = getEffectivePokemonData(p, allPokemon);
                 const hasMega = dbMega && dbMega.Name !== dbBase.Name;
                 const forms = [dbBase, dbMega].filter(x => x && x.Name);
-                
+
                 const baseTypes = [dbBase.Type_1, dbBase.Type_2].filter(x => x);
                 const megaTypes = hasMega ? [dbMega.Type_1, dbMega.Type_2].filter(x => x) : baseTypes;
                 const ability = (p.ability || '').toLowerCase();
@@ -1093,15 +1138,15 @@
 
                     // Account for immunity abilities (Simplified for now, similar to teambuilder)
                     if (atkType === 'Ground' && (ability === 'levitate' || p.item === 'Air Balloon')) { effBase = 0; effMega = 0; }
-                    
+
                     if (effBase < 1 || effMega < 1) resistances[atkType]++;
-                    
+
                     // Tactical Tip: Typing Shift
                     if (hasMega && effBase >= 2 && effMega <= 0.5) {
-                        issues.push({ 
-                            type: atkType, 
-                            severity: 'synergy', 
-                            text: `Tactical Typing Shift: ${p.species}`, 
+                        issues.push({
+                            type: atkType,
+                            severity: 'synergy',
+                            text: `Tactical Typing Shift: ${p.species}`,
                             tip: `${p.species} is weak to ${atkType} in Base form, but becomes resistant/immune after Mega Evolution! Use this to bait and punish ${atkType} moves.`,
                             icon: '💡',
                             color: '#FFD700'
@@ -1433,13 +1478,13 @@
             const statsHtml = statsArr.map((s, idx) => {
                 const baseValue = parseInt(dbBase[statKeys[s]]) || 0;
                 const megaValue = parseInt(dbMega[statKeys[s]]) || 0;
-                
+
                 const valBase = calculateStat(baseValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
                 const valMega = calculateStat(megaValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
-                
+
                 const nature = natureMap[p.nature] || { pos: '', neg: '' };
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
-                
+
                 return `
                     <div style="display:flex; align-items:center; font-size:0.65rem; margin-bottom:4px;">
                         <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
@@ -1545,7 +1590,7 @@
                 displayedCount = batchSize;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            
+
             const searchInput = document.getElementById('build-search');
             const search = searchInput.value.toLowerCase().trim();
             const typeFilter = document.getElementById('type-filter').value.toLowerCase();
@@ -1556,7 +1601,7 @@
             const filtered = allBuilds.filter(build => {
                 const p = parsePaste(build.build);
                 const dbRef = getEffectivePokemonData(p, allPokemon);
-                
+
                 const t1 = (dbRef?.Type_1 || '').toLowerCase();
                 const t2 = (dbRef?.Type_2 || '').toLowerCase();
                 const ability = (p.ability || '').toLowerCase();
@@ -1581,7 +1626,7 @@
             toRender.forEach(build => {
                 const p = parsePaste(build.build);
                 const dbRef = getEffectivePokemonData(p, allPokemon);
-                
+
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
@@ -1612,7 +1657,7 @@
             if (build) {
                 currentMainBuild = build;
                 recommendationFormat = build.format || 'Singles';
-                
+
                 const titleEl = document.getElementById('synergy-title');
                 if (titleEl) titleEl.innerText = `STRATEGIC SYNERGY FOR ${build.pokemon.toUpperCase()}`;
 
@@ -1623,7 +1668,7 @@
 
                 // Initial Recommendations: Use pre-defined synergy or random shuffle
                 const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
-                
+
                 const rcmdBtn = document.getElementById('rcmd-team');
                 if (synergyBuilds.length > 0) {
                     currentRecommendedBuilds = synergyBuilds;
@@ -1632,14 +1677,14 @@
                     currentRecommendedBuilds = getRecommendedTeammates(build, recommendationFormat);
                     if (rcmdBtn) rcmdBtn.style.display = 'flex';
                 }
-                
+
                 renderSynergy(build, currentRecommendedBuilds);
                 analyzeBuildSynergy(build, currentRecommendedBuilds);
-                
+
                 const container = document.getElementById('synergy-container');
                 container.style.display = 'block';
                 // Trigger animation reflow
-                container.offsetHeight; 
+                container.offsetHeight;
                 setTimeout(() => {
                     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
@@ -1661,17 +1706,17 @@
             recommendationFormat = format;
             document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`toggle-${format.toLowerCase()}`).classList.add('active');
-            
+
             shuffleTeammates();
         }
 
         function shuffleTeammates() {
             if (!currentMainBuild) return;
-            
+
             // Pulse the grid for feedback
             const grid = document.getElementById('synergy-grid');
             grid.style.opacity = '0.3';
-            
+
             setTimeout(() => {
                 currentRecommendedBuilds = getRecommendedTeammates(currentMainBuild, recommendationFormat);
                 renderSynergy(currentMainBuild, currentRecommendedBuilds);
@@ -1684,10 +1729,10 @@
             const mainP = parsePaste(mainBuild.build);
             const mainSpecies = mainP.species.toLowerCase();
             const mainItem = (mainP.item || '').toLowerCase();
-            
+
             // Filter by format
             let pool = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
-            
+
             // Exclude Megas if toggled
             if (excludeMegas) {
                 pool = pool.filter(b => {
@@ -1719,12 +1764,12 @@
 
             for (const b of pool) {
                 if (selected.length >= count) break;
-                
+
                 const p = parsePaste(b.build);
                 const species = p.species.toLowerCase();
                 const item = (p.item || '').toLowerCase();
                 const isCandMega = isMega(b.pokemon, item);
-                
+
                 // Mega Limit Logic
                 if (isCandMega) {
                     if (megaCount >= 2) continue;
@@ -1733,31 +1778,31 @@
 
                 // Species Clause
                 if (usedSpecies.has(species)) continue;
-                
+
                 // Item Clause (exclude consumables if you want, but standard is strictly unique)
                 if (item && item !== 'none' && usedItems.has(item)) continue;
-                
+
                 selected.push(b);
                 usedSpecies.add(species);
                 if (item && item !== 'none') usedItems.add(item);
                 if (isCandMega) megaCount++;
             }
-            
+
             return selected;
         }
 
         function smartRecommendTeammates() {
             if (!currentMainBuild) return;
-            
+
             const grid = document.getElementById('synergy-grid');
             grid.style.opacity = '0.3';
-            
+
             setTimeout(() => {
                 currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
                 renderSynergy(currentMainBuild, currentRecommendedBuilds);
                 analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
                 grid.style.opacity = '1';
-                
+
                 // Special button feedback
                 const rcmdBtn = document.getElementById('rcmd-team');
                 const originalText = rcmdBtn.innerHTML;
@@ -1775,7 +1820,7 @@
             const mainSpecies = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainItem = (pMain.item || '').toLowerCase();
             const mainMoves = pMain.moves.map(m => (m || '').toLowerCase());
-            
+
             const dbBase = getBasePokemonData(pMain, allPokemon);
             const dbMega = getEffectivePokemonData(pMain, allPokemon);
             const mainRoles = detectRole(pMain, [dbBase, dbMega].filter(x => x));
@@ -1811,7 +1856,7 @@
                 'electric surge': 'electric', 'hadron engine': 'electric',
                 'grassy surge': 'grassy', 'psychic surge': 'psychic', 'misty surge': 'misty'
             };
-            
+
             const isTRSetter = mainMoves.includes('trick room');
             const isMainSlow = mainStats.spe < 55;
             const mainWeather = weatherSetters[mainAbility] || (mainMoves.includes('rain dance') ? 'rain' : mainMoves.includes('sunny day') ? 'sun' : null);
@@ -1845,7 +1890,7 @@
             const mainWeaknesses = getWeaknesses(mainTypesArr);
 
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
-            
+
             // Exclude Megas if toggled
             if (excludeMegas) {
                 candidates = candidates.filter(b => {
@@ -1873,12 +1918,12 @@
                     hp: parseInt(db.HP), atk: parseInt(db.Attack), def: parseInt(db.Defense),
                     spa: parseInt(db['Sp.Atk']), spd: parseInt(db['Sp.Def']), spe: parseInt(db.Speed)
                 } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
-                
+
                 let score = 0;
 
                 // 1. Weather Synergy
                 if (mainWeather && weatherAbusers[mainWeather]?.includes(ability)) score += 20;
-                
+
                 // Enhance Snow synergy specifically as requested
                 if (mainWeather === 'snow') {
                     // Ice types get a huge boost in Snow (Def boost simulation)
@@ -1889,7 +1934,7 @@
 
                 const candWeather = weatherSetters[ability];
                 if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
-                
+
                 if (candWeather === 'snow' && mainTypesArr.includes('ice')) score += 12;
 
                 // 2. Trick Room Synergy
@@ -1987,8 +2032,8 @@
                 // 17. Neutralizing gas + bad abilities or raw stats
                 const isGas = mainAbility === 'neutralizing gas' || ability === 'neutralizing gas';
                 if (isGas) {
-                   const badAbilities = ['slow start', 'truant', 'defeatist'];
-                   if (badAbilities.includes(mainAbility) || badAbilities.includes(ability)) score += 35;
+                    const badAbilities = ['slow start', 'truant', 'defeatist'];
+                    if (badAbilities.includes(mainAbility) || badAbilities.includes(ability)) score += 35;
                 }
 
                 // 18. Unburden & Terrain/Seeds
@@ -2031,8 +2076,8 @@
                 if (hasHazards && hasPhaze) score += 15;
 
                 // 25. Screens + Setup Sweeper
-                const hasScreens = (mainMoves.includes('reflect') || mainMoves.includes('light screen') || mainMoves.includes('aurora veil')) && mainItem === 'light clay' || 
-                                   (moves.includes('reflect') || moves.includes('light screen') || moves.includes('aurora veil')) && p.item.toLowerCase() === 'light clay';
+                const hasScreens = (mainMoves.includes('reflect') || mainMoves.includes('light screen') || mainMoves.includes('aurora veil')) && mainItem === 'light clay' ||
+                    (moves.includes('reflect') || moves.includes('light screen') || moves.includes('aurora veil')) && p.item.toLowerCase() === 'light clay';
                 const hasBellyDrum = mainMoves.includes('belly drum') || moves.includes('belly drum');
                 if (hasScreens && (isSetup || hasBellyDrum)) score += 22;
 
@@ -2057,7 +2102,7 @@
                 ];
 
                 partnerPairs.forEach(pair => {
-                    if ((mainSpecies.includes(pair.a) && speciesName.includes(pair.b)) || 
+                    if ((mainSpecies.includes(pair.a) && speciesName.includes(pair.b)) ||
                         (mainSpecies.includes(pair.b) && speciesName.includes(pair.a))) {
                         score += 30;
                     }
@@ -2117,13 +2162,13 @@
             const selfCard = createTeamCard(pSelf, dbSelf, mainBuild);
             selfCard.style.border = '2px solid var(--primary-red)';
             selfCard.style.boxShadow = 'var(--accent-glow)';
-            
+
             // Add "LEAD BUILD" badge
             const leadBadge = document.createElement('div');
             leadBadge.style = "position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; font-size:0.6rem; font-weight:900; padding:2px 10px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(255,51,51,0.5);";
             leadBadge.innerText = "PRIMARY BUILD";
             selfCard.appendChild(leadBadge);
-            
+
             grid.appendChild(selfCard);
 
             for (let i = 0; i < 5; i++) {
@@ -2136,7 +2181,7 @@
                     const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
                     const card = createTeamCard(p, dbRef, buildInfo);
-                    
+
                     // Add Score Badge
                     const scoreBadge = document.createElement('div');
                     scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
@@ -2146,7 +2191,7 @@
                         scoreBadge.innerText = `SYNERGY: MATCH`;
                     }
                     card.appendChild(scoreBadge);
-                    
+
                     grid.appendChild(card);
                 } else {
                     grid.appendChild(createEmptyCard());
@@ -2181,7 +2226,7 @@
         let megaToggleState = 'base';
         setInterval(() => {
             megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
-            
+
             // Swap Sprites
             document.querySelectorAll('img.mega-toggle').forEach(img => {
                 if (img.dataset.fallback === 'true') {
