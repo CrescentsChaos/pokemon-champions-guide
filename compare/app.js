@@ -1,4 +1,4 @@
-let pokemonData = {};
+let pokemonData = [];  // array of pokemon objects
 let movesData = {};
 let itemsData = [];
 
@@ -110,7 +110,10 @@ function setupSearchListeners() {
             results.innerHTML = '';
             if (q.length < 2) return;
 
-            const matches = Object.keys(pokemonData).filter(p => p.toLowerCase().includes(q)).slice(0, 10);
+            const matches = pokemonData
+                .filter(p => p.Name && p.Name.toLowerCase().includes(q))
+                .slice(0, 10)
+                .map(p => p.Name);
             matches.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'search-item';
@@ -132,18 +135,19 @@ function setupSearchListeners() {
 }
 
 function selectPokemon(num, species) {
-    if (!pokemonData[species]) return;
+    const pd = pokemonData.find(p => p.Name === species);
+    if (!pd) return;
+
     const p = num === 1 ? p1 : p2;
-    const pd = pokemonData[species];
 
     p.species = species;
     p.base = {
-        hp: pd.HP || parseInt(pd.Base_HP) || 0,
-        atk: pd.Attack || parseInt(pd.Base_Attack) || 0,
-        def: pd.Defense || parseInt(pd.Base_Defense) || 0,
-        spa: pd.Sp_Attack || parseInt(pd.Base_Sp_Attack) || 0,
-        spd: pd.Sp_Defense || parseInt(pd.Base_Sp_Defense) || 0,
-        spe: pd.Speed || parseInt(pd.Base_Speed) || 0
+        hp:  pd.HP   || 0,
+        atk: pd.Attack  || 0,
+        def: pd.Defense || 0,
+        spa: pd['Sp.Atk'] || 0,
+        spd: pd['Sp.Def'] || 0,
+        spe: pd.Speed   || 0
     };
     p.type1 = pd.Type_1;
     p.type2 = pd.Type_2 || '';
@@ -156,7 +160,7 @@ function selectPokemon(num, species) {
     // Ability datalist
     const abList = document.getElementById(`p${num}-abilities-list`);
     abList.innerHTML = '';
-    const abilities = [pd.Ability_1, pd.Ability_2, pd.Hidden_Ability].filter(x => x);
+    const abilities = [pd.Ability_1, pd.Ability_2, pd.Hidden_Ability].filter(x => x && x !== '' && x !== 'None');
     abilities.forEach(ab => {
         const opt = document.createElement('option');
         opt.value = ab;
@@ -439,13 +443,13 @@ function importFromText(num, text) {
     if(namePart.includes(')')) namePart = namePart.split(')')[1].trim(); 
     if(!namePart) namePart = itemSplit[0].replace(/\([^)]+\)/g, '').trim(); 
     
-    // Attempt match with DB
-    let sMatch = Object.keys(pokemonData).find(x => x.toLowerCase() === namePart.toLowerCase());
+    // Attempt match with DB (array of objects)
+    let sMatch = pokemonData.find(x => x.Name && x.Name.toLowerCase() === namePart.toLowerCase());
     if(!sMatch && namePart.includes('-')) {
          const baseName = namePart.split('-')[0].trim();
-         sMatch = Object.keys(pokemonData).find(x => x.toLowerCase() === baseName.toLowerCase());
+         sMatch = pokemonData.find(x => x.Name && x.Name.toLowerCase() === baseName.toLowerCase());
     }
-    if(sMatch) slot.species = sMatch;
+    if(sMatch) slot.species = sMatch.Name;
     else slot.species = namePart; // raw guess
 
     for(let i=1; i<lines.length; i++) {
@@ -490,7 +494,7 @@ function importFromText(num, text) {
     p.species = slot.species;
     
     // Reselect so Base stats load
-    if (pokemonData[p.species]) {
+    if (pokemonData.find(x => x.Name === p.species)) {
         selectPokemon(num, p.species);
     }
 
