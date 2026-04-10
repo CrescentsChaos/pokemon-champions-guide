@@ -118,7 +118,7 @@
     {
         "id": "07",
         "pokemon": "Flutter Mane",
-        "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 116 HP / 76 Def / 116 SpA / 4 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
+        "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 116 HP / 76 Def / 116 SpA / 4 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Stellar\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
         "synergy": [],
         "format": "Doubles"
     },
@@ -2436,6 +2436,71 @@
         "id": "70",
         "pokemon": "Chesnaught",
         "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 4 Def / 252 SpD / 4 Spe  \nImpish Nature  \n- Body Press  \n- Knock Off  \n- Iron Defense  \n- Spiky Shield",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "346",
+        "pokemon": "Calyrex-Shadow",
+        "build": "Calyrex-Shadow @ Life Orb  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Astral Barrage  \n- Expanding Force  \n- Protect  \n- Nasty Plot",
+        "synergy": [
+            "16"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "347",
+        "pokemon": "Urshifu-Rapid-Strike",
+        "build": "Urshifu-Rapid-Strike @ Focus Sash  \nAbility: Unseen Fist  \nLevel: 50  \nTera Type: Stellar  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Surging Strikes  \n- Close Combat  \n- Taunt  \n- Detect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "348",
+        "pokemon": "Rillaboom",
+        "build": "Rillaboom @ Assault Vest  \nAbility: Grassy Surge  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Grassy Glide  \n- Fake Out  \n- U-turn  \n- Wood Hammer",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "349",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Rocky Helmet  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Water  \nEVs: 252 HP / 4 Atk / 252 SpD  \nCareful Nature  \n- Fake Out  \n- Knock Off  \n- Parting Shot  \n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "350",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Booster Energy  \nAbility: Protosynthesis  \nLevel: 50  \nTera Type: Electric  \nEVs: 244 HP / 252 SpA / 12 SpD  \nModest Nature  \n- Draco Meteor  \n- Thunderclap  \n- Thunderbolt  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "351",
+        "pokemon": "Smeargle",
+        "build": "Smeargle @ Focus Sash  \nAbility: Moody  \nTera Type: Normal  \nEVs: 252 HP / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Decorate  \n- Spore  \n- Follow Me  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "352",
+        "pokemon": "Koraidon",
+        "build": "Koraidon @ Life Orb  \nAbility: Orichalcum Pulse  \nTera Type: Fighting  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Flame Charge  \n- Close Combat  \n- Protect  \n- U-turn",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "353",
+        "pokemon": "Gholdengo",
+        "build": "Gholdengo @ Air Balloon  \nAbility: Good as Gold  \nTera Type: Steel  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Make It Rain  \n- Protect  \n- Shadow Ball  \n- Nasty Plot",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "354",
+        "pokemon": "Ursaluna-Bloodmoon",
+        "build": "Ursaluna-Bloodmoon @ Life Orb  \nAbility: Mind's Eye  \nTera Type: Normal  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Hyper Voice  \n- Blood Moon  \n- Earth Power",
         "synergy": [],
         "format": "Doubles"
     }
