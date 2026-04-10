@@ -814,7 +814,7 @@
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
-                if (stats.spe < 60) allRoles.add('Trick Room Abuser');
+                if (stats.atk > 140 || stats.spa > 140 && stats.spe < 60) allRoles.add('Trick Room Abuser');
                 if (item === 'choice scarf') allRoles.add('Revenge Killer');
                 if (stats.hp > 180 && stats.def > 130) allRoles.add('Physical Wall');
                 if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
