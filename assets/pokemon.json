@@ -9312,6 +9312,35 @@
     "Total_Stats": 475
   },
   {
+    "id": 310,
+    "Name": "Manectric-Mega",
+    "Height(m)": 1.5,
+    "Weight{kg}": 40.2,
+    "HP": 70,
+    "Attack": 75,
+    "Defense": 80,
+    "Sp.Atk": 135,
+    "Sp.Def": 80,
+    "Speed": 135,
+    "Type_1": "Electric",
+    "Type_2": "",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 575,
+    "Ability": [
+      "Intimidate"
+    ]
+  },
+  {
     "id": 311,
     "Name": "Plusle",
     "Height(m)": 0.4,
@@ -9546,6 +9575,35 @@
     "Total_Stats": 460
   },
   {
+    "id": 319,
+    "Name": "Sharpedo-Mega",
+    "Height(m)": 1.8,
+    "Weight{kg}": 88.8,
+    "HP": 70,
+    "Attack": 140,
+    "Defense": 70,
+    "Sp.Atk": 110,
+    "Sp.Def": 65,
+    "Speed": 105,
+    "Type_1": "Water",
+    "Type_2": "Dark",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Water2",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 60,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 560,
+    "Ability": [
+      "Strong Jaw"
+    ]
+  },
+  {
     "id": 320,
     "Name": "Wailmer",
     "Height(m)": 2,
@@ -9648,6 +9706,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 460
+  },
+  {
+    "id": 323,
+    "Name": "Camerupt-Mega",
+    "Height(m)": 1.9,
+    "Weight{kg}": 220,
+    "HP": 70,
+    "Attack": 120,
+    "Defense": 100,
+    "Sp.Atk": 145,
+    "Sp.Def": 105,
+    "Speed": 20,
+    "Type_1": "Fire",
+    "Type_2": "Ground",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 150,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 560,
+    "Ability": [
+      "Sheer Force"
+    ]
   },
   {
     "id": 324,
@@ -9934,6 +10021,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 490
+  },
+  {
+    "id": 334,
+    "Name": "Altaria-Mega",
+    "Height(m)": 1.1,
+    "Weight{kg}": 20.6,
+    "HP": 75,
+    "Attack": 110,
+    "Defense": 110,
+    "Sp.Atk": 110,
+    "Sp.Def": 105,
+    "Speed": 80,
+    "Type_1": "Dragon",
+    "Type_2": "Fairy",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Flying",
+    "Egg_Group_2": "Dragon",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 590,
+    "Ability": [
+      "Pixilate"
+    ]
   },
   {
     "id": 335,
