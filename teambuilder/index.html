@@ -1361,10 +1361,24 @@
         searchInput.oninput = (e) => updateSearchResults(e.target.value);
 
         function handleSpriteError(img, species, shiny) {
-            if (!species || img.dataset.fallback === 'true') return;
+            if (!species || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
+            
+            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+
+            if (!img.dataset.fallbackState && isMegaURL) {
+                img.dataset.fallbackState = '1';
+                let suffix = 'mega';
+                if (img.src.includes('megax')) suffix = 'megax';
+                else if (img.src.includes('megay')) suffix = 'megay';
+                img.src = `../assets/mega-sprites/${clean}-${suffix}.gif`;
+                if(img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
+                return;
+            }
+
+            img.dataset.fallbackState = 'final';
             img.dataset.fallback = 'true'; // Prevent infinite loops
             img.classList.remove('mega-toggle');
-            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const folder = shiny ? 'xy-shiny' : 'xy';
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
         }

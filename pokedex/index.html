@@ -139,15 +139,29 @@
         }
 
         function handleSpriteError(img, name) {
-            const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-            // First fallback: XY static sprite (more reliable than animated)
-            // Second fallback: Unown interrogation gif
+            if (img.dataset.fallbackState === 'final') return;
+            
+            const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const isMega = clean.includes('mega');
+
+            if (!img.dataset.fallbackState && isMega && !img.src.includes('assets/')) {
+                img.dataset.fallbackState = '1';
+                let base = clean.split('-mega')[0];
+                let suffix = 'mega';
+                if (clean.includes('megax')) { base = clean.split('-megax')[0]; suffix = 'megax'; }
+                else if (clean.includes('megay')) { base = clean.split('-megay')[0]; suffix = 'megay'; }
+                img.src = `../assets/mega-sprites/${base}-${suffix}.gif`;
+                return;
+            }
+
+            img.dataset.fallbackState = 'final';
+            img.onerror = null;
+
             if (!img.src.includes('xy')) {
                 img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
             } else {
                 img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
             }
-            img.onerror = null; 
         }
 
         function getSpriteUrl(name) {
