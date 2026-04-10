@@ -922,8 +922,8 @@
     },
     {
         "id": "131",
-        "pokemon": "Camerupt-Mega",
-        "build": "Camerupt-Mega @ Cameruptite\nAbility: Solid Rock\nEVs: 248 HP / 4 Def / 252 SpA / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Heat Wave\n- Earth Power\n- Eruption\n- Protect",
+        "pokemon": "Camerupt",
+        "build": "Camerupt @ Cameruptite\nAbility: Solid Rock\nEVs: 248 HP / 4 Def / 252 SpA / 4 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Heat Wave\n- Earth Power\n- Eruption\n- Protect",
         "synergy": [],
         "format": "Doubles"
     },
