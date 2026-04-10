@@ -845,12 +845,17 @@
     <div class="overlay" id="import-overlay">
         <div class="overlay-content">
             <h2>Import PokePaste</h2>
-            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 10px;">Paste a team export <strong>or</strong> a PokePaste URL (e.g. <code style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-size:0.8rem;">https://pokepast.es/abc123</code>)</p>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 10px;">Paste a team export
+                <strong>or</strong> a PokePaste URL (e.g. <code
+                    style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-size:0.8rem;">https://pokepast.es/abc123</code>)
+            </p>
             <textarea id="import-textarea" class="builder-input" style="height: 300px; margin-top: 15px;"
                 placeholder="Paste team text or a pokepast.es URL here..."></textarea>
-            <div id="import-status" style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 10px; display: none;"></div>
+            <div id="import-status"
+                style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 10px; display: none;"></div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                <button id="close-import" class="analyze-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.15);">CANCEL</button>
+                <button id="close-import" class="analyze-btn"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.15);">CANCEL</button>
                 <button id="confirm-import" class="analyze-btn">LOAD TEAM</button>
             </div>
         </div>
@@ -1327,7 +1332,7 @@
             } else data = allMoves;
 
             const filtered = data.filter(x =>
-                (x.Name || x.name || '').toLowerCase().includes(q.toLowerCase()) || 
+                (x.Name || x.name || '').toLowerCase().includes(q.toLowerCase()) ||
                 (x.id && String(x.id).includes(q))
             ).sort((a, b) => (b.eligible ? 1 : 0) - (a.eligible ? 1 : 0)).slice(0, 100);
 
@@ -1362,7 +1367,7 @@
 
         function handleSpriteError(img, species, shiny) {
             if (!species || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
-            
+
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
 
@@ -1371,13 +1376,13 @@
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
-                
+
                 // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
                 const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
-                
-                if(img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
+
+                if (img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
                 return;
             }
 
@@ -1407,7 +1412,7 @@
         let megaToggleState = 'base';
         setInterval(() => {
             megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
-            
+
             // Swap Sprites
             document.querySelectorAll('img.mega-toggle').forEach(img => {
                 if (img.dataset.fallback === 'true') {
@@ -1478,135 +1483,134 @@
             return dbRef;
         }
 
-            const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
-                HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Ability: []
-            };
-            const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
+        const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+            HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Ability: []
+        };
+        const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
 
-            speciesIn.value = p.species || '';
-            document.getElementById('nickname-input').value = p.nickname || '';
-            document.getElementById('item-input').value = p.item || '';
-            
-            const abilityIn = document.getElementById('ability-input');
-            const baseAbility = (dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || '');
-            const megaAbility = (dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : baseAbility;
-            
-            if (dbMega !== dbBase) {
-                abilityIn.dataset.baseVal = baseAbility;
-                abilityIn.dataset.megaVal = megaAbility;
-                // Set initial value based on current cycle
-                abilityIn.value = megaToggleState === 'mega' ? megaAbility : baseAbility;
-                abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
-            } else {
-                delete abilityIn.dataset.baseVal;
-                delete abilityIn.dataset.megaVal;
-                abilityIn.value = baseAbility;
-                abilityIn.style.color = 'white';
-            }
-            document.getElementById('tera-input').value = p.tera || '';
-            document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
-            document.getElementById('gender-input').value = p.gender || '';
-            levelIn.value = p.level;
-            natureIn.value = p.nature;
-            const bigSprite = document.getElementById('current-big-sprite');
-            const megaUrl = getMegaSpriteUrl(p);
-            const baseSprite = getSpriteUrl(p);
-            bigSprite.dataset.fallback = 'false';
-            bigSprite.src = baseSprite;
-            bigSprite.className = megaUrl ? 'mega-toggle' : '';
-            if (megaUrl) {
-                bigSprite.dataset.base = baseSprite;
-                bigSprite.dataset.mega = megaUrl;
-                bigSprite.dataset.currentSrc = 'base';
-            } else {
-                bigSprite.dataset.mega = '';
-            }
+        speciesIn.value = p.species || '';
+        document.getElementById('nickname-input').value = p.nickname || '';
+        document.getElementById('item-input').value = p.item || '';
 
-            const displayName = p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty');
-            document.getElementById(`tab-name-${currentSlot}`).textContent = displayName;
-            
-            const tabSprite = document.getElementById(`tab-sprite-${currentSlot}`);
-            tabSprite.src = baseSprite;
-            tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite'; // Assuming it might have a class, but we don't have one globally. It didn't have one so we just set it. Wait, I'll just set mega-toggle.
-            if (megaUrl) {
-                tabSprite.dataset.base = baseSprite;
-                tabSprite.dataset.mega = megaUrl;
-                tabSprite.dataset.currentSrc = 'base';
-            } else {
-                tabSprite.dataset.mega = '';
-            }
+        const abilityIn = document.getElementById('ability-input');
+        const baseAbility = (dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || '');
+        const megaAbility = (dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : baseAbility;
 
-            const itemSpr = document.getElementById('item-sprite-preview');
-            if (p.item) {
-                itemSpr.src = getItemSpriteUrl(p.item);
-                itemSpr.style.display = 'block';
-            } else {
-                itemSpr.style.display = 'none';
-            }
-
-            const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
-            let totalEVs = 0;
-            Object.entries(keys).forEach(([key, dbKey]) => {
-                const baseVal = dbBase[dbKey];
-                const megaVal = dbMega[dbKey];
-                const ev = p.evs[key];
-                totalEVs += ev;
-                
-                const baseStat = calculateStat(baseVal, p.ivs[key], ev, p.level, p.nature, key);
-                const megaStat = calculateStat(megaVal, p.ivs[key], ev, p.level, p.nature, key);
-
-                const baseEl = document.getElementById(`base-${key}`);
-                const actEl = document.getElementById(`act-${key}`);
-
-                if (dbMega !== dbBase) {
-                    baseEl.dataset.baseVal = baseVal;
-                    baseEl.dataset.megaVal = megaVal;
-                    actEl.dataset.baseVal = baseStat;
-                    actEl.dataset.megaVal = megaStat;
-                    
-                    baseEl.textContent = megaToggleState === 'mega' ? megaVal : baseVal;
-                    actEl.textContent = megaToggleState === 'mega' ? megaStat : baseStat;
-                } else {
-                    delete baseEl.dataset.baseVal;
-                    delete baseEl.dataset.megaVal;
-                    delete actEl.dataset.baseVal;
-                    delete actEl.dataset.megaVal;
-                    baseEl.textContent = baseVal || '--';
-                    actEl.textContent = baseStat;
-                }
-
-                document.querySelector(`.ev-slider[data-stat="${key}"]`).value = ev;
-                document.querySelector(`.ev-input[data-stat="${key}"]`).value = ev;
-                document.getElementById(`fill-${key}`).style.width = (ev / 252 * 100) + '%';
-
-                // Stat Color highlighting for nature
-                const nature = natureMap[p.nature] || {};
-                if (nature.pos === key) actEl.style.color = '#00ffcc';
-                else if (nature.neg === key) actEl.style.color = '#ff4d4d';
-                else actEl.style.color = '#fff';
-            });
-
-            // Nature Input Style Sync
-            natureIn.style.color = natureMap[p.nature].color;
-            natureIn.style.borderColor = natureMap[p.nature].color + '44';
-            natureIn.style.boxShadow = `0 0 15px ${natureMap[p.nature].color}22`;
-            document.getElementById('rem-ev').textContent = 508 - totalEVs;
-
-            document.getElementById('item-input').value = p.item || '';
-            const itemSprite = document.getElementById('item-sprite-preview');
-            if (p.item) {
-                itemSprite.dataset.fallback = 'false';
-                itemSprite.dataset.item = p.item;
-                itemSprite.src = getItemSpriteUrl(p.item);
-                itemSprite.style.display = 'block';
-            } else {
-                itemSprite.style.display = 'none';
-            }
-
-            p.moves.forEach((m, i) => {
-                document.querySelector(`.move-in[data-idx="${i}"]`).value = m;
-            });
+        if (dbMega !== dbBase) {
+            abilityIn.dataset.baseVal = baseAbility;
+            abilityIn.dataset.megaVal = megaAbility;
+            // Set initial value based on current cycle
+            abilityIn.value = megaToggleState === 'mega' ? megaAbility : baseAbility;
+            abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
+        } else {
+            delete abilityIn.dataset.baseVal;
+            delete abilityIn.dataset.megaVal;
+            abilityIn.value = baseAbility;
+            abilityIn.style.color = 'white';
         }
+        document.getElementById('tera-input').value = p.tera || '';
+        document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
+        document.getElementById('gender-input').value = p.gender || '';
+        levelIn.value = p.level;
+        natureIn.value = p.nature;
+        const bigSprite = document.getElementById('current-big-sprite');
+        const megaUrl = getMegaSpriteUrl(p);
+        const baseSprite = getSpriteUrl(p);
+        bigSprite.dataset.fallback = 'false';
+        bigSprite.src = baseSprite;
+        bigSprite.className = megaUrl ? 'mega-toggle' : '';
+        if (megaUrl) {
+            bigSprite.dataset.base = baseSprite;
+            bigSprite.dataset.mega = megaUrl;
+            bigSprite.dataset.currentSrc = 'base';
+        } else {
+            bigSprite.dataset.mega = '';
+        }
+
+        const displayName = p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty');
+        document.getElementById(`tab-name-${currentSlot}`).textContent = displayName;
+
+        const tabSprite = document.getElementById(`tab-sprite-${currentSlot}`);
+        tabSprite.src = baseSprite;
+        tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite'; // Assuming it might have a class, but we don't have one globally. It didn't have one so we just set it. Wait, I'll just set mega-toggle.
+        if (megaUrl) {
+            tabSprite.dataset.base = baseSprite;
+            tabSprite.dataset.mega = megaUrl;
+            tabSprite.dataset.currentSrc = 'base';
+        } else {
+            tabSprite.dataset.mega = '';
+        }
+
+        const itemSpr = document.getElementById('item-sprite-preview');
+        if (p.item) {
+            itemSpr.src = getItemSpriteUrl(p.item);
+            itemSpr.style.display = 'block';
+        } else {
+            itemSpr.style.display = 'none';
+        }
+
+        const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
+        let totalEVs = 0;
+        Object.entries(keys).forEach(([key, dbKey]) => {
+            const baseVal = dbBase[dbKey];
+            const megaVal = dbMega[dbKey];
+            const ev = p.evs[key];
+            totalEVs += ev;
+
+            const baseStat = calculateStat(baseVal, p.ivs[key], ev, p.level, p.nature, key);
+            const megaStat = calculateStat(megaVal, p.ivs[key], ev, p.level, p.nature, key);
+
+            const baseEl = document.getElementById(`base-${key}`);
+            const actEl = document.getElementById(`act-${key}`);
+
+            if (dbMega !== dbBase) {
+                baseEl.dataset.baseVal = baseVal;
+                baseEl.dataset.megaVal = megaVal;
+                actEl.dataset.baseVal = baseStat;
+                actEl.dataset.megaVal = megaStat;
+
+                baseEl.textContent = megaToggleState === 'mega' ? megaVal : baseVal;
+                actEl.textContent = megaToggleState === 'mega' ? megaStat : baseStat;
+            } else {
+                delete baseEl.dataset.baseVal;
+                delete baseEl.dataset.megaVal;
+                delete actEl.dataset.baseVal;
+                delete actEl.dataset.megaVal;
+                baseEl.textContent = baseVal || '--';
+                actEl.textContent = baseStat;
+            }
+
+            document.querySelector(`.ev-slider[data-stat="${key}"]`).value = ev;
+            document.querySelector(`.ev-input[data-stat="${key}"]`).value = ev;
+            document.getElementById(`fill-${key}`).style.width = (ev / 252 * 100) + '%';
+
+            // Stat Color highlighting for nature
+            const nature = natureMap[p.nature] || {};
+            if (nature.pos === key) actEl.style.color = '#00ffcc';
+            else if (nature.neg === key) actEl.style.color = '#ff4d4d';
+            else actEl.style.color = '#fff';
+        });
+
+        // Nature Input Style Sync
+        natureIn.style.color = natureMap[p.nature].color;
+        natureIn.style.borderColor = natureMap[p.nature].color + '44';
+        natureIn.style.boxShadow = `0 0 15px ${natureMap[p.nature].color}22`;
+        document.getElementById('rem-ev').textContent = 508 - totalEVs;
+
+        document.getElementById('item-input').value = p.item || '';
+        const itemSprite = document.getElementById('item-sprite-preview');
+        if (p.item) {
+            itemSprite.dataset.fallback = 'false';
+            itemSprite.dataset.item = p.item;
+            itemSprite.src = getItemSpriteUrl(p.item);
+            itemSprite.style.display = 'block';
+        } else {
+            itemSprite.style.display = 'none';
+        }
+
+        p.moves.forEach((m, i) => {
+            document.querySelector(`.move-in[data-idx="${i}"]`).value = m;
+        });
 
         // Binding Search Overlays
         speciesIn.onclick = () => openSearch('species');
@@ -2414,7 +2418,7 @@
                 types.forEach(atkType => {
                     const effBase = getEffectiveness(atkType, [dbBase.Type_1, dbBase.Type_2]);
                     const effMega = hasMega ? getEffectiveness(atkType, [dbMega.Type_1, dbMega.Type_2]) : effBase;
-                    
+
                     // If either state is weak, it's a team vulnerability
                     if (effBase > 1 || effMega > 1) defensive[atkType]++;
                 });
@@ -2444,7 +2448,7 @@
                 const ability = (p.ability || '').toLowerCase();
                 const item = (p.item || '').toLowerCase();
                 const megaAbility = (p.megaAbility || '').toLowerCase(); // If we store it
-                
+
                 // Use effective ability for this specific form
                 const activeAbility = db.Name.includes('-Mega') ? (p.megaAbility || db.Ability_1) : (p.ability || db.Ability_1);
                 const ab = activeAbility.toLowerCase();
@@ -2563,16 +2567,16 @@
                 if (dbMega && dbMega.Name !== dbBase.Name) {
                     const baseTypes = [dbBase.Type_1, dbBase.Type_2].filter(x => x);
                     const megaTypes = [dbMega.Type_1, dbMega.Type_2].filter(x => x);
-                    
+
                     Object.keys(TYPE_CHART).forEach(atkType => {
                         const effBase = getEffectiveness(atkType, baseTypes);
                         const effMega = getEffectiveness(atkType, megaTypes);
-                        
+
                         if (effBase >= 2 && effMega <= 0.5) {
-                            issues.push({ 
-                                type: atkType, 
-                                severity: 'synergy', 
-                                text: `Tactical Typing Shift: ${p.species}`, 
+                            issues.push({
+                                type: atkType,
+                                severity: 'synergy',
+                                text: `Tactical Typing Shift: ${p.species}`,
                                 tip: `${p.species} is weak to ${atkType} in Base form, but becomes resistant/immune after Mega Evolution! Use this to bait and punish ${atkType} moves.`,
                                 icon: '💡',
                                 color: '#FFD700'
