@@ -807,14 +807,12 @@
 
                 // Apply ability stat multipliers for role calculation
                 if (ab === 'huge power' || ab === 'pure power') stats.atk *= 2;
-
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
                 if (item === 'choice scarf') allRoles.add('Revenge Killer');
                 if (stats.hp > 180 && stats.def > 130) allRoles.add('Physical Wall');
                 if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
-
                 if (hasMove(['fake out'])) allRoles.add('Fake Out Pressure');
                 if (hasMove(['helping hand', 'decorate', "coaching"]) || ab in ['commander', 'sword of ruin', "beads of ruin", "vessel of ruin"]) allRoles.add('Damage Amplification');
                 if (ab in ['armor tail', 'queenly majesty', 'psychic surge']) allRoles.add('Priority Denial');
