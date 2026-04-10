@@ -237,14 +237,42 @@ function setupInputListeners() {
                     (num === 1 ? p1 : p2)[field] = val;
                     if (field === 'nature') recalcStats(num);
                     if (field === 'item') {
-                        // Resync sprite in case it's a mega stone
                         const p = num === 1 ? p1 : p2;
                         if (p.species) {
                             const img = document.getElementById(`p${num}-sprite`);
                             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+                            const speciesKey = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+                            // Zacian + Rusted Sword → Zacian-Crowned sprite + stats
+                            if (speciesKey === 'zacian' && it === 'rustedsword') {
+                                img.dataset.fallbackState = '0';
+                                img.src = 'https://play.pokemonshowdown.com/sprites/ani/zacian-crowned.gif';
+                                const crowned = pokemonData.find(x => x.Name === 'Zacian-Crowned');
+                                if (crowned) {
+                                    p.base = { hp: crowned.HP || 0, atk: crowned.Attack || 0, def: crowned.Defense || 0, spa: crowned['Sp.Atk'] || 0, spd: crowned['Sp.Def'] || 0, spe: crowned.Speed || 0 };
+                                    document.getElementById(`p${num}-type1`).value = crowned.Type_1 || '';
+                                    document.getElementById(`p${num}-type2`).value = crowned.Type_2 || '-';
+                                    recalcStats(num);
+                                }
+                                return;
+                            }
+                            // Zamazenta + Rusted Shield → Zamazenta-Crowned sprite + stats
+                            if (speciesKey === 'zamazenta' && it === 'rustedshield') {
+                                img.dataset.fallbackState = '0';
+                                img.src = 'https://play.pokemonshowdown.com/sprites/ani/zamazenta-crowned.gif';
+                                const crowned = pokemonData.find(x => x.Name === 'Zamazenta-Crowned');
+                                if (crowned) {
+                                    p.base = { hp: crowned.HP || 0, atk: crowned.Attack || 0, def: crowned.Defense || 0, spa: crowned['Sp.Atk'] || 0, spd: crowned['Sp.Def'] || 0, spe: crowned.Speed || 0 };
+                                    document.getElementById(`p${num}-type1`).value = crowned.Type_1 || '';
+                                    document.getElementById(`p${num}-type2`).value = crowned.Type_2 || '-';
+                                    recalcStats(num);
+                                }
+                                return;
+                            }
+
                             // If Mega Stone equipped, try showdown mega sprite first
                             let suffix = '';
-                            const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
                             if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
                                 suffix = '-mega';
                                 if (it.endsWith('itex')) suffix = '-megax';
@@ -252,6 +280,17 @@ function setupInputListeners() {
                             }
                             img.dataset.fallbackState = '0';
                             img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+
+                            // If switching back to no form-change item, restore base species stats
+                            if (!suffix) {
+                                const baseDb = pokemonData.find(x => x.Name === p.species);
+                                if (baseDb) {
+                                    p.base = { hp: baseDb.HP || 0, atk: baseDb.Attack || 0, def: baseDb.Defense || 0, spa: baseDb['Sp.Atk'] || 0, spd: baseDb['Sp.Def'] || 0, spe: baseDb.Speed || 0 };
+                                    document.getElementById(`p${num}-type1`).value = baseDb.Type_1 || '';
+                                    document.getElementById(`p${num}-type2`).value = baseDb.Type_2 || '-';
+                                    recalcStats(num);
+                                }
+                            }
                         }
                     }
                 });

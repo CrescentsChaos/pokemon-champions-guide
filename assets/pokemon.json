@@ -26429,6 +26429,35 @@
     "Total_Stats": 660
   },
   {
+    "id": 888,
+    "Name": "Zacian-Crowned",
+    "Height(m)": 2.8,
+    "Weight{kg}": 110,
+    "HP": 92,
+    "Attack": 170,
+    "Defense": 115,
+    "Sp.Atk": 80,
+    "Sp.Def": 115,
+    "Speed": 148,
+    "Type_1": "Fairy",
+    "Type_2": "Steel",
+    "Is_Legendary": 1,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Undiscovered",
+    "Egg_Group_2": "",
+    "Generation": "Gen 8",
+    "Capture_Rate": 10,
+    "Base_Happiness": 0,
+    "Is_Baby": 0,
+    "Egg_Cycles": 120,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 720,
+    "Ability": [
+      "Intrepid Sword"
+    ]
+  },
+  {
     "id": 889,
     "Name": "Zamazenta",
     "Height(m)": 2.9,
@@ -26453,6 +26482,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 660
+  },
+  {
+    "id": 889,
+    "Name": "Zamazenta-Crowned",
+    "Height(m)": 2.9,
+    "Weight{kg}": 210,
+    "HP": 92,
+    "Attack": 130,
+    "Defense": 145,
+    "Sp.Atk": 80,
+    "Sp.Def": 145,
+    "Speed": 128,
+    "Type_1": "Fighting",
+    "Type_2": "Steel",
+    "Is_Legendary": 1,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Undiscovered",
+    "Egg_Group_2": "",
+    "Generation": "Gen 8",
+    "Capture_Rate": 10,
+    "Base_Happiness": 0,
+    "Is_Baby": 0,
+    "Egg_Cycles": 120,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 720,
+    "Ability": [
+      "Dauntless Shield"
+    ]
   },
   {
     "id": 890,

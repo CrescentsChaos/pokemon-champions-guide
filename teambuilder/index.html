@@ -1398,6 +1398,18 @@
         function getMegaSpriteUrl(p) {
             if (!p.species || !p.item) return null;
             const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const base = p.shiny ? 'ani-shiny' : 'ani';
+
+            // Zacian + Rusted Sword → Zacian-Crowned
+            if (species === 'zacian' && it === 'rustedsword') {
+                return `https://play.pokemonshowdown.com/sprites/${base}/zacian-crowned.gif`;
+            }
+            // Zamazenta + Rusted Shield → Zamazenta-Crowned
+            if (species === 'zamazenta' && it === 'rustedshield') {
+                return `https://play.pokemonshowdown.com/sprites/${base}/zamazenta-crowned.gif`;
+            }
+
             if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
             if (it === 'eviolite' || it === 'meteorite') return null;
 
@@ -1405,9 +1417,7 @@
             if (it.endsWith('itex')) suffix = '-megax';
             else if (it.endsWith('itey')) suffix = '-megay';
 
-            let clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
-            if (clean === 'zacian-crowned') clean = 'zacian-crowned';
-            const base = p.shiny ? 'ani-shiny' : 'ani';
+            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
         }
 
@@ -1472,6 +1482,18 @@
 
             if (p.item) {
                 const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+                // Zacian + Rusted Sword → Zacian-Crowned
+                if (speciesSearch === 'zacian' && it === 'rustedsword') {
+                    const crowned = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'zaciancrowned');
+                    if (crowned) return crowned;
+                }
+                // Zamazenta + Rusted Shield → Zamazenta-Crowned
+                if (speciesSearch === 'zamazenta' && it === 'rustedshield') {
+                    const crowned = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'zamazentacrowned');
+                    if (crowned) return crowned;
+                }
+
                 if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
                     let suffix = '-Mega';
                     if (it.endsWith('itex')) suffix = '-Mega-X';
