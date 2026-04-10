@@ -612,7 +612,7 @@
             'Intimidate Support', 'Trick Room Setter', 'Speed Control', 'Pivot',
             'Screener', 'Hazard Setter', 'Hazard Control', 'Setup Sweeper',
             'Disruptor', 'Cleric/Healer', 'Phazer/Hazer', 'Weather Setter',
-            'Terrain Setter', 'Restricted Legendary', 'Generalist'
+            'Terrain Setter', 'Restricted Legendary', 'Generalist', 'Damage Mitigation'
         ];
 
         const roleDescriptions = {
@@ -638,7 +638,8 @@
             'Weather Setter': 'Changes the weather (Rain, Sun, Sand, Snow) via an ability or move to benefit the team.',
             'Terrain Setter': 'Changes the terrain (Electric, Grassy, Misty, Psychic) to provide various battlefield bonuses.',
             'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
-            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.'
+            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.',
+            'Damage Mitigation': 'Uses moves like Parting Shot, Memento, or abilities like Intimidate to reduce incoming damage to the team.'
         };
 
         const natureMap = {
@@ -816,6 +817,7 @@
                 if (hasMove(['fake out'])) allRoles.add('Fake Out Pressure');
                 if (hasMove(['follow me', 'rage powder', 'ally switch'])) allRoles.add('Redirection');
                 if (ab === 'intimidate') allRoles.add('Intimidate Support');
+                if (hasMove(['parting shot', 'memento', 'light screen', 'reflect', 'aurora veil', 'snarl', 'breaking swipe', 'struggle bug']) || ab in ['intimidate', 'vessel of ruin']) allRoles.add('Damage Mitigation');
                 if (hasMove(['trick room'])) allRoles.add('Trick Room Setter');
                 if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) allRoles.add('Speed Control');
                 if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) allRoles.add('Pivot');
@@ -1446,6 +1448,7 @@
                     p3 = `<strong>The Defensive Backbone:</strong> To absorb incoming pressure, the team utilizes a defensive core anchored by <strong>${defList}</strong>. `;
                     if (allRoles.includes('Cleric/Healer')) p3 += `Clerical utility provides wish-passing and status-clearing to ensure longevity. `;
                     if (allRoles.includes('Intimidate Support')) p3 += `Intimidate cycling offers a massive buffer, neutering physical threats upon switch-in. `;
+                    if (allRoles.includes('Damage Mitigation')) p3 += `Damage Mitigation offers a great support by mitigating damage output of the opponent. `;
                 }
 
                 // Paragraph 4: Momentum & Positioning
@@ -2017,6 +2020,7 @@
                     if (roles.includes('Intimidate Support')) score += 10;
                     if (roles.includes('Redirection')) score += 12;
                     if (moves.includes('helping hand')) score += 8;
+                    if (roles.includes('Damage Mitigation')) score += 5;
                 } else {
                     // Singles focus: Hazards & Hazard Control
                     if (roles.includes('Hazard Setter')) score += 10;
