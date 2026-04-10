@@ -746,6 +746,9 @@
                 const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
                 const ab = activeAbility.toLowerCase();
 
+                // Apply ability stat multipliers for role calculation
+                if (ab === 'huge power' || ab === 'pure power') stats.atk *= 2;
+
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');

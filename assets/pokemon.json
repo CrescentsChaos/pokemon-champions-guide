@@ -8988,6 +8988,35 @@
     "Total_Stats": 380
   },
   {
+    "id": 302,
+    "Name": "Sableye-Mega",
+    "Height(m)": 0.5,
+    "Weight{kg}": 11,
+    "HP": 50,
+    "Attack": 85,
+    "Defense": 125,
+    "Sp.Atk": 85,
+    "Sp.Def": 115,
+    "Speed": 20,
+    "Type_1": "Dark",
+    "Type_2": "Ghost",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Humanshape",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 25,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 480,
+    "Ability": [
+      "Magic_Bounce"
+    ]
+  },
+  {
     "id": 303,
     "Name": "Mawile",
     "Height(m)": 0.6,
@@ -9012,6 +9041,35 @@
     "Past_Type": "Steel",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 380
+  },
+  {
+    "id": 303,
+    "Name": "Mawile-Mega",
+    "Height(m)": 0.6,
+    "Weight{kg}": 11.5,
+    "HP": 50,
+    "Attack": 105,
+    "Defense": 125,
+    "Sp.Atk": 55,
+    "Sp.Def": 95,
+    "Speed": 50,
+    "Type_1": "Steel",
+    "Type_2": "Fairy",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "Fairy",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "Steel",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 480,
+    "Ability": [
+      "Huge Power"
+    ]
   },
   {
     "id": 304,
@@ -9092,6 +9150,35 @@
     "Total_Stats": 530
   },
   {
+    "id": 306,
+    "Name": "Aggron-Mega",
+    "Height(m)": 2.1,
+    "Weight{kg}": 360,
+    "HP": 70,
+    "Attack": 140,
+    "Defense": 230,
+    "Sp.Atk": 60,
+    "Sp.Def": 80,
+    "Speed": 50,
+    "Type_1": "Steel",
+    "Type_2": "Rock",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Monster",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 35,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 630,
+    "Ability": [
+      "Filter"
+    ]
+  },
+  {
     "id": 307,
     "Name": "Meditite",
     "Height(m)": 0.6,
@@ -9142,6 +9229,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 410
+  },
+  {
+    "id": 308,
+    "Name": "Medicham-Mega",
+    "Height(m)": 1.3,
+    "Weight{kg}": 31.5,
+    "HP": 60,
+    "Attack": 100,
+    "Defense": 85,
+    "Sp.Atk": 80,
+    "Sp.Def": 85,
+    "Speed": 100,
+    "Type_1": "Fighting",
+    "Type_2": "Psychic",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Humanshape",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 90,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 510,
+    "Ability": [
+      "Pure Power"
+    ]
   },
   {
     "id": 309,
