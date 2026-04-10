@@ -2431,5 +2431,19 @@
         "build": "Crabominable @ Leftovers\nAbility: Iron Fist\nEVs: 252 HP / 252 Atk / 4 SpD\nTera Type: Water\nAdamant Nature\n- Bulk Up\n- Ice Hammer\n- Drain Punch\n- Earthquake",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "345",
+        "pokemon": "Feraligatr",
+        "build": "Feraligatr @ Feraligite  \nAbility: Torrent  \nLevel: 50  \nTera Type: Water  \nEVs: 252 HP / 84 Atk / 4 Def / 84 SpD / 92 Spe  \nAdamant Nature  \n- Liquidation  \n- Aqua Jet  \n- Double-Edge  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "346",
+        "pokemon": "Chesnaught",
+        "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 4 Def / 252 SpD / 4 Spe  \nImpish Nature  \n- Body Press  \n- Knock Off  \n- Iron Defense  \n- Spiky Shield",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
