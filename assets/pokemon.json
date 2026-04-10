@@ -6468,6 +6468,35 @@
     "Total_Stats": 500
   },
   {
+    "id": 214,
+    "Name": "Heracross-Mega",
+    "Height(m)": 1.7,
+    "Weight{kg}": 62.5,
+    "HP": 80,
+    "Attack": 185,
+    "Defense": 110,
+    "Sp.Atk": 40,
+    "Sp.Def": 105,
+    "Speed": 75,
+    "Type_1": "Bug",
+    "Type_2": "Fighting",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Bug",
+    "Egg_Group_2": "",
+    "Generation": "Gen 2",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 25,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 600,
+    "Ability": [
+      "Skill Link"
+    ]
+  },
+  {
     "id": 215,
     "Name": "Sneasel",
     "Height(m)": 0.9,
@@ -6806,6 +6835,35 @@
     "Total_Stats": 465
   },
   {
+    "id": 227,
+    "Name": "Skarmory-Mega",
+    "Height(m)": 1.7,
+    "Weight{kg}": 50.5,
+    "HP": 65,
+    "Attack": 140,
+    "Defense": 110,
+    "Sp.Atk": 40,
+    "Sp.Def": 100,
+    "Speed": 110,
+    "Type_1": "Steel",
+    "Type_2": "Flying",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Flying",
+    "Egg_Group_2": "",
+    "Generation": "Gen 2",
+    "Capture_Rate": 25,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 25,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 565,
+    "Ability": [
+      "Stalwart"
+    ]
+  },
+  {
     "id": 228,
     "Name": "Houndour",
     "Height(m)": 0.6,
@@ -6856,6 +6914,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 500
+  },
+  {
+    "id": 229,
+    "Name": "Houndoom-Mega",
+    "Height(m)": 1.4,
+    "Weight{kg}": 35,
+    "HP": 75,
+    "Attack": 90,
+    "Defense": 90,
+    "Sp.Atk": 140,
+    "Sp.Def": 90,
+    "Speed": 115,
+    "Type_1": "Dark",
+    "Type_2": "Fire",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "",
+    "Generation": "Gen 2",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 600,
+    "Ability": [
+      "Solar Power"
+    ]
   },
   {
     "id": 230,
@@ -7350,6 +7437,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 1,
     "Total_Stats": 600
+  },
+  {
+    "id": 248,
+    "Name": "Tyranitar-Mega",
+    "Height(m)": 2,
+    "Weight{kg}": 202,
+    "HP": 100,
+    "Attack": 164,
+    "Defense": 150,
+    "Sp.Atk": 95,
+    "Sp.Def": 120,
+    "Speed": 71,
+    "Type_1": "Rock",
+    "Type_2": "Dark",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Monster",
+    "Egg_Group_2": "",
+    "Generation": "Gen 2",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 40,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 1,
+    "Total_Stats": 700,
+    "Ability": [
+      "Sand Stream"
+    ]
   },
   {
     "id": 249,
