@@ -933,7 +933,9 @@
             'Weather Setter': 'Changes the weather (Rain, Sun, Sand, Snow) via an ability or move to benefit the team.',
             'Terrain Setter': 'Changes the terrain (Electric, Grassy, Misty, Psychic) to provide various battlefield bonuses.',
             'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
-            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.'
+            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.',
+            "Weather Abuser": "A Pokemon that benefits greatly from a specific weather condition.",
+            "Terrain Abuser": "A Pokemon that benefits greatly from a specific terrain."
         };
 
         const natureMap = {
@@ -2409,8 +2411,10 @@
                 if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
                 if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'pollen puff'])) allRoles.add('Cleric/Healer');
                 if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
-                if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sun', 'rain', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
+                if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sunny day', 'rain dance', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
                 if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
+                if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball'])) allRoles.add('Weather Abuser');
+                if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage'])) allRoles.add('Terrain Abuser');
                 if (bst >= 670) allRoles.add('Restricted Legendary');
             });
 

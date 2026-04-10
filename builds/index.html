@@ -612,7 +612,8 @@
             'Trick Room Setter', 'Speed Control', 'Pivot',
             'Screener', 'Hazard Setter', 'Hazard Control', 'Setup Sweeper',
             'Disruptor', 'Cleric/Healer', 'Phazer/Hazer', 'Weather Setter',
-            'Terrain Setter', 'Restricted Legendary', 'Generalist', 'Damage Mitigation', "Priority Denial", "Damage Amplification"
+            'Terrain Setter', 'Restricted Legendary', 'Generalist', 'Damage Mitigation', "Priority Denial", "Damage Amplification",
+            'Weather Abuser', 'Terrain Abuser'
         ];
 
         const roleDescriptions = {
@@ -640,7 +641,9 @@
             'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
             'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.',
             'Damage Mitigation': 'Uses moves like Parting Shot, Memento, or abilities like Intimidate to reduce incoming damage to the team.',
-            'Priority Denial': 'Uses abilities like Armor Tail, Queenly Majesty and Psychic Surge to prevent opponents from using priority moves.'
+            'Priority Denial': 'Uses abilities like Armor Tail, Queenly Majesty and Psychic Surge to prevent opponents from using priority moves.',
+            'Weather Abuser': 'Uses abilities like Sand Rush, Slush Rush, Swift Swim, or Chlorophyll to benefit from weather conditions.',
+            'Terrain Abuser': 'Uses abilities like Quark Drive or Surge Surfer, or moves like Expanding Force or Rising Voltage to benefit from terrain conditions.'
         };
 
         const natureMap = {
@@ -830,6 +833,8 @@
                 if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
                 if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sun', 'rain', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
                 if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
+                if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball'])) allRoles.add('Weather Abuser');
+                if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage'])) allRoles.add('Terrain Abuser');
                 if (bst >= 670) allRoles.add('Restricted Legendary');
             });
 
@@ -1399,6 +1404,8 @@
                 let hasFakeOut = allRoles.includes('Fake Out Pressure');
                 let hasPriorityDenial = allRoles.includes('Priority Denial');
                 let hasDamageAmplification = allRoles.includes('Damage Amplification');
+                let hasWeatherAbuser = allRoles.includes('Weather Abuser');
+                let hasTerrainAbuser = allRoles.includes('Terrain Abuser');
                 let hasPivots = allRoles.includes('Pivot');
                 let hasHazards = allRoles.includes('Hazard Setter');
                 let isSetup = allRoles.includes('Setup Sweeper');
@@ -2028,6 +2035,8 @@
                 if (format.toLowerCase() === 'doubles') {
                     if (roles.includes('Fake Out Pressure')) score += 12;
                     if (roles.includes('Damage Amplification')) score += 6;
+                    if (roles.includes('Weather Abuser')) score += 10;
+                    if (roles.includes('Terrain Abuser')) score += 10;
                     if (roles.includes('Priority Denial')) score += 7;
                     if (roles.includes('Redirection')) score += 12;
                     if (moves.includes('helping hand')) score += 8;
