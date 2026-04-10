@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
             width: 100%;
             margin-bottom: 4rem;
         }
+
         .search-input {
             width: 100%;
             padding: 1.5rem 2rem;
@@ -22,16 +24,19 @@
             outline: none;
             transition: var(--transition);
         }
+
         .search-input:focus {
             border-color: var(--primary-red);
             box-shadow: var(--accent-glow);
         }
+
         .pokemon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
             margin-bottom: 4rem;
         }
+
         .pokedex-card {
             background: var(--card-bg);
             border: 1px solid var(--glass-border);
@@ -46,12 +51,14 @@
             flex-direction: column;
             align-items: center;
         }
+
         .pokedex-card:hover {
             border-color: var(--primary-red);
             transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.05);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
+
         .pokemon-number {
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
@@ -61,6 +68,7 @@
             top: 0.5rem;
             right: 1rem;
         }
+
         .pokemon-img {
             width: 100px;
             height: 100px;
@@ -70,6 +78,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <section style="padding-top: 10rem; min-height: 100vh;">
@@ -80,7 +89,8 @@
             </div>
 
             <div class="search-container fade-in">
-                <input type="text" id="pokedex-search" class="search-input" placeholder="Search by name, type, or generation...">
+                <input type="text" id="pokedex-search" class="search-input"
+                    placeholder="Search by name, type, or generation...">
             </div>
 
             <div id="pokedex-grid" class="pokemon-grid">
@@ -127,10 +137,10 @@
                     fetch('../assets/pokemon.json'),
                     fetch('../assets/moves.json')
                 ]);
-                
+
                 allPokemon = await pokeRes.json();
                 allMoves = await movesRes.json();
-                
+
                 filteredPokemon = [...allPokemon];
                 loadMore();
             } catch (err) {
@@ -140,7 +150,7 @@
 
         function handleSpriteError(img, name) {
             if (img.dataset.fallbackState === 'final') return;
-            
+
             const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const isMega = clean.includes('mega');
 
@@ -149,14 +159,15 @@
                 let suffix = 'mega';
                 if (clean.includes('-mega-x') || clean.includes('megax')) suffix = 'mega-x';
                 else if (clean.includes('-mega-y') || clean.includes('megay')) suffix = 'mega-y';
-                
+                else if (clean.includes('-mega-z') || clean.includes('megaz')) suffix = 'mega-z';
+
                 // If clean already ends with suffix, use it. Otherwise, extract base and append.
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
                 let fileName = hasSuffix ? clean : '';
-                
+
                 if (!fileName) {
-                   const base = clean.split('-mega')[0];
-                   fileName = `${base}-${suffix}`;
+                    const base = clean.split('-mega')[0];
+                    fileName = `${base}-${suffix}`;
                 }
 
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
@@ -180,11 +191,11 @@
                 .replace(/'/g, '')
                 .replace(/:/g, '')
                 .replace(/%/g, '');
-            
+
             if (clean === 'giratina-altered') clean = 'giratina-origin';
             if (clean === 'mimikyu-disguised') clean = 'mimikyu';
             if (clean.includes('noctowl')) clean = 'noctowl';
-            
+
             return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
         }
 
@@ -192,7 +203,7 @@
             const card = document.createElement('div');
             card.className = 'pokedex-card';
             card.onclick = () => showPokemonDetails(pokemon);
-            
+
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
                 { label: 'ATK', val: pokemon.Attack, class: 'atk', max: 190 },
@@ -228,8 +239,8 @@
 
         function showPokemonDetails(pokemon) {
             // Find moves of the same types
-            const compatibleMoves = allMoves.filter(m => 
-                (m.type && (m.type.toLowerCase() === pokemon.Type_1.toLowerCase() || 
+            const compatibleMoves = allMoves.filter(m =>
+            (m.type && (m.type.toLowerCase() === pokemon.Type_1.toLowerCase() ||
                 (pokemon.Type_2 && m.type.toLowerCase() === pokemon.Type_2.toLowerCase())))
             ).slice(0, 10); // Show top 10 relevant moves
 
@@ -356,7 +367,7 @@
         function loadMore() {
             if (isLoading) return;
             isLoading = true;
-            
+
             const start = currentPage * ITEMS_PER_PAGE;
             const end = start + ITEMS_PER_PAGE;
             const nextBatch = filteredPokemon.slice(start, end);
@@ -376,10 +387,10 @@
 
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            filteredPokemon = allPokemon.filter(p => 
-                p.Name.toLowerCase().includes(query) || 
+            filteredPokemon = allPokemon.filter(p =>
+                p.Name.toLowerCase().includes(query) ||
                 String(p.id).includes(query) ||
-                p.Type_1.toLowerCase().includes(query) || 
+                p.Type_1.toLowerCase().includes(query) ||
                 (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
                 (p.Generation && String(p.Generation).toLowerCase().includes(query))
             );
@@ -398,4 +409,5 @@
         initPokedex();
     </script>
 </body>
+
 </html>
