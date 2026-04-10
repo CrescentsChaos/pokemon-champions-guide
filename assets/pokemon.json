@@ -2182,6 +2182,35 @@
     "Total_Stats": 490
   },
   {
+    "id": 71,
+    "Name": "Victreebel-Mega",
+    "Height(m)": 1.7,
+    "Weight{kg}": 15.5,
+    "HP": 80,
+    "Attack": 125,
+    "Defense": 85,
+    "Sp.Atk": 135,
+    "Sp.Def": 95,
+    "Speed": 70,
+    "Type_1": "Grass",
+    "Type_2": "Poison",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Plant",
+    "Egg_Group_2": "",
+    "Generation": "Gen 1",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 450,
+    "Ability": [
+      "Innards Out"
+    ]
+  },
+  {
     "id": 72,
     "Name": "Tentacool",
     "Height(m)": 0.9,
@@ -2414,6 +2443,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 490
+  },
+  {
+    "id": 80,
+    "Name": "Slowbro-Mega",
+    "Height(m)": 1.6,
+    "Weight{kg}": 78.5,
+    "HP": 95,
+    "Attack": 75,
+    "Defense": 180,
+    "Sp.Atk": 130,
+    "Sp.Def": 80,
+    "Speed": 30,
+    "Type_1": "Water",
+    "Type_2": "Psychic",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Monster",
+    "Egg_Group_2": "Water1",
+    "Generation": "Gen 1",
+    "Capture_Rate": 75,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 590,
+    "Ability": [
+      "Shell Armor"
+    ]
   },
   {
     "id": 80,
@@ -2804,6 +2862,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 500
+  },
+  {
+    "id": 94,
+    "Name": "Gengar-Mega",
+    "Height(m)": 1.5,
+    "Weight{kg}": 40.5,
+    "HP": 60,
+    "Attack": 65,
+    "Defense": 80,
+    "Sp.Atk": 170,
+    "Sp.Def": 95,
+    "Speed": 130,
+    "Type_1": "Ghost",
+    "Type_2": "Poison",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Indeterminate",
+    "Egg_Group_2": "",
+    "Generation": "Gen 1",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 600,
+    "Ability": [
+      "Shadow Tag"
+    ]
   },
   {
     "id": 95,
