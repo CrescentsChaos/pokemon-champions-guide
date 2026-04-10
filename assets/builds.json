@@ -1049,14 +1049,14 @@
     {
         "id": "148",
         "pokemon": "Absol",
-        "build": "Absol @ Absolite\nAbility: Magic Bounce\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Pursuit\n- Close Combat\n- Sucker Punch",
+        "build": "Absol @ Absolite\nAbility: Justified\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Pursuit\n- Close Combat\n- Sucker Punch",
         "synergy": [],
         "format": "Singles"
     },
     {
         "id": "149",
         "pokemon": "Absol",
-        "build": "Absol @ Absolite\nAbility: Magic Bounce\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Swords Dance\n- Knock Off\n- Close Combat\n- Sucker Punch",
+        "build": "Absol @ Absolite\nAbility: Justified\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Swords Dance\n- Knock Off\n- Close Combat\n- Sucker Punch",
         "synergy": [],
         "format": "Singles"
     },
