@@ -2277,5 +2277,159 @@
         "build": "Noivern @ Heavy-Duty Boots\nAbility: Frisk\nEVs: 252 HP / 4 SpA / 252 Spe\nTera Type: Steel\nTimid Nature\n- Draco Meteor\n- Super Fang\n- Taunt\n- Roost",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "323",
+        "pokemon": "Decidueye",
+        "build": "Decidueye @ Spell Tag\nAbility: Long Reach\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Swords Dance\n- Spirit Shackle\n- Leaf Blade\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "324",
+        "pokemon": "Decidueye",
+        "build": "Decidueye @ Choice Band\nAbility: Long Reach\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Poltergeist\n- Leaf Blade\n- Shadow Sneak\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "325",
+        "pokemon": "Decidueye",
+        "build": "Decidueye @ Heavy-Duty Boots\nAbility: Overgrow\nEVs: 252 HP / 80 Def / 176 Spe\nTera Type: Fairy\nBold Nature\n- Defog\n- Roost\n- Giga Drain\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "326",
+        "pokemon": "Talonflame",
+        "build": "Talonflame  \nAbility: Gale Wings  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Acrobatics  \n- Flare Blitz  \n- Tailwind  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "327",
+        "pokemon": "Floette-Eternal",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Calm Mind  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "328",
+        "pokemon": "Aegislash",
+        "build": "Aegislash @ Spell Tag  \nAbility: Stance Change  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Poltergeist  \n- Shadow Sneak  \n- Iron Head  \n- King's Shield",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "329",
+        "pokemon": "Rotom-Wash",
+        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "330",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Soft Sand  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Earthquake  \n- Stomping Tantrum  \n- Stone Edge  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "331",
+        "pokemon": "Decidueye-Hisui",
+        "build": "Decidueye-Hisui @ Choice Scarf\nAbility: Scrappy\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Triple Arrows\n- U-turn\n- Leaf Blade\n- Brave Bird",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "332",
+        "pokemon": "Decidueye-Hisui",
+        "build": "Decidueye-Hisui @ Spell Tag\nAbility: Scrappy\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Swords Dance\n- Triple Arrows\n- Shadow Claw\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "333",
+        "pokemon": "Decidueye-Hisui",
+        "build": "Decidueye-Hisui @ Heavy-Duty Boots\nAbility: Scrappy\nEVs: 248 HP / 252 Def / 8 SpD\nTera Type: Steel\nImpish Nature\n- Defog\n- Roost\n- Triple Arrows\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "334",
+        "pokemon": "Primarina",
+        "build": "Primarina @ Assault Vest\nAbility: Torrent\nEVs: 80 HP / 252 SpA / 176 Spe\nTera Type: Poison\nModest Nature\n- Moonblast\n- Psychic Noise\n- Surf\n- Flip Turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "335",
+        "pokemon": "Primarina",
+        "build": "Primarina @ Leftovers\nAbility: Torrent\nEVs: 80 HP / 252 SpA / 176 Spe\nIVs: 0 Atk\nTera Type: Steel\nModest Nature\n- Calm Mind\n- Surf\n- Moonblast\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "336",
+        "pokemon": "Primarina",
+        "build": "Primarina @ Leftovers\nAbility: Liquid Voice\nEVs: 252 HP / 248 Def / 8 SpD\nIVs: 0 Atk\nTera Type: Steel\nBold Nature\n- Calm Mind\n- Psychic Noise\n- Draining Kiss\n- Substitute",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "337",
+        "pokemon": "Primarina",
+        "build": "Primarina @ Throat Spray\nLevel: 50\nAbility: Liquid Voice\nEVs: 236 HP / 68 Def / 108 SpA / 12 SpD / 84 Spe\nIVs: 0 Atk\nTera Type: Poison\nModest Nature\n- Hyper Voice\n- Moonblast\n- Haze\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "338",
+        "pokemon": "Toucannon",
+        "build": "Toucannon @ Life Orb\nAbility: Skill Link\nEVs: 252 Atk / 4 Def / 252 Spe\nIVs: 29 HP\nAdamant Nature\n- Brave Bird\n- Bullet Seed\n- Knock Off\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "339",
+        "pokemon": "Toucannon",
+        "build": "Toucannon @ Life Orb\nAbility: Skill Link\nEVs: 4 Atk / 252 SpA / 252 Spe\nRash Nature\n- Boomburst\n- Brave Bird\n- Bullet Seed\n- Overheat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "340",
+        "pokemon": "Crabominable",
+        "build": "Crabominable @ Assault Vest\nAbility: Iron Fist\nEVs: 252 HP / 4 Atk / 252 SpD\nAdamant Nature\n- Drain Punch\n- Ice Hammer\n- Earthquake\n- Thunder Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "341",
+        "pokemon": "Crabominable",
+        "build": "Crabominable @ Leftovers\nAbility: Iron Fist\nEVs: 252 HP / 196 SpD / 60 Spe\nCareful Nature\n- Substitute\n- Toxic\n- Drain Punch\n- Ice Hammer",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "342",
+        "pokemon": "Crabominable",
+        "build": "Crabominable @ Life Orb\nAbility: Iron Fist\nEVs: 252 HP / 252 Atk / 4 Def\nIVs: 0 Spe\nBrave Nature\n- Ice Hammer\n- Close Combat\n- Earthquake\n- Thunder Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "343",
+        "pokemon": "Crabominable",
+        "build": "Crabominable @ Choice Band\nAbility: Iron Fist\nEVs: 252 HP / 252 Atk / 4 SpD\nTera Type: Ice\nAdamant Nature\n- Ice Hammer\n- Close Combat\n- Earthquake\n- Knock Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "344",
+        "pokemon": "Crabominable",
+        "build": "Crabominable @ Leftovers\nAbility: Iron Fist\nEVs: 252 HP / 252 Atk / 4 SpD\nTera Type: Water\nAdamant Nature\n- Bulk Up\n- Ice Hammer\n- Drain Punch\n- Earthquake",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
