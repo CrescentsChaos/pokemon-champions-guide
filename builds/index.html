@@ -830,14 +830,14 @@
                 if (hasMove(['follow me', 'rage powder', 'ally switch'])) allRoles.add('Redirection');
                 if (hasMove(['parting shot', 'memento', 'light screen', 'reflect', 'aurora veil', 'snarl', 'breaking swipe', 'struggle bug']) || ['intimidate', 'vessel of ruin'].includes(ab)) allRoles.add('Damage Mitigation');
                 if (hasMove(['trick room'])) allRoles.add('Trick Room Setter');
-                if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) allRoles.add('Speed Control');
-                if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn', "teleport"])) allRoles.add('Pivot');
+                if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot', 'toxic thread', 'bulldoze', 'glaciate', 'low sweep', 'nuzzle', 'glare', 'thunder wave', 'scary face', 'cotton spore'])) allRoles.add('Speed Control');
+                if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn', "teleport", 'shed tail', 'baton pass'])) allRoles.add('Pivot');
                 if (hasMove(['reflect', 'light screen', 'aurora veil', 'safeguard'])) allRoles.add('Screener');
                 if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web', 'ceaseless edge', 'stone axe']) || ['toxic debris'].includes(ab)) allRoles.add('Hazard Setter');
-                if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) allRoles.add('Hazard Control');
+                if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change', 'tidy up']) || ['magic bounce'].includes(ab)) allRoles.add('Hazard Control');
                 if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense', 'focus energy'])) allRoles.add('Setup Sweeper');
                 if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
-                if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'pollen puff'])) allRoles.add('Cleric/Healer');
+                if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'pollen puff', 'heal pulse', 'floral healing'])) allRoles.add('Cleric/Healer');
                 if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
                 if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sun', 'rain', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
                 if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
