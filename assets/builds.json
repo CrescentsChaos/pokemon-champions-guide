@@ -508,13 +508,6 @@
         "format": "Singles"
     },
     {
-        "id": "70",
-        "pokemon": "Kangaskhan",
-        "build": "Kangaskhan  @ Kangaskhanite Ability: Scrappy EVs: 252 Atk / 4 Def / 252 Spe Tera Type: Normal Jolly Nature - Fake Out - Return - Sucker Punch - Power-Up Punch",
-        "synergy": [],
-        "format": "Doubles"
-    },
-    {
         "id": "72",
         "pokemon": "Starmie",
         "build": "Starmie @ Life Orb\nAbility: Analytic\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Hydro Pump\n- Ice Beam\n- Thunderbolt\n- Rapid Spin",
@@ -2440,7 +2433,7 @@
         "format": "Doubles"
     },
     {
-        "id": "346",
+        "id": "70",
         "pokemon": "Chesnaught",
         "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 4 Def / 252 SpD / 4 Spe  \nImpish Nature  \n- Body Press  \n- Knock Off  \n- Iron Defense  \n- Spiky Shield",
         "synergy": [],
