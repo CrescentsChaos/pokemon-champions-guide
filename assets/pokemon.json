@@ -11613,6 +11613,35 @@
     "Total_Stats": 680
   },
   {
+    "id": 384,
+    "Name": "Rayquaza-Mega",
+    "Height(m)": 10.8,
+    "Weight{kg}": 392,
+    "HP": 105,
+    "Attack": 180,
+    "Defense": 100,
+    "Sp.Atk": 180,
+    "Sp.Def": 100,
+    "Speed": 115,
+    "Type_1": "Dragon",
+    "Type_2": "Flying",
+    "Is_Legendary": 1,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Undiscovered",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 0,
+    "Is_Baby": 0,
+    "Egg_Cycles": 120,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 780,
+    "Ability": [
+      "Delta Stream"
+    ]
+  },
+  {
     "id": 385,
     "Name": "Jirachi",
     "Height(m)": 0.3,
@@ -11975,6 +12004,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 485
+  },
+  {
+    "id": 398,
+    "Name": "Staraptor-Mega",
+    "Height(m)": 1.2,
+    "Weight{kg}": 24.9,
+    "HP": 85,
+    "Attack": 140,
+    "Defense": 100,
+    "Sp.Atk": 60,
+    "Sp.Def": 90,
+    "Speed": 110,
+    "Type_1": "Fighting",
+    "Type_2": "Flying",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Flying",
+    "Egg_Group_2": "",
+    "Generation": "Gen 4",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 15,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 585,
+    "Ability": [
+      "Defiant"
+    ]
   },
   {
     "id": 399,
