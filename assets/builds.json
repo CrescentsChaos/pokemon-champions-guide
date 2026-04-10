@@ -496,7 +496,7 @@
     {
         "id": "68",
         "pokemon": "Gengar",
-        "build": "Gengar @ Gengarite\nAbility: Cursed Body\nEVs: 252 SpA / 4 SpD / 252 Spe\nTimid Nature\n- Shadow Ball\n- Sludge Wave\n- Icy Wind\n- Thunder",
+        "build": "Gengar @ Gengarite\nAbility: Cursed Body\nEVs: 252 SpA / 68 Def / 8 SpD / 180 Spe\nTimid Nature\n- Shadow Ball\n- Sludge Wave\n- Icy Wind\n- Thunder",
         "synergy": [],
         "format": "Singles"
     },
@@ -1805,7 +1805,7 @@
     {
         "id": "258",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 248 HP / 80 Def / 8 SpA / 184 SpD / 8 Spe  \nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
         "synergy": [],
         "format": "Doubles"
     },
