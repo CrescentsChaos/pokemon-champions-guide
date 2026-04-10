@@ -890,7 +890,8 @@
         </div>
     </div>
 
-    <script src="../js/main.js" defer></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/utils.js"></script>
     <script>
         // Data & State
         let allPokemon = [];
@@ -2313,7 +2314,8 @@
                     ctx.textAlign = 'right';
                     ctx.font = '800 9px Inter, sans-serif';
                     ctx.fillStyle = dbRef.Name && dbRef.Name.includes('-Mega') ? '#ff4d4d' : 'rgba(255,255,255,0.6)';
-                    const abilityText = (dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || 'No Ability');
+                    const dbAbilities = getPokemonAbilities(dbRef);
+                    const abilityText = (dbRef.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'No Ability';
                     drawTextTruncated(abilityText.toUpperCase(), cx + cardW - 14, footY + 12, cardW / 2 - 10, '800 9px Inter, sans-serif', ctx.fillStyle);
                     ctx.textAlign = 'left';
                 }
@@ -2450,7 +2452,8 @@
                 const megaAbility = (p.megaAbility || '').toLowerCase(); // If we store it
 
                 // Use effective ability for this specific form
-                const activeAbility = db.Name.includes('-Mega') ? (p.megaAbility || db.Ability_1) : (p.ability || db.Ability_1);
+                const dbAbilities = getPokemonAbilities(db);
+                const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
                 const ab = activeAbility.toLowerCase();
 
                 // Offense

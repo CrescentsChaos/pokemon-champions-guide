@@ -510,6 +510,7 @@
     <div id="toast" class="toast">Build Paste Copied!</div>
 
     <script src="../js/main.js"></script>
+    <script src="../js/utils.js"></script>
     <script>
         let allPokemon = [];
         let allBuilds = [];
@@ -741,7 +742,8 @@
                 const hasMove = (list) => list.some(m => moves.includes(m));
                 
                 // Effective ability for this form
-                const activeAbility = db.Name.includes('-Mega') ? (p.megaAbility || db.Ability_1) : (p.ability || db.Ability_1);
+                const dbAbilities = getPokemonAbilities(db);
+                const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
                 const ab = activeAbility.toLowerCase();
 
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');

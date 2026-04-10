@@ -178,7 +178,8 @@ function loadPokemon(id, name) {
         spa: parseInt(data['Sp.Atk']), spd: parseInt(data['Sp.Def']), spe: parseInt(data.Speed)
     };
     
-    pk.ability = data.Ability_1 || 'None';
+    const dbAbilities = getPokemonAbilities(data);
+    pk.ability = dbAbilities[0] || 'None';
     
     const pStr = id === 1 ? 'p1' : 'p2';
     document.getElementById(`${pStr}-search`).value = name;
@@ -202,7 +203,7 @@ function populatePokemonUI(pk) {
 
     const pkData = pokemonDB.find(x => x.Name === pk.name);
     if (pkData) {
-        const abilities = [pkData.Ability_1, pkData.Ability_2, pkData.Ability_Hidden].filter(x => x && x !== 'None');
+        const abilities = getPokemonAbilities(pkData);
         document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
     }
     

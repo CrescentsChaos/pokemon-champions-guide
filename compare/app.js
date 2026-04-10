@@ -160,7 +160,7 @@ function selectPokemon(num, species) {
     // Ability datalist
     const abList = document.getElementById(`p${num}-abilities-list`);
     abList.innerHTML = '';
-    const abilities = [pd.Ability_1, pd.Ability_2, pd.Hidden_Ability].filter(x => x && x !== '' && x !== 'None');
+    const abilities = getPokemonAbilities(pd);
     abilities.forEach(ab => {
         const opt = document.createElement('option');
         opt.value = ab;
