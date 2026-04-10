@@ -1399,19 +1399,32 @@
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
         }
 
+        let megaToggleState = 'base';
         setInterval(() => {
+            megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
+            
+            // Swap Sprites
             document.querySelectorAll('img.mega-toggle').forEach(img => {
                 if (img.dataset.fallback === 'true') {
                     img.classList.remove('mega-toggle');
                     return;
                 }
-                if (img.dataset.currentSrc !== 'mega') {
-                    img.src = img.dataset.mega;
-                    img.dataset.currentSrc = 'mega';
-                } else {
-                    img.src = img.dataset.base;
-                    img.dataset.currentSrc = 'base';
-                }
+                img.src = megaToggleState === 'mega' ? img.dataset.mega : img.dataset.base;
+                img.dataset.currentSrc = megaToggleState;
+            });
+
+            // Swap Ability in Main Editor
+            const abilityIn = document.getElementById('ability-input');
+            if (abilityIn && abilityIn.dataset.megaVal) {
+                abilityIn.value = megaToggleState === 'mega' ? abilityIn.dataset.megaVal : abilityIn.dataset.baseVal;
+                abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
+            }
+
+            // Swap Stats in Main Editor
+            document.querySelectorAll('[data-mega-val]').forEach(el => {
+                const val = megaToggleState === 'mega' ? el.dataset.megaVal : el.dataset.baseVal;
+                if (el.tagName === 'INPUT') el.value = val;
+                else el.textContent = val;
             });
         }, 3000);
 
@@ -1460,21 +1473,30 @@
             return dbRef;
         }
 
-        function syncUI() {
-            const p = team[currentSlot];
-            const dbRef = getEffectivePokemonData(p, allPokemon) || {
-                HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0
+            const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+                HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Ability: []
             };
+            const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
 
             speciesIn.value = p.species || '';
             document.getElementById('nickname-input').value = p.nickname || '';
             document.getElementById('item-input').value = p.item || '';
-            const effectiveAbility = (dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || '');
-            document.getElementById('ability-input').value = effectiveAbility;
-            if (dbRef.Name && dbRef.Name.includes('-Mega')) {
-                document.getElementById('ability-input').style.color = 'var(--primary-red)';
+            
+            const abilityIn = document.getElementById('ability-input');
+            const baseAbility = (dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || '');
+            const megaAbility = (dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : baseAbility;
+            
+            if (dbMega !== dbBase) {
+                abilityIn.dataset.baseVal = baseAbility;
+                abilityIn.dataset.megaVal = megaAbility;
+                // Set initial value based on current cycle
+                abilityIn.value = megaToggleState === 'mega' ? megaAbility : baseAbility;
+                abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
             } else {
-                document.getElementById('ability-input').style.color = 'white';
+                delete abilityIn.dataset.baseVal;
+                delete abilityIn.dataset.megaVal;
+                abilityIn.value = baseAbility;
+                abilityIn.style.color = 'white';
             }
             document.getElementById('tera-input').value = p.tera || '';
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
@@ -1520,17 +1542,37 @@
             const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
             let totalEVs = 0;
             Object.entries(keys).forEach(([key, dbKey]) => {
-                const base = dbRef[dbKey];
-                document.getElementById(`base-${key}`).textContent = base || '--';
+                const baseVal = dbBase[dbKey];
+                const megaVal = dbMega[dbKey];
                 const ev = p.evs[key];
                 totalEVs += ev;
+                
+                const baseStat = calculateStat(baseVal, p.ivs[key], ev, p.level, p.nature, key);
+                const megaStat = calculateStat(megaVal, p.ivs[key], ev, p.level, p.nature, key);
+
+                const baseEl = document.getElementById(`base-${key}`);
+                const actEl = document.getElementById(`act-${key}`);
+
+                if (dbMega !== dbBase) {
+                    baseEl.dataset.baseVal = baseVal;
+                    baseEl.dataset.megaVal = megaVal;
+                    actEl.dataset.baseVal = baseStat;
+                    actEl.dataset.megaVal = megaStat;
+                    
+                    baseEl.textContent = megaToggleState === 'mega' ? megaVal : baseVal;
+                    actEl.textContent = megaToggleState === 'mega' ? megaStat : baseStat;
+                } else {
+                    delete baseEl.dataset.baseVal;
+                    delete baseEl.dataset.megaVal;
+                    delete actEl.dataset.baseVal;
+                    delete actEl.dataset.megaVal;
+                    baseEl.textContent = baseVal || '--';
+                    actEl.textContent = baseStat;
+                }
+
                 document.querySelector(`.ev-slider[data-stat="${key}"]`).value = ev;
                 document.querySelector(`.ev-input[data-stat="${key}"]`).value = ev;
                 document.getElementById(`fill-${key}`).style.width = (ev / 252 * 100) + '%';
-
-                const act = calculateStat(base, p.ivs[key], ev, p.level, p.nature, key);
-                const actEl = document.getElementById(`act-${key}`);
-                actEl.textContent = act;
 
                 // Stat Color highlighting for nature
                 const nature = natureMap[p.nature] || {};

@@ -1372,10 +1372,18 @@
         function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
             card.className = 'pokemon-card-premium fade-in';
-            const t1 = (dbRef?.Type_1 || 'Normal').toLowerCase();
-            const t2 = dbRef?.Type_2?.toLowerCase();
+            const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+                HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Type_1: 'Normal', Type_2: null, Ability: []
+            };
+            const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
+            const isMegaActive = dbMega !== dbBase;
 
-            const roles = detectRole(p, dbRef);
+            const t1Base = (dbBase.Type_1 || 'Normal').toLowerCase();
+            const t2Base = dbBase.Type_2?.toLowerCase();
+            const t1Mega = (dbMega.Type_1 || 'Normal').toLowerCase();
+            const t2Mega = dbMega.Type_2?.toLowerCase();
+
+            const roles = detectRole(p, dbMega); // Keep roles as is for simplicity, or we could toggle them too? Let's stick to core request.
             const rolesHtml = roles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('');
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -1384,15 +1392,29 @@
             const statKeys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
 
             const statsHtml = statsArr.map((s, idx) => {
-                const base = dbRef ? (parseInt(dbRef[statKeys[s]]) || 0) : 0;
-                const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                const baseValue = parseInt(dbBase[statKeys[s]]) || 0;
+                const megaValue = parseInt(dbMega[statKeys[s]]) || 0;
+                
+                const valBase = calculateStat(baseValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                const valMega = calculateStat(megaValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                
                 const nature = natureMap[p.nature] || { pos: '', neg: '' };
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
+                
                 return `
                     <div style="display:flex; align-items:center; font-size:0.65rem; margin-bottom:4px;">
                         <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
-                        <div class="stat-bar-mini"><div class="stat-fill-mini" style="width:${Math.min(100, (val / 250) * 100)}%; background:${statColors[idx]};"></div></div>
-                        <span style="width:30px; text-align:right; font-weight:900; color:${color}">${val}</span>
+                        <div class="stat-bar-mini">
+                            <div class="stat-fill-mini ${isMegaActive ? 'mega-data-fill' : ''}" 
+                                 style="width:${Math.min(100, (valBase / 250) * 100)}%; background:${statColors[idx]};"
+                                 ${isMegaActive ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valMega / 250) * 100)}%"` : ''}>
+                            </div>
+                        </div>
+                        <span class="${isMegaActive ? 'mega-data-text' : ''}" 
+                              style="width:30px; text-align:right; font-weight:900; color:${color}"
+                              ${isMegaActive ? `data-base-val="${valBase}" data-mega-val="${valMega}"` : ''}>
+                            ${valBase}
+                        </span>
                     </div>
                 `;
             }).join('');
@@ -1429,8 +1451,12 @@
                             <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
-                            <span class="type-tag type-${t1}" style="font-size:0.55rem; padding:1px 5px;">${t1}</span>
-                            ${t2 ? `<span class="type-tag type-${t2}" style="font-size:0.55rem; padding:1px 5px;">${t2}</span>` : ''}
+                            <span class="type-tag type-${t1Base} ${isMegaActive ? 'mega-toggle-type1' : ''}" 
+                                  ${isMegaActive ? `data-base-type="${t1Base}" data-mega-type="${t1Mega}"` : ''} 
+                                  style="font-size:0.55rem; padding:1px 5px;">${t1Base}</span>
+                            <span class="type-tag type-${t2Base || 'none'} ${isMegaActive ? 'mega-toggle-type2' : ''}" 
+                                  ${isMegaActive ? `data-base-type="${t2Base || ''}" data-mega-type="${t2Mega || ''}"` : ''} 
+                                  style="font-size:0.55rem; padding:1px 5px; display: ${t2Base ? 'inline-block' : 'none'};">${t2Base || ''}</span>
                         </div>
                         <div class="roles-row">${rolesHtml}</div>
                     </div>
@@ -1451,7 +1477,11 @@
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
                         <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
-                        ABILITY: <span style="color: ${dbRef?.Name?.includes('-Mega') ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.8)'}">${((dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}</span>
+                        ABILITY: <span class="${isMegaActive ? 'mega-ability-text' : ''}" 
+                                       ${isMegaActive ? `data-base-ability="${(dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')}" data-mega-ability="${(dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : (p.ability || 'UNKNOWN')}"` : ''} 
+                                       style="color: rgba(255, 255, 255, 0.8)">
+                            ${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}
+                        </span>
                     </div>
                     <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
@@ -2098,6 +2128,50 @@
         document.getElementById('type-filter').addEventListener('change', () => renderBuilds());
         document.getElementById('role-filter').addEventListener('change', () => renderBuilds());
         document.getElementById('format-filter').addEventListener('change', () => renderBuilds());
+        let megaToggleState = 'base';
+        setInterval(() => {
+            megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
+            
+            // Swap Sprites
+            document.querySelectorAll('img.mega-toggle').forEach(img => {
+                if (img.dataset.fallback === 'true') {
+                    img.classList.remove('mega-toggle');
+                    return;
+                }
+                img.src = megaToggleState === 'mega' ? img.dataset.mega : img.dataset.base;
+                img.dataset.currentSrc = megaToggleState;
+            });
+
+            // Swap Ability Text
+            document.querySelectorAll('.mega-ability-text').forEach(el => {
+                el.innerText = (megaToggleState === 'mega' ? el.dataset.megaAbility : el.dataset.baseAbility).toUpperCase();
+                el.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.8)';
+            });
+
+            // Swap Types
+            document.querySelectorAll('.mega-toggle-type1, .mega-toggle-type2').forEach(el => {
+                const type = megaToggleState === 'mega' ? el.dataset.megaType : el.dataset.baseType;
+                if (!type) {
+                    el.style.display = 'none';
+                } else {
+                    el.style.display = 'inline-block';
+                    el.innerText = type;
+                    // Update class for color
+                    el.className = `type-tag type-${type.toLowerCase()} ${el.classList.contains('mega-toggle-type1') ? 'mega-toggle-type1' : 'mega-toggle-type2'}`;
+                }
+            });
+
+            // Swap Stat Values
+            document.querySelectorAll('.mega-data-text').forEach(el => {
+                el.textContent = megaToggleState === 'mega' ? el.dataset.megaVal : el.dataset.baseVal;
+            });
+
+            // Swap Stat Bars
+            document.querySelectorAll('.mega-data-fill').forEach(el => {
+                el.style.width = megaToggleState === 'mega' ? el.dataset.megaWidth : el.dataset.baseWidth;
+            });
+        }, 3000);
+
         loadData();
     </script>
 </body>
