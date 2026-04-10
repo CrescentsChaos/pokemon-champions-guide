@@ -2484,9 +2484,37 @@
         "format": "Doubles"
     },
     {
+        "id": "120",
+        "pokemon": "Scovillain",
+        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nTera Type: Grass  \nEVs: 248 HP / 164 Def / 4 SpA / 92 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Flamethrower  \n- Rage Powder  \n- Giga Drain  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "121",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Lum Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Dragon Claw  \n- Stomping Tantrum  \n- Rock Slide  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
         "id": "354",
         "pokemon": "Ursaluna-Bloodmoon",
         "build": "Ursaluna-Bloodmoon @ Life Orb  \nAbility: Mind's Eye  \nTera Type: Normal  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Hyper Voice  \n- Blood Moon  \n- Earth Power",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "355",
+        "pokemon": "Primarina",
+        "build": "Primarina @ Leftovers  \nAbility: Liquid Voice  \nLevel: 50  \nTera Type: Water  \nEVs: 252 HP / 52 Def / 196 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Moonblast  \n- Protect  \n- Calm Mind",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "356",
+        "pokemon": "Kingambit",
+        "build": "Kingambit @ Black Glasses  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 244 Atk / 4 SpD / 4 Spe  \nAdamant Nature  \n- Kowtow Cleave  \n- Sucker Punch  \n- Protect  \n- Swords Dance",
         "synergy": [],
         "format": "Doubles"
     }
