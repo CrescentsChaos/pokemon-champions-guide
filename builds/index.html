@@ -724,7 +724,7 @@
             const dbs = Array.isArray(dbList) ? dbList : [dbList];
 
             dbs.forEach(db => {
-                if (!db) return;
+                if (!db || !db.Name) return;
                 const stats = {
                     hp: calculateStat(db.HP || 0, p.ivs.hp, p.evs.hp, p.level, p.nature, 'hp'),
                     atk: calculateStat(db.Attack || 0, p.ivs.atk, p.evs.atk, p.level, p.nature, 'atk'),

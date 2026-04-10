@@ -7624,6 +7624,35 @@
     "Total_Stats": 530
   },
   {
+    "id": 254,
+    "Name": "Sceptile-Mega",
+    "Height(m)": 1.7,
+    "Weight{kg}": 52.2,
+    "HP": 70,
+    "Attack": 110,
+    "Defense": 75,
+    "Sp.Atk": 145,
+    "Sp.Def": 85,
+    "Speed": 145,
+    "Type_1": "Grass",
+    "Type_2": "Dragon",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Monster",
+    "Egg_Group_2": "Dragon",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 630,
+    "Ability": [
+      "Lightning Rod"
+    ]
+  },
+  {
     "id": 255,
     "Name": "Torchic",
     "Height(m)": 0.4,
@@ -7702,6 +7731,35 @@
     "Total_Stats": 530
   },
   {
+    "id": 257,
+    "Name": "Blaziken-Mega",
+    "Height(m)": 1.9,
+    "Weight{kg}": 52,
+    "HP": 80,
+    "Attack": 160,
+    "Defense": 80,
+    "Sp.Atk": 130,
+    "Sp.Def": 80,
+    "Speed": 100,
+    "Type_1": "Fire",
+    "Type_2": "Fighting",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 630,
+    "Ability": [
+      "Speed Boost"
+    ]
+  },
+  {
     "id": 258,
     "Name": "Mudkip",
     "Height(m)": 0.4,
@@ -7778,6 +7836,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 535
+  },
+  {
+    "id": 260,
+    "Name": "Swampert-Mega",
+    "Height(m)": 1.5,
+    "Weight{kg}": 81.9,
+    "HP": 100,
+    "Attack": 150,
+    "Defense": 110,
+    "Sp.Atk": 95,
+    "Sp.Def": 110,
+    "Speed": 70,
+    "Type_1": "Water",
+    "Type_2": "Ground",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Monster",
+    "Egg_Group_2": "Water1",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 635,
+    "Ability": [
+      "Swift Swim"
+    ]
   },
   {
     "id": 261,
@@ -8350,6 +8437,35 @@
     "Past_Type": "Psychic",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 518
+  },
+  {
+    "id": 282,
+    "Name": "Gardevoir-Mega",
+    "Height(m)": 1.6,
+    "Weight{kg}": 48.4,
+    "HP": 68,
+    "Attack": 85,
+    "Defense": 65,
+    "Sp.Atk": 165,
+    "Sp.Def": 135,
+    "Speed": 100,
+    "Type_1": "Psychic",
+    "Type_2": "Fairy",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Humanshape",
+    "Egg_Group_2": "Indeterminate",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "Psychic",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 618,
+    "Ability": [
+      "Pixilate"
+    ]
   },
   {
     "id": 283,
