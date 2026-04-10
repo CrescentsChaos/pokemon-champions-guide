@@ -4,190 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare Builds | Pokemon Champions Guide</title>
+    <meta name="description" content="Compare two competitive Pokemon builds side-by-side. Import Pokepastes, edit EVs and IVs, and analyze stat differences instantly.">
     <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="compare-page">
-    <script src="../js/main.js"></script> <!-- Injects the nav header automatically -->
 
-    <main class="container" style="margin-top: 2rem;">
-        <div id="compare-banner" class="glass fade-in" style="text-align: center; margin-bottom: 2rem;">
-            <div class="banner-content">
-                <h1 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 0;">COMPARE BUILDS</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Import two Pokepastes to compare their stats, speeds, and bulk side-by-side.</p>
-            </div>
+    <script src="../js/main.js"></script>
+
+    <main class="container" style="padding-top: 7rem; padding-bottom: 6rem;">
+
+        <!-- Page Header -->
+        <div id="compare-banner" class="glass fade-in">
+            <h1>COMPARE <span style="color: var(--primary-red);">BUILDS</span></h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">
+                Import two Pokepastes to compare stats, speed tiers, and bulk side-by-side.
+            </p>
         </div>
 
-        <div class="calc-grid compare-grid fade-in">
-            <!-- Pokemon 1 (Build A) -->
+        <!-- Main 3-Column Grid -->
+        <div class="calc-grid fade-in">
+
+            <!-- ============ BUILD A ============ -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem; padding-bottom: 1rem;">
-                    <h2 style="margin: 0; color: var(--primary-red); font-size: 1.5rem;">BUILD A</h2>
-                    <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem;">
+                    <h2 style="margin:0; color:var(--primary-red); font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD A</h2>
+                    <button class="import-btn" onclick="openImportModal(1)">📥 Import Paste</button>
                 </div>
-                <div class="panel-header">
-                    <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
+
+                <!-- Search -->
+                <div style="position:relative; margin-bottom:1rem;">
+                    <input type="text" id="p1-search" placeholder="Search Pokémon..." class="search-input">
                     <div class="search-results" id="p1-search-results"></div>
                 </div>
-                
-                <div class="panel-body">
-                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-                         <img src="" id="p1-sprite" style="height: 120px; object-fit: contain;" onerror="handleSpriteError(this, document.getElementById('p1-search').value, false, document.getElementById('p1-item').value)">
-                    </div>
 
-                    <div class="config-row" style="justify-content: center; margin-bottom: 1rem;">
-                        <input type="text" id="p1-type1" class="type-input" readonly placeholder="Type 1" style="width: 30%; text-align: center;">
-                        <input type="text" id="p1-type2" class="type-input" readonly placeholder="Type 2" style="width: 30%; text-align: center;">
-                    </div>
+                <!-- Sprite -->
+                <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
+                    <img src="" id="p1-sprite" alt="Build A Sprite"
+                         style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(255,62,62,0.25));"
+                         onerror="handleSpriteError(this, p1 && p1.species || '', false, p1 && p1.item || '')">
+                </div>
 
-                    <div class="level-row">
-                        <span>Level</span>
-                        <input type="number" id="p1-level" value="50" min="1" max="100">
-                    </div>
+                <!-- Types -->
+                <div style="display:flex; gap:8px; justify-content:center; margin-bottom:1.2rem;">
+                    <input type="text" id="p1-type1" class="type-input" readonly placeholder="Type 1" style="width:48%; text-align:center;">
+                    <input type="text" id="p1-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
+                </div>
 
-                    <div class="meta-row" style="grid-template-columns: 1fr; gap: 10px;">
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Nature</label>
-                            <select id="p1-nature" style="width: 70%;"></select>
-                        </div>
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Ability</label>
-                            <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose Ability..." style="width: 70%;">
-                            <datalist id="p1-abilities-list"></datalist>
-                        </div>
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Item</label>
-                            <input type="text" id="p1-item" list="items-list" placeholder="Choose Item..." style="width: 70%;">
-                        </div>
+                <!-- Level -->
+                <div class="level-row">
+                    <span>Level</span>
+                    <input type="number" id="p1-level" value="50" min="1" max="100">
+                </div>
+
+                <!-- Meta Fields -->
+                <div class="meta-row">
+                    <div class="select-group">
+                        <label>Nature</label>
+                        <select id="p1-nature" style="flex:1;"></select>
+                    </div>
+                    <div class="select-group">
+                        <label>Ability</label>
+                        <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose..." style="flex:1;">
+                        <datalist id="p1-abilities-list"></datalist>
+                    </div>
+                    <div class="select-group">
+                        <label>Item</label>
+                        <input type="text" id="p1-item" list="items-list" placeholder="Choose..." style="flex:1;">
                     </div>
                 </div>
             </div>
 
-            <!-- Stats Comparison Table (Middle) -->
-            <div class="calc-panel middle-panel" id="stats-panel" style="background: rgba(0,0,0,0.4);">
-                <div class="field-section" style="text-align: center;">
-                    <h3 style="margin-bottom: 1.5rem; letter-spacing: 2px;">STAT COMPARISON</h3>
-                    
-                    <table class="compare-table" style="width: 100%; text-align: center; border-collapse: collapse;">
-                        <thead>
-                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <th style="padding: 10px; width: 40%;">Build A</th>
-                                <th style="padding: 10px; width: 20%; color: var(--text-muted);">Stat</th>
-                                <th style="padding: 10px; width: 40%;">Build B</th>
-                            </tr>
-                        </thead>
-                        <tbody id="compare-stats-body">
-                            <!-- Injected by JS -->
-                        </tbody>
-                    </table>
-                </div>
+            <!-- ============ MIDDLE: STAT COMPARISON ============ -->
+            <div class="middle-panel glass" style="background:rgba(0,0,0,0.35); padding:1.5rem;">
+                <h3 style="text-align:center; font-size:0.8rem; font-weight:900; letter-spacing:2px; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:1.5rem;">STAT COMPARISON</h3>
+
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th style="width:38%;">A</th>
+                            <th style="width:24%; color:rgba(255,255,255,0.3);">Stat</th>
+                            <th style="width:38%;">B</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compare-stats-body">
+                        <!-- Injected by JS -->
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Pokemon 2 (Build B) -->
+            <!-- ============ BUILD B ============ -->
             <div class="calc-panel glass defender-panel" id="p2-panel">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem; padding-bottom: 1rem;">
-                    <h2 style="margin: 0; color: #2196F3; font-size: 1.5rem;">BUILD B</h2>
-                    <button class="import-btn" style="background: rgba(33, 150, 243, 0.2); border-color: rgba(33, 150, 243, 0.4);" onclick="openImportModal(2)">Import Paste</button>
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem;">
+                    <h2 style="margin:0; color:#2196F3; font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD B</h2>
+                    <button class="import-btn" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2)">📥 Import Paste</button>
                 </div>
-                <div class="panel-header">
-                    <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
+
+                <!-- Search -->
+                <div style="position:relative; margin-bottom:1rem;">
+                    <input type="text" id="p2-search" placeholder="Search Pokémon..." class="search-input">
                     <div class="search-results" id="p2-search-results"></div>
                 </div>
-                
-                <div class="panel-body">
-                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-                         <img src="" id="p2-sprite" style="height: 120px; object-fit: contain;" onerror="handleSpriteError(this, document.getElementById('p2-search').value, false, document.getElementById('p2-item').value)">
-                    </div>
 
-                    <div class="config-row" style="justify-content: center; margin-bottom: 1rem;">
-                        <input type="text" id="p2-type1" class="type-input" readonly placeholder="Type 1" style="width: 30%; text-align: center;">
-                        <input type="text" id="p2-type2" class="type-input" readonly placeholder="Type 2" style="width: 30%; text-align: center;">
-                    </div>
+                <!-- Sprite -->
+                <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
+                    <img src="" id="p2-sprite" alt="Build B Sprite"
+                         style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(33,150,243,0.25));"
+                         onerror="handleSpriteError(this, p2 && p2.species || '', false, p2 && p2.item || '')">
+                </div>
 
-                    <div class="level-row">
-                        <span>Level</span>
-                        <input type="number" id="p2-level" value="50" min="1" max="100">
-                    </div>
+                <!-- Types -->
+                <div style="display:flex; gap:8px; justify-content:center; margin-bottom:1.2rem;">
+                    <input type="text" id="p2-type1" class="type-input" readonly placeholder="Type 1" style="width:48%; text-align:center;">
+                    <input type="text" id="p2-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
+                </div>
 
-                    <div class="meta-row" style="grid-template-columns: 1fr; gap: 10px;">
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Nature</label>
-                            <select id="p2-nature" style="width: 70%;"></select>
-                        </div>
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Ability</label>
-                            <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose Ability..." style="width: 70%;">
-                            <datalist id="p2-abilities-list"></datalist>
-                        </div>
-                        <div class="select-group" style="display: flex; align-items: center; justify-content: space-between;">
-                            <label>Item</label>
-                            <input type="text" id="p2-item" list="items-list" placeholder="Choose Item..." style="width: 70%;">
-                        </div>
+                <!-- Level -->
+                <div class="level-row">
+                    <span>Level</span>
+                    <input type="number" id="p2-level" value="50" min="1" max="100">
+                </div>
+
+                <!-- Meta Fields -->
+                <div class="meta-row">
+                    <div class="select-group">
+                        <label>Nature</label>
+                        <select id="p2-nature" style="flex:1;"></select>
+                    </div>
+                    <div class="select-group">
+                        <label>Ability</label>
+                        <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose..." style="flex:1;">
+                        <datalist id="p2-abilities-list"></datalist>
+                    </div>
+                    <div class="select-group">
+                        <label>Item</label>
+                        <input type="text" id="p2-item" list="items-list" placeholder="Choose..." style="flex:1;">
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Editable EV/IV Blocks below main grid -->
-        <div class="calc-grid compare-grid fade-in" style="margin-top: 2rem;">
-            <!-- Build A EVs -->
+
+        <!-- ============ EV / IV EDITORS ============ -->
+        <div class="calc-grid fade-in" style="margin-top:1.5rem; grid-template-columns:1fr 200px 1fr;">
+
+            <!-- Build A EVs/IVs -->
             <div class="calc-panel glass attacker-panel">
-                <h4 style="margin-bottom: 1rem;">Build A - EVs & IVs</h4>
-                <table class="stats-table" style="width: 100%;">
+                <h4 style="margin-bottom:1.2rem; font-size:0.85rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:rgba(255,62,62,0.9);">Build A — EVs &amp; IVs</h4>
+                <table class="stats-table">
                     <thead>
                         <tr>
-                            <th style="padding-bottom: 10px;">Stat</th>
-                            <th style="padding-bottom: 10px;">Base</th>
-                            <th style="padding-bottom: 10px;">EVs</th>
-                            <th style="padding-bottom: 10px;">IVs</th>
+                            <th style="text-align:left;">Stat</th>
+                            <th>Base</th>
+                            <th>EVs</th>
+                            <th>IVs</th>
                         </tr>
                     </thead>
-                    <tbody id="p1-stats-editor">
-                        <!-- Injected -->
-                    </tbody>
+                    <tbody id="p1-stats-editor"></tbody>
                 </table>
             </div>
 
-            <div class="middle-panel" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-                <!-- Could add extra comparison visualizer here -->
+            <!-- Middle spacer with tips -->
+            <div class="middle-panel glass" style="background:rgba(0,0,0,0.25); padding:1.5rem; justify-content:center;">
+                <div style="text-align:center;">
+                    <div style="font-size:1.8rem; margin-bottom:10px;">⚡</div>
+                    <p style="font-size:0.75rem; color:rgba(255,255,255,0.3); font-weight:700; line-height:1.6; text-transform:uppercase; letter-spacing:0.5px;">
+                        Edit EVs &amp; IVs directly to recalculate stats in real time.
+                    </p>
+                </div>
             </div>
 
-            <!-- Build B EVs -->
+            <!-- Build B EVs/IVs -->
             <div class="calc-panel glass defender-panel">
-                <h4 style="margin-bottom: 1rem;">Build B - EVs & IVs</h4>
-                <table class="stats-table" style="width: 100%;">
+                <h4 style="margin-bottom:1.2rem; font-size:0.85rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:rgba(33,150,243,0.9);">Build B — EVs &amp; IVs</h4>
+                <table class="stats-table">
                     <thead>
                         <tr>
-                            <th style="padding-bottom: 10px;">Stat</th>
-                            <th style="padding-bottom: 10px;">Base</th>
-                            <th style="padding-bottom: 10px;">EVs</th>
-                            <th style="padding-bottom: 10px;">IVs</th>
+                            <th style="text-align:left;">Stat</th>
+                            <th>Base</th>
+                            <th>EVs</th>
+                            <th>IVs</th>
                         </tr>
                     </thead>
-                    <tbody id="p2-stats-editor">
-                        <!-- Injected -->
-                    </tbody>
+                    <tbody id="p2-stats-editor"></tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
-    <div id="import-modal" class="modal">
-        <div class="modal-content glass">
-            <h3>Import PokePaste</h3>
-            <p id="import-target-label">Importing for Build A</p>
-            <textarea id="paste-input" placeholder="Paste your Pokemon set here..."></textarea>
+    <!-- ============ IMPORT MODAL ============ -->
+    <div id="import-modal">
+        <div class="modal-content glass" onclick="event.stopPropagation()">
+            <h3>Import PokéPaste</h3>
+            <p id="import-target-label" style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">Importing for Build A</p>
+            <textarea id="paste-input" placeholder="Paste your Pokémon set here, or paste a pokepast.es URL..."></textarea>
             <div class="modal-actions">
-                <button class="field-btn" onclick="closeImportModal()">Cancel</button>
-                <button class="field-btn active" id="confirm-import">Import</button>
+                <button onclick="closeImportModal()">Cancel</button>
+                <button id="confirm-import">Import</button>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast">Calculation Error!</div>
+    <!-- Close modal on backdrop click -->
+    <script>
+        document.getElementById('import-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeImportModal();
+        });
+    </script>
 
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Shared items datalist -->
     <datalist id="items-list"></datalist>
 
     <script src="app.js"></script>
