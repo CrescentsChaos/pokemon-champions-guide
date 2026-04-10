@@ -693,6 +693,26 @@
             });
         }
 
+        function getEffectivePokemonData(p, pokemonList) {
+            if (!p || !p.species) return null;
+            const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let dbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+
+            if (p.item) {
+                const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+                    let suffix = '-Mega';
+                    if (it.endsWith('itex')) suffix = '-Mega-X';
+                    else if (it.endsWith('itey')) suffix = '-Mega-Y';
+
+                    const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);
+                    if (megaDbRef) return megaDbRef;
+                }
+            }
+            return dbRef;
+        }
+
         function detectRole(p, db) {
             const stats = {
                 hp: calculateStat(db?.HP || 0, p.ivs.hp, p.evs.hp, p.level, p.nature, 'hp'),
@@ -1033,8 +1053,7 @@
             Object.keys(TYPE_CHART).forEach(t => resistances[t] = 0);
 
             activeMons.forEach(p => {
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
                 const ability = (p.ability || '').toLowerCase();
 
@@ -1102,8 +1121,7 @@
 
             // --- Famous Archetypes/Cores ---
             const allTypesArr = activeMons.flatMap(p => {
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
                 return [dbRef.Type_1, dbRef.Type_2].filter(x => x);
             });
             const teamTypesStr = allTypesArr.map(t => (t || '').toLowerCase());
@@ -1433,7 +1451,7 @@
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
                         <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
-                        ABILITY: <span style="color: rgba(255, 255, 255, 0.8)">${(p.ability || 'UNKNOWN').toUpperCase()}</span>
+                        ABILITY: <span style="color: ${dbRef?.Name?.includes('-Mega') ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.8)'}">${((dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}</span>
                     </div>
                     <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
                 </div>
@@ -1468,8 +1486,7 @@
             let count = 0;
             const filtered = allBuilds.filter(build => {
                 const p = parsePaste(build.build);
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+                const dbRef = getEffectivePokemonData(p, allPokemon);
                 
                 const t1 = (dbRef?.Type_1 || '').toLowerCase();
                 const t2 = (dbRef?.Type_2 || '').toLowerCase();
@@ -1494,8 +1511,7 @@
 
             toRender.forEach(build => {
                 const p = parsePaste(build.build);
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+                const dbRef = getEffectivePokemonData(p, allPokemon);
                 
                 const wrapper = document.createElement('div');
                 wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;

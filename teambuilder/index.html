@@ -1440,18 +1440,42 @@
             return val;
         }
 
+        function getEffectivePokemonData(p, pokemonList) {
+            if (!p || !p.species) return null;
+            const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let dbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+
+            if (p.item) {
+                const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+                    let suffix = '-Mega';
+                    if (it.endsWith('itex')) suffix = '-Mega-X';
+                    else if (it.endsWith('itey')) suffix = '-Mega-Y';
+
+                    const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);
+                    if (megaDbRef) return megaDbRef;
+                }
+            }
+            return dbRef;
+        }
 
         function syncUI() {
             const p = team[currentSlot];
-            const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {
+            const dbRef = getEffectivePokemonData(p, allPokemon) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0
             };
 
             speciesIn.value = p.species || '';
             document.getElementById('nickname-input').value = p.nickname || '';
             document.getElementById('item-input').value = p.item || '';
-            document.getElementById('ability-input').value = p.ability || '';
+            const effectiveAbility = (dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || '');
+            document.getElementById('ability-input').value = effectiveAbility;
+            if (dbRef.Name && dbRef.Name.includes('-Mega')) {
+                document.getElementById('ability-input').style.color = 'var(--primary-red)';
+            } else {
+                document.getElementById('ability-input').style.color = 'white';
+            }
             document.getElementById('tera-input').value = p.tera || '';
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
             document.getElementById('gender-input').value = p.gender || '';
@@ -2013,11 +2037,7 @@
 
                     const p = slot.pokemon;
                     const { sprite, itemSprite } = sprites[idx];
-                    const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const dbRef = (allPokemon || []).find(x => {
-                        const n = (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                        return n === speciesSearch;
-                    }) || {};
+                    const dbRef = getEffectivePokemonData(p, allPokemon) || {};
 
                     const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
                     const t2 = (dbRef.Type_2 || '').toLowerCase();
@@ -2241,8 +2261,9 @@
                     // Ability (right-aligned)
                     ctx.textAlign = 'right';
                     ctx.font = '800 9px Inter, sans-serif';
-                    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                    drawTextTruncated((p.ability || 'No Ability').toUpperCase(), cx + cardW - 14, footY + 12, cardW / 2 - 10, '800 9px Inter, sans-serif', 'rgba(255,255,255,0.6)');
+                    ctx.fillStyle = dbRef.Name && dbRef.Name.includes('-Mega') ? '#ff4d4d' : 'rgba(255,255,255,0.6)';
+                    const abilityText = (dbRef.Ability && dbRef.Ability.length > 0) ? dbRef.Ability[0] : (p.ability || 'No Ability');
+                    drawTextTruncated(abilityText.toUpperCase(), cx + cardW - 14, footY + 12, cardW / 2 - 10, '800 9px Inter, sans-serif', ctx.fillStyle);
                     ctx.textAlign = 'left';
                 }
 
@@ -2327,7 +2348,7 @@
             types.forEach(t => { offensive[t] = 0; defensive[t] = 0; });
 
             activeMons.forEach((p, idx) => {
-                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
 
                 // --- Offensive Coverage ---
@@ -2457,7 +2478,7 @@
             Object.keys(TYPE_CHART).forEach(t => resistances[t] = 0);
 
             activeMons.forEach(p => {
-                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
                 const ability = (p.ability || '').toLowerCase();
 
@@ -2525,7 +2546,7 @@
 
             // --- Famous Archetypes/Cores ---
             const allTypesArr = activeMons.flatMap(p => {
-                const dbRef = allPokemon.find(x => x.Name.toLowerCase() === p.species.toLowerCase()) || {};
+                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
                 return [dbRef.Type_1, dbRef.Type_2].filter(x => x);
             });
             const teamTypesStr = allTypesArr.map(t => (t || '').toLowerCase());
