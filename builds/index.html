@@ -811,6 +811,9 @@
 
                 // Apply ability stat multipliers for role calculation
                 if (ab === 'huge power' || ab === 'pure power') stats.atk *= 2;
+                if (item === 'choice band') stats.atk *= 1.5;
+                if (item === 'choice specs') stats.spa *= 1.5;
+                if (item === 'choice scarf') stats.spe *= 1.5;
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
