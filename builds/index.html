@@ -814,7 +814,8 @@
                 if (item === 'choice band') stats.atk *= 1.5;
                 if (item === 'choice specs') stats.spa *= 1.5;
                 if (item === 'choice scarf') stats.spe *= 1.5;
-                if (item === 'life orb' || ['sheer force', 'adaptability'].includes(ab)) stats.spe *= 1.3;
+                if (item === 'life orb' || ['sheer force', 'adaptability'].includes(ab)) stats.atk *= 1.3 && stats.spa *= 1.3;
+                if (['flame orb', 'toxic orb'].includes(item) || ['guts'].includes(ab)) stats.atk *= 1.5;
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
