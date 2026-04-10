@@ -844,20 +844,6 @@
         "format": "Singles"
     },
     {
-        "id": "120",
-        "pokemon": "Aggron",
-        "build": "Aggron @ Aggronite\nAbility: Sturdy\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Stealth Rock\n- Heavy Slam\n- Body Press\n- Toxic",
-        "synergy": [],
-        "format": "Singles"
-    },
-    {
-        "id": "121",
-        "pokemon": "Aggron",
-        "build": "Aggron @ Aggronite\nAbility: Sturdy\nEVs: 252 HP / 4 Def / 252 SpD\nCareful Nature\n- Curse\n- Heavy Slam\n- Rest\n- Sleep Talk",
-        "synergy": [],
-        "format": "Singles"
-    },
-    {
         "id": "122",
         "pokemon": "Aggron",
         "build": "Aggron @ Choice Band\nAbility: Rock Head\nEVs: 252 Atk / 4 Def / 252 Spe\nAdamant Nature\n- Head Smash\n- Heavy Slam\n- Aqua Tail\n- Earthquake",
