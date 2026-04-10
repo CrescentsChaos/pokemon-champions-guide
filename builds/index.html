@@ -1693,7 +1693,7 @@
                 const exportBtn = document.getElementById('export-synergy-team');
                 if (exportBtn) {
                     exportBtn.onclick = () => {
-                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => b.build).join('\n\n');
+                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => typeof b.build === 'string' ? b.build : b.build.build).join('\n\n');
                         copyPaste(fullPaste);
                         exportBtn.innerText = 'TEAM COPIED! ✅';
                         setTimeout(() => exportBtn.innerText = 'EXPORT FULL TEAM PASTE 📋', 2000);
