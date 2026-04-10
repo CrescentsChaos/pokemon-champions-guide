@@ -1486,6 +1486,11 @@
             return dbRef;
         }
 
+        function syncUI() {
+            if (currentSlot < 0) return;
+            const p = team[currentSlot];
+            if (!p) return;
+
         const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
             HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Ability: []
         };
@@ -1760,6 +1765,7 @@
             document.getElementById('export-textarea').value = fullPaste.trim();
             document.getElementById('export-overlay').style.display = 'flex';
         };
+        } // end syncUI
 
         window.copyExport = async () => {
             const area = document.getElementById('export-textarea');
@@ -2315,9 +2321,9 @@
                     // Ability (right-aligned)
                     ctx.textAlign = 'right';
                     ctx.font = '800 9px Inter, sans-serif';
-                    ctx.fillStyle = dbRef.Name && dbRef.Name.includes('-Mega') ? '#ff4d4d' : 'rgba(255,255,255,0.6)';
-                    const dbAbilities = getPokemonAbilities(dbRef);
-                    const abilityText = (dbRef.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'No Ability';
+                    const isMegaRef = dbRef.Name && dbRef.Name.includes('-Mega');
+                    ctx.fillStyle = isMegaRef ? '#ff4d4d' : 'rgba(255,255,255,0.6)';
+                    const abilityText = (p.ability) || 'No Ability';
                     drawTextTruncated(abilityText.toUpperCase(), cx + cardW - 14, footY + 12, cardW / 2 - 10, '800 9px Inter, sans-serif', ctx.fillStyle);
                     ctx.textAlign = 'left';
                 }
