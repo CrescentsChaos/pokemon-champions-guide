@@ -3942,6 +3942,35 @@
     "Total_Stats": 540
   },
   {
+    "id": 130,
+    "Name": "Gyarados-Mega",
+    "Height(m)": 6.5,
+    "Weight{kg}": 235,
+    "HP": 95,
+    "Attack": 155,
+    "Defense": 109,
+    "Sp.Atk": 70,
+    "Sp.Def": 130,
+    "Speed": 81,
+    "Type_1": "Water",
+    "Type_2": "Dark",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Water2",
+    "Egg_Group_2": "Dragon",
+    "Generation": "Gen 1",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 5,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 540,
+    "Ability": [
+      "Mold Breaker"
+    ]
+  },
+  {
     "id": 131,
     "Name": "Lapras",
     "Height(m)": 2.5,

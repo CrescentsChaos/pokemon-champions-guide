@@ -693,10 +693,15 @@
             });
         }
 
-        function getEffectivePokemonData(p, pokemonList) {
+        function getBasePokemonData(p, pokemonList) {
             if (!p || !p.species) return null;
-            const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            let dbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+            const search = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
+        }
+
+        function getEffectivePokemonData(p, pokemonList) {
+            const dbRef = getBasePokemonData(p, pokemonList);
+            if (!dbRef) return null;
 
             if (p.item) {
                 const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -713,50 +718,60 @@
             return dbRef;
         }
 
-        function detectRole(p, db) {
-            const stats = {
-                hp: calculateStat(db?.HP || 0, p.ivs.hp, p.evs.hp, p.level, p.nature, 'hp'),
-                atk: calculateStat(db?.Attack || 0, p.ivs.atk, p.evs.atk, p.level, p.nature, 'atk'),
-                def: calculateStat(db?.Defense || 0, p.ivs.def, p.evs.def, p.level, p.nature, 'def'),
-                spa: calculateStat(db?.['Sp.Atk'] || 0, p.ivs.spa, p.evs.spa, p.level, p.nature, 'spa'),
-                spd: calculateStat(db?.['Sp.Def'] || 0, p.ivs.spd, p.evs.spd, p.level, p.nature, 'spd'),
-                spe: calculateStat(db?.Speed || 0, p.ivs.spe, p.evs.spe, p.level, p.nature, 'spe')
-            };
+        function detectRole(p, dbList) {
+            const allRoles = new Set();
+            const dbs = Array.isArray(dbList) ? dbList : [dbList];
 
-            const ability = (p.ability || '').toLowerCase();
-            const item = (p.item || '').toLowerCase();
-            const moves = p.moves.map(m => m.toLowerCase());
-            const bst = db?.Total_Stats || 0;
+            dbs.forEach(db => {
+                if (!db) return;
+                const stats = {
+                    hp: calculateStat(db.HP || 0, p.ivs.hp, p.evs.hp, p.level, p.nature, 'hp'),
+                    atk: calculateStat(db.Attack || 0, p.ivs.atk, p.evs.atk, p.level, p.nature, 'atk'),
+                    def: calculateStat(db.Defense || 0, p.ivs.def, p.evs.def, p.level, p.nature, 'def'),
+                    spa: calculateStat(db['Sp.Atk'] || 0, p.ivs.spa, p.evs.spa, p.level, p.nature, 'spa'),
+                    spd: calculateStat(db['Sp.Def'] || 0, p.ivs.spd, p.evs.spd, p.level, p.nature, 'spd'),
+                    spe: calculateStat(db.Speed || 0, p.ivs.spe, p.evs.spe, p.level, p.nature, 'spe')
+                };
 
-            const hasMove = (list) => list.some(m => moves.includes(m));
-            const roles = [];
+                const ability = (p.ability || '').toLowerCase();
+                const item = (p.item || '').toLowerCase();
+                const moves = p.moves.map(m => m.toLowerCase());
+                const bst = db.Total_Stats || 0;
 
-            if (stats.atk > 150 && stats.spe > 130) roles.push('Physical Sweeper');
-            if (stats.spa > 150 && stats.spe > 130) roles.push('Special Sweeper');
-            if (stats.atk > 180 || stats.spa > 180) roles.push('Wallbreaker');
-            if (item === 'choice scarf') roles.push('Revenge Killer');
-            if (stats.hp > 180 && stats.def > 130) roles.push('Physical Wall');
-            if (stats.hp > 180 && stats.spd > 130) roles.push('Special Wall');
+                const hasMove = (list) => list.some(m => moves.includes(m));
+                
+                // Effective ability for this form
+                const activeAbility = db.Name.includes('-Mega') ? (p.megaAbility || db.Ability_1) : (p.ability || db.Ability_1);
+                const ab = activeAbility.toLowerCase();
 
-            if (hasMove(['fake out'])) roles.push('Fake Out Pressure');
-            if (hasMove(['follow me', 'rage powder', 'ally switch'])) roles.push('Redirection');
-            if (ability === 'intimidate') roles.push('Intimidate Support');
-            if (hasMove(['trick room'])) roles.push('Trick Room Setter');
-            if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) roles.push('Speed Control');
-            if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) roles.push('Pivot');
-            if (hasMove(['reflect', 'light screen', 'aurora veil'])) roles.push('Screener');
-            if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web'])) roles.push('Hazard Setter');
-            if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) roles.push('Hazard Control');
-            if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) roles.push('Setup Sweeper');
-            if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) roles.push('Disruptor');
-            if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled', 'pollen puff'])) roles.push('Cleric/Healer');
-            if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) roles.push('Phazer/Hazer');
+                if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
+                if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
+                if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
+                if (item === 'choice scarf') allRoles.add('Revenge Killer');
+                if (stats.hp > 180 && stats.def > 130) allRoles.add('Physical Wall');
+                if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
 
-            if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ability)) roles.push('Weather Setter');
-            if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ability)) roles.push('Terrain Setter');
-            if (bst >= 670) roles.push('Restricted Legendary');
+                if (hasMove(['fake out'])) allRoles.add('Fake Out Pressure');
+                if (hasMove(['follow me', 'rage powder', 'ally switch'])) allRoles.add('Redirection');
+                if (ab === 'intimidate') allRoles.add('Intimidate Support');
+                if (hasMove(['trick room'])) allRoles.add('Trick Room Setter');
+                if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) allRoles.add('Speed Control');
+                if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn'])) allRoles.add('Pivot');
+                if (hasMove(['reflect', 'light screen', 'aurora veil'])) allRoles.add('Screener');
+                if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web'])) allRoles.add('Hazard Setter');
+                if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) allRoles.add('Hazard Control');
+                if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) allRoles.add('Setup Sweeper');
+                if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
+                if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'milk drink', 'recover', 'roost', 'soft-boiled', 'pollen puff'])) allRoles.add('Cleric/Healer');
+                if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
 
-            return roles.length > 0 ? roles : ['Generalist'];
+                if (['drought', 'drizzle', 'sand stream', 'snow warning'].includes(ab)) allRoles.add('Weather Setter');
+                if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge'].includes(ab)) allRoles.add('Terrain Setter');
+                if (bst >= 670) allRoles.add('Restricted Legendary');
+            });
+
+            const result = Array.from(allRoles);
+            return result.length > 0 ? result : ['Generalist'];
         }
 
         function handleSpriteError(img, species, shiny) {
@@ -768,9 +783,14 @@
             if (!img.dataset.fallbackState && isMegaURL) {
                 img.dataset.fallbackState = '1';
                 let suffix = 'mega';
-                if (img.src.includes('megax')) suffix = 'megax';
-                else if (img.src.includes('megay')) suffix = 'megay';
-                img.src = `../assets/mega-sprites/${clean}-${suffix}.gif`;
+                if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
+                else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+                
+                // If clean already ends with suffix, don't append it again
+                const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
+                const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
+                img.src = `../assets/mega-sprites/${fileName}.gif`;
+                
                 if(img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
                 return;
             }
@@ -789,8 +809,8 @@
             if (it === 'eviolite' || it === 'meteorite') return null;
 
             let suffix = '-mega';
-            if (it.endsWith('itex')) suffix = '-megax';
-            else if (it.endsWith('itey')) suffix = '-megay';
+            if (it.endsWith('itex')) suffix = '-mega-x';
+            else if (it.endsWith('itey')) suffix = '-mega-y';
 
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
@@ -1053,21 +1073,35 @@
             Object.keys(TYPE_CHART).forEach(t => resistances[t] = 0);
 
             activeMons.forEach(p => {
-                const dbRef = getEffectivePokemonData(p, allPokemon) || {};
-                const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+                const dbBase = getBasePokemonData(p, allPokemon) || {};
+                const dbMega = getEffectivePokemonData(p, allPokemon);
+                const hasMega = dbMega && dbMega.Name !== dbBase.Name;
+                const forms = [dbBase, dbMega].filter(x => x && x.Name);
+                
+                const baseTypes = [dbBase.Type_1, dbBase.Type_2].filter(x => x);
+                const megaTypes = hasMega ? [dbMega.Type_1, dbMega.Type_2].filter(x => x) : baseTypes;
                 const ability = (p.ability || '').toLowerCase();
 
                 Object.keys(TYPE_CHART).forEach(atkType => {
-                    let eff = getEffectiveness(atkType, pTypes);
-                    // Account for immunity abilities
-                    if (atkType === 'Ground' && (ability === 'levitate' || p.item === 'Air Balloon')) eff = 0;
-                    if (atkType === 'Water' && ['water absorb', 'storm drain', 'dry skin'].includes(ability)) eff = 0;
-                    if (atkType === 'Fire' && ['flash fire', 'well-baked body'].includes(ability)) eff = 0;
-                    if (atkType === 'Electric' && ['volt absorb', 'lightning rod', 'motor drive'].includes(ability)) eff = 0;
-                    if (atkType === 'Grass' && ability === 'sap sipper') eff = 0;
-                    if (ability === 'wonder guard' && eff <= 1) eff = 0;
+                    let effBase = getEffectiveness(atkType, baseTypes);
+                    let effMega = getEffectiveness(atkType, megaTypes);
 
-                    if (eff < 1) resistances[atkType]++;
+                    // Account for immunity abilities (Simplified for now, similar to teambuilder)
+                    if (atkType === 'Ground' && (ability === 'levitate' || p.item === 'Air Balloon')) { effBase = 0; effMega = 0; }
+                    
+                    if (effBase < 1 || effMega < 1) resistances[atkType]++;
+                    
+                    // Tactical Tip: Typing Shift
+                    if (hasMega && effBase >= 2 && effMega <= 0.5) {
+                        issues.push({ 
+                            type: atkType, 
+                            severity: 'synergy', 
+                            text: `Tactical Typing Shift: ${p.species}`, 
+                            tip: `${p.species} is weak to ${atkType} in Base form, but becomes resistant/immune after Mega Evolution! Use this to bait and punish ${atkType} moves.`,
+                            icon: '💡',
+                            color: '#FFD700'
+                        });
+                    }
                 });
             });
 
@@ -1738,14 +1772,23 @@
             const mainAbility = (pMain.ability || '').toLowerCase();
             const mainMoves = pMain.moves.map(m => (m || '').toLowerCase());
             
-            const dbMain = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === mainSpecies);
-            const mainStats = dbMain ? {
-                hp: parseInt(dbMain.HP), atk: parseInt(dbMain.Attack), def: parseInt(dbMain.Defense),
-                spa: parseInt(dbMain['Sp.Atk']), spd: parseInt(dbMain['Sp.Def']), spe: parseInt(dbMain.Speed)
+            const dbBase = getBasePokemonData(mainBuild, allPokemon);
+            const dbMega = getEffectivePokemonData(mainBuild, allPokemon);
+            const mainRoles = detectRole(mainBuild, [dbBase, dbMega].filter(x => x));
+
+            // Use Mega stats for role scoring logic if available, otherwise base
+            const statsRef = dbMega || dbBase;
+            const mainStats = statsRef ? {
+                hp: parseInt(statsRef.HP), atk: parseInt(statsRef.Attack), def: parseInt(statsRef.Defense),
+                spa: parseInt(statsRef['Sp.Atk']), spd: parseInt(statsRef['Sp.Def']), spe: parseInt(statsRef.Speed)
             } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
-            
-            const mainTypes = [dbMain?.Type_1?.toLowerCase(), dbMain?.Type_2?.toLowerCase()].filter(t => t);
-            const mainRoles = detectRole(pMain, dbMain);
+
+            // Combined types for broader coverage recommendations
+            const mainTypes = new Set([
+                dbBase?.Type_1?.toLowerCase(), dbBase?.Type_2?.toLowerCase(),
+                dbMega?.Type_1?.toLowerCase(), dbMega?.Type_2?.toLowerCase()
+            ].filter(t => t));
+            const mainTypesArr = Array.from(mainTypes);
 
             const weatherSetters = {
                 'drizzle': 'rain', 'drought': 'sun', 'orichalcum pulse': 'sun',
@@ -1792,7 +1835,7 @@
                 types.forEach(t => { if (typeChart[t]) weak = [...weak, ...typeChart[t].weaknesses]; });
                 return [...new Set(weak)];
             };
-            const mainWeaknesses = getWeaknesses(mainTypes);
+            const mainWeaknesses = getWeaknesses(mainTypesArr);
 
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
             
@@ -1840,7 +1883,7 @@
                 const candWeather = weatherSetters[ability];
                 if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
                 
-                if (candWeather === 'snow' && mainTypes.includes('ice')) score += 12;
+                if (candWeather === 'snow' && mainTypesArr.includes('ice')) score += 12;
 
                 // 2. Trick Room Synergy
                 const isCandTR = moves.includes('trick room');
@@ -1932,7 +1975,7 @@
                 if (format.toLowerCase() === 'doubles' && hasBeatUp && hasJustified) score += 40;
 
                 // 16. Steely Spirit Synergy
-                if ((mainAbility === 'steely spirit' && types.includes('steel')) || (ability === 'steely spirit' && mainTypes.includes('steel'))) score += 20;
+                if ((mainTypesArr.includes('steel') && (p.ability || '').toLowerCase() === 'steely spirit') || (ability === 'steely spirit' && mainTypesArr.includes('steel'))) score += 20;
 
                 // 17. Neutralizing gas + bad abilities or raw stats
                 const isGas = mainAbility === 'neutralizing gas' || ability === 'neutralizing gas';

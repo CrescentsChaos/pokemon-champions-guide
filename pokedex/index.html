@@ -146,11 +146,20 @@
 
             if (!img.dataset.fallbackState && isMega && !img.src.includes('assets/')) {
                 img.dataset.fallbackState = '1';
-                let base = clean.split('-mega')[0];
                 let suffix = 'mega';
-                if (clean.includes('megax')) { base = clean.split('-megax')[0]; suffix = 'megax'; }
-                else if (clean.includes('megay')) { base = clean.split('-megay')[0]; suffix = 'megay'; }
-                img.src = `../assets/mega-sprites/${base}-${suffix}.gif`;
+                if (clean.includes('-mega-x') || clean.includes('megax')) suffix = 'mega-x';
+                else if (clean.includes('-mega-y') || clean.includes('megay')) suffix = 'mega-y';
+                
+                // If clean already ends with suffix, use it. Otherwise, extract base and append.
+                const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
+                let fileName = hasSuffix ? clean : '';
+                
+                if (!fileName) {
+                   const base = clean.split('-mega')[0];
+                   fileName = `${base}-${suffix}`;
+                }
+
+                img.src = `../assets/mega-sprites/${fileName}.gif`;
                 return;
             }
 
