@@ -613,7 +613,7 @@
             'Screener', 'Hazard Setter', 'Hazard Control', 'Setup Sweeper',
             'Disruptor', 'Cleric/Healer', 'Phazer/Hazer', 'Weather Setter',
             'Terrain Setter', 'Restricted Legendary', 'Generalist', 'Damage Mitigation', "Priority Denial", "Damage Amplification",
-            'Weather Abuser', 'Terrain Abuser'
+            'Weather Abuser', 'Terrain Abuser', 'Trick Room Abuser'
         ];
 
         const roleDescriptions = {
@@ -643,7 +643,8 @@
             'Damage Mitigation': 'Uses moves like Parting Shot, Memento, or abilities like Intimidate to reduce incoming damage to the team.',
             'Priority Denial': 'Uses abilities like Armor Tail, Queenly Majesty and Psychic Surge to prevent opponents from using priority moves.',
             'Weather Abuser': 'Uses abilities like Sand Rush, Slush Rush, Swift Swim, or Chlorophyll to benefit from weather conditions.',
-            'Terrain Abuser': 'Uses abilities like Quark Drive or Surge Surfer, or moves like Expanding Force or Rising Voltage to benefit from terrain conditions.'
+            'Terrain Abuser': 'Uses abilities like Quark Drive or Surge Surfer, or moves like Expanding Force or Rising Voltage to benefit from terrain conditions.',
+            'Trick Room Abuser': 'Uses abilities like Trick Room or moves like Trick Room to benefit from trick room conditions.',
         };
 
         const natureMap = {
@@ -813,6 +814,7 @@
                 if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
                 if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
                 if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
+                if (stats.spe < 60) allRoles.add('Trick Room Abuser');
                 if (item === 'choice scarf') allRoles.add('Revenge Killer');
                 if (stats.hp > 180 && stats.def > 130) allRoles.add('Physical Wall');
                 if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
@@ -827,13 +829,13 @@
                 if (hasMove(['reflect', 'light screen', 'aurora veil', 'safeguard'])) allRoles.add('Screener');
                 if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web', 'ceaseless edge', 'stone axe']) || ab in ['toxic debris']) allRoles.add('Hazard Setter');
                 if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) allRoles.add('Hazard Control');
-                if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) allRoles.add('Setup Sweeper');
+                if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense', 'focus energy'])) allRoles.add('Setup Sweeper');
                 if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
                 if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'pollen puff'])) allRoles.add('Cleric/Healer');
                 if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
                 if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sun', 'rain', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
                 if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
-                if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball'])) allRoles.add('Weather Abuser');
+                if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball', 'hydro steam', 'solar beam', 'solar blade', 'electro shot'])) allRoles.add('Weather Abuser');
                 if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage'])) allRoles.add('Terrain Abuser');
                 if (bst >= 670) allRoles.add('Restricted Legendary');
             });
@@ -1409,6 +1411,7 @@
                 let hasPivots = allRoles.includes('Pivot');
                 let hasHazards = allRoles.includes('Hazard Setter');
                 let isSetup = allRoles.includes('Setup Sweeper');
+                let isTrickRoomAbuser = allRoles.includes('Trick Room Abuser');
                 let isWeatherTerrain = allRoles.includes('Weather Setter') || allRoles.includes('Terrain Setter');
                 let hasHeavyOffense = allRoles.includes('Setup Sweeper') || allRoles.includes('Wallbreaker') || allRoles.includes('Sweeper');
                 let hasHeavyDefense = allRoles.includes('Physical Wall') || allRoles.includes('Special Wall');
@@ -2041,6 +2044,8 @@
                     if (roles.includes('Redirection')) score += 12;
                     if (moves.includes('helping hand')) score += 8;
                     if (roles.includes('Damage Mitigation')) score += 10;
+                    if (roles.includes('Trick Room Abuser')) score += 10;
+
                 } else {
                     // Singles focus: Hazards & Hazard Control
                     if (roles.includes('Hazard Setter')) score += 10;
