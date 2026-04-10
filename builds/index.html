@@ -811,8 +811,8 @@
             if (it === 'eviolite' || it === 'meteorite') return null;
 
             let suffix = '-mega';
-            if (it.endsWith('itex')) suffix = '-mega-x';
-            else if (it.endsWith('itey')) suffix = '-mega-y';
+            if (it.endsWith('itex')) suffix = '-megax';
+            else if (it.endsWith('itey')) suffix = '-megay';
 
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
@@ -1771,12 +1771,14 @@
             const pMain = parsePaste(mainBuild.build);
             const mainSpecies = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainItem = (pMain.item || '').toLowerCase();
-            const mainAbility = (pMain.ability || '').toLowerCase();
             const mainMoves = pMain.moves.map(m => (m || '').toLowerCase());
             
-            const dbBase = getBasePokemonData(mainBuild, allPokemon);
-            const dbMega = getEffectivePokemonData(mainBuild, allPokemon);
-            const mainRoles = detectRole(mainBuild, [dbBase, dbMega].filter(x => x));
+            const dbBase = getBasePokemonData(pMain, allPokemon);
+            const dbMega = getEffectivePokemonData(pMain, allPokemon);
+            const mainRoles = detectRole(pMain, [dbBase, dbMega].filter(x => x));
+
+            const dbAbilities = dbBase ? getPokemonAbilities(dbBase) : [];
+            const mainAbility = (pMain.ability || dbAbilities[0] || '').toLowerCase();
 
             // Use Mega stats for role scoring logic if available, otherwise base
             const statsRef = dbMega || dbBase;

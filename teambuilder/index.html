@@ -1401,8 +1401,8 @@
             if (it === 'eviolite' || it === 'meteorite') return null;
 
             let suffix = '-mega';
-            if (it.endsWith('itex')) suffix = '-mega-x';
-            else if (it.endsWith('itey')) suffix = '-mega-y';
+            if (it.endsWith('itex')) suffix = '-megax';
+            else if (it.endsWith('itey')) suffix = '-megay';
 
             let clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             if (clean === 'zacian-crowned') clean = 'zacian-crowned';
