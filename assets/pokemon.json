@@ -10572,6 +10572,35 @@
     "Total_Stats": 455
   },
   {
+    "id": 354,
+    "Name": "Banette-Mega",
+    "Height(m)": 1.1,
+    "Weight{kg}": 12.5,
+    "HP": 64,
+    "Attack": 165,
+    "Defense": 75,
+    "Sp.Atk": 93,
+    "Sp.Def": 83,
+    "Speed": 75,
+    "Type_1": "Ghost",
+    "Type_2": "",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Indeterminate",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 35,
+    "Is_Baby": 0,
+    "Egg_Cycles": 25,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 555,
+    "Ability": [
+      "Prankster"
+    ]
+  },
+  {
     "id": 355,
     "Name": "Duskull",
     "Height(m)": 0.8,
@@ -10674,6 +10703,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 455
+  },
+  {
+    "id": 358,
+    "Name": "Chimecho-Mega",
+    "Height(m)": 0.6,
+    "Weight{kg}": 1,
+    "HP": 75,
+    "Attack": 50,
+    "Defense": 110,
+    "Sp.Atk": 135,
+    "Sp.Def": 120,
+    "Speed": 65,
+    "Type_1": "Psychic",
+    "Type_2": "Steel",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Indeterminate",
+    "Egg_Group_2": "",
+    "Generation": "Gen 3",
+    "Capture_Rate": 45,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 25,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 555,
+    "Ability": [
+      "Levitate"
+    ]
   },
   {
     "id": 359,
