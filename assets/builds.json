@@ -2517,5 +2517,19 @@
         "build": "Kingambit @ Black Glasses  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 244 Atk / 4 SpD / 4 Spe  \nAdamant Nature  \n- Kowtow Cleave  \n- Sucker Punch  \n- Protect  \n- Swords Dance",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "357",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ White Herb  \nAbility: Multiscale  \nLevel: 50  \nTera Type: Dragon  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Scale Shot  \n- Extreme Speed  \n- Stomping Tantrum  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "358",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ Focus Sash  \nAbility: Unburden  \nLevel: 50  \nTera Type: Fighting  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Dire Claw  \n- Coaching  \n- Fake Out  \n- Close Combat",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
