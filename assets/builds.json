@@ -2531,5 +2531,355 @@
         "build": "Sneasler @ Focus Sash  \nAbility: Unburden  \nLevel: 50  \nTera Type: Fighting  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Dire Claw  \n- Coaching  \n- Fake Out  \n- Close Combat",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "359",
+        "pokemon": "Lycanroc",
+        "build": "Lycanroc @ Life Orb\nAbility: Sand Rush\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Swords Dance\n- Stone Edge\n- Close Combat\n- Accelerock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "360",
+        "pokemon": "Lycanroc",
+        "build": "Lycanroc @ Focus Sash\nAbility: Steadfast\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Stealth Rock\n- Taunt\n- Endeavor\n- Rock Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "361",
+        "pokemon": "Lycanroc-Dusk",
+        "build": "Lycanroc-Dusk @ Choice Band\nAbility: Tough Claws\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Accelerock\n- Stone Edge\n- Close Combat\n- Crunch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "362",
+        "pokemon": "Lycanroc-Dusk",
+        "build": "Lycanroc-Dusk @ Life Orb\nAbility: Tough Claws\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Swords Dance\n- Close Combat\n- Stone Edge\n- Accelerock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "363",
+        "pokemon": "Lycanroc-Midnight",
+        "build": "Lycanroc-Midnight @ Life Orb\nAbility: No Guard\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Swords Dance\n- Stone Edge\n- Close Combat\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "364",
+        "pokemon": "Lycanroc-Midnight",
+        "build": "Lycanroc-Midnight @ Choice Band\nAbility: No Guard\nEVs: 252 Atk / 4 SpD / 252 Spe\nAdamant Nature\n- Stone Edge\n- Close Combat\n- Sucker Punch\n- Play Rough",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "365",
+        "pokemon": "Toxapex",
+        "build": "Toxapex @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 248 HP / 152 Def / 108 SpD\nTera Type: Fairy\nBold Nature\n- Surf\n- Toxic\n- Haze\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "366",
+        "pokemon": "Toxapex",
+        "build": "Toxapex @ Rocky Helmet\nAbility: Regenerator\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Fairy\nImpish Nature\n- Recover\n- Haze\n- Toxic\n- Toxic Spikes",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "367",
+        "pokemon": "Mudsdale",
+        "build": "Mudsdale @ Leftovers\nAbility: Stamina\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Water\nImpish Nature\n- Stealth Rock\n- Earthquake\n- Body Press\n- Roar",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "368",
+        "pokemon": "Araquanid",
+        "build": "Araquanid @ Focus Sash\nAbility: Water Bubble\nEVs: 68 HP / 252 Atk / 188 Spe\nTera Type: Ghost\nAdamant Nature\n- Liquidation\n- Lunge\n- Sticky Web\n- Endeavor",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "369",
+        "pokemon": "Araquanid",
+        "build": "Araquanid @ Custap Berry\nAbility: Water Bubble\nEVs: 252 HP / 40 Def / 216 SpA\nTera Type: Ghost\nModest Nature\n- Sticky Web\n- Surf\n- Endeavor\n- Endure",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "370",
+        "pokemon": "Salazzle",
+        "build": "Salazzle @ Heavy-Duty Boots\nAbility: Corrosion\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Ground\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Sludge Bomb\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "371",
+        "pokemon": "Salazzle",
+        "build": "Salazzle @ Heavy-Duty Boots\nAbility: Corrosion\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Grass\nTimid Nature\n- Fire Blast\n- Sludge Bomb\n- Toxic\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "372",
+        "pokemon": "Salazzle",
+        "build": "Salazzle @ Leftovers\nAbility: Corrosion\nEVs: 248 HP / 8 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Flamethrower\n- Substitute\n- Protect\n- Toxic",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "373",
+        "pokemon": "Tsareena",
+        "build": "Tsareena @ Heavy-Duty Boots\nAbility: Queenly Majesty\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Dragon\nJolly Nature\n- Power Whip\n- Knock Off\n- Rapid Spin\n- Triple Axel",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "374",
+        "pokemon": "Tsareena",
+        "build": "Tsareena @ Covert Cloak\nAbility: Queenly Majesty\nEVs: 252 HP / 252 Def / 4 Spe\nTera Type: Poison\nImpish Nature\n- Power Whip\n- Knock Off\n- Rapid Spin\n- Synthesis",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "375",
+        "pokemon": "Oranguru",
+        "build": "Oranguru @ Leftovers\nAbility: Inner Focus\nEVs: 160 HP / 252 SpA / 96 Spe\nIVs: 0 Atk\nModest Nature\n- Substitute\n- Nasty Plot\n- Psychic\n- Thunderbolt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "376",
+        "pokemon": "Oranguru",
+        "build": "Oranguru @ Mental Herb\nLevel: 50\nAbility: Inner Focus\nEVs: 252 HP / 140 Def / 20 SpA / 92 SpD\nIVs: 0 Spe\nSassy Nature\n- Trick Room\n- Psychic\n- Instruct\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "377",
+        "pokemon": "Passimian",
+        "build": "Passimian @ Choice Scarf\nAbility: Defiant\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Close Combat\n- Knock Off\n- U-turn\n- Earthquake",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "378",
+        "pokemon": "Mimikyu",
+        "build": "Mimikyu @ Life Orb\nAbility: Disguise\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Swords Dance\n- Shadow Claw\n- Play Rough\n- Shadow Sneak",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "379",
+        "pokemon": "Mimikyu",
+        "build": "Mimikyu @ Red Card\nAbility: Disguise\nEVs: 248 HP / 8 Atk / 252 Def\nTera Type: Water\nImpish Nature\n- Trick Room\n- Play Rough\n- Curse\n- Destiny Bond",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "380",
+        "pokemon": "Drampa",
+        "build": "Drampa @ Leftovers\nAbility: Berserk\nEVs: 52 HP / 240 SpA / 216 Spe\nModest Nature\n- Calm Mind\n- Roost\n- Hyper Voice\n- Flamethrower",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "381",
+        "pokemon": "Drampa",
+        "build": "Drampa @ Choice Specs\nAbility: Sap Sipper\nEVs: 4 HP / 252 SpA / 252 Spe\nModest Nature\n- Draco Meteor\n- Hyper Voice\n- Fire Blast\n- Focus Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "382",
+        "pokemon": "Kommo-o",
+        "build": "Kommo-o @ Throat Spray\nAbility: Soundproof\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Normal\nTimid Nature\n- Clangorous Soul\n- Boomburst\n- Flamethrower\n- Clanging Scales",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "383",
+        "pokemon": "Kommo-o",
+        "build": "Kommo-o @ Throat Spray\nLevel: 50\nAbility: Overcoat\nEVs: 100 HP / 220 SpA / 188 Spe\nIVs: 0 Atk\nTera Type: Fire\nModest Nature\n- Clangorous Soul\n- Clanging Scales\n- Flamethrower\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "384",
+        "pokemon": "Corviknight",
+        "build": "Corviknight @ Rocky Helmet\nAbility: Pressure\nEVs: 248 HP / 252 Def / 8 SpD\nTera Type: Dragon\nImpish Nature\n- Brave Bird\n- Defog\n- U-turn\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "385",
+        "pokemon": "Corviknight",
+        "build": "Corviknight @ Leftovers\nAbility: Pressure\nEVs: 252 HP / 160 Def / 96 SpD\nTera Type: Steel\nImpish Nature\n- Body Press\n- U-turn\n- Defog\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "386",
+        "pokemon": "Corviknight",
+        "build": "Corviknight @ Leftovers\nAbility: Mirror Armor\nEVs: 248 HP / 8 Def / 252 SpD\nTera Type: Steel\nCareful Nature\n- Iron Head\n- U-turn\n- Roost\n- Defog",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "387",
+        "pokemon": "Flapple",
+        "build": "Flapple @ Life Orb\nAbility: Hustle\nEVs: 252 Atk / 4 SpD / 252 Spe\nNaive Nature\n- Grav Apple\n- Draco Meteor\n- Sucker Punch\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "388",
+        "pokemon": "Flapple",
+        "build": "Flapple\nAbility: Hustle\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Dragon Dance\n- Grav Apple\n- Acrobatics\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "389",
+        "pokemon": "Appletun",
+        "build": "Appletun @ Choice Specs\nAbility: Thick Fat\nEVs: 4 Def / 252 SpA / 252 Spe\nModest Nature\n- Draco Meteor\n- Apple Acid\n- Dragon Pulse\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "390",
+        "pokemon": "Appletun",
+        "build": "Appletun @ Eject Pack\nAbility: Thick Fat\nEVs: 248 HP / 176 Def / 84 Spe\nBold Nature\n- Recover\n- Draco Meteor\n- Apple Acid\n- Body Press",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "391",
+        "pokemon": "Sandaconda",
+        "build": "Sandaconda @ Rocky Helmet\nAbility: Shed Skin\nEVs: 252 HP / 168 Def / 88 Spe\nImpish Nature\n- Stealth Rock\n- Earthquake\n- Glare\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "392",
+        "pokemon": "Sandaconda",
+        "build": "Sandaconda @ Leftovers\nAbility: Shed Skin\nEVs: 252 HP / 168 SpD / 88 Spe\nCareful Nature\n- Coil\n- Stone Edge\n- Earthquake\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "393",
+        "pokemon": "Polteageist",
+        "build": "Polteageist @ White Herb\nAbility: Cursed Body\nEVs: 28 HP / 32 Def / 252 SpA / 196 Spe\nTimid Nature\n- Shell Smash\n- Shadow Ball\n- Strength Sap\n- Giga Drain",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "394",
+        "pokemon": "Polteageist",
+        "build": "Polteageist @ Focus Sash\nAbility: Weak Armor\nEVs: 252 SpA / 4 SpD / 252 Spe\nModest Nature\n- Shell Smash\n- Shadow Ball\n- Stored Power\n- Giga Drain",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "395",
+        "pokemon": "Mr. Rime",
+        "build": "Mr. Rime @ Heavy-Duty Boots\nAbility: Ice Body\nEVs: 240 HP / 252 SpA / 16 Spe\nModest Nature\n- Rapid Spin\n- Slack Off\n- Freeze-Dry\n- Future Sight",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "396",
+        "pokemon": "Runerigus",
+        "build": "Runerigus @ Leftovers\nAbility: Wandering Spirit\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Stealth Rock\n- Earthquake\n- Poltergeist\n- Body Press",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "397",
+        "pokemon": "Runerigus",
+        "build": "Runerigus @ Leftovers\nAbility: Wandering Spirit\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Stealth Rock\n- Earthquake\n- Will-O-Wisp\n- Toxic Spikes",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "398",
+        "pokemon": "Runerigus",
+        "build": "Runerigus @ Leftovers\nAbility: Wandering Spirit\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Iron Defense\n- Amnesia\n- Rest\n- Body Press",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "399",
+        "pokemon": "Alcremie",
+        "build": "Alcremie @ Leftovers\nAbility: Aroma Veil\nEVs: 252 HP / 252 Def / 4 SpA\nBold Nature\n- Calm Mind\n- Recover\n- Dazzling Gleam\n- Mystical Fire",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "400",
+        "pokemon": "Alcremie",
+        "build": "Alcremie @ Leftovers\nAbility: Aroma Veil\nEVs: 252 HP / 252 Def / 4 SpA\nBold Nature\n- Calm Mind\n- Acid Armor\n- Stored Power\n- Rest",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "401",
+        "pokemon": "Alcremie",
+        "build": "Alcremie @ Heavy-Duty Boots\nAbility: Sweet Veil\nEVs: 4 Def / 252 SpA / 252 Spe\nTimid Nature\n- Dazzling Gleam\n- Mystical Fire\n- Psychic\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "402",
+        "pokemon": "Morpeko",
+        "build": "Morpeko @ Choice Band\nAbility: Hunger Switch\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Aura Wheel\n- Crunch\n- Seed Bomb\n- Parting Shot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "403",
+        "pokemon": "Morpeko",
+        "build": "Morpeko @ Heavy-Duty Boots\nAbility: Hunger Switch\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Aura Wheel\n- Rapid Spin\n- Protect\n- Parting Shot",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "404",
+        "pokemon": "Dragapult",
+        "build": "Dragapult @ Heavy-Duty Boots\nAbility: Infiltrator\nEVs: 4 Atk / 252 SpA / 252 Spe\nTera Type: Ghost\nNaive Nature\n- Dragon Darts\n- Hex\n- Will-O-Wisp\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "405",
+        "pokemon": "Dragapult",
+        "build": "Dragapult @ Choice Specs\nAbility: Infiltrator\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Draco Meteor\n- Shadow Ball\n- Flamethrower\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "406",
+        "pokemon": "Dragapult",
+        "build": "Dragapult @ Choice Band\nAbility: Clear Body\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Dragon Darts\n- Tera Blast\n- U-turn\n- Sucker Punch",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "407",
+        "pokemon": "Dragapult",
+        "build": "Dragapult @ Life Orb\nAbility: Clear Body\nEVs: 4 Atk / 252 SpA / 252 Spe\nTera Type: Dragon\nNaive Nature\n- Dragon Darts\n- Draco Meteor\n- Shadow Ball\n- Fire Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "408",
+        "pokemon": "Dragapult",
+        "build": "Dragapult @ Choice Band\nLevel: 50\nAbility: Clear Body\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dragon\nAdamant Nature\n- Dragon Darts\n- Phantom Force\n- Outrage\n- U-turn",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
