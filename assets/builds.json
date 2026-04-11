@@ -2881,5 +2881,376 @@
         "build": "Dragapult @ Choice Band\nLevel: 50\nAbility: Clear Body\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Dragon\nAdamant Nature\n- Dragon Darts\n- Phantom Force\n- Outrage\n- U-turn",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "409",
+        "pokemon": "Kleavor",
+        "build": "Kleavor @ Focus Sash\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Stone Axe\n- X-Scissor\n- Swords Dance\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "410",
+        "pokemon": "Kleavor",
+        "build": "Kleavor @ Choice Scarf\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Stone Axe\n- U-turn\n- X-Scissor\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "411",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Leftovers\nAbility: Adaptability\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Water\nAdamant Nature\n- Substitute\n- Liquidation\n- Phantom Force\n- Aqua Jet",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "412",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Choice Band\nAbility: Swift Swim\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Wave Crash\n- Flip Turn\n- Liquidation\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "413",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Mystic Water\nAbility: Adaptability\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Water\nAdamant Nature\n- Wave Crash\n- Flip Turn\n- Aqua Jet\n- Psychic Fangs",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "414",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Choice Band\nLevel: 50\nAbility: Swift Swim\nEVs: 36 HP / 252 Atk / 4 Def / 4 SpD / 212 Spe\nTera Type: Water\nAdamant Nature\n- Wave Crash\n- Last Respects\n- Aqua Jet\n- Flip Turn",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "415",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Choice Scarf\nLevel: 50\nAbility: Adaptability\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Wave Crash\n- Last Respects\n- Flip Turn\n- Aqua Jet",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "416",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Focus Sash\nLevel: 50\nAbility: Adaptability\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Ghost\nAdamant Nature\n- Liquidation\n- Last Respects\n- Aqua Jet\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "417",
+        "pokemon": "Basculegion-F",
+        "build": "Basculegion-F @ Choice Scarf\nAbility: Adaptability\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Shadow Ball\n- Surf\n- Ice Beam\n- Flip Turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "418",
+        "pokemon": "F",
+        "build": "Basculegion-F (F) @ Weakness Policy\nAbility: Adaptability\nEVs: 52 Def / 236 SpA / 24 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Agility\n- Shadow Ball\n- Surf\n- Ice Beam",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "419",
+        "pokemon": "Basculegion-F",
+        "build": "Basculegion-F @ Choice Specs\nAbility: Adaptability\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Surf\n- Shadow Ball\n- Ice Beam\n- Flip Turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "420",
+        "pokemon": "Meowscarada",
+        "build": "Meowscarada @ Heavy-Duty Boots\nAbility: Protean\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Grass\nJolly Nature\n- Knock Off\n- Flower Trick\n- Triple Axel\n- U-turn",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "421",
+        "pokemon": "Meowscarada",
+        "build": "Meowscarada @ Choice Scarf\nAbility: Protean\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Knock Off\n- U-turn\n- Triple Axel\n- Flower Trick",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "422",
+        "pokemon": "Meowscarada",
+        "build": "Meowscarada @ Choice Band\nAbility: Protean\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Grass\nJolly Nature\n- Flower Trick\n- Knock Off\n- U-turn\n- Triple Axel",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "423",
+        "pokemon": "Skeledirge",
+        "build": "Skeledirge @ Heavy-Duty Boots\nAbility: Unaware\nEVs: 248 HP / 8 Def / 252 SpD\nTera Type: Fairy\nCalm Nature\n- Torch Song\n- Hex\n- Will-O-Wisp\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "424",
+        "pokemon": "Skeledirge",
+        "build": "Skeledirge @ Heavy-Duty Boots\nAbility: Unaware\nEVs: 252 HP / 252 Def / 4 SpA\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Torch Song\n- Hex\n- Will-O-Wisp\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "425",
+        "pokemon": "Quaquaval",
+        "build": "Quaquaval @ Assault Vest\nAbility: Moxie\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Steel\nAdamant Nature\n- Close Combat\n- Aqua Step\n- Knock Off\n- Rapid Spin",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "426",
+        "pokemon": "Maushold",
+        "build": "Maushold @ Wide Lens\nAbility: Technician\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Tidy Up\n- Population Bomb\n- Bite\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "427",
+        "pokemon": "Maushold",
+        "build": "Maushold @ Wide Lens\nLevel: 50\nAbility: Technician\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Follow Me\n- Population Bomb\n- Taunt\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "428",
+        "pokemon": "Maushold",
+        "build": "Maushold @ Safety Goggles\nLevel: 50\nAbility: Friend Guard\nEVs: 252 HP / 4 Atk / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Follow Me\n- Beat Up\n- Taunt\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "429",
+        "pokemon": "Garganacl",
+        "build": "Garganacl @ Leftovers\nAbility: Purifying Salt\nEVs: 252 HP / 52 Def / 204 SpD\nTera Type: Fairy\nCareful Nature\n- Stealth Rock\n- Salt Cure\n- Recover\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "430",
+        "pokemon": "Garganacl",
+        "build": "Garganacl @ Leftovers\nAbility: Purifying Salt\nEVs: 252 HP / 52 Def / 204 SpD\nTera Type: Water\nCareful Nature\n- Curse\n- Salt Cure\n- Recover\n- Earthquake",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "431",
+        "pokemon": "Garganacl",
+        "build": "Garganacl @ Leftovers\nAbility: Purifying Salt\nEVs: 252 HP / 4 Def / 252 SpD\nTera Type: Water\nCareful Nature\n- Iron Defense\n- Body Press\n- Salt Cure\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "432",
+        "pokemon": "Garganacl",
+        "build": "Garganacl @ Heavy-Duty Boots\nAbility: Purifying Salt\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Flying\nImpish Nature\n- Salt Cure\n- Iron Defense\n- Body Press\n- Recover",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "433",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Heavy-Duty Boots\nAbility: Weak Armor\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Calm Mind",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "434",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Weakness Policy\nAbility: Weak Armor\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Normal\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Endure",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "435",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 228 HP / 28 Def / 252 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "436",
+        "pokemon": "Ceruledge",
+        "build": "Ceruledge @ Life Orb\nAbility: Weak Armor\nEVs: 252 Atk / 4 SpD / 252 Spe\nTera Type: Ghost\nJolly Nature\n- Swords Dance\n- Bitter Blade\n- Shadow Sneak\n- Poltergeist",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "437",
+        "pokemon": "Ceruledge",
+        "build": "Ceruledge @ Covert Cloak\nAbility: Flash Fire\nEVs: 252 HP / 172 SpD / 84 Spe\nTera Type: Bug\nCareful Nature\n- Bulk Up\n- Bitter Blade\n- Shadow Sneak\n- Taunt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "438",
+        "pokemon": "Bellibolt",
+        "build": "Bellibolt @ Rocky Helmet\nAbility: Static\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Fairy\nBold Nature\n- Volt Switch\n- Slack Off\n- Toxic\n- Muddy Water",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "439",
+        "pokemon": "Bellibolt",
+        "build": "Bellibolt @ Heavy-Duty Boots\nAbility: Static\nEVs: 252 HP / 216 Def / 40 SpD\nIVs: 0 Atk\nTera Type: Dragon\nBold Nature\n- Toxic\n- Muddy Water\n- Volt Switch\n- Slack Off",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "440",
+        "pokemon": "Scovillain",
+        "build": "Scovillain @ Choice Specs\nAbility: Chlorophyll\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Fire\nTimid Nature\n- Flamethrower\n- Fire Blast\n- Solar Beam\n- Giga Drain",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "441",
+        "pokemon": "Espathra",
+        "build": "Espathra @ Electric Seed\nAbility: Speed Boost\nEVs: 152 HP / 244 Def / 112 Spe\nTera Type: Fairy\nBold Nature\n- Calm Mind\n- Stored Power\n- Dazzling Gleam\n- Roost",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "442",
+        "pokemon": "Tinkaton",
+        "build": "Tinkaton @ Leftovers\nAbility: Pickpocket\nEVs: 248 HP / 184 Def / 76 SpD\nTera Type: Ghost\nCareful Nature\n- Stealth Rock\n- Gigaton Hammer\n- Knock Off\n- Encore",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "443",
+        "pokemon": "Tinkaton",
+        "build": "Tinkaton @ Air Balloon\nAbility: Pickpocket\nEVs: 252 HP / 24 SpD / 232 Spe\nTera Type: Water\nJolly Nature\n- Stealth Rock\n- Gigaton Hammer\n- Encore\n- Thunder Wave",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "444",
+        "pokemon": "Palafin",
+        "build": "Palafin @ Choice Band\nAbility: Zero to Hero\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Water\nAdamant Nature\n- Jet Punch\n- Flip Turn\n- Wave Crash\n- Zen Headbutt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "445",
+        "pokemon": "Palafin",
+        "build": "Palafin @ Leftovers\nAbility: Zero to Hero\nEVs: 248 HP / 8 Atk / 252 SpD\nTera Type: Fairy\nCareful Nature\n- Jet Punch\n- Bulk Up\n- Drain Punch\n- Taunt",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "446",
+        "pokemon": "Palafin",
+        "build": "Palafin @ Choice Band\nAbility: Zero to Hero\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nAdamant Nature\n- Jet Punch\n- Wave Crash\n- Flip Turn\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "447",
+        "pokemon": "Palafin",
+        "build": "Palafin @ Leftovers\nAbility: Zero to Hero\nEVs: 252 HP / 4 Def / 252 SpD\nTera Type: Grass\nAdamant Nature\n- Bulk Up\n- Jet Punch\n- Drain Punch\n- Protect",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "448",
+        "pokemon": "Orthworm",
+        "build": "Orthworm @ Leftovers\nAbility: Earth Eater\nEVs: 252 HP / 16 Def / 240 SpD\nTera Type: Ghost\nImpish Nature\n- Stealth Rock\n- Heavy Slam\n- Body Press\n- Iron Defense",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "449",
+        "pokemon": "Orthworm",
+        "build": "Orthworm @ Leftovers\nAbility: Earth Eater\nEVs: 248 HP / 8 Def / 252 SpD\nTera Type: Ghost\nCareful Nature\n- Coil\n- Substitute\n- Iron Tail\n- Body Press",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "450",
+        "pokemon": "Orthworm",
+        "build": "Orthworm @ Sitrus Berry\nAbility: Earth Eater\nEVs: 248 HP / 252 Def / 8 SpD\nTera Type: Water\nImpish Nature\n- Shed Tail\n- Stealth Rock\n- Body Press\n- Iron Head",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "451",
+        "pokemon": "Glimmora",
+        "build": "Glimmora @ Focus Sash\nAbility: Toxic Debris\nEVs: 4 Def / 252 SpA / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Stealth Rock\n- Mortal Spin\n- Power Gem\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "452",
+        "pokemon": "Glimmora",
+        "build": "Glimmora @ Power Herb\nAbility: Toxic Debris\nEVs: 252 SpA / 4 SpD / 252 Spe\nTera Type: Ghost\nTimid Nature\n- Meteor Beam\n- Earth Power\n- Mortal Spin\n- Stealth Rock",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "453",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 252 SpA / 4 SpD / 252 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "454",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 236 HP / 164 Def / 108 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "455",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Leftovers\nAbility: Heatproof\nEVs: 252 HP / 160 Def / 96 Spe\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Hex\n- Stun Spore\n- Strength Sap",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "456",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Heavy-Duty Boots\nAbility: Heatproof\nEVs: 252 HP / 252 Def / 4 SpD\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Matcha Gotcha\n- Shadow Ball\n- Strength Sap",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "457",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ Assault Vest\nLevel: 50\nAbility: Stamina\nEVs: 252 HP / 156 SpD / 100 Spe\nIVs: 0 Atk\nTera Type: Grass\nModest Nature\n- Electro Shot\n- Body Press\n- Flash Cannon\n- Dragon Pulse",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "458",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ Power Herb\nLevel: 50\nAbility: Sturdy\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Electric\nTimid Nature\n- Electro Shot\n- Thunderbolt\n- Draco Meteor\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "459",
+        "pokemon": "Hydrapple",
+        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 136 SpA / 68 SpD / 52 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "460",
+        "pokemon": "Hydrapple",
+        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 252 HP / 252 Def / 4 SpA\nIVs: 0 Atk\nTera Type: Steel\nBold Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "461",
+        "pokemon": "Hydrapple",
+        "build": "Hydrapple @ Choice Specs\nAbility: Regenerator\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Steel\nModest Nature\n- Draco Meteor\n- Leaf Storm\n- Earth Power\n- Fickle Beam",
+        "synergy": [],
+        "format": "Singles"
     }
 ]
