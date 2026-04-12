@@ -490,16 +490,49 @@ input:hover {
 }
 
 .search-item {
-    padding: 15px 25px;
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    position: relative;
 }
 
 .search-item:hover {
     background: rgba(255, 255, 255, 0.05);
+}
+
+/* Build Pokepaste Hover Tooltip */
+.build-paste-tooltip {
+    display: none;
+    position: fixed;
+    background: #0f0f14;
+    border: 1px solid rgba(106, 176, 245, 0.35);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-width: 280px;
+    max-width: 340px;
+    z-index: 99999;
+    pointer-events: none;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(106, 176, 245, 0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: #c8d8e8;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    animation: tooltipFade 0.12s ease;
+}
+
+@keyframes tooltipFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.build-paste-tooltip.visible {
+    display: block;
 }
 
 .search-item-name {

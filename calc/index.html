@@ -16,6 +16,9 @@
 <body class="calc-page">
     <script src="../js/main.js"></script>
 
+    <!-- Build Pokepaste Hover Tooltip -->
+    <div id="build-paste-tooltip" class="build-paste-tooltip"></div>
+
     <main class="container">
         <div id="damage-banner" class="glass fade-in">
             <div class="banner-content">
@@ -39,7 +42,7 @@
             <div class="calc-panel glass attacker-panel" id="p1-panel">
                 <div class="panel-header">
                     <div class="sprite-container">
-                        <img id="p1-sprite" src="" alt="" onerror="handleSpriteError(this, p1.name, false, p1.item)">
+                        <img id="p1-sprite" src="" alt="" onerror="handleSpriteError(this, window.p1?.name, false)">
                     </div>
                     <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
                     <div class="search-results" id="p1-search-results"></div>
@@ -92,7 +95,7 @@
                         <div class="select-group">
                             <label>Item</label>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p1-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, p1.item)">
+                                <img src="" id="p1-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, window.p1?.item)">
                                 <input type="text" id="p1-item" list="items-list" placeholder="Choose Item...">
                             </div>
                         </div>
@@ -203,7 +206,7 @@
             <div class="calc-panel glass defender-panel" id="p2-panel">
                 <div class="panel-header">
                     <div class="sprite-container">
-                        <img id="p2-sprite" src="" alt="" onerror="handleSpriteError(this, p2.name, false, p2.item)">
+                        <img id="p2-sprite" src="" alt="" onerror="handleSpriteError(this, window.p2?.name, false)">
                     </div>
                     <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
                     <div class="search-results" id="p2-search-results"></div>
@@ -256,7 +259,7 @@
                         <div class="select-group">
                             <label>Item</label>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p2-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, p2.item)">
+                                <img src="" id="p2-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, window.p2?.item)">
                                 <input type="text" id="p2-item" list="items-list" placeholder="Choose Item...">
                             </div>
                         </div>

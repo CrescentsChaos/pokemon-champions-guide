@@ -63,10 +63,14 @@ async function init() {
         itemsDB = itms;
         buildsDB = blds;
 
-        p1 = setupPokemonState(1);
-        p2 = setupPokemonState(2);
+        window.p1 = setupPokemonState(1);
+        window.p2 = setupPokemonState(2);
 
-        setupEventListeners();
+        p1 = window.p1;
+        p2 = window.p2;
+
+        setupStatsUI(p1);
+        setupStatsUI(p2);
         populateDropdowns();
 
         // Load defaults
@@ -219,6 +223,48 @@ function setupEventListeners() {
         importPokePaste(importTargetId, paste);
         closeImportModal();
     });
+
+    // --- Build Pokepaste Hover Tooltip ---
+    const pasteTooltip = document.getElementById('build-paste-tooltip');
+
+    document.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.search-item[data-build-id]');
+        if (item) {
+            const rawPaste = item.getAttribute('data-paste') || '';
+            // Decode HTML entities back to real characters
+            const paste = rawPaste.replace(/&quot;/g, '"').replace(/&#10;/g, '\n').replace(/&amp;/g, '&');
+            pasteTooltip.textContent = paste;
+            pasteTooltip.classList.add('visible');
+        } else {
+            pasteTooltip.classList.remove('visible');
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (pasteTooltip.classList.contains('visible')) {
+            const offset = 18;
+            const tipW = pasteTooltip.offsetWidth;
+            const tipH = pasteTooltip.offsetHeight;
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+
+            // Default: appear to the right of cursor
+            let left = e.clientX + offset;
+            let top  = e.clientY + offset;
+
+            // Flip left if overflowing right edge
+            if (left + tipW > vw - 10) left = e.clientX - tipW - offset;
+            // Flip up if overflowing bottom edge
+            if (top + tipH > vh - 10) top = e.clientY - tipH - offset;
+
+            pasteTooltip.style.left = left + 'px';
+            pasteTooltip.style.top  = top  + 'px';
+        }
+    });
+
+    document.addEventListener('mouseleave', () => {
+        pasteTooltip.classList.remove('visible');
+    });
 }
 
 function inferBuildRole(buildStr) {
@@ -288,11 +334,12 @@ function handleSearch(p, query) {
         html += shownBuilds.map(b => {
             const key = `${b.pokemon}|${b.format}|${b.role}`;
             const isClash = labelCount[key] > 1;
-            // If there's a clash for the same format+role, differentiate by item
             const label = isClash && b.item ? b.item : b.role;
             const fmtBadge = b.format === 'doubles' ? '#4a90e2' : '#e63946';
+            // Encode paste for data attribute (escape quotes and newlines)
+            const pasteEncoded = (b.build || '').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
             return `
-            <div class="search-item" data-build-id="${b.id}" data-name="${b.pokemon}">
+            <div class="search-item" data-build-id="${b.id}" data-name="${b.pokemon}" data-paste="${pasteEncoded}">
                 <span class="search-item-name">${b.pokemon} <span style="color:#6ab0f5; font-size:0.78rem; font-weight:600;">(${label})</span></span>
                 <span class="search-item-types" style="background:${fmtBadge}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.65rem;">${b.format || 'Singles'}</span>
             </div>
@@ -955,48 +1002,50 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('active'), 3000);
 }
 
-window.handleSpriteError = function (img, name, shiny, item) {
-    if (!name || img.dataset.fallbackState === 'final') return;
+window.handleSpriteError = function(img, name, shiny) {
+    if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 
-    item = item || '';
     const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
 
-    let isMega = false;
-    let suffix = 'mega';
-    const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
-        isMega = true;
-        if (it.endsWith('itex')) suffix = 'megax';
-        else if (it.endsWith('itey')) suffix = 'megay';
-    }
-
-    if (!img.dataset.fallbackState || img.dataset.fallbackState === '0') {
+    if (!img.dataset.fallbackState && isMegaURL) {
         img.dataset.fallbackState = '1';
-        if (isMega || name.includes('-Mega')) {
-            const actualSuffix = name.includes('-Mega-X') ? 'megax' : (name.includes('-Mega-Y') ? 'megay' : 'mega');
-            img.src = `../assets/mega-sprites/${clean}-${actualSuffix}.gif`;
-            return;
-        }
+        let suffix = 'mega';
+        if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
+        else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+
+        const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
+        const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
+        img.src = `../assets/mega-sprites/${fileName}.gif`;
+        return;
     }
 
-    if (img.dataset.fallbackState === '1') {
-        img.dataset.fallbackState = 'final';
-        const folder = shiny ? 'xy-shiny' : 'xy';
-        img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
-    }
+    img.dataset.fallbackState = 'final';
+    img.dataset.fallback = 'true';
+    img.classList.remove('mega-toggle');
+    const folder = shiny ? 'xy-shiny' : 'xy';
+    img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
 }
 
-function getItemSpriteUrl(itemName) {
-    if (!itemName || itemName === 'None') return '';
-    const cleanName = itemName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return `https://play.pokemonshowdown.com/sprites/itemicons/${cleanName}.png`;
+function getItemSpriteUrl(item) {
+    if (!item || item.toLowerCase() === 'none') return '';
+    const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
 }
 
 window.handleItemError = function(img, item) {
-    img.style.display = 'none';
+    if (img.dataset.fallback === 'true' || !item) {
+        img.style.display = 'none';
+        return;
+    }
+    img.dataset.fallback = 'true';
+    if (item.toLowerCase().endsWith('ite')) {
+        const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
+        img.style.display = 'block';
+    } else {
+        img.style.display = 'none';
+    }
 };
-
-const excludeToggle = document.getElementById('exclude-megas-calc');
-if (excludeToggle) excludeToggle.addEventListener('change', recalculate);
 
 init();
