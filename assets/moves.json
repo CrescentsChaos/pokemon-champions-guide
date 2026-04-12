@@ -10018,5 +10018,65 @@
     "generation": "Generation IX",
     "short_descripton": "The user receives a blessing from the crescent moon, restoring HP and curing status conditions for itself and its ally Pokémon currently in the battle.",
     "damage_class": "Status"
+  },
+  {
+    "name": "Mystical Power",
+    "id": 854,
+    "accuracy": 90,
+    "pp": 10,
+    "power": 70,
+    "priority": 0,
+    "type": "Psychic",
+    "generation": "Generation IX",
+    "short_descripton": "The user attacks by emitting a mysterious power. This also boosts the user's Sp. Atk stat.",
+    "damage_class": "Special"
+  },
+  {
+    "name": "Mortal Spin",
+    "id": 855,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 30,
+    "priority": 0,
+    "type": "Poison",
+    "generation": "Generation IX",
+    "short_descripton": "Removes the Bound and Leech Seeded statuses from the user and removes the Sticky Web, Stealth Rock, Spikes, and Toxic Spikes statuses from the user's side. Poisons targets.",
+    "damage_class": "Physical"
+  },
+  {
+    "name": "Axe Kick",
+    "id": 856,
+    "accuracy": 90,
+    "pp": 10,
+    "power": 120,
+    "priority": 0,
+    "type": "Fighting",
+    "generation": "Generation IX",
+    "short_descripton": "Has a 30% chance of confusing the target. If this move misses or fails, the user takes damage equal to 1/2 of its max HP.",
+    "damage_class": "Physical"
+  },
+  {
+    "name": "Bitter Blade",
+    "id": 857,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 90,
+    "priority": 0,
+    "type": "Fire",
+    "generation": "Generation IX",
+    "short_descripton": "The user's HP is restored by 1/2 of the damage dealt by this move.",
+    "damage_class": "Physical"
+  },
+  {
+    "name": "Shed Tail",
+    "id": 858,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 0,
+    "priority": 0,
+    "type": "Dragon",
+    "generation": "Generation IX",
+    "short_descripton": "The user loses 1/2 of its max HP to create a substitute, then switches out of battle to be replaced by another party Pokémon. The substitute will be hit by moves instead of that Pokémon, and it will vanish when it takes damage equal to 1/4 of the user's max HP.",
+    "damage_class": "Status"
   }
 ]
