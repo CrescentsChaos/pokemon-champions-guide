@@ -180,7 +180,8 @@ function handleSearch(p, query) {
         return;
     }
 
-    const excludeMegas = document.getElementById('exclude-megas-calc').checked;
+    const excludeBox = document.getElementById('exclude-megas-calc');
+    const excludeMegas = excludeBox ? excludeBox.checked : false;
     const filtered = pokemonDB.filter(x => {
         const matches = (x.Name || '').toLowerCase().includes(query.toLowerCase());
         if (excludeMegas && (x.Name || '').includes('-Mega')) return false;
@@ -846,6 +847,7 @@ window.handleItemError = function(img, item) {
     img.style.display = 'none';
 };
 
-document.getElementById('exclude-megas-calc').addEventListener('change', recalculate);
+const excludeToggle = document.getElementById('exclude-megas-calc');
+if (excludeToggle) excludeToggle.addEventListener('change', recalculate);
 
 init();
