@@ -448,8 +448,8 @@ function populatePokemonUI(pk) {
 
         spriteImg.src = spriteUrl;
         spriteImg.dataset.base = spriteUrl;
-        spriteImg.dataset.fallbackState = '0';
-        spriteImg.dataset.fallback = 'false';
+        spriteImg.dataset.fallbackState = '';
+        spriteImg.dataset.fallback = '';
 
         if (megaUrl) {
             spriteImg.dataset.mega = megaUrl;
