@@ -49,6 +49,17 @@ const typeChart = {
     fairy: { fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 }
 };
 
+const SPREAD_MOVES = [
+    // Physical
+    'Rock Slide', 'Earthquake', 'Bulldoze', 'Razor Leaf', 'Swift', 'Explosion', 'Self-Destruct',
+    'Diamond Storm', 'Land\'s Wrath', 'Thousand Arrows', 'Thousand Waves', 'Glacial Lance', 'Precipice Blades',
+    // Special
+    'Surf', 'Blizzard', 'Heat Wave', 'Muddy Water', 'Icy Wind', 'Dazzling Gleam', 'Discharge',
+    'Eruption', 'Water Spout', 'Hyper Voice', 'Snarl', 'Air Cutter', 'Acid', 'Electroweb',
+    'Sparkling Aria', 'Expanding Force', 'Make It Rain', 'Astral Barrage', 'Origin Pulse',
+    'Dragon Energy', 'Bleakwind Storm', 'Sandsear Storm', 'Wildbolt Storm', 'Springtide Storm'
+];
+
 // Initialize
 async function init() {
     try {
@@ -789,6 +800,11 @@ function calculateDamage(attacker, defender, move, field) {
 
     // --- Modifiers ---
     let modifier = 1.0;
+
+    // 0. Spread Move Reduction
+    if (field.format === 'Doubles' && SPREAD_MOVES.includes(move.name)) {
+        modifier *= 0.75;
+    }
 
     // 1. Weather
     if (field.weather === 'Sun') {

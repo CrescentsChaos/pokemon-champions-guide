@@ -578,6 +578,49 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* Preset Chips */
+        .preset-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .preset-chip {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preset-chip:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .preset-chip.recommended {
+            background: rgba(255, 51, 51, 0.15);
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
+        }
+
+        .preset-chip.recommended::after {
+            content: ' ★';
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 
@@ -769,6 +812,10 @@
                         </select>
                     </div>
 
+
+                    <div class="preset-container" id="preset-container">
+                        <!-- Preset chips injected via JS -->
+                    </div>
 
                     <div class="stat-row">
                         <span class="stat-label">HP</span><span class="base-val" id="base-hp">--</span>
@@ -966,6 +1013,15 @@
             'Sassy': { pos: 'spd', neg: 'spe', color: '#ffeb3b' },
             'Serious': { pos: '', neg: '', color: '#ddd' },
             'Timid': { pos: 'spe', neg: 'atk', color: '#00bcd4' }
+        };
+
+        const PRESET_SPREADS = {
+            'fast_physical': { name: 'Fast Physical', evs: { hp: 4, atk: 252, def: 0, spa: 0, spd: 0, spe: 252 }, nature: 'Jolly' },
+            'fast_special': { name: 'Fast Special', evs: { hp: 4, atk: 0, def: 0, spa: 252, spd: 0, spe: 252 }, nature: 'Timid' },
+            'bulky_physical': { name: 'Bulky Physical', evs: { hp: 252, atk: 252, def: 4, spa: 0, spd: 0, spe: 0 }, nature: 'Adamant' },
+            'bulky_special': { name: 'Bulky Special', evs: { hp: 252, atk: 0, def: 0, spa: 252, spd: 4, spe: 0 }, nature: 'Modest' },
+            'physical_wall': { name: 'Physical Wall', evs: { hp: 252, atk: 0, def: 252, spa: 0, spd: 4, spe: 0 }, nature: 'Impish' },
+            'special_wall': { name: 'Special Wall', evs: { hp: 252, atk: 0, def: 4, spa: 0, spd: 252, spe: 0 }, nature: 'Careful' }
         };
 
         // DOM Elements
@@ -1537,7 +1593,7 @@
             const p = team[currentSlot];
             if (!p) return;
 
-            const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+            const dbBase = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Ability: []
             };
             const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
@@ -1553,20 +1609,21 @@
             if (dbMega !== dbBase) {
                 abilityIn.dataset.baseVal = baseAbility;
                 abilityIn.dataset.megaVal = megaAbility;
-                // Set initial value based on current cycle
                 abilityIn.value = megaToggleState === 'mega' ? megaAbility : baseAbility;
                 abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
             } else {
                 delete abilityIn.dataset.baseVal;
                 delete abilityIn.dataset.megaVal;
-                abilityIn.value = baseAbility;
+                abilityIn.value = p.ability || baseAbility;
                 abilityIn.style.color = 'white';
             }
+
             document.getElementById('tera-input').value = p.tera || '';
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
             document.getElementById('gender-input').value = p.gender || '';
             levelIn.value = p.level;
             natureIn.value = p.nature;
+
             const bigSprite = document.getElementById('current-big-sprite');
             const megaUrl = getMegaSpriteUrl(p);
             const baseSprite = getSpriteUrl(p);
@@ -1582,33 +1639,40 @@
             }
 
             const displayName = p.nickname ? `${p.nickname} (${p.species})` : (p.species || 'Empty');
-            document.getElementById(`tab-name-${currentSlot}`).textContent = displayName;
+            const nameEl = document.getElementById(`tab-name-${currentSlot}`);
+            if (nameEl) nameEl.textContent = displayName;
 
             const tabSprite = document.getElementById(`tab-sprite-${currentSlot}`);
-            tabSprite.src = baseSprite;
-            tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite'; // Assuming it might have a class, but we don't have one globally. It didn't have one so we just set it. Wait, I'll just set mega-toggle.
-            if (megaUrl) {
-                tabSprite.dataset.base = baseSprite;
-                tabSprite.dataset.mega = megaUrl;
-                tabSprite.dataset.currentSrc = 'base';
-            } else {
-                tabSprite.dataset.mega = '';
+            if (tabSprite) {
+                tabSprite.src = baseSprite;
+                tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite';
+                if (megaUrl) {
+                    tabSprite.dataset.base = baseSprite;
+                    tabSprite.dataset.mega = megaUrl;
+                    tabSprite.dataset.currentSrc = 'base';
+                } else {
+                    tabSprite.dataset.mega = '';
+                }
             }
 
+            // Item Sprite Preview
             const itemSpr = document.getElementById('item-sprite-preview');
             if (p.item) {
+                itemSpr.dataset.fallback = 'false';
+                itemSpr.dataset.item = p.item;
                 itemSpr.src = getItemSpriteUrl(p.item);
                 itemSpr.style.display = 'block';
             } else {
                 itemSpr.style.display = 'none';
             }
 
+            // Stats Update
             const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
             let totalEVs = 0;
             Object.entries(keys).forEach(([key, dbKey]) => {
-                const baseVal = dbBase[dbKey];
-                const megaVal = dbMega[dbKey];
-                const ev = p.evs[key];
+                const baseVal = dbBase[dbKey] || 0;
+                const megaVal = dbMega[dbKey] || 0;
+                const ev = p.evs[key] || 0;
                 totalEVs += ev;
 
                 const baseStat = calculateStat(baseVal, p.ivs[key], ev, p.level, p.nature, key);
@@ -1622,7 +1686,6 @@
                     baseEl.dataset.megaVal = megaVal;
                     actEl.dataset.baseVal = baseStat;
                     actEl.dataset.megaVal = megaStat;
-
                     baseEl.textContent = megaToggleState === 'mega' ? megaVal : baseVal;
                     actEl.textContent = megaToggleState === 'mega' ? megaStat : baseStat;
                 } else {
@@ -1634,9 +1697,12 @@
                     actEl.textContent = baseStat;
                 }
 
-                document.querySelector(`.ev-slider[data-stat="${key}"]`).value = ev;
-                document.querySelector(`.ev-input[data-stat="${key}"]`).value = ev;
-                document.getElementById(`fill-${key}`).style.width = (ev / 252 * 100) + '%';
+                const slider = document.querySelector(`.ev-slider[data-stat="${key}"]`);
+                const input = document.querySelector(`.ev-input[data-stat="${key}"]`);
+                if (slider) slider.value = ev;
+                if (input) input.value = ev;
+                const fill = document.getElementById(`fill-${key}`);
+                if (fill) fill.style.width = (ev / 252 * 100) + '%';
 
                 // Stat Color highlighting for nature
                 const nature = natureMap[p.nature] || {};
@@ -1645,55 +1711,38 @@
                 else actEl.style.color = '#fff';
             });
 
-            // Nature Input Style Sync
-            natureIn.style.color = natureMap[p.nature].color;
-            natureIn.style.borderColor = natureMap[p.nature].color + '44';
-            natureIn.style.boxShadow = `0 0 15px ${natureMap[p.nature].color}22`;
+            // Nature Style
+            const natMeta = natureMap[p.nature] || { color: '#fff' };
+            natureIn.style.color = natMeta.color;
+            natureIn.style.borderColor = natMeta.color + '44';
+            natureIn.style.boxShadow = `0 0 15px ${natMeta.color}22`;
             document.getElementById('rem-ev').textContent = 508 - totalEVs;
 
-            document.getElementById('item-input').value = p.item || '';
-            const itemSprite = document.getElementById('item-sprite-preview');
-            if (p.item) {
-                itemSprite.dataset.fallback = 'false';
-                itemSprite.dataset.item = p.item;
-                itemSprite.src = getItemSpriteUrl(p.item);
-                itemSprite.style.display = 'block';
-            } else {
-                itemSprite.style.display = 'none';
-            }
-
+            // Moves Update
             p.moves.forEach((m, i) => {
-                document.querySelector(`.move-in[data-idx="${i}"]`).value = m;
+                const moveEl = document.querySelector(`.move-in[data-idx="${i}"]`);
+                if (moveEl) moveEl.value = m;
             });
 
-            // Binding Search Overlays
+            // Re-render Preset Chips
+            renderPresetChips(dbMega);
+
+            // Re-bind events to ensure freshness
             speciesIn.onclick = () => openSearch('species');
             document.querySelectorAll('.move-in').forEach(el => {
                 el.onclick = (e) => openSearch(`move-${e.target.dataset.idx}`);
             });
 
-            // Manual Item Entry
             const itemInput = document.getElementById('item-input');
-            itemInput.oninput = (e) => {
-                team[currentSlot].item = e.target.value;
-                const sprite = document.getElementById('item-sprite-preview');
-                if (e.target.value) {
-                    sprite.dataset.fallback = 'false';
-                    sprite.dataset.item = e.target.value;
-                    sprite.src = getItemSpriteUrl(e.target.value);
-                    sprite.style.display = 'block';
-                } else {
-                    sprite.style.display = 'none';
-                }
-            };
-            itemInput.onfocus = () => {
-                // Optional: Show search if empty or on a specific trigger? 
-                // For now, let's keep it purely typable as requested.
-            };
+            itemInput.onclick = () => openSearch('item');
 
-            [document.getElementById('nickname-input'), document.getElementById('ability-input'),
-            document.getElementById('tera-input'), document.getElementById('shiny-input'),
-            document.getElementById('gender-input'), levelIn, natureIn].forEach(el => {
+            document.getElementById('ability-input').onclick = () => openSearch('ability');
+
+            // Input handling for all inputs
+            [document.getElementById('nickname-input'), document.getElementById('tera-input'),
+            document.getElementById('shiny-input'), document.getElementById('gender-input'),
+            levelIn, natureIn].forEach(el => {
+                if (!el) return;
                 el.oninput = (e) => {
                     const id = e.target.id;
                     const p = team[currentSlot];
@@ -1711,6 +1760,62 @@
             evSliders.forEach(s => { s.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value); syncUI(); }; });
             evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
         } // end syncUI
+
+        function renderPresetChips(dbRef) {
+            const container = document.getElementById('preset-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const rec = getRecommendedPreset(dbRef);
+
+            Object.keys(PRESET_SPREADS).forEach(key => {
+                const preset = PRESET_SPREADS[key];
+                const chip = document.createElement('div');
+                chip.className = `preset-chip ${key === rec ? 'recommended' : ''}`;
+                chip.textContent = preset.name;
+                chip.onclick = (e) => {
+                    e.stopPropagation();
+                    applyPreset(key);
+                };
+                container.appendChild(chip);
+            });
+        }
+
+        function getRecommendedPreset(p) {
+            if (!p || !p.HP) return null;
+
+            const atk = parseInt(p.Attack) || 0;
+            const spa = parseInt(p["Sp.Atk"]) || 0;
+            const spe = parseInt(p.Speed) || 0;
+            const def = parseInt(p.Defense) || 0;
+            const spd = parseInt(p["Sp.Def"]) || 0;
+            const hp = parseInt(p.HP) || 0;
+
+            // Simple heuristics
+            if (spe >= 90) {
+                return atk >= spa ? 'fast_physical' : 'fast_special';
+            }
+
+            if (hp >= 90) {
+                if (atk > 90 || spa > 90) {
+                    return atk >= spa ? 'bulky_physical' : 'bulky_special';
+                }
+                return def >= spd ? 'physical_wall' : 'special_wall';
+            }
+
+            return atk >= spa ? 'fast_physical' : 'fast_special'; // Default
+        }
+
+        function applyPreset(key) {
+            const preset = PRESET_SPREADS[key];
+            if (!preset) return;
+
+            const p = team[currentSlot];
+            p.evs = JSON.parse(JSON.stringify(preset.evs));
+            p.nature = preset.nature;
+
+            syncUI();
+        }
 
         window.copyExport = async () => {
             const area = document.getElementById('export-textarea');

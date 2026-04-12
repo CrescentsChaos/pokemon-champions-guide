@@ -3378,5 +3378,12 @@
         "build": "Scizor @ Metal Coat  \nAbility: Technician  \nEVs: 248 HP / 8 Atk / 252 Def  \nImpish Nature  \n- Bullet Punch  \n- U-turn  \n- Protect  \n- Close Combat",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "480",
+        "pokemon": "Rotom-Heat",
+        "build": "Rotom-Heat @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \n- Protect  \n- Thunderbolt  \n- Overheat  \n- Helping Hand",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
