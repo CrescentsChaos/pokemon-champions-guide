@@ -247,7 +247,6 @@ function populatePokemonUI(pk) {
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
         const mData = movesDB.find(m => m.name === move.name);
-        // Multi-hit moves detection
         const isMulti = mData && (mData.name === 'Bullet Seed' || mData.name === 'Water Shuriken' || mData.name === 'Icicle Spear' || mData.name === 'Rock Blast' || mData.name === 'Pin Missile' || mData.name === 'Population Bomb' || mData.name === 'Dual Wingbeat' || mData.name === 'Surging Strikes' || mData.name === 'Bonemerang' || mData.name === 'Dragon Dart' || mData.name === 'Double Iron Bash');
         
         return `
@@ -256,14 +255,14 @@ function populatePokemonUI(pk) {
                 <option value="None">None</option>
                 ${movesDB.map(m => `<option value="${m.name}" ${move.name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
             </select>
-            <div class="move-configs" style="display: flex; gap: 8px; align-items: center;">
+            <div class="move-configs">
                 ${isMulti ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${[2,3,4,5,10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
                 </select>` : ''}
-                <label class="crit-label" style="display: flex; gap: 4px; align-items: center; white-space: nowrap;">
+                <label class="crit-label">
                     <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> 
-                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">CRIT</span>
+                    <span class="crit-text">CRIT</span>
                 </label>
             </div>
         </div>
@@ -345,7 +344,7 @@ function updateStatsUI(pk) {
                 <td><input type="number" value="${ev}" onchange="updateStatVal(${pk.id}, '${k}', 'evs', this.value)"></td>
                 <td>
                     ${k === 'hp' ? '' : `
-                    <select onchange="updateStatVal(${pk.id}, '${k}', 'boosts', this.value)" style="width: 50px; background: rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1); border-radius:4px; font-size: 0.75rem;">
+                    <select onchange="updateStatVal(${pk.id}, '${k}', 'boosts', this.value)" class="boost-select">
                         ${[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6].map(b => `<option value="${b}" ${boost == b ? 'selected' : ''}>${b > 0 ? '+' : ''}${b}</option>`).join('')}
                     </select>
                     `}
