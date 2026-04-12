@@ -242,6 +242,14 @@ function populatePokemonUI(pk) {
         const abilities = getPokemonAbilities(pkData);
         document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
     }
+
+    // Sprite Sync
+    const spriteImg = document.getElementById(`${p}-sprite`);
+    if (spriteImg) {
+        const clean = pk.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+        spriteImg.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        spriteImg.dataset.fallbackState = '0';
+    }
     
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
@@ -331,7 +339,7 @@ function updateStatsUI(pk) {
         const iv = pk.ivs[k];
         const ev = pk.evs[k];
         const boost = pk.boosts[k] || 0;
-        const total = calculateStat(k, base, iv, ev, pk.level, pk.nature);
+        const total = calculateStat(base, iv, ev, pk.level, pk.nature, k);
         pk.stats[k] = total;
         
         const boostedTotal = k === 'hp' ? total : getBoostValue(total, boost);
@@ -740,9 +748,41 @@ function populateDropdowns() {
 
 function showToast(msg) {
     const t = document.getElementById('toast');
+    if (!t) return console.log("Toast:", msg);
     t.innerText = msg;
     t.classList.add('active');
     setTimeout(() => t.classList.remove('active'), 3000);
+}
+
+window.handleSpriteError = function(img, name, shiny, item) {
+    if (!name || img.dataset.fallbackState === 'final') return;
+    
+    item = item || '';
+    const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+
+    let isMega = false;
+    let suffix = 'mega';
+    const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
+        isMega = true;
+        if (it.endsWith('itex')) suffix = 'megax';
+        else if (it.endsWith('itey')) suffix = 'megay';
+    }
+
+    if (!img.dataset.fallbackState || img.dataset.fallbackState === '0') {
+        img.dataset.fallbackState = '1';
+        if (isMega || name.includes('-Mega')) {
+            const actualSuffix = name.includes('-Mega-X') ? 'megax' : (name.includes('-Mega-Y') ? 'megay' : 'mega');
+            img.src = `../assets/mega-sprites/${clean}-${actualSuffix}.gif`;
+            return;
+        }
+    }
+
+    if (img.dataset.fallbackState === '1') {
+        img.dataset.fallbackState = 'final';
+        const folder = shiny ? 'xy-shiny' : 'xy';
+        img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+    }
 }
 
 document.getElementById('exclude-megas-calc').addEventListener('change', recalculate);

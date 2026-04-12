@@ -12,10 +12,22 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
 </head>
-<br>
-
 <body class="calc-page">
-    <script src="../js/main.js"></script>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="logo-wrap" onclick="window.location.href='../'">
+                <img src="../assets/champions-logo.png" alt="Logo" class="logo-img">
+                <span class="logo-text">CHAMPIONS GUIDE</span>
+            </div>
+            <div class="nav-links">
+                <a href="../teambuilder/">Builder</a>
+                <a href="../builds/">Library</a>
+                <a href="../pokedex/">Pokedex</a>
+                <a href="#" class="active">Calculator</a>
+                <a href="../compare/">Compare</a>
+            </div>
+        </div>
+    </nav>
 
     <main class="container">
         <div id="damage-banner" class="glass fade-in">
@@ -39,6 +51,9 @@
             <!-- Pokemon 1 (Attacker) -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
                 <div class="panel-header">
+                    <div class="sprite-container">
+                        <img id="p1-sprite" src="" alt="" onerror="handleSpriteError(this, p1.name, false, p1.item)">
+                    </div>
                     <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
                     <div class="search-results" id="p1-search-results"></div>
                 </div>
@@ -201,6 +216,9 @@
             <!-- Pokemon 2 (Defender) -->
             <div class="calc-panel glass defender-panel" id="p2-panel">
                 <div class="panel-header">
+                    <div class="sprite-container">
+                        <img id="p2-sprite" src="" alt="" onerror="handleSpriteError(this, p2.name, false, p2.item)">
+                    </div>
                     <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
                     <div class="search-results" id="p2-search-results"></div>
                 </div>

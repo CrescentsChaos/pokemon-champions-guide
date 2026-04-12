@@ -140,6 +140,27 @@ body.calc-page {
 .attacker-panel { border-top: 2px solid var(--primary-blue); box-shadow: 0 0 30px rgba(77, 148, 255, 0.05); }
 .defender-panel { border-top: 2px solid var(--primary-red); box-shadow: 0 0 30px rgba(255, 77, 77, 0.05); }
 
+/* --- Sprite Styling --- */
+.sprite-container {
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.sprite-container img {
+    max-height: 100px;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+    transition: transform 0.3s ease;
+}
+
+.sprite-container img:hover {
+    transform: scale(1.1);
+}
+
 /* --- Form Components --- */
 .search-input {
     width: 100%;
