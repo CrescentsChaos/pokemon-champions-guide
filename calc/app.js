@@ -584,21 +584,48 @@ function recalculate() {
     // KO Probability
     const koResult = document.getElementById('ko-result');
     const hp = defender.stats.hp * (defender.hpPercent / 100);
-    const rolls = res.rolls;
-    const ohkoCount = rolls.filter(r => r >= hp).length;
-    const ohkoProb = (ohkoCount / rolls.length * 100).toFixed(1);
+    koResult.innerText = getKOChance(res.rolls, hp);
+}
 
-    if (ohkoProb > 0) {
-        koResult.innerText = ohkoProb === "100.0" ? "Guaranteed OHKO" : `${ohkoProb}% chance to OHKO`;
-    } else {
-        // Check 2HKO (Simplified: average of roll sums)
-        const avg = rolls.reduce((a, b) => a + b, 0) / rolls.length;
-        if (avg * 2 >= hp) {
-            koResult.innerText = "Possible 2HKO";
-        } else {
-            koResult.innerText = "Nice play! (No immediate KO)";
+function getKOChance(rolls, hp) {
+    if (rolls.length === 0) return "No data";
+
+    // OHKO
+    const ohkoCount = rolls.filter(r => r >= hp).length;
+    if (ohkoCount > 0) {
+        const prob = (ohkoCount / rolls.length * 100).toFixed(1);
+        return (prob === "100.0" || prob === "100") ? "Guaranteed OHKO" : `${prob}% chance to OHKO`;
+    }
+
+    // 2HKO
+    let tHKOCount = 0;
+    for (let i = 0; i < rolls.length; i++) {
+        for (let j = 0; j < rolls.length; j++) {
+            if (rolls[i] + rolls[j] >= hp) tHKOCount++;
         }
     }
+    const total2 = rolls.length * rolls.length;
+    if (tHKOCount > 0) {
+        const prob = (tHKOCount / total2 * 100).toFixed(1);
+        return (prob === "100.0" || prob === "100") ? "Guaranteed 2HKO" : `${prob}% chance to 2HKO`;
+    }
+
+    // 3HKO
+    let threeHKOCount = 0;
+    for (let i = 0; i < rolls.length; i++) {
+        for (let j = 0; j < rolls.length; j++) {
+            for (let k = 0; k < rolls.length; k++) {
+                if (rolls[i] + rolls[j] + rolls[k] >= hp) threeHKOCount++;
+            }
+        }
+    }
+    const total3 = Math.pow(rolls.length, 3);
+    if (threeHKOCount > 0) {
+        const prob = (threeHKOCount / total3 * 100).toFixed(1);
+        return (prob === "100.0" || prob === "100") ? "Guaranteed 3HKO" : `${prob}% chance to 3HKO`;
+    }
+
+    return "Nice play! (No immediate KO)";
 }
 
 function renderMoveResults(p1Results, p2Results) {
@@ -911,10 +938,25 @@ function updateHPBar(id, percent) {
 
 function openImportModal(id) {
     importTargetId = id;
-    document.getElementById('import-target-label').innerText = `Importing for Pokemon ${id}`;
-    document.getElementById('import-modal').classList.add('active');
-    document.getElementById('paste-input').value = '';
-    document.getElementById('paste-input').focus();
+    const label = document.getElementById('import-target-label');
+    if (label) label.innerText = `Importing for Pokemon ${id}`;
+    
+    const modal = document.getElementById('import-modal');
+    modal.classList.add('active');
+    
+    // Auto-focus input
+    const input = document.getElementById('paste-input');
+    input.value = '';
+    setTimeout(() => input.focus(), 100);
+
+    // One-time listener for background click
+    const closeOnBg = (e) => {
+        if (e.target === modal) {
+            closeImportModal();
+            modal.removeEventListener('click', closeOnBg);
+        }
+    };
+    modal.addEventListener('click', closeOnBg);
 }
 
 function closeImportModal() {
@@ -1048,6 +1090,7 @@ window.handleSpriteError = function(img, name, shiny) {
         let suffix = 'mega';
         if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
         else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+        else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
 
         const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
         const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
@@ -1067,17 +1110,16 @@ window.handleSpriteError = function(img, name, shiny) {
 function getMegaSpriteUrl(p) {
     if (!p || !p.name || !p.item) return null;
     
-    // Exclude permanent forms from Mega toggling if that function exists, 
-    // but in calc we swap forms anyway. This is for visual sync.
     const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
     const base = p.shiny ? 'ani-shiny' : 'ani';
 
-    if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+    if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey') && !it.endsWith('itez')) return null;
     if (it === 'eviolite' || it === 'meteorite') return null;
 
     let suffix = '-mega';
     if (it.endsWith('itex')) suffix = '-megax';
     else if (it.endsWith('itey')) suffix = '-megay';
+    else if (it.endsWith('itez')) suffix = '-megaz';
 
     const clean = p.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;

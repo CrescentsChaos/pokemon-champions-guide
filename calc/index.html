@@ -304,12 +304,13 @@
 
     <div id="import-modal" class="modal">
         <div class="modal-content glass">
+            <button class="modal-close" onclick="closeImportModal()">&times;</button>
             <h3>Import PokePaste</h3>
-            <p id="import-target-label">Importing for Pokemon 1</p>
+            <p id="import-target-label" class="modal-subtitle">Importing for Pokemon 1</p>
             <textarea id="paste-input" placeholder="Paste your Pokemon set here..."></textarea>
             <div class="modal-actions">
-                <button class="field-btn" onclick="closeImportModal()">Cancel</button>
-                <button class="field-btn active" id="confirm-import">Import</button>
+                <button class="field-btn cancel-btn" onclick="closeImportModal()">Cancel</button>
+                <button class="field-btn active confirm-btn" id="confirm-import">Import Paste</button>
             </div>
         </div>
     </div>
