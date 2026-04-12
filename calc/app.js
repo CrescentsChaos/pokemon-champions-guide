@@ -187,11 +187,25 @@ function setupEventListeners() {
 
         document.getElementById(`${p}-tera`).addEventListener('change', (e) => {
             pk.tera = e.target.checked;
+            if (pk.name.startsWith("Terapagos") && pk.name !== "Terapagos") {
+                const target = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
+                if (pk.name !== target) {
+                    loadPokemon(id, target);
+                    return; // loadPokemon calls recalculate
+                }
+            }
             recalculate();
         });
 
         document.getElementById(`${p}-tera-type`).addEventListener('change', (e) => {
             pk.teraType = e.target.value;
+            if (pk.name.startsWith("Terapagos") && pk.name !== "Terapagos") {
+                const target = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
+                if (pk.name !== target) {
+                    loadPokemon(id, target);
+                    return; // loadPokemon calls recalculate
+                }
+            }
             recalculate();
         });
 
@@ -444,6 +458,17 @@ function populatePokemonUI(pk) {
         }
     }
 
+    const formeBtn = document.getElementById(`${p}-forme-toggle`);
+    if (formeBtn) {
+        const hasBattleForme = ["Terapagos", "Terapagos-Terastal", "Terapagos-Stellar", "Aegislash", "Aegislash-Blade", "Zygarde", "Zygarde-10%", "Zygarde-Complete", "Wishiwashi", "Wishiwashi-School"].includes(pk.name);
+        formeBtn.style.display = hasBattleForme ? 'inline-block' : 'none';
+        if (pk.name.includes("-Blade") || pk.name.includes("-School") || pk.name.includes("Terastal") || pk.name.includes("Stellar") || pk.name.includes("-Complete")) {
+            formeBtn.classList.add("active");
+        } else {
+            formeBtn.classList.remove("active");
+        }
+    }
+
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
@@ -496,6 +521,45 @@ function toggleMega(id) {
             showToast("No Mega form found for " + currentName);
             return;
         }
+    }
+
+    if (targetName) loadPokemon(id, targetName);
+}
+
+function toggleForme(id) {
+    const pk = id === 1 ? p1 : p2;
+    const currentName = pk.name;
+    const btn = document.getElementById(`p${id}-forme-toggle`);
+
+    let targetName = "";
+
+    // Terapagos rules
+    if (currentName === "Terapagos") {
+        targetName = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
+    } else if (currentName.startsWith("Terapagos")) {
+        targetName = "Terapagos";
+    }
+    // Aegislash rules
+    else if (currentName === "Aegislash") {
+        targetName = "Aegislash-Blade";
+    } else if (currentName === "Aegislash-Blade") {
+        targetName = "Aegislash";
+    }
+    // Zygarde rules
+    else if (currentName === "Zygarde" || currentName === "Zygarde-10%") {
+        targetName = "Zygarde-Complete";
+        pk.baseForme = currentName;
+    } else if (currentName === "Zygarde-Complete") {
+        targetName = pk.baseForme || "Zygarde";
+    }
+    // Wishiwashi rules
+    else if (currentName === "Wishiwashi") {
+        targetName = "Wishiwashi-School";
+    } else if (currentName === "Wishiwashi-School") {
+        targetName = "Wishiwashi";
+    } else {
+        showToast("No battle forme for " + currentName);
+        return;
     }
 
     if (targetName) loadPokemon(id, targetName);
@@ -731,6 +795,13 @@ function calculateDamage(attacker, defender, move, field) {
 
     // --- Move BP Adjustments ---
     let basePower = move.basePower;
+    let moveType = move.type;
+
+    // Stellar Tera Blast
+    if (move.name === 'Tera Blast' && attacker.tera && attacker.teraType === 'Stellar') {
+        moveType = 'Stellar';
+        basePower = 100;
+    }
 
     // Status boosts
     if (move.name === 'Facade' && attacker.status !== 'Healthy') basePower = 140;
@@ -786,7 +857,7 @@ function calculateDamage(attacker, defender, move, field) {
     }
 
     // Tera BP Boost (60 BP floor)
-    if (attacker.tera && move.type === attacker.teraType && basePower < 60 && basePower > 0) {
+    if (attacker.id === 1 && attacker.tera && moveType === attacker.teraType && basePower < 60 && basePower > 0 && attacker.teraType !== 'Stellar') {
         // Exclude Priority and Multi-hit from the 60 BP floor
         const isPriority = ['Quick Attack', 'Mach Punch', 'Aqua Jet', 'Ice Shard', 'Shadow Sneak', 'Sucker Punch', 'Fake Out', 'Bullet Punch', 'Vacuum Wave', 'Extreme Speed', 'Water Shuriken'].includes(move.name);
         if (!isPriority && !move.hits) {
@@ -808,11 +879,11 @@ function calculateDamage(attacker, defender, move, field) {
 
     // 1. Weather
     if (field.weather === 'Sun') {
-        if (move.type === 'Fire') modifier *= 1.5;
-        if (move.type === 'Water') modifier *= 0.5;
+        if (moveType === 'Fire') modifier *= 1.5;
+        if (moveType === 'Water') modifier *= 0.5;
     } else if (field.weather === 'Rain') {
-        if (move.type === 'Water') modifier *= 1.5;
-        if (move.type === 'Fire') modifier *= 0.5;
+        if (moveType === 'Water') modifier *= 1.5;
+        if (moveType === 'Fire') modifier *= 0.5;
     }
 
     // 2. Critical Hit
@@ -820,10 +891,12 @@ function calculateDamage(attacker, defender, move, field) {
 
     // 3. STAB
     let stab = 1.0;
-    let isOriginalSTAB = (move.type === attacker.type1 || move.type === attacker.type2);
+    let isOriginalSTAB = (moveType === attacker.type1 || moveType === attacker.type2);
 
     if (attacker.tera) {
-        if (move.type === attacker.teraType) {
+        if (attacker.teraType === 'Stellar') {
+            stab = isOriginalSTAB ? 2.0 : 1.2;
+        } else if (moveType === attacker.teraType) {
             stab = isOriginalSTAB ? 2.0 : 1.5;
             if (attacker.ability === 'Adaptability') stab = isOriginalSTAB ? 2.25 : 2.0;
         } else if (isOriginalSTAB) {
@@ -840,26 +913,33 @@ function calculateDamage(attacker, defender, move, field) {
 
     // Defender Tera Types
     let defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
-    if (defender.tera) {
+    if (defender.id === 1 && defender.tera && defender.teraType !== 'Stellar') {
+        defTypes = [defender.teraType];
+    } else if (defender.id === 2 && defender.tera && defender.teraType !== 'Stellar') {
+        // Handle slot 2 too (the attacker/defender logic is a bit mixed in recalculate)
         defTypes = [defender.teraType];
     }
 
-    // Calculate effectiveness first for Wonder Guard and Filter
-    defTypes.forEach(t => {
-        const interaction = typeChart[move.type.toLowerCase()]?.[t.toLowerCase()];
-        if (interaction !== undefined) typeMod *= interaction;
-    });
+    // Special case for Stellar Tera Blast vs Tera Target
+    if (moveType === 'Stellar') {
+        typeMod = defender.tera ? 2.0 : 1.0;
+    } else {
+        defTypes.forEach(t => {
+            const interaction = typeChart[moveType.toLowerCase()]?.[t.toLowerCase()];
+            if (interaction !== undefined) typeMod *= interaction;
+        });
+    }
 
     // Ability-based Immunities
     if (!isMoldBreaker) {
-        if (defender.ability === 'Wonder Guard' && typeMod <= 1 && move.type !== 'None') return res;
-        if (defender.ability === 'Levitate' && move.type === 'Ground') return res;
-        if (defender.ability === 'Flash Fire' && move.type === 'Fire') return res;
-        if ((defender.ability === 'Water Absorb' || defender.ability === 'Storm Drain') && move.type === 'Water') return res;
-        if ((defender.ability === 'Volt Absorb' || defender.ability === 'Lightning Rod') && move.type === 'Electric') return res;
-        if (defender.ability === 'Sap Sipper' && move.type === 'Grass') return res;
-        if (defender.ability === 'Earth Eater' && move.type === 'Ground') return res;
-        if (defender.ability === 'Well-Baked Body' && move.type === 'Fire') return res;
+        if (defender.ability === 'Wonder Guard' && typeMod <= 1 && moveType !== 'None') return res;
+        if (defender.ability === 'Levitate' && moveType === 'Ground') return res;
+        if (defender.ability === 'Flash Fire' && moveType === 'Fire') return res;
+        if ((defender.ability === 'Water Absorb' || defender.ability === 'Storm Drain') && moveType === 'Water') return res;
+        if ((defender.ability === 'Volt Absorb' || defender.ability === 'Lightning Rod') && moveType === 'Electric') return res;
+        if (defender.ability === 'Sap Sipper' && moveType === 'Grass') return res;
+        if (defender.ability === 'Earth Eater' && moveType === 'Ground') return res;
+        if (defender.ability === 'Well-Baked Body' && moveType === 'Fire') return res;
     }
 
     // Filter/Solid Rock/Primal Armor
@@ -1073,7 +1153,7 @@ function importPokePaste(id, paste) {
 }
 
 function populateDropdowns() {
-    const typeList = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
+    const typeList = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy', 'Stellar'];
     ['p1-type1', 'p1-type2', 'p1-tera-type', 'p2-type1', 'p2-type2', 'p2-tera-type'].forEach(s => {
         document.getElementById(s).innerHTML = typeList.map(t => `<option value="${t}">${t}</option>`).join('');
     });

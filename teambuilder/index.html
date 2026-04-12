@@ -786,7 +786,13 @@
 
                     <div class="input-group">
                         <span class="input-label">Tera Type</span>
-                        <input type="text" id="tera-input" class="builder-input" placeholder="Optional">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="tera-input" class="builder-input" placeholder="Optional" style="flex-grow: 1;">
+                            <label id="forme-toggle-group" style="display: none; align-items: center; gap: 5px; cursor: pointer; color: white; white-space: nowrap;">
+                                <input type="checkbox" id="forme-toggle" style="width: 16px; height: 16px;">
+                                Battle Forme
+                            </label>
+                        </div>
                     </div>
 
                     <div class="moves-grid" id="moves-grid">
@@ -1476,10 +1482,25 @@
         }
 
         function getMegaSpriteUrl(p) {
-            if (!p.species || !p.item) return null;
-            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!p.species) return null;
             const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
+
+            if (p.useBattleForme) {
+                if (p.species === "Terapagos") {
+                    return (p.tera && p.tera.toLowerCase() === "stellar") ? `https://play.pokemonshowdown.com/sprites/${base}/terapagos-stellar.gif` : `https://play.pokemonshowdown.com/sprites/${base}/terapagos-terastal.gif`;
+                } else if (p.species === "Aegislash") {
+                    return `https://play.pokemonshowdown.com/sprites/${base}/aegislash-blade.gif`;
+                } else if (p.species === "Zygarde" || p.species === "Zygarde-10%") {
+                    return `https://play.pokemonshowdown.com/sprites/${base}/zygarde-complete.gif`;
+                } else if (p.species === "Wishiwashi") {
+                    return `https://play.pokemonshowdown.com/sprites/${base}/wishiwashi-school.gif`;
+                }
+            }
+
+            if (!p.item) return null;
+            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+
 
             // Zacian + Rusted Sword → Zacian-Crowned
             if (species === 'zacian' && it === 'rustedsword') {
@@ -1560,6 +1581,24 @@
             const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             let dbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
 
+            if (p.useBattleForme) {
+                let targetName = "";
+                if (p.species === "Terapagos") {
+                    targetName = (p.tera && p.tera.toLowerCase() === "stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
+                } else if (p.species === "Aegislash") {
+                    targetName = "Aegislash-Blade";
+                } else if (p.species === "Zygarde" || p.species === "Zygarde-10%") {
+                    targetName = "Zygarde-Complete";
+                } else if (p.species === "Wishiwashi") {
+                    targetName = "Wishiwashi-School";
+                }
+                if (targetName) {
+                    const targetDbRef = pokemonList.find(x => x.Name === targetName);
+                    if (targetDbRef) return targetDbRef;
+                }
+            }
+
+
             if (p.item) {
                 const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -1619,6 +1658,15 @@
             }
 
             document.getElementById('tera-input').value = p.tera || '';
+
+            const toggleGrp = document.getElementById('forme-toggle-group');
+            const toggleChk = document.getElementById('forme-toggle');
+            if (toggleGrp && toggleChk) {
+                const hasBattleForme = ["Terapagos", "Aegislash", "Zygarde", "Zygarde-10%", "Wishiwashi"].includes(p.species);
+                toggleGrp.style.display = hasBattleForme ? 'flex' : 'none';
+                toggleChk.checked = !!p.useBattleForme;
+            }
+
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
             document.getElementById('gender-input').value = p.gender || '';
             levelIn.value = p.level;
@@ -2021,7 +2069,7 @@
                     grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
                     ground: '#E2BF65', flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
                     rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
-                    fairy: '#D685AD', dark: '#705746'
+                    fairy: '#D685AD', dark: '#705746', stellar: '#44BBAA'
                 };
                 const statColors = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
                 const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
@@ -2923,6 +2971,22 @@
         }
 
         window.onclick = (e) => { if (e.target.className === 'overlay') e.target.style.display = 'none'; };
+
+        document.getElementById('gender-input').addEventListener('change', (e) => {
+            if (currentSlot >= 0) { team[currentSlot].gender = e.target.value; saveTeam(); }
+        });
+
+        document.getElementById('forme-toggle').addEventListener('change', (e) => {
+            if (currentSlot >= 0) {
+                team[currentSlot].useBattleForme = e.target.checked;
+                syncUI();
+                saveTeam();
+            }
+        });
+
+        document.getElementById('level-input').addEventListener('input', (e) => {
+            if (currentSlot >= 0) { team[currentSlot].level = parseInt(e.target.value) || 100; saveTeam(); }
+        });
 
         // ── Startup: wire all static UI immediately, don't wait for data ──
         setupTabs();

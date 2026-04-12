@@ -10078,5 +10078,17 @@
     "generation": "Generation IX",
     "short_descripton": "The user loses 1/2 of its max HP to create a substitute, then switches out of battle to be replaced by another party Pokémon. The substitute will be hit by moves instead of that Pokémon, and it will vanish when it takes damage equal to 1/4 of the user's max HP.",
     "damage_class": "Status"
+  },
+  {
+    "name": "Double Shock",
+    "id": 859,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 120,
+    "priority": 0,
+    "type": "Electric",
+    "generation": "Generation IX",
+    "short_descripton": "The user loses the Electric type. This move fails unless it is used by an Electric type.",
+    "damage_class": "Physical"
   }
 ]
