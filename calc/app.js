@@ -599,6 +599,12 @@ function updateStatsUI(pk) {
         pk.stats[k] = calculateStat(base, pk.ivs[k], pk.evs[k], pk.level, pk.nature, k);
     });
 
+    const choiceItem = (pk.item || '').toLowerCase();
+    const choiceBoostStat = choiceItem === 'choice band' ? 'atk'
+        : choiceItem === 'choice specs' ? 'spa'
+        : choiceItem === 'choice scarf' ? 'spe'
+        : null;
+
     const side = pk.id === 1 ? field.side1 : field.side2;
 
     tbody.innerHTML = statsKeys.map(k => {
@@ -612,7 +618,18 @@ function updateStatsUI(pk) {
             displayTotal = applyParadoxBoost(pk, displayTotal, k, field, side);
         }
 
+        // Apply choice item visual multiplier
+        const isChoiceBoosted = k !== 'hp' && k === choiceBoostStat;
+        if (isChoiceBoosted) {
+            displayTotal = Math.floor(displayTotal * 1.5);
+        }
+
         const boostedTotal = k === 'hp' ? displayTotal : getBoostValue(displayTotal, boost);
+
+        const choiceStyle = isChoiceBoosted
+            ? 'color: #ffd76f; font-weight: 900; text-shadow: 0 0 8px rgba(255,200,80,0.6);'
+            : '';
+        const choiceTitle = isChoiceBoosted ? ` title="×1.5 from ${pk.item}"` : '';
 
         return `
             <tr>
@@ -627,7 +644,7 @@ function updateStatsUI(pk) {
                     </select>
                     `}
                 </td>
-                <td class="stat-total" id="${p}-${k}-total">${boostedTotal}</td>
+                <td class="stat-total" id="${p}-${k}-total" style="${choiceStyle}"${choiceTitle}>${boostedTotal}</td>
             </tr>
         `;
     }).join('');
@@ -641,8 +658,8 @@ function getBoostValue(val, boost) {
 
 function applyParadoxBoost(pk, rawStat, statKey, field, side) {
     let active = false;
-    if (pk.ability === 'Protosynthesis' && (field.weather === 'Sun' || side.protosynthesis || (pk.item && pk.item.toLowerCase() === 'booster energy'))) active = true;
-    if (pk.ability === 'Quark Drive' && (field.terrain === 'Electric' || side.quarkDrive || (pk.item && pk.item.toLowerCase() === 'booster energy'))) active = true;
+    if (pk.ability === 'Protosynthesis' && (field.weather === 'Sun' || side.protosynthesis)) active = true;
+    if (pk.ability === 'Quark Drive' && (field.terrain === 'Electric' || side.quarkDrive)) active = true;
 
     if (!active) return rawStat;
 
@@ -1331,6 +1348,8 @@ window.handleSpriteError = function (img, name, shiny) {
         const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
         const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
         img.src = `../assets/mega-sprites/${fileName}.gif`;
+        
+        if (img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
         return;
     }
 
