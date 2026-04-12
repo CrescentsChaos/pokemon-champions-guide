@@ -659,6 +659,12 @@ function calculateDamage(attacker, defender, move, field) {
     let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
     let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
 
+    // --- Foul Play Mechanic ---
+    if (move.name === 'Foul Play') {
+        rawAtk = defender.stats.atk;
+        atkBoost = defender.boosts.atk;
+    }
+
     // --- Weather Stat Boosts ---
     if (field.weather === 'Snow' && (defender.type1 === 'Ice' || defender.type2 === 'Ice' || (defender.tera && defender.teraType === 'Ice')) && !isSpecial) {
         rawDef = Math.floor(rawDef * 1.5);
@@ -730,6 +736,15 @@ function calculateDamage(attacker, defender, move, field) {
         else if (defWeight >= 25.0) basePower = 60;
         else if (defWeight >= 10.0) basePower = 40;
         else basePower = 20;
+    }
+
+    // Stored Power / Power Trip
+    if (move.name === 'Stored Power' || move.name === 'Power Trip') {
+        let positiveBoosts = 0;
+        for (let k in attacker.boosts) {
+            if (attacker.boosts[k] > 0) positiveBoosts += attacker.boosts[k];
+        }
+        basePower = 20 + (20 * positiveBoosts);
     }
 
     // Tera BP Boost (60 BP floor)
@@ -827,6 +842,10 @@ function calculateDamage(attacker, defender, move, field) {
     // 7. Life Orb
     if (item === 'life orb') modifier *= 1.3;
 
+    // 8. Helping Hand
+    const attackerSide = attacker.id === 1 ? field.side1 : field.side2;
+    if (attackerSide.helpingHand) modifier *= 1.5;
+
     // --- Damage Rolls ---
     let rolls = [];
     for (let i = 85; i <= 100; i++) {
@@ -875,6 +894,7 @@ function updateFieldState() {
                 lightScreen: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Light Screen'),
                 auroraVeil: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Aurora Veil'),
                 protect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protect'),
+                helpingHand: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Helping Hand'),
                 spikes: parseInt(Array.from(btns).find(b => b.getAttribute('data-effect') === 'Spikes')?.getAttribute('data-count') || 0)
             };
         }
