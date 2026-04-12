@@ -229,6 +229,61 @@ input:hover {
     border-color: rgba(255, 255, 255, 0.15);
 }
 
+/* --- Pokemon Config Grid --- */
+.config-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.tera-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.tera-toggle:has(input:checked) {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mega-btn {
+    width: 100%;
+    margin: 0 !important;
+}
+
+.level-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+    padding: 0 5px;
+}
+
+.level-row span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.level-row input {
+    width: 70px;
+    text-align: center;
+}
+
 /* --- Move Configuration Row --- */
 .move-configs {
     display: flex;
@@ -309,9 +364,10 @@ input:hover {
 }
 
 .stats-table input[type="number"] {
-    width: 60px;
+    width: 72px;
     text-align: center;
     background: rgba(0, 0, 0, 0.15);
+    padding: 8px 4px;
 }
 
 .stat-label {
