@@ -626,6 +626,34 @@ function getBoostValue(val, boost) {
     return Math.floor(val * 2 / (2 + Math.abs(boost)));
 }
 
+function applyParadoxBoost(pk, rawStat, statKey, field, side) {
+    let active = false;
+    if (pk.ability === 'Protosynthesis' && (field.weather === 'Sun' || side.protosynthesis || (pk.item && pk.item.toLowerCase() === 'booster energy'))) active = true;
+    if (pk.ability === 'Quark Drive' && (field.terrain === 'Electric' || side.quarkDrive || (pk.item && pk.item.toLowerCase() === 'booster energy'))) active = true;
+
+    if (!active) return rawStat;
+
+    const stats = pk.stats;
+    const order = ['atk', 'def', 'spa', 'spd', 'spe'];
+    // Find highest absolute stat. If tied, use the standard priority order
+    let highestList = [];
+    let maxVal = -1;
+    for (let k of order) {
+        if (stats[k] > maxVal) {
+            maxVal = stats[k];
+            highestList = [k];
+        } else if (stats[k] === maxVal) {
+            highestList.push(k);
+        }
+    }
+    const highest = highestList[0];
+
+    if (highest === statKey) {
+        return Math.floor(rawStat * (highest === 'spe' ? 1.5 : 1.3));
+    }
+    return rawStat;
+}
+
 function updateStatVal(id, k, type, val) {
     const pk = id === 1 ? p1 : p2;
     pk[type][k] = parseInt(val) || 0;
@@ -761,10 +789,17 @@ function calculateDamage(attacker, defender, move, field) {
     let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
     let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
 
+    const attackerSide = attacker.id === 1 ? field.side1 : field.side2;
+    const defenderSide = defender.id === 1 ? field.side1 : field.side2;
+
+    rawAtk = applyParadoxBoost(attacker, rawAtk, isSpecial ? 'spa' : 'atk', field, attackerSide);
+    rawDef = applyParadoxBoost(defender, rawDef, isSpecial ? 'spd' : 'def', field, defenderSide);
+
     // --- Foul Play Mechanic ---
     if (move.name === 'Foul Play') {
         rawAtk = defender.stats.atk;
         atkBoost = defender.boosts.atk;
+        rawAtk = applyParadoxBoost(defender, rawAtk, 'atk', field, defenderSide);
     }
 
     // --- Weather Stat Boosts ---
@@ -957,16 +992,40 @@ function calculateDamage(attacker, defender, move, field) {
 
     // 6. Screens
     const defSide = defender.id === 1 ? field.side1 : field.side2;
-    if (!move.crit) {
-        if (isSpecial && defSide.lightScreen) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
-        if (!isSpecial && defSide.reflect) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
+    if (!move.crit && attacker.ability !== 'Infiltrator') {
+        if (isSpecial && (defSide.lightScreen || defSide.auroraVeil)) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
+        if (!isSpecial && (defSide.reflect || defSide.auroraVeil)) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
     }
 
-    // 7. Life Orb
+    // 7. Items
     if (item === 'life orb') modifier *= 1.3;
+    if (item === 'expert belt' && typeMod > 1) modifier *= 1.2;
+
+    const typeItems = {
+        'normal': ['silk scarf'],
+        'fire': ['charcoal', 'flame plate'],
+        'water': ['mystic water', 'sea incense', 'wave incense', 'splash plate'],
+        'grass': ['miracle seed', 'rose incense', 'meadow plate'],
+        'electric': ['magnet', 'zap plate'],
+        'ice': ['never-melt ice', 'icicle plate'],
+        'fighting': ['black belt', 'fist plate'],
+        'poison': ['poison barb', 'toxic plate'],
+        'ground': ['soft sand', 'earth plate'],
+        'flying': ['sharp beak', 'sky plate'],
+        'psychic': ['twisted spoon', 'odd incense', 'mind plate'],
+        'bug': ['silver powder', 'insect plate'],
+        'rock': ['hard stone', 'rock incense', 'stone plate'],
+        'ghost': ['spell tag', 'spooky plate'],
+        'dragon': ['dragon fang', 'draco plate'],
+        'dark': ['black glasses', 'dread plate'],
+        'steel': ['metal coat', 'iron plate'],
+        'fairy': ['pixie plate', 'fairy feather']
+    };
+    if (typeItems[moveType.toLowerCase()] && typeItems[moveType.toLowerCase()].includes(item)) {
+        modifier *= 1.2;
+    }
 
     // 8. Helping Hand
-    const attackerSide = attacker.id === 1 ? field.side1 : field.side2;
     if (attackerSide.helpingHand) modifier *= 1.5;
 
     // --- Damage Rolls ---
@@ -1018,6 +1077,8 @@ function updateFieldState() {
                 auroraVeil: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Aurora Veil'),
                 protect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protect'),
                 helpingHand: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Helping Hand'),
+                protosynthesis: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protosynthesis'),
+                quarkDrive: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Quark Drive'),
                 spikes: parseInt(Array.from(btns).find(b => b.getAttribute('data-effect') === 'Spikes')?.getAttribute('data-count') || 0)
             };
         }
