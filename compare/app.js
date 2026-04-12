@@ -317,6 +317,7 @@ function renderStatsEditor(num) {
             <td style="text-align: center;">
                 <input type="number" class="type-input" style="width: 50px; text-align: center; padding: 4px;" id="p${num}-iv-${stat}" value="${p.ivs[stat]}" min="0" max="31">
             </td>
+            <td style="text-align: center; font-weight: 800; color: #fff;">${p.stats[stat] || 0}</td>
         `;
         tbody.appendChild(row);
 

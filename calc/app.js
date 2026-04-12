@@ -83,6 +83,7 @@ function setupPokemonState(id) {
         name: '', baseStats: {}, stats: {},
         level: 100, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
         evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+        boosts: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
         nature: 'Hardy', ability: 'None', item: 'None', status: 'Healthy',
         type1: 'None', type2: 'None', tera: false, teraType: 'Normal',
         moves: Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })),
@@ -248,19 +249,35 @@ function updateStatsUI(pk) {
         const base = pk.baseStats[k] || 0;
         const iv = pk.ivs[k];
         const ev = pk.evs[k];
+        const boost = pk.boosts[k] || 0;
         const total = calculateStat(k, base, iv, ev, pk.level, pk.nature);
         pk.stats[k] = total;
         
+        const boostedTotal = k === 'hp' ? total : getBoostValue(total, boost);
+
         return `
             <tr>
                 <td class="stat-label">${k.toUpperCase()}</td>
                 <td>${base}</td>
                 <td><input type="number" value="${iv}" onchange="updateStatVal(${pk.id}, '${k}', 'ivs', this.value)"></td>
                 <td><input type="number" value="${ev}" onchange="updateStatVal(${pk.id}, '${k}', 'evs', this.value)"></td>
-                <td class="stat-total" id="${p}-${k}-total">${total}</td>
+                <td>
+                    ${k === 'hp' ? '' : `
+                    <select onchange="updateStatVal(${pk.id}, '${k}', 'boosts', this.value)" style="width: 50px; background: rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1); border-radius:4px; font-size: 0.75rem;">
+                        ${[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6].map(b => `<option value="${b}" ${boost == b ? 'selected' : ''}>${b > 0 ? '+' : ''}${b}</option>`).join('')}
+                    </select>
+                    `}
+                </td>
+                <td class="stat-total" id="${p}-${k}-total">${boostedTotal}</td>
             </tr>
         `;
     }).join('');
+}
+
+function getBoostValue(val, boost) {
+    if (boost === 0) return val;
+    if (boost > 0) return Math.floor(val * (2 + boost) / 2);
+    return Math.floor(val * 2 / (2 + Math.abs(boost)));
 }
 
 function updateStatVal(id, k, type, val) {
@@ -355,39 +372,94 @@ function calculateDamage(attacker, defender, move, field) {
     
     const level = attacker.level;
     const isSpecial = move.category === 'Special';
-    let atk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
-    let def = isSpecial ? defender.stats.spd : defender.stats.def;
-
-    let modifier = 1;
-    if (move.type === attacker.type1 || move.type === attacker.type2) modifier *= 1.5;
     
-    let eff = 1;
-    const defTypes = [defender.type1, defender.type2];
-    defTypes.forEach(t => {
-        const interaction = typeChart[move.type.toLowerCase()]?.[t.toLowerCase()];
-        if (interaction !== undefined) eff *= interaction;
-    });
-    modifier *= eff;
-    if (eff === 0) return res;
-
-    if (field.weather === 'Sun' && move.type === 'Fire') modifier *= 1.5;
-    if (field.weather === 'Sun' && move.type === 'Water') modifier *= 0.5;
-    if (field.weather === 'Rain' && move.type === 'Water') modifier *= 1.5;
-    if (field.weather === 'Rain' && move.type === 'Fire') modifier *= 0.5;
-
-    const baseDamage = Math.floor(Math.floor(Math.floor((2 * level / 5 + 2) * move.basePower * atk / def) / 50) + 2);
+    // --- Stats & Boosts ---
+    let atkBoost = isSpecial ? attacker.boosts.spa : attacker.boosts.atk;
+    let defBoost = isSpecial ? defender.boosts.spd : defender.boosts.def;
     
-    const rolls = [];
-    for (let i = 85; i <= 100; i++) {
-        rolls.push(Math.floor(baseDamage * i / 100 * modifier));
+    // Critical hits ignore negative attack boosts and positive defense boosts
+    if (move.crit) {
+        if (atkBoost < 0) atkBoost = 0;
+        if (defBoost > 0) defBoost = 0;
     }
     
-    const min = rolls[0];
-    const max = rolls[rolls.length - 1];
-    const defHp = defender.stats.hp;
+    let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
+    let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
 
-    res.minPercent = (min / defHp * 100).toFixed(1);
-    res.maxPercent = (max / defHp * 100).toFixed(1);
+    // Apply Items/Abilities to raw stats (Simplified)
+    const item = (attacker.item || '').toLowerCase();
+    if (item === 'choice band' && !isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
+    if (item === 'choice specs' && isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
+    if (item === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5); // very simplified check
+
+    let atk = getBoostValue(rawAtk, atkBoost);
+    let def = getBoostValue(rawDef, defBoost);
+
+    // --- Base Damage Calculation ---
+    // Formula: floor(floor(floor(2 * L / 5 + 2) * BP * A / D) / 50) + 2
+    let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * move.basePower * atk / def) / 50) + 2;
+
+    // --- Modifiers ---
+    let modifier = 1.0;
+
+    // 1. Weather
+    if (field.weather === 'Sun') {
+        if (move.type === 'Fire') modifier *= 1.5;
+        if (move.type === 'Water') modifier *= 0.5;
+    } else if (field.weather === 'Rain') {
+        if (move.type === 'Water') modifier *= 1.5;
+        if (move.type === 'Fire') modifier *= 0.5;
+    }
+
+    // 2. Critical Hit
+    if (move.crit) modifier *= 1.5;
+
+    // 3. STAB
+    let stab = 1.0;
+    const isSTAB = (move.type === attacker.type1 || move.type === attacker.type2);
+    if (isSTAB) stab = 1.5;
+    if (attacker.tera && move.type === attacker.teraType) {
+        stab = (stab === 1.5) ? 2.0 : 1.5;
+    }
+    modifier *= stab;
+
+    // 4. Type Effectiveness
+    let typeMod = 1.0;
+    const defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
+    defTypes.forEach(t => {
+        const interaction = typeChart[move.type.toLowerCase()]?.[t.toLowerCase()];
+        if (interaction !== undefined) typeMod *= interaction;
+    });
+    modifier *= typeMod;
+    if (typeMod === 0) return res;
+
+    // 5. Burn
+    if (attacker.status === 'Burned' && !isSpecial && attacker.ability !== 'Guts') {
+        modifier *= 0.5;
+    }
+
+    // 6. Screens
+    const defSide = defender.id === 1 ? field.side1 : field.side2;
+    if (!move.crit) {
+        if (isSpecial && defSide.lightScreen) modifier *= (field.format === 'Doubles' ? 2/3 : 0.5);
+        if (!isSpecial && defSide.reflect) modifier *= (field.format === 'Doubles' ? 2/3 : 0.5);
+    }
+    
+    // 7. Life Orb
+    if (item === 'life orb') modifier *= 1.3;
+
+    // --- Damage Rolls ---
+    const rolls = [];
+    for (let i = 85; i <= 100; i++) {
+        // Roll = floor(BaseDamage * i / 100) * Modifiers
+        let r = Math.floor(baseDamage * i / 100);
+        r = Math.floor(r * modifier);
+        rolls.push(r);
+    }
+    
+    const defHp = defender.stats.hp;
+    res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
+    res.maxPercent = (rolls[15] / defHp * 100).toFixed(1);
     res.rolls = rolls;
     return res;
 }
@@ -398,6 +470,20 @@ function updateFieldState() {
     field.weather = activeWeather ? activeWeather.getAttribute('data-weather') : 'None';
     const activeTerrain = document.querySelector('[data-terrain].active');
     field.terrain = activeTerrain ? activeTerrain.getAttribute('data-terrain') : 'None';
+    
+    // Side Effects
+    ['side1', 'side2'].forEach((side, i) => {
+        const panel = document.querySelectorAll('.sides-row .side-controls')[i];
+        if (panel) {
+            const btns = panel.querySelectorAll('.field-btn.active');
+            field[side] = {
+                reflect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Reflect'),
+                lightScreen: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Light Screen'),
+                auroraVeil: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Aurora Veil'),
+                spikes: parseInt(Array.from(btns).find(b => b.getAttribute('data-effect') === 'Spikes')?.getAttribute('data-count') || 0)
+            };
+        }
+    });
 }
 
 function updateHPBar(id, percent) {
