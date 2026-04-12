@@ -892,7 +892,9 @@
 
     <script src="../js/main.js"></script>
     <script src="../js/utils.js"></script>
+
     <script>
+
         // Data & State
         let allPokemon = [];
         let allMoves = [];
@@ -1356,7 +1358,26 @@
         function selectItem(name) {
             const p = team[currentSlot];
             if (overlayTarget === 'species') p.species = name;
-            else if (overlayTarget === 'item') p.item = name;
+            else if (overlayTarget === 'item') {
+                p.item = name;
+                if (p.species) {
+                    const nextForm = getPermanentForm(p);
+                    if (nextForm) {
+                        p.species = nextForm;
+                    } else {
+                        // Revert to base form if item removed or changed to non-form item
+                        const s = p.species.toLowerCase();
+                        if (s.startsWith('ogerpon-')) p.species = 'Ogerpon';
+                        else if (s.startsWith('zacian-')) p.species = 'Zacian';
+                        else if (s.startsWith('zamazenta-')) p.species = 'Zamazenta';
+                        else if (s.startsWith('arceus-')) p.species = 'Arceus';
+                        else if (s.startsWith('silvally-')) p.species = 'Silvally';
+                        else if (s.startsWith('giratina-')) p.species = 'Giratina';
+                        else if (s.startsWith('dialga-')) p.species = 'Dialga';
+                        else if (s.startsWith('palkia-')) p.species = 'Palkia';
+                    }
+                }
+            }
             else if (overlayTarget === 'ability') p.ability = name;
             else {
                 const idx = overlayTarget.split('-')[1];
@@ -1365,6 +1386,7 @@
             overlay.style.display = 'none';
             syncUI();
         }
+
 
         searchInput.oninput = (e) => updateSearchResults(e.target.value);
 

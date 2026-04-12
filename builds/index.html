@@ -767,52 +767,7 @@
             return pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
         }
 
-        function getPermanentForm(p) {
-            if (!p || !p.species || !p.item) return null;
-            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-            // Zacian-Crowned
-            if (species === 'zacian' && it === 'rustedsword') return 'zaciancrowned';
-            // Zamazenta-Crowned
-            if (species === 'zamazenta' && it === 'rustedshield') return 'zamazentacrowned';
-            // Giratina-Origin
-            if (species === 'giratina' && (it === 'griseousorb' || it === 'griseouscore')) return 'giratinaorigin';
-            // Dialga-Origin
-            if (species === 'dialga' && (it === 'adamantcrystal' || it === 'adamantorb')) return 'dialgaorigin';
-            // Palkia-Origin
-            if (species === 'palkia' && (it === 'lustrousglobe' || it === 'lustrousorb')) return 'palkiaorigin';
-            // Ogerpon Forms
-            if (species === 'ogerpon') {
-                if (it === 'wellspringmask') return 'ogerponwellspring';
-                if (it === 'hearthflamemask') return 'ogerponhearthflame';
-                if (it === 'cornerstonemask') return 'ogerponcornerstone';
-            }
-            // Arceus Forms
-            if (species === 'arceus') {
-                const plateTypes = {
-                    'insectplate': 'bug', 'dreadplate': 'dark', 'dracoplate': 'dragon', 'zapplate': 'electric',
-                    'pixieplate': 'fairy', 'fistplate': 'fighting', 'flameplate': 'fire', 'skyplate': 'flying',
-                    'spookyplate': 'ghost', 'meadowplate': 'grass', 'earthplate': 'ground', 'icicleplate': 'ice',
-                    'toxicplate': 'poison', 'mindplate': 'psychic', 'stoneplate': 'rock', 'ironplate': 'steel',
-                    'splashplate': 'water'
-                };
-                if (plateTypes[it]) return 'arceus' + plateTypes[it];
-            }
-            // Silvally Forms
-            if (species === 'silvally') {
-                const memoryTypes = {
-                    'bugmemory': 'bug', 'darkmemory': 'dark', 'dragonmemory': 'dragon', 'electricmemory': 'electric',
-                    'fairymemory': 'fairy', 'fightingmemory': 'fighting', 'firememory': 'fire', 'flyingmemory': 'flying',
-                    'ghostmemory': 'ghost', 'grassmemory': 'grass', 'groundmemory': 'ground', 'icememory': 'ice',
-                    'poisonmemory': 'poison', 'psychicmemory': 'psychic', 'rockmemory': 'rock', 'steelmemory': 'steel',
-                    'watermemory': 'water'
-                };
-                if (memoryTypes[it]) return 'silvally' + memoryTypes[it];
-            }
-
-            return null;
-        }
 
         function getEffectivePokemonData(p, pokemonList) {
             const dbRef = getBasePokemonData(p, pokemonList);

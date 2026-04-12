@@ -86,5 +86,55 @@ function calculateStat(base, iv, ev, level, natureType, statKey) {
 
 // Export for Node environments (testing)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { getPokemonAbilities, calculateStat };
+    module.exports = { getPokemonAbilities, calculateStat, getPermanentForm };
+}
+
+function getPermanentForm(p) {
+    if (!p) return null;
+    const item = (p.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const species = (p.species || p.Name || p.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // Zacian-Crowned
+    if (species === 'zacian' && item === 'rustedsword') return 'Zacian-Crowned';
+    // Zamazenta-Crowned
+    if (species === 'zamazenta' && item === 'rustedshield') return 'Zamazenta-Crowned';
+    // Giratina-Origin
+    if (species === 'giratina' && (item === 'griseousorb' || item === 'griseouscore')) return 'Giratina-Origin';
+    // Dialga-Origin
+    if (species === 'dialga' && (item === 'adamantcrystal' || item === 'adamantorb')) return 'Dialga-Origin';
+    // Palkia-Origin
+    if (species === 'palkia' && (item === 'lustrousglobe' || item === 'lustrousorb')) return 'Palkia-Origin';
+    
+    // Ogerpon Forms
+    if (species === 'ogerpon') {
+        if (item === 'wellspringmask') return 'Ogerpon-Wellspring';
+        if (item === 'hearthflamemask') return 'Ogerpon-Hearthflame';
+        if (item === 'cornerstonemask') return 'Ogerpon-Cornerstone';
+    }
+
+    // Arceus Forms
+    if (species === 'arceus') {
+        const plates = {
+            'insectplate': 'Bug', 'dreadplate': 'Dark', 'dracoplate': 'Dragon', 'zapplate': 'Electric',
+            'pixieplate': 'Fairy', 'fistplate': 'Fighting', 'flameplate': 'Fire', 'skyplate': 'Flying',
+            'spookyplate': 'Ghost', 'meadowplate': 'Grass', 'earthplate': 'Ground', 'icicleplate': 'Ice',
+            'toxicplate': 'Poison', 'mindplate': 'Psychic', 'stoneplate': 'Rock', 'ironplate': 'Steel',
+            'splashplate': 'Water'
+        };
+        if (plates[item]) return 'Arceus-' + plates[item];
+    }
+
+    // Silvally Forms
+    if (species === 'silvally') {
+        const memories = {
+            'bugmemory': 'Bug', 'darkmemory': 'Dark', 'dragonmemory': 'Dragon', 'electricmemory': 'Electric',
+            'fairymemory': 'Fairy', 'fightingmemory': 'Fighting', 'firememory': 'Fire', 'flyingmemory': 'Flying',
+            'ghostmemory': 'Ghost', 'grassmemory': 'Grass', 'groundmemory': 'Ground', 'icememory': 'Ice',
+            'poisonmemory': 'Poison', 'psychicmemory': 'Psychic', 'rockmemory': 'Rock', 'steelmemory': 'Steel',
+            'watermemory': 'Water'
+        };
+        if (memories[item]) return 'Silvally-' + memories[item];
+    }
+
+    return null;
 }

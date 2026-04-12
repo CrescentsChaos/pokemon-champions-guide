@@ -234,66 +234,49 @@ function setupInputListeners() {
             if (el) {
                 el.addEventListener('change', (e) => {
                     const val = e.target.value;
-                    (num === 1 ? p1 : p2)[field] = val;
+                    const p = num === 1 ? p1 : p2;
+                    p[field] = val;
                     if (field === 'nature') recalcStats(num);
-                    if (field === 'item') {
-                        const p = num === 1 ? p1 : p2;
-                        if (p.species) {
-                            const img = document.getElementById(`p${num}-sprite`);
-                            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-                            const speciesKey = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-                            // Zacian + Rusted Sword → Zacian-Crowned sprite + stats
-                            if (speciesKey === 'zacian' && it === 'rustedsword') {
-                                img.dataset.fallbackState = '0';
-                                img.src = 'https://play.pokemonshowdown.com/sprites/ani/zacian-crowned.gif';
-                                const crowned = pokemonData.find(x => x.Name === 'Zacian-Crowned');
-                                if (crowned) {
-                                    p.base = { hp: crowned.HP || 0, atk: crowned.Attack || 0, def: crowned.Defense || 0, spa: crowned['Sp.Atk'] || 0, spd: crowned['Sp.Def'] || 0, spe: crowned.Speed || 0 };
-                                    document.getElementById(`p${num}-type1`).value = crowned.Type_1 || '';
-                                    document.getElementById(`p${num}-type2`).value = crowned.Type_2 || '-';
-                                    recalcStats(num);
-                                }
-                                return;
-                            }
-                            // Zamazenta + Rusted Shield → Zamazenta-Crowned sprite + stats
-                            if (speciesKey === 'zamazenta' && it === 'rustedshield') {
-                                img.dataset.fallbackState = '0';
-                                img.src = 'https://play.pokemonshowdown.com/sprites/ani/zamazenta-crowned.gif';
-                                const crowned = pokemonData.find(x => x.Name === 'Zamazenta-Crowned');
-                                if (crowned) {
-                                    p.base = { hp: crowned.HP || 0, atk: crowned.Attack || 0, def: crowned.Defense || 0, spa: crowned['Sp.Atk'] || 0, spd: crowned['Sp.Def'] || 0, spe: crowned.Speed || 0 };
-                                    document.getElementById(`p${num}-type1`).value = crowned.Type_1 || '';
-                                    document.getElementById(`p${num}-type2`).value = crowned.Type_2 || '-';
-                                    recalcStats(num);
-                                }
-                                return;
-                            }
+                    if (field === 'item' && p.species) {
+                        const img = document.getElementById(`p${num}-sprite`);
+                        const nextForm = getPermanentForm({ species: p.species, item: val });
+                        const targetSpecies = nextForm || p.species;
+                        const pd = pokemonData.find(x => x.Name === targetSpecies);
 
-                            // If Mega Stone equipped, try showdown mega sprite first
+                        if (pd) {
+                            // Update base stats and types for the detected form
+                            p.base = {
+                                hp: pd.HP || 0,
+                                atk: pd.Attack || 0,
+                                def: pd.Defense || 0,
+                                spa: pd['Sp.Atk'] || 0,
+                                spd: pd['Sp.Def'] || 0,
+                                spe: pd.Speed || 0
+                            };
+                            p.type1 = pd.Type_1;
+                            p.type2 = pd.Type_2 || '';
+                            document.getElementById(`p${num}-type1`).value = p.type1;
+                            document.getElementById(`p${num}-type2`).value = p.type2 || '-';
+
+                            // Update Sprite
                             let suffix = '';
-                            if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
+                            const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            if (!nextForm && it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
                                 suffix = '-mega';
                                 if (it.endsWith('itex')) suffix = '-megax';
                                 else if (it.endsWith('itey')) suffix = '-megay';
                             }
+
+                            const clean = targetSpecies.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
                             img.dataset.fallbackState = '0';
                             img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
 
-                            // If switching back to no form-change item, restore base species stats
-                            if (!suffix) {
-                                const baseDb = pokemonData.find(x => x.Name === p.species);
-                                if (baseDb) {
-                                    p.base = { hp: baseDb.HP || 0, atk: baseDb.Attack || 0, def: baseDb.Defense || 0, spa: baseDb['Sp.Atk'] || 0, spd: baseDb['Sp.Def'] || 0, spe: baseDb.Speed || 0 };
-                                    document.getElementById(`p${num}-type1`).value = baseDb.Type_1 || '';
-                                    document.getElementById(`p${num}-type2`).value = baseDb.Type_2 || '-';
-                                    recalcStats(num);
-                                }
-                            }
+                            recalcStats(num);
                         }
                     }
                 });
+
             }
         });
     });

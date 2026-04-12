@@ -116,10 +116,21 @@ function setupEventListeners() {
             const eventType = (field === 'ability' || field === 'item') ? 'input' : 'change';
             el.addEventListener(eventType, (e) => {
                 pk[field] = e.target.value;
+
+                // Handle Form Changes (Item-based)
+                if (field === 'item') {
+                    const nextForm = getPermanentForm(pk);
+                    if (nextForm && nextForm !== pk.name) {
+                        loadPokemon(id, nextForm);
+                        return;
+                    }
+                }
+
                 if (field === 'ability' || field === 'item') updateStatsUI(pk);
                 recalculate();
             });
         });
+
         
         document.getElementById(`${p}-tera`).addEventListener('change', (e) => {
             pk.tera = e.target.checked;
