@@ -749,25 +749,68 @@
             return pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
         }
 
+        function getPermanentForm(p) {
+            if (!p || !p.species || !p.item) return null;
+            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+            // Zacian-Crowned
+            if (species === 'zacian' && it === 'rustedsword') return 'zaciancrowned';
+            // Zamazenta-Crowned
+            if (species === 'zamazenta' && it === 'rustedshield') return 'zamazentacrowned';
+            // Giratina-Origin
+            if (species === 'giratina' && (it === 'griseousorb' || it === 'griseouscore')) return 'giratinaorigin';
+            // Dialga-Origin
+            if (species === 'dialga' && (it === 'adamantcrystal' || it === 'adamantorb')) return 'dialgaorigin';
+            // Palkia-Origin
+            if (species === 'palkia' && (it === 'lustrousglobe' || it === 'lustrousorb')) return 'palkiaorigin';
+            // Ogerpon Forms
+            if (species === 'ogerpon') {
+                if (it === 'wellspringmask') return 'ogerponwellspring';
+                if (it === 'hearthflamemask') return 'ogerponhearthflame';
+                if (it === 'cornerstonemask') return 'ogerponcornerstone';
+            }
+            // Arceus Forms
+            if (species === 'arceus') {
+                const plateTypes = {
+                    'insectplate': 'bug', 'dreadplate': 'dark', 'dracoplate': 'dragon', 'zapplate': 'electric',
+                    'pixieplate': 'fairy', 'fistplate': 'fighting', 'flameplate': 'fire', 'skyplate': 'flying',
+                    'spookyplate': 'ghost', 'meadowplate': 'grass', 'earthplate': 'ground', 'icicleplate': 'ice',
+                    'toxicplate': 'poison', 'mindplate': 'psychic', 'stoneplate': 'rock', 'ironplate': 'steel',
+                    'splashplate': 'water'
+                };
+                if (plateTypes[it]) return 'arceus' + plateTypes[it];
+            }
+            // Silvally Forms
+            if (species === 'silvally') {
+                const memoryTypes = {
+                    'bugmemory': 'bug', 'darkmemory': 'dark', 'dragonmemory': 'dragon', 'electricmemory': 'electric',
+                    'fairymemory': 'fairy', 'fightingmemory': 'fighting', 'firememory': 'fire', 'flyingmemory': 'flying',
+                    'ghostmemory': 'ghost', 'grassmemory': 'grass', 'groundmemory': 'ground', 'icememory': 'ice',
+                    'poisonmemory': 'poison', 'psychicmemory': 'psychic', 'rockmemory': 'rock', 'steelmemory': 'steel',
+                    'watermemory': 'water'
+                };
+                if (memoryTypes[it]) return 'silvally' + memoryTypes[it];
+            }
+
+            return null;
+        }
+
         function getEffectivePokemonData(p, pokemonList) {
             const dbRef = getBasePokemonData(p, pokemonList);
             if (!dbRef) return null;
 
             if (p.item) {
                 const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const speciesSearch = (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-                // Zacian + Rusted Sword → Zacian-Crowned
-                if (speciesSearch === 'zacian' && it === 'rustedsword') {
-                    const crowned = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'zaciancrowned');
-                    if (crowned) return crowned;
-                }
-                // Zamazenta + Rusted Shield → Zamazenta-Crowned
-                if (speciesSearch === 'zamazenta' && it === 'rustedshield') {
-                    const crowned = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'zamazentacrowned');
-                    if (crowned) return crowned;
+                
+                // Priority 1: Permanent Form Changes
+                const permSearch = getPermanentForm(p);
+                if (permSearch) {
+                    const permDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === permSearch);
+                    if (permDbRef) return permDbRef;
                 }
 
+                // Priority 2: Mega Evolutions
                 if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
                     let suffix = '-Mega';
                     if (it.endsWith('itex')) suffix = '-Mega-X';
@@ -806,7 +849,8 @@
 
                 // Effective ability for this form
                 const dbAbilities = getPokemonAbilities(db);
-                const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
+                // If the species name in database already indicates it's a Mega, the first ability in its DB entry is the Mega ability.
+                const activeAbility = (db.Name.toLowerCase().includes('-mega')) ? (dbAbilities[0] || 'None') : (p.ability || dbAbilities[0] || 'None');
                 const ab = activeAbility.toLowerCase();
 
                 // Apply ability stat multipliers for role calculation
@@ -881,18 +925,12 @@
 
         function getMegaSpriteUrl(p) {
             if (!p || !p.species || !p.item) return null;
-            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const base = p.shiny ? 'ani-shiny' : 'ani';
+            
+            // Exclude permanent forms from Mega toggling
+            if (getPermanentForm(p)) return null;
 
-            // Zacian + Rusted Sword → Zacian-Crowned
-            if (species === 'zacian' && it === 'rustedsword') {
-                return `https://play.pokemonshowdown.com/sprites/${base}/zacian-crowned.gif`;
-            }
-            // Zamazenta + Rusted Shield → Zamazenta-Crowned
-            if (species === 'zamazenta' && it === 'rustedshield') {
-                return `https://play.pokemonshowdown.com/sprites/${base}/zamazenta-crowned.gif`;
-            }
+            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const base = p.shiny ? 'ani-shiny' : 'ani';
 
             if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
             if (it === 'eviolite' || it === 'meteorite') return null;
@@ -1213,7 +1251,17 @@
             // Expanded Utility & VGC synergies
             const allRoles = roles.flat();
             const allMovesArr = activeMons.flatMap(p => p.moves.map(m => m.toLowerCase()));
-            const allAbilitiesArr = activeMons.map(p => (p.ability || '').toLowerCase());
+            const allAbilitiesArr = activeMons.flatMap(p => {
+                const abilities = [(p.ability || '').toLowerCase()];
+                const dbMega = getEffectivePokemonData(p, allPokemon);
+                if (dbMega && dbMega.Ability) {
+                    getPokemonAbilities(dbMega).forEach(a => {
+                        const low = a.toLowerCase();
+                        if (!abilities.includes(low)) abilities.push(low);
+                    });
+                }
+                return abilities;
+            });
 
             if (!allRoles.includes('Speed Control') && !allRoles.includes('Trick Room Setter')) {
                 issues.push({ type: 'Utility', count: 0, severity: 'medium', text: 'No Speed Control detected.' });
@@ -1269,11 +1317,12 @@
             if (teamSpecies.some(s => s.includes('incineroar')) && teamSpecies.some(s => s.includes('rillaboom'))) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'The VGC Firewall (Incineroar + Rillaboom).', tip: 'Unmatched field control with Intimidate, Fake Out, and Grassy Terrain.', icon: '🔥', color: '#ff5722' });
             }
-            if (teamSpecies.some(s => s.includes('torkoal')) && (teamSpecies.some(s => s.includes('lilligant')) || teamSpecies.some(s => s.includes('flutter mane')))) {
+            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) && 
+                allAbilitiesArr.some(a => ['solar power', 'chlorophyll', 'protosynthesis'].includes(a))) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Sun Offense core detected.', tip: 'Fast Sleep Powder or Protosynthesis boosts under Sun.', icon: '☀️', color: '#fbc02d' });
             }
 
-            const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee') || p.species.toLowerCase().includes('tapu lele'));
+            const hasIndeedee = activeMons.some(p => p.species.toLowerCase().includes('indeedee') || p.species.toLowerCase().includes('tapu lele') || p.species.toLowerCase().includes('armarouge') || p.species.toLowerCase().includes('calyrex-shadow'));
             if (hasIndeedee && allMovesArr.includes('expanding force')) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Psyspam Combo detected.', tip: 'Powerful spread damage under Psychic Terrain.', icon: '🔮', color: '#F95587' });
             }
@@ -1292,7 +1341,7 @@
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Commander Core (Dondozo + Tatsugiri).', tip: 'Huge stat boosts for Dondozo when Tatsugiri enters its mouth.', icon: '🍣', color: '#00bcd4' });
             }
 
-            if (allMovesArr.includes('perish song') && activeMons.some(p => ['shadow tag', 'arena trap'].includes((p.ability || '').toLowerCase()))) {
+            if (allMovesArr.includes('perish song') && allAbilitiesArr.some(a => ['shadow tag', 'arena trap'].includes(a))) {
                 issues.push({ type: 'Strategy', count: 0, severity: 'synergy', text: 'Perish Trap strategy detected.', tip: 'Lock opponents in and stall the Perish count.', icon: '☠️', color: '#735797' });
             }
 
@@ -1508,18 +1557,25 @@
         function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
             card.className = 'pokemon-card-premium fade-in';
-            const dbBase = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+            
+            const permForm = getPermanentForm(p);
+            const dbEffective = getEffectivePokemonData(p, allPokemon);
+            
+            // If it's a permanent form, use its data as the primary database reference
+            const dbBase = (permForm && dbEffective) ? dbEffective : (allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Type_1: 'Normal', Type_2: null, Ability: []
-            };
-            const dbMega = getEffectivePokemonData(p, allPokemon) || dbBase;
-            const isMegaActive = dbMega !== dbBase;
+            });
+            
+            // Mega logic only applies if NOT a permanent form
+            const dbMega = permForm ? dbBase : (dbEffective || dbBase);
+            const isMegaActive = !permForm && dbMega !== dbBase;
 
             const t1Base = (dbBase.Type_1 || 'Normal').toLowerCase();
             const t2Base = dbBase.Type_2?.toLowerCase();
             const t1Mega = (dbMega.Type_1 || 'Normal').toLowerCase();
             const t2Mega = dbMega.Type_2?.toLowerCase();
 
-            const roles = detectRole(p, dbMega); // Keep roles as is for simplicity, or we could toggle them too? Let's stick to core request.
+            const roles = detectRole(p, dbMega); 
             const rolesHtml = roles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('');
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -1567,7 +1623,20 @@
                 `;
             }).join('');
 
-            const spriteUrl = getSpriteUrl(p);
+            let spriteUrl = getSpriteUrl(p);
+            // Override sprite URL for permanent forms
+            if (permForm) {
+                const base = p.shiny ? 'ani-shiny' : 'ani';
+                const showdownName = permForm
+                    .replace('crowned', '-crowned')
+                    .replace('origin', '-origin')
+                    .replace('wellspring', '-wellspring')
+                    .replace('hearthflame', '-hearthflame')
+                    .replace('cornerstone', '-cornerstone')
+                    .replace(/arceus([a-z]+)/, 'arceus-$1')
+                    .replace(/silvally([a-z]+)/, 'silvally-$1');
+                spriteUrl = `https://play.pokemonshowdown.com/sprites/${base}/${showdownName}.gif`;
+            }
             const megaUrl = getMegaSpriteUrl(p);
             const format = rawBuild.format || 'SINGLES';
 
@@ -1877,7 +1946,7 @@
             const dbMega = getEffectivePokemonData(pMain, allPokemon);
             const mainRoles = detectRole(pMain, [dbBase, dbMega].filter(x => x));
 
-            const dbAbilities = dbBase ? getPokemonAbilities(dbBase) : [];
+            const dbAbilities = (dbMega || dbBase) ? getPokemonAbilities(dbMega || dbBase) : [];
             const mainAbility = (pMain.ability || dbAbilities[0] || '').toLowerCase();
 
             // Use Mega stats for role scoring logic if available, otherwise base
@@ -1964,7 +2033,15 @@
                 const db = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesName);
                 const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                 const roles = detectRole(p, db);
-                const ability = (p.ability || '').toLowerCase();
+                const candAbilities = [(p.ability || '').toLowerCase()];
+                const dbMegaCand = getEffectivePokemonData(p, allPokemon);
+                if (dbMegaCand) {
+                    getPokemonAbilities(dbMegaCand).forEach(a => {
+                        const low = a.toLowerCase();
+                        if (!candAbilities.includes(low)) candAbilities.push(low);
+                    });
+                }
+
                 const moves = p.moves.map(m => (m || '').toLowerCase());
                 const stats = db ? {
                     hp: parseInt(db.HP), atk: parseInt(db.Attack), def: parseInt(db.Defense),
@@ -1974,17 +2051,17 @@
                 let score = 0;
 
                 // 1. Weather Synergy
-                if (mainWeather && weatherAbusers[mainWeather]?.includes(ability)) score += 20;
+                if (mainWeather && candAbilities.some(a => weatherAbusers[mainWeather]?.includes(a))) score += 20;
 
                 // Enhance Snow synergy specifically as requested
                 if (mainWeather === 'snow') {
                     // Ice types get a huge boost in Snow (Def boost simulation)
                     if (types.includes('ice')) score += 12;
                     // Specific Snow abilities
-                    if (['slush rush', 'ice body', 'snow cloak'].includes(ability)) score += 20;
+                    if (candAbilities.some(a => ['slush rush', 'ice body', 'snow cloak'].includes(a))) score += 20;
                 }
 
-                const candWeather = weatherSetters[ability];
+                const candWeather = candAbilities.map(a => weatherSetters[a]).find(w => w);
                 if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
 
                 if (candWeather === 'snow' && mainTypesArr.includes('ice')) score += 12;
@@ -1997,7 +2074,7 @@
 
                 // 3. Terrain Synergy
                 const mainTerrain = terrainSetters[mainAbility];
-                if (mainTerrain === 'electric' && (ability === 'quark drive' || types.includes('electric'))) score += 12;
+                if (mainTerrain === 'electric' && (candAbilities.some(a => a === 'quark drive') || types.includes('electric'))) score += 12;
                 if (mainTerrain === 'grassy' && (moves.includes('grassy glide') || types.includes('grass'))) score += 12;
                 if (mainTerrain === 'psychic' && (moves.includes('expanding force') || types.includes('psychic'))) score += 12;
 
@@ -2085,7 +2162,7 @@
                 if (format.toLowerCase() === 'doubles' && hasBeatUp && hasJustified) score += 40;
 
                 // 16. Steely Spirit Synergy
-                if ((mainTypesArr.includes('steel') && (p.ability || '').toLowerCase() === 'steely spirit') || (ability === 'steely spirit' && mainTypesArr.includes('steel'))) score += 20;
+                if ((mainTypesArr.includes('steel') && candAbilities.includes('steely spirit')) || (candAbilities.includes('steely spirit') && mainTypesArr.includes('steel'))) score += 20;
 
                 // 17. Neutralizing gas + bad abilities or raw stats
                 const isGas = mainAbility === 'neutralizing gas' || ability === 'neutralizing gas';
