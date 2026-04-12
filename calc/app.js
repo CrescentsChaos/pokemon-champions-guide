@@ -414,8 +414,22 @@ function populatePokemonUI(pk) {
     const spriteImg = document.getElementById(`${p}-sprite`);
     if (spriteImg) {
         const clean = pk.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-        spriteImg.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        const base = pk.shiny ? 'ani-shiny' : 'ani';
+        const spriteUrl = `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
+        const megaUrl = getMegaSpriteUrl(pk);
+
+        spriteImg.src = spriteUrl;
+        spriteImg.dataset.base = spriteUrl;
         spriteImg.dataset.fallbackState = '0';
+        spriteImg.dataset.fallback = 'false';
+
+        if (megaUrl) {
+            spriteImg.dataset.mega = megaUrl;
+            spriteImg.dataset.currentSrc = 'base';
+            spriteImg.classList.add('mega-toggle');
+        } else {
+            spriteImg.classList.remove('mega-toggle');
+        }
     }
 
     const moveContainer = document.getElementById(`${p}-moves`);
@@ -1026,6 +1040,57 @@ window.handleSpriteError = function(img, name, shiny) {
     const folder = shiny ? 'xy-shiny' : 'xy';
     img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
 }
+
+function getPermanentForm(p) {
+    if (!p || !p.item) return null;
+    const it = p.item.toLowerCase();
+    if (it === 'rusted sword') {
+        if (p.name === 'Zacian') return 'Zacian-Crowned';
+    }
+    if (it === 'rusted shield') {
+        if (p.name === 'Zamazenta') return 'Zamazenta-Crowned';
+    }
+    // Revert if item is lost
+    if (p.name === 'Zacian-Crowned' && it !== 'rusted sword') return 'Zacian';
+    if (p.name === 'Zamazenta-Crowned' && it !== 'rusted shield') return 'Zamazenta';
+
+    return null;
+}
+
+function getMegaSpriteUrl(p) {
+    if (!p || !p.name || !p.item) return null;
+    
+    // Exclude permanent forms from Mega toggling if that function exists, 
+    // but in calc we swap forms anyway. This is for visual sync.
+    const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const base = p.shiny ? 'ani-shiny' : 'ani';
+
+    if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+    if (it === 'eviolite' || it === 'meteorite') return null;
+
+    let suffix = '-mega';
+    if (it.endsWith('itex')) suffix = '-megax';
+    else if (it.endsWith('itey')) suffix = '-megay';
+
+    const clean = p.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
+}
+
+setInterval(() => {
+    document.querySelectorAll('img.mega-toggle').forEach(img => {
+        if (img.dataset.fallback === 'true') {
+            img.classList.remove('mega-toggle');
+            return;
+        }
+        if (img.dataset.currentSrc !== 'mega') {
+            img.src = img.dataset.mega;
+            img.dataset.currentSrc = 'mega';
+        } else {
+            img.src = img.dataset.base;
+            img.dataset.currentSrc = 'base';
+        }
+    });
+}, 3000);
 
 function getItemSpriteUrl(item) {
     if (!item || item.toLowerCase() === 'none') return '';
