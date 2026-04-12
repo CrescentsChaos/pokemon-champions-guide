@@ -3252,5 +3252,131 @@
         "build": "Hydrapple @ Choice Specs\nAbility: Regenerator\nEVs: 4 Def / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Steel\nModest Nature\n- Draco Meteor\n- Leaf Storm\n- Earth Power\n- Fickle Beam",
         "synergy": [],
         "format": "Singles"
+    },
+    {
+        "id": "462",
+        "pokemon": "Clefable",
+        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Flamethrower",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "463",
+        "pokemon": "Starmie",
+        "build": "Starmie @ Starminite  \nAbility: Natural Cure  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Protect  \n- Liquidation  \n- Aqua Jet  \n- Ice Spinner",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "464",
+        "pokemon": "Pelipper",
+        "build": "Pelipper @ Focus Sash  \nAbility: Drizzle  \nEVs: 248 HP / 252 SpA / 8 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Wide Guard  \n- Weather Ball  \n- Tailwind  \n- Hurricane",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "465",
+        "pokemon": "Basculegion-F",
+        "build": "Basculegion-F @ Mystic Water  \nAbility: Swift Swim  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Icy Wind  \n- Shadow Ball  \n- Muddy Water",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "466",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Bright Powder  \nAbility: Competitive  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Scald  \n- Icy Wind  \n- Life Dew  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "467",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 248 HP / 252 SpA / 8 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Icy Wind  \n- Weather Ball  \n- Earth Power  \n- Psychic",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "468",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Leftovers  \nAbility: Swift Swim  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Head Smash  \n- Wave Crash  \n- Last Respects  \n- Aqua Jet",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "469",
+        "pokemon": "Meganium",
+        "build": "Meganium @ Meganiumite  \nAbility: Overgrow  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Weather Ball  \n- Dazzling Gleam  \n- Solar Beam  \n- Synthesis",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "470",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ White Herb  \nAbility: Sturdy  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Aura Sphere  \n- Flash Cannon  \n- Draco Meteor  \n- Electro Shot",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "471",
+        "pokemon": "Gardevoir",
+        "build": "Gardevoir @ Gardevoirite  \nAbility: Trace  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Thunderbolt  \n- Psychic  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "472",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Leftovers  \nAbility: Armor Tail  \nEVs: 252 HP / 252 SpA / 4 SpD  \nQuiet Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Twin Beam  \n- Trick Room  \n- Dazzling Gleam",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "473",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ White Herb  \nAbility: Unnerve  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Wide Guard  \n- Tailwind  \n- Dual Wingbeat",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "474",
+        "pokemon": "Steelix",
+        "build": "Steelix @ Lum Berry  \nAbility: Sturdy  \nEVs: 252 HP / 4 Atk / 252 SpD  \nCareful Nature  \n- Iron Defense  \n- Wide Guard  \n- Body Press  \n- Heavy Slam",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "475",
+        "pokemon": "Beartic",
+        "build": "Beartic @ Focus Sash  \nAbility: Slush Rush  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Icicle Crash  \n- Rock Slide  \n- Close Combat  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "476",
+        "pokemon": "Araquanid",
+        "build": "Araquanid @ Quick Claw  \nAbility: Water Bubble  \nEVs: 248 HP / 8 Atk / 252 SpD  \nCareful Nature  \n- Wide Guard  \n- Liquidation  \n- Wonder Room  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "477",
+        "pokemon": "Bellibolt",
+        "build": "Bellibolt @ Leftovers  \nAbility: Electromorphosis  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Electroweb  \n- Mud Shot  \n- Parabolic Charge  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "478",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Dragoninite  \nAbility: Multiscale  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Hurricane  \n- Protect  \n- Ice Beam",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "479",
+        "pokemon": "Scizor",
+        "build": "Scizor @ Metal Coat  \nAbility: Technician  \nEVs: 248 HP / 8 Atk / 252 Def  \nImpish Nature  \n- Bullet Punch  \n- U-turn  \n- Protect  \n- Close Combat",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
