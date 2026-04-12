@@ -31,6 +31,8 @@
             <div class="banner-content">
                 <div id="main-result">Select moves to see damage results</div>
                 <div id="sub-result">Possible damage amounts: (0)</div>
+                <div id="ko-result" style="margin-top: 8px; font-weight: 700; color: var(--primary-red); font-size: 1.1rem; text-shadow: 0 0 10px rgba(255,51,51,0.3);"></div>
+
             </div>
         </div>
 
@@ -59,6 +61,8 @@
                             <input type="checkbox" id="p1-tera"> Tera
                             <select id="p1-tera-type" class="type-select"></select>
                         </label>
+                        <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle" onclick="toggleMega(1)">MEGA</button>
+
                     </div>
 
                     <div class="level-row">
@@ -170,6 +174,7 @@
                             <button class="field-btn toggle-btn" data-effect="Reflect">Reflect</button>
                             <button class="field-btn toggle-btn" data-effect="Light Screen">Light Screen</button>
                             <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
+                            <button class="field-btn toggle-btn" data-effect="Protect">Protect</button>
                             <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
@@ -178,9 +183,11 @@
                             <button class="field-btn toggle-btn" data-effect="Reflect">Reflect</button>
                             <button class="field-btn toggle-btn" data-effect="Light Screen">Light Screen</button>
                             <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
+                            <button class="field-btn toggle-btn" data-effect="Protect">Protect</button>
                             <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
+
                     </div>
                 </div>
 
@@ -214,6 +221,8 @@
                             <input type="checkbox" id="p2-tera"> Tera
                             <select id="p2-tera-type" class="type-select"></select>
                         </label>
+                        <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle" onclick="toggleMega(2)">MEGA</button>
+
                     </div>
 
                     <div class="level-row">

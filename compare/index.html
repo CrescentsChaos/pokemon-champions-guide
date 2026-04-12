@@ -53,10 +53,13 @@
                     <input type="text" id="p1-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
                 </div>
 
-                <!-- Level -->
+                <!-- Level & Form -->
                 <div class="level-row">
-                    <span>Level</span>
-                    <input type="number" id="p1-level" value="50" min="1" max="100">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>Level</span>
+                        <input type="number" id="p1-level" value="50" min="1" max="100">
+                    </div>
+                    <button class="import-btn" id="p1-mega-toggle" onclick="toggleMega(1)" style="margin-top:0; border-radius:8px; padding:6px 12px; background:linear-gradient(135deg, #7b2ff7 0%, #3e9fff 100%); border:none; color:white;">MEGA</button>
                 </div>
 
                 <!-- Meta Fields -->
@@ -121,10 +124,13 @@
                     <input type="text" id="p2-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
                 </div>
 
-                <!-- Level -->
+                <!-- Level & Form -->
                 <div class="level-row">
-                    <span>Level</span>
-                    <input type="number" id="p2-level" value="50" min="1" max="100">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>Level</span>
+                        <input type="number" id="p2-level" value="50" min="1" max="100">
+                    </div>
+                    <button class="import-btn" id="p2-mega-toggle" onclick="toggleMega(2)" style="margin-top:0; border-radius:8px; padding:6px 12px; background:linear-gradient(135deg, #7b2ff7 0%, #3e9fff 100%); border:none; color:white;">MEGA</button>
                 </div>
 
                 <!-- Meta Fields -->

@@ -239,46 +239,88 @@ function setupInputListeners() {
                     if (field === 'nature') recalcStats(num);
 
                     if (field === 'item' && p.species) {
-                        const img = document.getElementById(`p${num}-sprite`);
                         const nextForm = getPermanentForm({ species: p.species, item: val });
-                        const targetSpecies = nextForm || p.species;
-                        const pd = pokemonData.find(x => x.Name === targetSpecies);
-
-                        if (pd) {
-                            // Update base stats and types for the detected form
-                            p.base = {
-                                hp: pd.HP || 0,
-                                atk: pd.Attack || 0,
-                                def: pd.Defense || 0,
-                                spa: pd['Sp.Atk'] || 0,
-                                spd: pd['Sp.Def'] || 0,
-                                spe: pd.Speed || 0
-                            };
-                            p.type1 = pd.Type_1;
-                            p.type2 = pd.Type_2 || '';
-                            document.getElementById(`p${num}-type1`).value = p.type1;
-                            document.getElementById(`p${num}-type2`).value = p.type2 || '-';
-
-                            // Update Sprite
+                        if (nextForm) updatePokemonForm(num, nextForm);
+                        else {
+                            // Check if item is a mega stone to update suffix only
                             let suffix = '';
                             const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (!nextForm && it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
+                            if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
                                 suffix = '-mega';
                                 if (it.endsWith('itex')) suffix = '-megax';
                                 else if (it.endsWith('itey')) suffix = '-megay';
                             }
-
-                            const clean = targetSpecies.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-                            img.dataset.fallbackState = '0';
-                            img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
-
-                            recalcStats(num);
+                            updateSprite(num, p.species, suffix);
                         }
                     }
                 });
-
             }
         });
+    });
+}
+
+function updatePokemonForm(num, species) {
+    const p = num === 1 ? p1 : p2;
+    const pd = pokemonData.find(x => x.Name === species);
+    if (!pd) return;
+
+    p.species = pd.Name;
+    p.base = {
+        hp: pd.HP || 0,
+        atk: pd.Attack || 0,
+        def: pd.Defense || 0,
+        spa: pd['Sp.Atk'] || 0,
+        spd: pd['Sp.Def'] || 0,
+        spe: pd.Speed || 0
+    };
+    p.type1 = pd.Type_1;
+    p.type2 = pd.Type_2 || '';
+    p.ability = pd.Ability_1 || '';
+
+    // Update UI
+    const searchInput = document.getElementById(`p${num}-search`);
+    if (searchInput) searchInput.value = p.species;
+    document.getElementById(`p${num}-type1`).value = p.type1;
+    document.getElementById(`p${num}-type2`).value = p.type2 || '-';
+    const abEl = document.getElementById(`p${num}-ability`);
+    if (abEl) abEl.value = p.ability;
+
+    updateSprite(num, p.species);
+    recalcStats(num);
+}
+
+function updateSprite(num, species, suffix = '') {
+    const img = document.getElementById(`p${num}-sprite`);
+    if (!img) return;
+    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    img.dataset.fallbackState = '0';
+    img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+}
+
+function toggleMega(num) {
+    const p = num === 1 ? p1 : p2;
+    if (!p.species) return;
+
+    const currentName = p.species;
+    const btn = document.getElementById(`p${num}-mega-toggle`);
+    
+    let targetName = "";
+    if (currentName.includes("-Mega")) {
+        targetName = currentName.split("-Mega")[0];
+        btn.classList.remove('active');
+    } else {
+        const mega = pokemonData.find(pd => pd.Name === currentName + "-Mega" || pd.Name === currentName + "-Mega-X" || pd.Name === currentName + "-Mega-Y");
+        if (mega) {
+            targetName = mega.Name;
+            btn.classList.add('active');
+        } else {
+            showToast("No Mega form found for " + currentName);
+            return;
+        }
+    }
+    
+    if (targetName) updatePokemonForm(num, targetName);
+}
     });
 }
 

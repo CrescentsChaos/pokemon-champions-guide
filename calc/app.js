@@ -220,15 +220,58 @@ function populatePokemonUI(pk) {
     }
     
     const moveContainer = document.getElementById(`${p}-moves`);
-    moveContainer.innerHTML = Array(4).fill().map((_, i) => `
+    moveContainer.innerHTML = Array(4).fill().map((_, i) => {
+        const move = pk.moves[i];
+        const mData = movesDB.find(m => m.name === move.name);
+        // Multi-hit moves detection
+        const isMulti = mData && (mData.name === 'Bullet Seed' || mData.name === 'Water Shuriken' || mData.name === 'Icicle Spear' || mData.name === 'Rock Blast' || mData.name === 'Pin Missile' || mData.name === 'Population Bomb' || mData.name === 'Dual Wingbeat' || mData.name === 'Surging Strikes' || mData.name === 'Bonemerang' || mData.name === 'Dragon Dart' || mData.name === 'Double Iron Bash');
+        
+        return `
         <div class="move-row">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)">
                 <option value="None">None</option>
-                ${movesDB.map(m => `<option value="${m.name}" ${pk.moves[i].name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
+                ${movesDB.map(m => `<option value="${m.name}" ${move.name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
             </select>
-            <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${pk.moves[i].crit ? 'checked' : ''}> Crit</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                ${isMulti ? `
+                <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
+                    ${[2,3,4,5,10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
+                </select>` : ''}
+                <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> Crit</label>
+            </div>
         </div>
-    `).join('');
+    `}).join('');
+}
+
+function updateHits(pId, idx, hits) {
+    const pk = pId === 1 ? p1 : p2;
+    pk.moves[idx].hits = parseInt(hits);
+    recalculate();
+}
+
+function toggleMega(id) {
+    const pk = id === 1 ? p1 : p2;
+    const currentName = pk.name;
+    const btn = document.getElementById(`p${id}-mega-toggle`);
+    
+    let targetName = "";
+    if (currentName.includes("-Mega")) {
+        // Revert to base
+        targetName = currentName.split("-Mega")[0];
+        btn.classList.remove('active');
+    } else {
+        // Try to find Mega
+        const mega = pokemonDB.find(p => p.Name === currentName + "-Mega" || p.Name === currentName + "-Mega-X" || p.Name === currentName + "-Mega-Y");
+        if (mega) {
+            targetName = mega.Name;
+            btn.classList.add('active');
+        } else {
+            showToast("No Mega form found for " + currentName);
+            return;
+        }
+    }
+    
+    if (targetName) loadPokemon(id, targetName);
 }
 
 function updateMove(pId, idx, moveName) {
@@ -335,8 +378,27 @@ function recalculate() {
 
     const attacker = res.attackerId === 1 ? p1 : p2;
     const defender = res.attackerId === 1 ? p2 : p1;
-    banner.innerText = `${attacker.name} ${res.move} vs ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
-    subBanner.innerText = `Possible damage amounts: (${res.rolls.join(', ')})`;
+    banner.innerText = `${attacker.name} ${res.move} vs. ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
+    subBanner.innerText = `Damage rolls: (${res.rolls.join(', ')})`;
+    
+    // KO Probability
+    const koResult = document.getElementById('ko-result');
+    const hp = defender.stats.hp * (defender.hpPercent / 100);
+    const rolls = res.rolls;
+    const ohkoCount = rolls.filter(r => r >= hp).length;
+    const ohkoProb = (ohkoCount / rolls.length * 100).toFixed(1);
+    
+    if (ohkoProb > 0) {
+        koResult.innerText = ohkoProb === "100.0" ? "Guaranteed OHKO" : `${ohkoProb}% chance to OHKO`;
+    } else {
+        // Check 2HKO (Simplified: average of roll sums)
+        const avg = rolls.reduce((a,b) => a+b, 0) / rolls.length;
+        if (avg * 2 >= hp) {
+            koResult.innerText = "Possible 2HKO";
+        } else {
+            koResult.innerText = "Nice play! (No immediate KO)";
+        }
+    }
 }
 
 function renderMoveResults(p1Results, p2Results) {
@@ -460,17 +522,34 @@ function calculateDamage(attacker, defender, move, field) {
     if (item === 'life orb') modifier *= 1.3;
 
     // --- Damage Rolls ---
-    const rolls = [];
+    let rolls = [];
     for (let i = 85; i <= 100; i++) {
-        // Roll = floor(BaseDamage * i / 100) * Modifiers
         let r = Math.floor(baseDamage * i / 100);
         r = Math.floor(r * modifier);
         rolls.push(r);
+    }
+
+    // Protection Check
+    const defSide = defender.id === 1 ? field.side1 : field.side2;
+    if (defSide.protect && attacker.ability !== 'Unseen Fist') {
+        rolls = rolls.map(() => 0);
+    }
+
+    // Parental Bond Check
+    if (attacker.ability === 'Parental Bond' && move.category !== 'Status') {
+        rolls = rolls.map(r => r + Math.floor(r * 0.25));
+    }
+
+    // Multi-hit logic
+    const hits = move.hits || 1;
+    if (hits > 1) {
+        rolls = rolls.map(r => r * hits);
     }
     
     const defHp = defender.stats.hp;
     res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
     res.maxPercent = (rolls[15] / defHp * 100).toFixed(1);
+    res.rolls = rolls;
     res.rolls = rolls;
     return res;
 }
@@ -491,6 +570,7 @@ function updateFieldState() {
                 reflect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Reflect'),
                 lightScreen: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Light Screen'),
                 auroraVeil: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Aurora Veil'),
+                protect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protect'),
                 spikes: parseInt(Array.from(btns).find(b => b.getAttribute('data-effect') === 'Spikes')?.getAttribute('data-count') || 0)
             };
         }
