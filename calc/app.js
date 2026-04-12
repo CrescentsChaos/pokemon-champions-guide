@@ -233,6 +233,11 @@ function inferBuildRole(buildStr) {
     return 'Attacker';
 }
 
+function extractItemFromBuild(buildStr) {
+    const match = buildStr.match(/^.+?@\s*(.+)/m);
+    return match ? match[1].trim() : null;
+}
+
 function handleSearch(p, query) {
     const resultsDiv = document.getElementById(`${p}-search-results`);
     if (!query || query.length < 2) {
@@ -243,8 +248,29 @@ function handleSearch(p, query) {
     // Filter base pokemon matches
     const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(query.toLowerCase())).slice(0, 10);
     
-    // Check for explicit builds matching the query
-    const matchingBuilds = buildsDB.filter(b => (b.pokemon || '').toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+    // All matching builds
+    const rawBuilds = buildsDB.filter(b => (b.pokemon || '').toLowerCase().includes(query.toLowerCase()));
+
+    // Deduplicate build labels:
+    // Key = pokemon + format. Within same key, if role clashes → use item name as label.
+    // Different formats are always both shown.
+    const labeledBuilds = [];
+    rawBuilds.forEach(b => {
+        const role = inferBuildRole(b.build);
+        const item = extractItemFromBuild(b.build);
+        const format = (b.format || 'Singles').toLowerCase();
+        labeledBuilds.push({ ...b, role, item, format });
+    });
+
+    // Detect clashes: same (pokemon, format, role) → use item name as disambiguator
+    const labelCount = {};
+    labeledBuilds.forEach(b => {
+        const key = `${b.pokemon}|${b.format}|${b.role}`;
+        labelCount[key] = (labelCount[key] || 0) + 1;
+    });
+
+    // Limit to 6 total build results
+    const shownBuilds = labeledBuilds.slice(0, 6);
 
     let html = '';
     
@@ -257,14 +283,18 @@ function handleSearch(p, query) {
     `).join('');
 
     // Add Build results
-    if (matchingBuilds.length > 0) {
-        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase;">Available Builds</div>`;
-        html += matchingBuilds.map(b => {
-            const role = inferBuildRole(b.build);
+    if (shownBuilds.length > 0) {
+        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Available Builds</div>`;
+        html += shownBuilds.map(b => {
+            const key = `${b.pokemon}|${b.format}|${b.role}`;
+            const isClash = labelCount[key] > 1;
+            // If there's a clash for the same format+role, differentiate by item
+            const label = isClash && b.item ? b.item : b.role;
+            const fmtBadge = b.format === 'doubles' ? '#4a90e2' : '#e63946';
             return `
             <div class="search-item" data-build-id="${b.id}" data-name="${b.pokemon}">
-                <span class="search-item-name">${b.pokemon} <span style="color:#6ab0f5; font-size:0.8rem;">(${role})</span></span>
-                <span class="search-item-types">${b.format || 'Build'}</span>
+                <span class="search-item-name">${b.pokemon} <span style="color:#6ab0f5; font-size:0.78rem; font-weight:600;">(${label})</span></span>
+                <span class="search-item-types" style="background:${fmtBadge}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.65rem;">${b.format || 'Singles'}</span>
             </div>
             `;
         }).join('');
