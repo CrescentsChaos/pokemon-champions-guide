@@ -156,7 +156,12 @@ body.calc-page {
     box-shadow: 0 0 30px rgba(255, 77, 77, 0.05);
 }
 
-/* --- Sprite Styling --- */
+/* --- Sprite Styling & Headers --- */
+.panel-header {
+    position: relative;
+    z-index: 10;
+}
+
 .sprite-container {
     height: 120px;
     display: flex;
@@ -209,8 +214,12 @@ input {
     transition: var(--transition-fast);
 }
 
-option {
-    background: #15151a;
+select {
+    background-color: #1a1a20; /* Solid dark background for dropdowns */
+}
+
+select option {
+    background-color: #15151a;
     color: #fff;
 }
 
@@ -465,12 +474,11 @@ input:hover {
     top: 100%;
     left: 0;
     right: 0;
-    background: rgba(10, 10, 12, 0.95);
-    backdrop-filter: blur(20px);
+    background: #0a0a0c;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     margin-top: 8px;
-    z-index: 100;
+    z-index: 9999;
     max-height: 400px;
     overflow-y: auto;
     display: none;

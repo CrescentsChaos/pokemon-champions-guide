@@ -2,6 +2,7 @@
 let pokemonDB = [];
 let movesDB = [];
 let itemsDB = [];
+let buildsDB = [];
 let p1 = null;
 let p2 = null;
 let selectedMoveIdx1 = 0;
@@ -51,14 +52,16 @@ const typeChart = {
 // Initialize
 async function init() {
     try {
-        const [pkmn, mvs, itms] = await Promise.all([
+        const [pkmn, mvs, itms, blds] = await Promise.all([
             fetch('../assets/pokemon.json').then(res => res.json()),
             fetch('../assets/moves.json').then(res => res.json()),
-            fetch('../assets/items.json').then(res => res.json())
+            fetch('../assets/items.json').then(res => res.json()),
+            fetch('../assets/builds.json').then(res => res.json())
         ]);
         pokemonDB = pkmn;
         movesDB = mvs;
         itemsDB = itms;
+        buildsDB = blds;
 
         p1 = setupPokemonState(1);
         p2 = setupPokemonState(2);
@@ -96,7 +99,29 @@ function setupEventListeners() {
         const id = p === 'p1' ? 1 : 2;
         const pk = id === 1 ? p1 : p2;
 
-        document.getElementById(`${p}-search`).addEventListener('input', (e) => handleSearch(p, e.target.value));
+        const searchInput = document.getElementById(`${p}-search`);
+        searchInput.addEventListener('input', (e) => handleSearch(p, e.target.value));
+        
+        searchInput.addEventListener('keydown', (e) => {
+            const resultsDiv = document.getElementById(`${p}-search-results`);
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstResult = resultsDiv.querySelector('.search-item');
+                if (firstResult) {
+                    const name = firstResult.getAttribute('data-name');
+                    loadPokemon(id, name);
+                }
+            } else if (e.key === 'Escape') {
+                resultsDiv.classList.remove('active');
+            }
+        });
+
+        searchInput.addEventListener('blur', () => {
+            // Slight delay to allow mousedown on results to trigger first
+            setTimeout(() => {
+                document.getElementById(`${p}-search-results`).classList.remove('active');
+            }, 150);
+        });
 
         document.getElementById(`${p}-level`).addEventListener('change', (e) => {
             pk.level = parseInt(e.target.value) || 50;
@@ -124,9 +149,21 @@ function setupEventListeners() {
                         loadPokemon(id, nextForm);
                         return;
                     }
+                    
+                    // Update Item Sprite specifically
+                    const itemSprite = document.getElementById(`${p}-item-sprite`);
+                    if (itemSprite) {
+                        if (pk.item && pk.item !== 'None') {
+                            itemSprite.src = getItemSpriteUrl(pk.item);
+                            itemSprite.style.display = 'block';
+                        } else {
+                            itemSprite.style.display = 'none';
+                            itemSprite.src = '';
+                        }
+                    }
                 }
 
-                if (field === 'ability' || field === 'item') updateStatsUI(pk);
+                if (field === 'ability' || field === 'item' || field === 'nature') updateStatsUI(pk);
                 recalculate();
             });
         });
@@ -143,11 +180,22 @@ function setupEventListeners() {
         });
 
         // Search Selection via Delegation
-        document.getElementById(`${p}-search-results`).addEventListener('click', (e) => {
+        document.getElementById(`${p}-search-results`).addEventListener('mousedown', (e) => {
             const target = e.target.closest('.search-item');
             if (target) {
-                const name = target.getAttribute('data-name');
-                loadPokemon(id, name);
+                e.preventDefault(); // Prevent blur on the input
+                
+                const buildId = target.getAttribute('data-build-id');
+                if (buildId) {
+                    const bData = buildsDB.find(b => b.id === buildId);
+                    if (bData && bData.build) {
+                        document.getElementById(`${p}-search`).value = bData.pokemon;
+                        importPokePaste(id, bData.build);
+                    }
+                } else {
+                    const name = target.getAttribute('data-name');
+                    loadPokemon(id, name);
+                }
             }
         });
     });
@@ -173,6 +221,18 @@ function setupEventListeners() {
     });
 }
 
+function inferBuildRole(buildStr) {
+    const text = buildStr.toLowerCase();
+    if (text.includes('trick room')) return 'Trick Room Abuser';
+    if (text.includes('choice band') || text.includes('choice specs')) return 'Wallbreaker';
+    if (text.includes('choice scarf')) return 'Revenge Killer';
+    if (text.includes('light clay') || text.includes('aurora veil') || text.includes('reflect')) return 'Screener';
+    if (text.includes('dragon dance') || text.includes('swords dance') || text.includes('nasty plot') || text.includes('quiver dance')) return 'Setup Sweeper';
+    if (text.includes('tailwind') || text.includes('icy wind') || text.includes('electroweb')) return 'Speed Control';
+    if (text.includes('leftovers') || text.includes('recover') || text.includes('roost')) return 'Bulky Tank';
+    return 'Attacker';
+}
+
 function handleSearch(p, query) {
     const resultsDiv = document.getElementById(`${p}-search-results`);
     if (!query || query.length < 2) {
@@ -180,20 +240,37 @@ function handleSearch(p, query) {
         return;
     }
 
-    const excludeBox = document.getElementById('exclude-megas-calc');
-    const excludeMegas = excludeBox ? excludeBox.checked : false;
-    const filtered = pokemonDB.filter(x => {
-        const matches = (x.Name || '').toLowerCase().includes(query.toLowerCase());
-        if (excludeMegas && (x.Name || '').includes('-Mega')) return false;
-        return matches;
-    }).slice(0, 10);
+    // Filter base pokemon matches
+    const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(query.toLowerCase())).slice(0, 10);
+    
+    // Check for explicit builds matching the query
+    const matchingBuilds = buildsDB.filter(b => (b.pokemon || '').toLowerCase().includes(query.toLowerCase())).slice(0, 5);
 
-    resultsDiv.innerHTML = filtered.map(x => `
+    let html = '';
+    
+    // Add DB results
+    html += filteredDB.map(x => `
         <div class="search-item" data-name="${x.Name}">
             <span class="search-item-name">${x.Name}</span>
             <span class="search-item-types">${x.Type_1}${x.Type_2 ? ' / ' + x.Type_2 : ''}</span>
         </div>
     `).join('');
+
+    // Add Build results
+    if (matchingBuilds.length > 0) {
+        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase;">Available Builds</div>`;
+        html += matchingBuilds.map(b => {
+            const role = inferBuildRole(b.build);
+            return `
+            <div class="search-item" data-build-id="${b.id}" data-name="${b.pokemon}">
+                <span class="search-item-name">${b.pokemon} <span style="color:#6ab0f5; font-size:0.8rem;">(${role})</span></span>
+                <span class="search-item-types">${b.format || 'Build'}</span>
+            </div>
+            `;
+        }).join('');
+    }
+
+    resultsDiv.innerHTML = html;
     resultsDiv.classList.add('active');
 }
 
@@ -207,7 +284,8 @@ function loadPokemon(id, name) {
     pk.type2 = data.Type_2 || 'None';
     pk.baseStats = {
         hp: parseInt(data.HP), atk: parseInt(data.Attack), def: parseInt(data.Defense),
-        spa: parseInt(data['Sp.Atk']), spd: parseInt(data['Sp.Def']), spe: parseInt(data.Speed)
+        spa: parseInt(data['Sp.Atk']), spd: parseInt(data['Sp.Def']), spe: parseInt(data.Speed),
+        weight: parseFloat(data['Weight{kg}']) || 10.0
     };
 
     const dbAbilities = getPokemonAbilities(data);
@@ -522,6 +600,46 @@ function calculateDamage(attacker, defender, move, field) {
     if (move.name === 'Facade' && attacker.status !== 'Healthy') basePower = 140;
     if (move.name === 'Hex' && defender.status !== 'Healthy') basePower = 130;
 
+    // HP-based moves (Eruption, Water Spout, Dragon Energy)
+    if (['Eruption', 'Water Spout', 'Dragon Energy'].includes(move.name)) {
+        const hpRatio = attacker.hpPercent / 100;
+        basePower = Math.max(1, Math.floor(150 * hpRatio));
+    }
+
+    // HP-based moves (Reversal, Flail — power increases as HP lowers)
+    if (['Reversal', 'Flail'].includes(move.name)) {
+        const hpRatio = attacker.hpPercent / 100;
+        if (hpRatio <= 0.0417) basePower = 200;
+        else if (hpRatio <= 0.1042) basePower = 150;
+        else if (hpRatio <= 0.2083) basePower = 100;
+        else if (hpRatio <= 0.3542) basePower = 80;
+        else if (hpRatio <= 0.6875) basePower = 40;
+        else basePower = 20;
+    }
+
+    // Weight-based moves (Heavy Slam, Heat Crash)
+    if (['Heavy Slam', 'Heat Crash'].includes(move.name)) {
+        const atkWeight = attacker.baseStats?.weight || 10.0;
+        const defWeight = defender.baseStats?.weight || 10.0;
+        const ratio = atkWeight / defWeight;
+        if (ratio >= 5) basePower = 120;
+        else if (ratio >= 4) basePower = 100;
+        else if (ratio >= 3) basePower = 80;
+        else if (ratio >= 2) basePower = 60;
+        else basePower = 40;
+    }
+
+    // Weight-based moves (Low Kick, Grass Knot — power based on defender weight)
+    if (['Low Kick', 'Grass Knot'].includes(move.name)) {
+        const defWeight = defender.baseStats?.weight || 10.0;
+        if (defWeight >= 200.0) basePower = 120;
+        else if (defWeight >= 100.0) basePower = 100;
+        else if (defWeight >= 50.0) basePower = 80;
+        else if (defWeight >= 25.0) basePower = 60;
+        else if (defWeight >= 10.0) basePower = 40;
+        else basePower = 20;
+    }
+
     // Tera BP Boost (60 BP floor)
     if (attacker.tera && move.type === attacker.teraType && basePower < 60 && basePower > 0) {
         // Exclude Priority and Multi-hit from the 60 BP floor
@@ -530,6 +648,7 @@ function calculateDamage(attacker, defender, move, field) {
             basePower = 60;
         }
     }
+
 
     // --- Base Damage Calculation ---
     let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * atk / def) / 50) + 2;

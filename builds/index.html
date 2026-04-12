@@ -1627,7 +1627,7 @@
                     </div>
                     <div class="header-info">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap: 10px;">
-                            <h3 style="font-size:1.1rem; color:white; margin:0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.species}</h3>
+                            <h3 style="font-size:1.1rem; color:white; margin:0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.species} (${roles[0] || 'Attacker'})">${p.species} <span style="font-size:0.7rem; font-weight:600; color:#6ab0f5; opacity:0.9;">(${roles[0] || 'Attacker'})</span></h3>
                             <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
