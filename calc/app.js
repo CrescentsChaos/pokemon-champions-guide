@@ -136,6 +136,11 @@ function setupEventListeners() {
             pk.tera = e.target.checked;
             recalculate();
         });
+
+        document.getElementById(`${p}-tera-type`).addEventListener('change', (e) => {
+            pk.teraType = e.target.value;
+            recalculate();
+        });
     });
 
     document.querySelectorAll('.field-btn').forEach(btn => {
@@ -211,6 +216,11 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-ability`).value = pk.ability;
     document.getElementById(`${p}-item`).value = pk.item;
     document.getElementById(`${p}-hp-percent`).value = pk.hpPercent;
+    
+    // Tera UI Sync
+    document.getElementById(`${p}-tera`).checked = pk.tera || false;
+    if (pk.teraType) document.getElementById(`${p}-tera-type`).value = pk.teraType;
+    
     updateHPBar(pk.id, pk.hpPercent);
 
     const pkData = pokemonDB.find(x => x.Name === pk.name);
@@ -459,18 +469,42 @@ function calculateDamage(attacker, defender, move, field) {
     let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
     let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
 
-    // Apply Items/Abilities to raw stats (Simplified)
+    // --- Ability Stat Boosts ---
+    if (attacker.ability === 'Huge Power' || attacker.ability === 'Pure Power') {
+        if (!isSpecial) rawAtk *= 2;
+    }
+    if (attacker.ability === 'Guts' && attacker.status !== 'Healthy') {
+        if (!isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
+    }
+    // Flare Boost / Toxic Boost could go here too
+
+    // Apply Items to raw stats
     const item = (attacker.item || '').toLowerCase();
     if (item === 'choice band' && !isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
     if (item === 'choice specs' && isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
-    if (item === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5); // very simplified check
+    if (item === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5);
 
     let atk = getBoostValue(rawAtk, atkBoost);
     let def = getBoostValue(rawDef, defBoost);
 
+    // --- Move BP Adjustments ---
+    let basePower = move.basePower;
+    
+    // Status boosts
+    if (move.name === 'Facade' && attacker.status !== 'Healthy') basePower = 140;
+    if (move.name === 'Hex' && defender.status !== 'Healthy') basePower = 130;
+    
+    // Tera BP Boost (60 BP floor)
+    if (attacker.tera && move.type === attacker.teraType && basePower < 60 && basePower > 0) {
+        // Exclude Priority and Multi-hit from the 60 BP floor
+        const isPriority = ['Quick Attack', 'Mach Punch', 'Aqua Jet', 'Ice Shard', 'Shadow Sneak', 'Sucker Punch', 'Fake Out', 'Bullet Punch', 'Vacuum Wave', 'Extreme Speed', 'Water Shuriken'].includes(move.name);
+        if (!isPriority && !move.hits) {
+            basePower = 60;
+        }
+    }
+
     // --- Base Damage Calculation ---
-    // Formula: floor(floor(floor(2 * L / 5 + 2) * BP * A / D) / 50) + 2
-    let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * move.basePower * atk / def) / 50) + 2;
+    let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * atk / def) / 50) + 2;
 
     // --- Modifiers ---
     let modifier = 1.0;
@@ -489,20 +523,53 @@ function calculateDamage(attacker, defender, move, field) {
 
     // 3. STAB
     let stab = 1.0;
-    const isSTAB = (move.type === attacker.type1 || move.type === attacker.type2);
-    if (isSTAB) stab = 1.5;
-    if (attacker.tera && move.type === attacker.teraType) {
-        stab = (stab === 1.5) ? 2.0 : 1.5;
+    let isOriginalSTAB = (move.type === attacker.type1 || move.type === attacker.type2);
+    
+    if (attacker.tera) {
+        if (move.type === attacker.teraType) {
+            stab = isOriginalSTAB ? 2.0 : 1.5;
+            if (attacker.ability === 'Adaptability') stab = isOriginalSTAB ? 2.25 : 2.0;
+        } else if (isOriginalSTAB) {
+            stab = 1.5;
+        }
+    } else if (isOriginalSTAB) {
+        stab = (attacker.ability === 'Adaptability') ? 2.0 : 1.5;
     }
     modifier *= stab;
 
-    // 4. Type Effectiveness
+    // 4. Type Effectiveness & Ability Immunities
     let typeMod = 1.0;
-    const defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
+    const isMoldBreaker = attacker.ability === 'Mold Breaker';
+    
+    // Defender Tera Types
+    let defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
+    if (defender.tera) {
+        defTypes = [defender.teraType];
+    }
+
+    // Calculate effectiveness first for Wonder Guard and Filter
     defTypes.forEach(t => {
         const interaction = typeChart[move.type.toLowerCase()]?.[t.toLowerCase()];
         if (interaction !== undefined) typeMod *= interaction;
     });
+
+    // Ability-based Immunities
+    if (!isMoldBreaker) {
+        if (defender.ability === 'Wonder Guard' && typeMod <= 1 && move.type !== 'None') return res;
+        if (defender.ability === 'Levitate' && move.type === 'Ground') return res;
+        if (defender.ability === 'Flash Fire' && move.type === 'Fire') return res;
+        if ((defender.ability === 'Water Absorb' || defender.ability === 'Storm Drain') && move.type === 'Water') return res;
+        if ((defender.ability === 'Volt Absorb' || defender.ability === 'Lightning Rod') && move.type === 'Electric') return res;
+        if (defender.ability === 'Sap Sipper' && move.type === 'Grass') return res;
+        if (defender.ability === 'Earth Eater' && move.type === 'Ground') return res;
+        if (defender.ability === 'Well-Baked Body' && move.type === 'Fire') return res;
+    }
+    
+    // Filter/Solid Rock/Primal Armor
+    if (!isMoldBreaker && typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock')) {
+        modifier *= 0.75;
+    }
+
     modifier *= typeMod;
     if (typeMod === 0) return res;
 
