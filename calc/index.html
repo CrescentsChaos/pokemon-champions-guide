@@ -64,6 +64,7 @@
                     <div class="level-row">
                         <span>Level</span>
                         <input type="number" id="p1-level" value="50" min="1" max="100">
+                        <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
                     </div>
 
                     <table class="stats-table">
@@ -95,7 +96,9 @@
                         <div class="select-group">
                             <label>Item</label>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p1-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, window.p1?.item)">
+                                <img src="" id="p1-item-sprite"
+                                    style="width: 24px; height: 24px; object-fit: contain; display: none;"
+                                    onerror="handleItemError(this, window.p1?.item)">
                                 <input type="text" id="p1-item" list="items-list" placeholder="Choose Item...">
                             </div>
                         </div>
@@ -124,7 +127,7 @@
                         style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label>Current HP (%)</label>
-                            <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
+
                         </div>
                         <input type="number" id="p1-hp-percent" value="100" min="0" max="100">
                         <div class="hp-bar-wrap">
@@ -230,6 +233,7 @@
                     <div class="level-row">
                         <span>Level</span>
                         <input type="number" id="p2-level" value="50" min="1" max="100">
+                        <button class="import-btn" onclick="openImportModal(2)">Import Paste</button>
                     </div>
 
                     <table class="stats-table">
@@ -261,7 +265,9 @@
                         <div class="select-group">
                             <label>Item</label>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p2-item-sprite" style="width: 24px; height: 24px; object-fit: contain; display: none;" onerror="handleItemError(this, window.p2?.item)">
+                                <img src="" id="p2-item-sprite"
+                                    style="width: 24px; height: 24px; object-fit: contain; display: none;"
+                                    onerror="handleItemError(this, window.p2?.item)">
                                 <input type="text" id="p2-item" list="items-list" placeholder="Choose Item...">
                             </div>
                         </div>
@@ -290,7 +296,7 @@
                         style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label>Current HP (%)</label>
-                            <button class="import-btn" onclick="openImportModal(2)">Import Paste</button>
+
                         </div>
                         <input type="number" id="p2-hp-percent" value="100" min="0" max="100">
                         <div class="hp-bar-wrap">
