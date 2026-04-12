@@ -110,21 +110,25 @@ function setupSearchListeners() {
             results.innerHTML = '';
             if (q.length < 2) return;
 
-            const matches = pokemonData
-                .filter(p => p.Name && p.Name.toLowerCase().includes(q))
-                .slice(0, 10)
-                .map(p => p.Name);
-            matches.forEach(m => {
-                const div = document.createElement('div');
-                div.className = 'search-item';
-                div.textContent = m;
-                div.onclick = () => {
-                    input.value = m;
-                    results.innerHTML = '';
-                    selectPokemon(num, m);
-                };
-                results.appendChild(div);
-            });
+            results.innerHTML = filtered.map(x => `
+                <div class="search-item" data-name="${x.Name}">
+                    <span class="search-item-name">${x.Name}</span>
+                    <span class="search-item-types">${x.Type_1}${x.Type_2 ? ' / ' + x.Type_2 : ''}</span>
+                </div>
+            `).join('');
+            results.classList.add('active');
+        });
+
+        // Search Selection via Delegation
+        results.addEventListener('click', (e) => {
+            const item = e.target.closest('.search-item');
+            if (item) {
+                const name = item.getAttribute('data-name');
+                input.value = name;
+                results.innerHTML = '';
+                results.classList.remove('active');
+                selectPokemon(num, name);
+            }
         });
 
         // Close on outside click
@@ -321,8 +325,6 @@ function toggleMega(num) {
     
     if (targetName) updatePokemonForm(num, targetName);
 }
-    });
-}
 
 function renderStatsEditor(num) {
     const tbody = document.getElementById(`p${num}-stats-editor`);
@@ -491,98 +493,56 @@ document.getElementById('confirm-import').addEventListener('click', async () => 
 });
 
 function importFromText(num, text) {
-    const lines = text.trim().split('\n').map(l => l.trim());
+    const lines = text.trim().split('\n').map(l => l.trim()).filter(l => l);
     if (lines.length === 0) return;
 
-    const slot = {
-        species: '', item: '', ability: '', level: 50, nature: 'Serious',
-        evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
-        ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }
-    };
-
-    // Header: Name @ Item
-    const head = lines[0];
-    const itemSplit = head.split('@');
-    if (itemSplit[1]) slot.item = itemSplit[1].trim();
-    let namePart = itemSplit[0].split('(')[0].trim();
-    if(namePart.includes(')')) namePart = namePart.split(')')[1].trim(); 
-    if(!namePart) namePart = itemSplit[0].replace(/\([^)]+\)/g, '').trim(); 
-    
-    // Attempt match with DB (array of objects)
-    let sMatch = pokemonData.find(x => x.Name && x.Name.toLowerCase() === namePart.toLowerCase());
-    if(!sMatch && namePart.includes('-')) {
-         const baseName = namePart.split('-')[0].trim();
-         sMatch = pokemonData.find(x => x.Name && x.Name.toLowerCase() === baseName.toLowerCase());
-    }
-    if(sMatch) slot.species = sMatch.Name;
-    else slot.species = namePart; // raw guess
-
-    for(let i=1; i<lines.length; i++) {
-        const L = lines[i];
-        if (L.startsWith('Ability:')) slot.ability = L.split(':')[1].trim();
-        else if (L.startsWith('Level:')) slot.level = parseInt(L.split(':')[1].trim());
-        else if (L.includes('Nature')) slot.nature = L.split(' ')[0].trim();
-        else if (L.startsWith('EVs:')) {
-            const evParts = L.split(':')[1].split('/');
-            evParts.forEach(part => {
-                const [val, statKeyRaw] = part.trim().split(' ');
-                if (!statKeyRaw) return;
-                const key = statKeyRaw.toLowerCase();
-                const v = parseInt(val) || 0;
-                if (key.includes('hp')) slot.evs.hp = v;
-                else if (key.includes('atk')) slot.evs.atk = v;
-                else if (key.includes('def')) slot.evs.def = v;
-                else if (key.includes('spa')) slot.evs.spa = v;
-                else if (key.includes('spd')) slot.evs.spd = v;
-                else if (key.includes('spe')) slot.evs.spe = v;
-            });
-        }
-        else if (L.startsWith('IVs:')) {
-            const ivParts = L.split(':')[1].split('/');
-            ivParts.forEach(part => {
-                const [val, statKeyRaw] = part.trim().split(' ');
-                if (!statKeyRaw) return;
-                const key = statKeyRaw.toLowerCase();
-                const v = parseInt(val) || 0;
-                if (key.includes('hp')) slot.ivs.hp = v;
-                else if (key.includes('atk')) slot.ivs.atk = v;
-                else if (key.includes('def')) slot.ivs.def = v;
-                else if (key.includes('spa')) slot.ivs.spa = v;
-                else if (key.includes('spd')) slot.ivs.spd = v;
-                else if (key.includes('spe')) slot.ivs.spe = v;
-            });
-        }
-    }
-
-    // Apply to target
     const p = num === 1 ? p1 : p2;
-    p.species = slot.species;
     
-    // Reselect so Base stats load
-    if (pokemonData.find(x => x.Name === p.species)) {
-        selectPokemon(num, p.species);
+    try {
+        // Line 1: Name @ Item
+        const line1 = lines[0];
+        const namePart = line1.split('@')[0].split('(')[0].trim();
+        const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : 'None';
+        
+        selectPokemon(num, namePart);
+        p.item = itemPart;
+
+        lines.slice(1).forEach(line => {
+            if (line.startsWith('Ability:')) p.ability = line.replace('Ability:', '').trim();
+            else if (line.startsWith('Level:')) p.level = parseInt(line.replace('Level:', '')) || 50;
+            else if (line.startsWith('EVs:')) {
+                const evs = line.replace('EVs:', '').split('/');
+                evs.forEach(ev => {
+                    const [val, stat] = ev.trim().split(' ');
+                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
+                    if (p.evs[key] !== undefined) p.evs[key] = parseInt(val) || 0;
+                });
+            }
+            else if (line.endsWith('Nature')) p.nature = line.replace('Nature', '').trim();
+            else if (line.startsWith('IVs:')) {
+                const ivs = line.replace('IVs:', '').split('/');
+                ivs.forEach(iv => {
+                    const [val, stat] = iv.trim().split(' ');
+                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
+                    if (p.ivs[key] !== undefined) p.ivs[key] = parseInt(val) || 0;
+                });
+            }
+        });
+
+        // Update UI headers
+        const searchInput = document.getElementById(`p${num}-search`);
+        if (searchInput) searchInput.value = p.species;
+        document.getElementById(`p${num}-level`).value = p.level;
+        document.getElementById(`p${num}-nature`).value = p.nature;
+        document.getElementById(`p${num}-ability`).value = p.ability;
+        document.getElementById(`p${num}-item`).value = p.item;
+
+        recalcStats(num);
+        showToast(`Build ${num === 1 ? 'A' : 'B'} Imported!`);
+    } catch (e) {
+        console.error("Import error", e);
+        showToast("Failed to parse PokePaste!");
     }
-
-    p.level = slot.level;
-    p.nature = slot.nature;
-    p.ability = slot.ability;
-    p.item = slot.item;
-    p.evs = slot.evs;
-    p.ivs = slot.ivs;
-
-    // Update Form fields
-    document.getElementById(`p${num}-level`).value = p.level;
-    document.getElementById(`p${num}-nature`).value = p.nature;
-    document.getElementById(`p${num}-ability`).value = p.ability;
-    document.getElementById(`p${num}-item`).value = p.item;
-    
-    // Simulate item change so mega updates if relevant
-    const itEvent = new Event('change');
-    const itInput = document.getElementById(`p${num}-item`);
-    if(itInput) itInput.dispatchEvent(itEvent);
-
-    recalcStats(num);
-    showToast(`Build ${num === 1 ? 'A' : 'B'} Imported!`);
 }
 
 function showToast(msg) {

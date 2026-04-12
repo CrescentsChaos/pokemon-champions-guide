@@ -141,6 +141,15 @@ function setupEventListeners() {
             pk.teraType = e.target.value;
             recalculate();
         });
+
+        // Search Selection via Delegation
+        document.getElementById(`${p}-search-results`).addEventListener('click', (e) => {
+            const target = e.target.closest('.search-item');
+            if (target) {
+                const name = target.getAttribute('data-name');
+                loadPokemon(id, name);
+            }
+        });
     });
 
     document.querySelectorAll('.field-btn').forEach(btn => {
@@ -178,7 +187,12 @@ function handleSearch(p, query) {
         return matches;
     }).slice(0, 10);
     
-    resultsDiv.innerHTML = filtered.map(x => `<div class="search-item" onclick="loadPokemon(${p === 'p1' ? 1 : 2}, '${x.Name.replace(/'/g, "\\'")}')">${x.Name}</div>`).join('');
+    resultsDiv.innerHTML = filtered.map(x => `
+        <div class="search-item" data-name="${x.Name}">
+            <span class="search-item-name">${x.Name}</span>
+            <span class="search-item-types">${x.Type_1}${x.Type_2 ? ' / ' + x.Type_2 : ''}</span>
+        </div>
+    `).join('');
     resultsDiv.classList.add('active');
 }
 
@@ -242,12 +256,15 @@ function populatePokemonUI(pk) {
                 <option value="None">None</option>
                 ${movesDB.map(m => `<option value="${m.name}" ${move.name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
             </select>
-            <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="move-configs" style="display: flex; gap: 8px; align-items: center;">
                 ${isMulti ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${[2,3,4,5,10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
                 </select>` : ''}
-                <label class="crit-label"><input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> Crit</label>
+                <label class="crit-label" style="display: flex; gap: 4px; align-items: center; white-space: nowrap;">
+                    <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> 
+                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">CRIT</span>
+                </label>
             </div>
         </div>
     `}).join('');
@@ -295,6 +312,7 @@ function updateMove(pId, idx, moveName) {
     } else {
         pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
     }
+    populatePokemonUI(pk);
     recalculate();
 }
 
@@ -349,23 +367,6 @@ function updateStatVal(id, k, type, val) {
     pk[type][k] = parseInt(val) || 0;
     updateStatsUI(pk);
     recalculate();
-}
-
-function calculateStat(k, base, iv, ev, level, nature) {
-    if (k === 'hp') {
-        if (base === 1) return 1;
-        return Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + level + 10;
-    }
-    const val = Math.floor((Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + 5));
-    const natureMod = getNaturesMod(nature, k);
-    return Math.floor(val * natureMod);
-}
-
-function getNaturesMod(natureName, stat) {
-    const n = natures[natureName];
-    if (!n) return 1;
-    const map = { atk:0, def:1, spa:2, spd:3, spe:4 };
-    return n[map[stat]] || 1;
 }
 
 function recalculate() {
@@ -597,7 +598,6 @@ function calculateDamage(attacker, defender, move, field) {
     }
 
     // Protection Check
-    const defSide = defender.id === 1 ? field.side1 : field.side2;
     if (defSide.protect && attacker.ability !== 'Unseen Fist') {
         rolls = rolls.map(() => 0);
     }
@@ -616,7 +616,6 @@ function calculateDamage(attacker, defender, move, field) {
     const defHp = defender.stats.hp;
     res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
     res.maxPercent = (rolls[15] / defHp * 100).toFixed(1);
-    res.rolls = rolls;
     res.rolls = rolls;
     return res;
 }
@@ -677,6 +676,7 @@ function importPokePaste(id, paste) {
         
         loadPokemon(id, namePart);
         pk.item = itemPart;
+        pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })); // Clear moves
 
         lines.slice(1).forEach(line => {
             if (line.startsWith('Ability:')) pk.ability = line.replace('Ability:', '').trim();
