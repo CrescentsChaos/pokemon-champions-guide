@@ -20,11 +20,11 @@ let field = {
 };
 
 const natures = {
-    'Hardy': [1,1,1,1,1], 'Lonely': [1.1, 0.9, 1, 1, 1], 'Brave': [1.1, 1, 1, 1, 0.9], 'Adamant': [1.1, 1, 0.9, 1, 1], 'Naughty': [1.1, 1, 1, 0.9, 1],
-    'Bold': [0.9, 1.1, 1, 1, 1], 'Docile': [1,1,1,1,1], 'Relaxed': [1, 1.1, 1, 1, 0.9], 'Impish': [1, 1.1, 0.9, 1, 1], 'Lax': [1, 1.1, 1, 0.9, 1],
-    'Timid': [0.9, 1, 1, 1, 1.1], 'Hasty': [1, 0.9, 1, 1, 1.1], 'Serious': [1,1,1,1,1], 'Jolly': [1, 1, 0.9, 1, 1.1], 'Naive': [1, 1, 1, 0.9, 1.1],
-    'Modest': [0.9, 1, 1.1, 1, 1], 'Mild': [1, 0.9, 1.1, 1, 1], 'Quiet': [1, 1, 1.1, 1, 0.9], 'Bashful': [1,1,1,1,1], 'Rash': [1, 1, 1.1, 0.9, 1],
-    'Calm': [0.9, 1, 1, 1.1, 1], 'Gentle': [1, 0.9, 1, 1.1, 1], 'Sassy': [1, 1, 1, 1.1, 0.9], 'Careful': [1, 1, 0.9, 1.1, 1], 'Quirky': [1,1,1,1,1]
+    'Hardy': [1, 1, 1, 1, 1], 'Lonely': [1.1, 0.9, 1, 1, 1], 'Brave': [1.1, 1, 1, 1, 0.9], 'Adamant': [1.1, 1, 0.9, 1, 1], 'Naughty': [1.1, 1, 1, 0.9, 1],
+    'Bold': [0.9, 1.1, 1, 1, 1], 'Docile': [1, 1, 1, 1, 1], 'Relaxed': [1, 1.1, 1, 1, 0.9], 'Impish': [1, 1.1, 0.9, 1, 1], 'Lax': [1, 1.1, 1, 0.9, 1],
+    'Timid': [0.9, 1, 1, 1, 1.1], 'Hasty': [1, 0.9, 1, 1, 1.1], 'Serious': [1, 1, 1, 1, 1], 'Jolly': [1, 1, 0.9, 1, 1.1], 'Naive': [1, 1, 1, 0.9, 1.1],
+    'Modest': [0.9, 1, 1.1, 1, 1], 'Mild': [1, 0.9, 1.1, 1, 1], 'Quiet': [1, 1, 1.1, 1, 0.9], 'Bashful': [1, 1, 1, 1, 1], 'Rash': [1, 1, 1.1, 0.9, 1],
+    'Calm': [0.9, 1, 1, 1.1, 1], 'Gentle': [1, 0.9, 1, 1.1, 1], 'Sassy': [1, 1, 1, 1.1, 0.9], 'Careful': [1, 1, 0.9, 1.1, 1], 'Quirky': [1, 1, 1, 1, 1]
 };
 
 const typeChart = {
@@ -62,14 +62,14 @@ async function init() {
 
         p1 = setupPokemonState(1);
         p2 = setupPokemonState(2);
-        
+
         setupEventListeners();
         populateDropdowns();
-        
+
         // Load defaults
         loadPokemon(1, 'Abomasnow');
         loadPokemon(2, 'Abomasnow');
-        
+
         recalculate();
     } catch (e) {
         console.error("Load fail", e);
@@ -81,7 +81,7 @@ function setupPokemonState(id) {
     return {
         id,
         name: '', baseStats: {}, stats: {},
-        level: 100, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+        level: 50, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
         evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
         boosts: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
         nature: 'Hardy', ability: 'None', item: 'None', status: 'Healthy',
@@ -97,9 +97,9 @@ function setupEventListeners() {
         const pk = id === 1 ? p1 : p2;
 
         document.getElementById(`${p}-search`).addEventListener('input', (e) => handleSearch(p, e.target.value));
-        
+
         document.getElementById(`${p}-level`).addEventListener('change', (e) => {
-            pk.level = parseInt(e.target.value) || 100;
+            pk.level = parseInt(e.target.value) || 50;
             updateStatsUI(pk);
             recalculate();
         });
@@ -131,7 +131,7 @@ function setupEventListeners() {
             });
         });
 
-        
+
         document.getElementById(`${p}-tera`).addEventListener('change', (e) => {
             pk.tera = e.target.checked;
             recalculate();
@@ -179,14 +179,14 @@ function handleSearch(p, query) {
         resultsDiv.classList.remove('active');
         return;
     }
-    
+
     const excludeMegas = document.getElementById('exclude-megas-calc').checked;
     const filtered = pokemonDB.filter(x => {
         const matches = (x.Name || '').toLowerCase().includes(query.toLowerCase());
         if (excludeMegas && (x.Name || '').includes('-Mega')) return false;
         return matches;
     }).slice(0, 10);
-    
+
     resultsDiv.innerHTML = filtered.map(x => `
         <div class="search-item" data-name="${x.Name}">
             <span class="search-item-name">${x.Name}</span>
@@ -200,7 +200,7 @@ function loadPokemon(id, name) {
     const pk = id === 1 ? p1 : p2;
     const data = pokemonDB.find(x => x.Name === name);
     if (!data) return;
-    
+
     pk.name = data.Name;
     pk.type1 = data.Type_1;
     pk.type2 = data.Type_2 || 'None';
@@ -208,14 +208,14 @@ function loadPokemon(id, name) {
         hp: parseInt(data.HP), atk: parseInt(data.Attack), def: parseInt(data.Defense),
         spa: parseInt(data['Sp.Atk']), spd: parseInt(data['Sp.Def']), spe: parseInt(data.Speed)
     };
-    
+
     const dbAbilities = getPokemonAbilities(data);
     pk.ability = dbAbilities[0] || 'None';
-    
+
     const pStr = id === 1 ? 'p1' : 'p2';
     document.getElementById(`${pStr}-search`).value = name;
     document.getElementById(`${pStr}-search-results`).classList.remove('active');
-    
+
     populatePokemonUI(pk);
     updateStatsUI(pk);
     recalculate();
@@ -230,17 +230,28 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-ability`).value = pk.ability;
     document.getElementById(`${p}-item`).value = pk.item;
     document.getElementById(`${p}-hp-percent`).value = pk.hpPercent;
-    
+
     // Tera UI Sync
     document.getElementById(`${p}-tera`).checked = pk.tera || false;
     if (pk.teraType) document.getElementById(`${p}-tera-type`).value = pk.teraType;
-    
+
     updateHPBar(pk.id, pk.hpPercent);
 
     const pkData = pokemonDB.find(x => x.Name === pk.name);
     if (pkData) {
         const abilities = getPokemonAbilities(pkData);
         document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
+    }
+
+    // Item Sprite Sync
+    const itemSprite = document.getElementById(`${p}-item-sprite`);
+    if (itemSprite) {
+        if (pk.item && pk.item !== 'None') {
+            itemSprite.src = getItemSpriteUrl(pk.item);
+            itemSprite.style.display = 'block';
+        } else {
+            itemSprite.style.display = 'none';
+        }
     }
 
     // Sprite Sync
@@ -250,13 +261,13 @@ function populatePokemonUI(pk) {
         spriteImg.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
         spriteImg.dataset.fallbackState = '0';
     }
-    
+
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
         const mData = movesDB.find(m => m.name === move.name);
         const isMulti = mData && (mData.name === 'Bullet Seed' || mData.name === 'Water Shuriken' || mData.name === 'Icicle Spear' || mData.name === 'Rock Blast' || mData.name === 'Pin Missile' || mData.name === 'Population Bomb' || mData.name === 'Dual Wingbeat' || mData.name === 'Surging Strikes' || mData.name === 'Bonemerang' || mData.name === 'Dragon Dart' || mData.name === 'Double Iron Bash');
-        
+
         return `
         <div class="move-row">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)">
@@ -266,7 +277,7 @@ function populatePokemonUI(pk) {
             <div class="move-configs">
                 ${isMulti ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
-                    ${[2,3,4,5,10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
+                    ${[2, 3, 4, 5, 10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
                 </select>` : ''}
                 <label class="crit-label">
                     <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> 
@@ -287,7 +298,7 @@ function toggleMega(id) {
     const pk = id === 1 ? p1 : p2;
     const currentName = pk.name;
     const btn = document.getElementById(`p${id}-mega-toggle`);
-    
+
     let targetName = "";
     if (currentName.includes("-Mega")) {
         // Revert to base
@@ -304,7 +315,7 @@ function toggleMega(id) {
             return;
         }
     }
-    
+
     if (targetName) loadPokemon(id, targetName);
 }
 
@@ -333,7 +344,7 @@ function updateStatsUI(pk) {
     const p = pk.id === 1 ? 'p1' : 'p2';
     const tbody = document.getElementById(`${p}-stats`);
     const statsKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
-    
+
     tbody.innerHTML = statsKeys.map(k => {
         const base = pk.baseStats[k] || 0;
         const iv = pk.ivs[k];
@@ -341,7 +352,7 @@ function updateStatsUI(pk) {
         const boost = pk.boosts[k] || 0;
         const total = calculateStat(base, iv, ev, pk.level, pk.nature, k);
         pk.stats[k] = total;
-        
+
         const boostedTotal = k === 'hp' ? total : getBoostValue(total, boost);
 
         return `
@@ -353,7 +364,7 @@ function updateStatsUI(pk) {
                 <td>
                     ${k === 'hp' ? '' : `
                     <select onchange="updateStatVal(${pk.id}, '${k}', 'boosts', this.value)" class="boost-select">
-                        ${[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6].map(b => `<option value="${b}" ${boost == b ? 'selected' : ''}>${b > 0 ? '+' : ''}${b}</option>`).join('')}
+                        ${[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map(b => `<option value="${b}" ${boost == b ? 'selected' : ''}>${b > 0 ? '+' : ''}${b}</option>`).join('')}
                     </select>
                     `}
                 </td>
@@ -378,16 +389,16 @@ function updateStatVal(id, k, type, val) {
 
 function recalculate() {
     if (!p1 || !p2) return;
-    
+
     const p1Results = p1.moves.map(m => m.name !== 'None' ? calculateDamage(p1, p2, m, field) : null);
     const p2Results = p2.moves.map(m => m.name !== 'None' ? calculateDamage(p2, p1, m, field) : null);
 
     renderMoveResults(p1Results, p2Results);
-    
+
     const res = p1Results[selectedMoveIdx1] || p2Results[selectedMoveIdx2];
     const banner = document.getElementById('main-result');
     const subBanner = document.getElementById('sub-result');
-    
+
     if (!res) {
         banner.innerText = "Select moves to see results";
         subBanner.innerText = "(Select an attacker move)";
@@ -398,19 +409,19 @@ function recalculate() {
     const defender = res.attackerId === 1 ? p2 : p1;
     banner.innerText = `${attacker.name} ${res.move} vs. ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
     subBanner.innerText = `Damage rolls: (${res.rolls.join(', ')})`;
-    
+
     // KO Probability
     const koResult = document.getElementById('ko-result');
     const hp = defender.stats.hp * (defender.hpPercent / 100);
     const rolls = res.rolls;
     const ohkoCount = rolls.filter(r => r >= hp).length;
     const ohkoProb = (ohkoCount / rolls.length * 100).toFixed(1);
-    
+
     if (ohkoProb > 0) {
         koResult.innerText = ohkoProb === "100.0" ? "Guaranteed OHKO" : `${ohkoProb}% chance to OHKO`;
     } else {
         // Check 2HKO (Simplified: average of roll sums)
-        const avg = rolls.reduce((a,b) => a+b, 0) / rolls.length;
+        const avg = rolls.reduce((a, b) => a + b, 0) / rolls.length;
         if (avg * 2 >= hp) {
             koResult.innerText = "Possible 2HKO";
         } else {
@@ -460,22 +471,30 @@ function selectMove(pId, idx) {
 function calculateDamage(attacker, defender, move, field) {
     const res = { move: move.name, attackerId: attacker.id, minPercent: 0, maxPercent: 0, rolls: [0] };
     if (move.basePower === 0) return res;
-    
+
     const level = attacker.level;
     const isSpecial = move.category === 'Special';
-    
+
     // --- Stats & Boosts ---
     let atkBoost = isSpecial ? attacker.boosts.spa : attacker.boosts.atk;
     let defBoost = isSpecial ? defender.boosts.spd : defender.boosts.def;
-    
+
     // Critical hits ignore negative attack boosts and positive defense boosts
     if (move.crit) {
         if (atkBoost < 0) atkBoost = 0;
         if (defBoost > 0) defBoost = 0;
     }
-    
+
     let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
     let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
+
+    // --- Weather Stat Boosts ---
+    if (field.weather === 'Snow' && (defender.type1 === 'Ice' || defender.type2 === 'Ice' || (defender.tera && defender.teraType === 'Ice')) && !isSpecial) {
+        rawDef = Math.floor(rawDef * 1.5);
+    }
+    if (field.weather === 'Sand' && (defender.type1 === 'Rock' || defender.type2 === 'Rock' || (defender.tera && defender.teraType === 'Rock')) && isSpecial) {
+        rawDef = Math.floor(rawDef * 1.5);
+    }
 
     // --- Ability Stat Boosts ---
     if (attacker.ability === 'Huge Power' || attacker.ability === 'Pure Power') {
@@ -497,11 +516,11 @@ function calculateDamage(attacker, defender, move, field) {
 
     // --- Move BP Adjustments ---
     let basePower = move.basePower;
-    
+
     // Status boosts
     if (move.name === 'Facade' && attacker.status !== 'Healthy') basePower = 140;
     if (move.name === 'Hex' && defender.status !== 'Healthy') basePower = 130;
-    
+
     // Tera BP Boost (60 BP floor)
     if (attacker.tera && move.type === attacker.teraType && basePower < 60 && basePower > 0) {
         // Exclude Priority and Multi-hit from the 60 BP floor
@@ -532,7 +551,7 @@ function calculateDamage(attacker, defender, move, field) {
     // 3. STAB
     let stab = 1.0;
     let isOriginalSTAB = (move.type === attacker.type1 || move.type === attacker.type2);
-    
+
     if (attacker.tera) {
         if (move.type === attacker.teraType) {
             stab = isOriginalSTAB ? 2.0 : 1.5;
@@ -548,7 +567,7 @@ function calculateDamage(attacker, defender, move, field) {
     // 4. Type Effectiveness & Ability Immunities
     let typeMod = 1.0;
     const isMoldBreaker = attacker.ability === 'Mold Breaker';
-    
+
     // Defender Tera Types
     let defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
     if (defender.tera) {
@@ -572,7 +591,7 @@ function calculateDamage(attacker, defender, move, field) {
         if (defender.ability === 'Earth Eater' && move.type === 'Ground') return res;
         if (defender.ability === 'Well-Baked Body' && move.type === 'Fire') return res;
     }
-    
+
     // Filter/Solid Rock/Primal Armor
     if (!isMoldBreaker && typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock')) {
         modifier *= 0.75;
@@ -589,10 +608,10 @@ function calculateDamage(attacker, defender, move, field) {
     // 6. Screens
     const defSide = defender.id === 1 ? field.side1 : field.side2;
     if (!move.crit) {
-        if (isSpecial && defSide.lightScreen) modifier *= (field.format === 'Doubles' ? 2/3 : 0.5);
-        if (!isSpecial && defSide.reflect) modifier *= (field.format === 'Doubles' ? 2/3 : 0.5);
+        if (isSpecial && defSide.lightScreen) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
+        if (!isSpecial && defSide.reflect) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
     }
-    
+
     // 7. Life Orb
     if (item === 'life orb') modifier *= 1.3;
 
@@ -619,7 +638,7 @@ function calculateDamage(attacker, defender, move, field) {
     if (hits > 1) {
         rolls = rolls.map(r => r * hits);
     }
-    
+
     const defHp = defender.stats.hp;
     res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
     res.maxPercent = (rolls[15] / defHp * 100).toFixed(1);
@@ -633,7 +652,7 @@ function updateFieldState() {
     field.weather = activeWeather ? activeWeather.getAttribute('data-weather') : 'None';
     const activeTerrain = document.querySelector('[data-terrain].active');
     field.terrain = activeTerrain ? activeTerrain.getAttribute('data-terrain') : 'None';
-    
+
     // Side Effects
     ['side1', 'side2'].forEach((side, i) => {
         const panel = document.querySelectorAll('.sides-row .side-controls')[i];
@@ -672,51 +691,83 @@ function closeImportModal() {
 
 function importPokePaste(id, paste) {
     const pk = id === 1 ? p1 : p2;
-    const lines = paste.split('\n').map(l => l.trim()).filter(l => l);
+    const lines = paste.split('\n').map(l => l.trim()).filter(l => !!l);
     if (!lines.length) return;
 
     try {
-        // Line 1: Name @ Item
-        const line1 = lines[0];
-        const namePart = line1.split('@')[0].split('(')[0].trim();
-        const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : 'None';
-        
-        loadPokemon(id, namePart);
-        pk.item = itemPart;
-        pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })); // Clear moves
+        const head = lines[0];
+        const itemSplit = head.split('@');
+        let itemPart = 'None';
+        if (itemSplit[1]) itemPart = itemSplit[1].trim();
 
-        lines.slice(1).forEach(line => {
-            if (line.startsWith('Ability:')) pk.ability = line.replace('Ability:', '').trim();
-            else if (line.startsWith('Level:')) pk.level = parseInt(line.replace('Level:', '')) || 100;
-            else if (line.startsWith('Tera Type:')) pk.teraType = line.replace('Tera Type:', '').trim();
-            else if (line.startsWith('EVs:')) {
-                const evs = line.replace('EVs:', '').split('/');
-                evs.forEach(ev => {
-                    const [val, stat] = ev.trim().split(' ');
-                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
-                    if (pk.evs[key] !== undefined) pk.evs[key] = parseInt(val) || 0;
+        let namePart = itemSplit[0].trim();
+        const brackets = [];
+        const bracketRegex = /\(([^)]+)\)/g;
+        let match;
+        while ((match = bracketRegex.exec(namePart)) !== null) {
+            brackets.push(match[1].trim());
+        }
+
+        let mainName = namePart.split('(')[0].trim();
+        let speciesName = mainName;
+        
+        if (brackets.length === 2) {
+            speciesName = brackets[0];
+        } else if (brackets.length === 1) {
+            const b = brackets[0];
+            if (b !== 'M' && b !== 'F') speciesName = b;
+        }
+
+        loadPokemon(id, speciesName);
+        pk.item = itemPart;
+        pk.level = 50;
+        pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }));
+
+        lines.slice(1).forEach(l => {
+            const line = l.trim();
+            if (line.match(/^Ability\s*:/i)) pk.ability = line.split(':')[1].trim();
+            else if (line.match(/^Level\s*:/i)) pk.level = parseInt(line.split(':')[1].trim());
+            else if (line.match(/^Tera Type\s*:/i)) pk.teraType = line.split(':')[1].trim();
+            else if (line.match(/^EVs\s*:/i)) {
+                line.split(':')[1].split('/').forEach(p => {
+                    const matchObj = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (matchObj) {
+                        let key = matchObj[2].toLowerCase();
+                        if (key === 'hp') key = 'hp';
+                        else if (key === 'atk') key = 'atk';
+                        else if (key === 'def') key = 'def';
+                        else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                        else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                        else if (key === 'spe' || key === 'speed') key = 'spe';
+                        if (pk.evs[key] !== undefined) pk.evs[key] = parseInt(matchObj[1]);
+                    }
                 });
-            }
-            else if (line.endsWith('Nature')) pk.nature = line.replace('Nature', '').trim();
-            else if (line.startsWith('IVs:')) {
-                const ivs = line.replace('IVs:', '').split('/');
-                ivs.forEach(iv => {
-                    const [val, stat] = iv.trim().split(' ');
-                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
-                    if (pk.ivs[key] !== undefined) pk.ivs[key] = parseInt(val) || 0;
+            } else if (line.match(/^IVs\s*:/i)) {
+                line.split(':')[1].split('/').forEach(p => {
+                    const matchObj = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (matchObj) {
+                        let key = matchObj[2].toLowerCase();
+                        if (key === 'hp') key = 'hp';
+                        else if (key === 'atk') key = 'atk';
+                        else if (key === 'def') key = 'def';
+                        else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                        else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                        else if (key === 'spe' || key === 'speed') key = 'spe';
+                        if (pk.ivs[key] !== undefined) pk.ivs[key] = parseInt(matchObj[1]);
+                    }
                 });
-            }
+            } else if (line.toLowerCase().endsWith('nature')) pk.nature = line.substring(0, line.length - 6).trim();
             else if (line.startsWith('-')) {
                 const moveName = line.substring(1).trim();
                 const emptyIdx = pk.moves.findIndex(m => m.name === 'None');
                 if (emptyIdx !== -1) {
-                   const mData = movesDB.find(m => m.name.toLowerCase() === moveName.toLowerCase());
-                   if (mData) {
-                       pk.moves[emptyIdx] = {
-                           name: mData.name, basePower: parseInt(mData.power) || 0,
-                           type: mData.type, category: mData.damage_class, crit: false
-                       };
-                   }
+                    const mData = movesDB.find(m => m.name.toLowerCase() === moveName.toLowerCase());
+                    if (mData) {
+                        pk.moves[emptyIdx] = {
+                            name: mData.name, basePower: parseInt(mData.power) || 0,
+                            type: mData.type, category: mData.damage_class, crit: false
+                        };
+                    }
                 }
             }
         });
@@ -754,9 +805,9 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('active'), 3000);
 }
 
-window.handleSpriteError = function(img, name, shiny, item) {
+window.handleSpriteError = function (img, name, shiny, item) {
     if (!name || img.dataset.fallbackState === 'final') return;
-    
+
     item = item || '';
     const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
 
@@ -784,6 +835,16 @@ window.handleSpriteError = function(img, name, shiny, item) {
         img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
     }
 }
+
+function getItemSpriteUrl(itemName) {
+    if (!itemName || itemName === 'None') return '';
+    const cleanName = itemName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return `https://play.pokemonshowdown.com/sprites/itemicons/${cleanName}.png`;
+}
+
+window.handleItemError = function(img, item) {
+    img.style.display = 'none';
+};
 
 document.getElementById('exclude-megas-calc').addEventListener('change', recalculate);
 
