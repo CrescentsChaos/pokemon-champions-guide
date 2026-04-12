@@ -240,6 +240,8 @@ function setupEventListeners() {
                 btn.classList.toggle('active');
             }
             updateFieldState();
+            if (p1) updateStatsUI(p1);
+            if (p2) updateStatsUI(p2);
             recalculate();
         });
     });
@@ -591,15 +593,26 @@ function updateStatsUI(pk) {
     const tbody = document.getElementById(`${p}-stats`);
     const statsKeys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 
+    // PRE-CALCULATE base totals so applyParadoxBoost can evaluate all stats accurately
+    statsKeys.forEach(k => {
+        const base = pk.baseStats[k] || 0;
+        pk.stats[k] = calculateStat(base, pk.ivs[k], pk.evs[k], pk.level, pk.nature, k);
+    });
+
+    const side = pk.id === 1 ? field.side1 : field.side2;
+
     tbody.innerHTML = statsKeys.map(k => {
         const base = pk.baseStats[k] || 0;
         const iv = pk.ivs[k];
         const ev = pk.evs[k];
         const boost = pk.boosts[k] || 0;
-        const total = calculateStat(base, iv, ev, pk.level, pk.nature, k);
-        pk.stats[k] = total;
 
-        const boostedTotal = k === 'hp' ? total : getBoostValue(total, boost);
+        let displayTotal = pk.stats[k];
+        if (k !== 'hp') {
+            displayTotal = applyParadoxBoost(pk, displayTotal, k, field, side);
+        }
+
+        const boostedTotal = k === 'hp' ? displayTotal : getBoostValue(displayTotal, boost);
 
         return `
             <tr>
@@ -832,10 +845,73 @@ function calculateDamage(attacker, defender, move, field) {
     let basePower = move.basePower;
     let moveType = move.type;
 
-    // Stellar Tera Blast
-    if (move.name === 'Tera Blast' && attacker.tera && attacker.teraType === 'Stellar') {
-        moveType = 'Stellar';
-        basePower = 100;
+    let abilityBoost = 1.0;
+
+    // --- Dynamic Move Types ---
+
+    // Tera Blast
+    if (move.name === 'Tera Blast' && attacker.tera) {
+        if (attacker.teraType === 'Stellar') {
+            moveType = 'Stellar';
+            basePower = 100;
+        } else {
+            moveType = attacker.teraType;
+        }
+    }
+
+    // Weather Ball
+    const isSun = field.weather === 'Sun' || field.weather === 'Harsh Sun' || attacker.ability === 'Mega Sol' || attacker.ability === 'Desolate Land';
+    const isRain = field.weather === 'Rain' || field.weather === 'Heavy Rain' || attacker.ability === 'Primordial Sea';
+    const isSand = field.weather === 'Sand';
+    const isSnow = field.weather === 'Snow' || field.weather === 'Hail';
+
+    if (move.name === 'Weather Ball') {
+        if (isSun) { moveType = 'Fire'; basePower = 100; }
+        else if (isRain) { moveType = 'Water'; basePower = 100; }
+        else if (isSand) { moveType = 'Rock'; basePower = 100; }
+        else if (isSnow) { moveType = 'Ice'; basePower = 100; }
+    }
+
+    // Techno Blast & Multi-Attack
+    if (move.name === 'Techno Blast' || move.name === 'Multi-Attack') {
+        if (item.includes('shock') || item.includes('electric')) moveType = 'Electric';
+        if (item.includes('burn') || item.includes('fire')) moveType = 'Fire';
+        if (item.includes('chill') || item.includes('ice')) moveType = 'Ice';
+        if (item.includes('douse') || item.includes('water')) moveType = 'Water';
+    }
+
+    // Judgment
+    if (move.name === 'Judgment' && item.includes('plate')) {
+        const plateTypes = {
+            'flame': 'Fire', 'splash': 'Water', 'zap': 'Electric', 'meadow': 'Grass',
+            'icicle': 'Ice', 'fist': 'Fighting', 'toxic': 'Poison', 'earth': 'Ground',
+            'sky': 'Flying', 'psychic': 'Psychic', 'insect': 'Bug', 'stone': 'Rock',
+            'spooky': 'Ghost', 'draco': 'Dragon', 'dread': 'Dark', 'iron': 'Steel', 'pixie': 'Fairy'
+        };
+        const pType = Object.keys(plateTypes).find(k => item.startsWith(k));
+        if (pType) moveType = plateTypes[pType];
+    }
+
+    // Ivy Cudgel
+    if (move.name === 'Ivy Cudgel') {
+        if (item === 'wellspring mask') moveType = 'Water';
+        else if (item === 'hearthflame mask') moveType = 'Fire';
+        else if (item === 'cornerstone mask') moveType = 'Rock';
+    }
+
+    // --- Type-changing abilities (-ate abilities) ---
+    if (moveType === 'Normal') {
+        if (attacker.ability === 'Pixilate') { moveType = 'Fairy'; abilityBoost = 1.2; }
+        else if (attacker.ability === 'Aerilate') { moveType = 'Flying'; abilityBoost = 1.2; }
+        else if (attacker.ability === 'Refrigerate') { moveType = 'Ice'; abilityBoost = 1.2; }
+        else if (attacker.ability === 'Galvanize') { moveType = 'Electric'; abilityBoost = 1.2; }
+        else if (attacker.ability === 'Dragonize') { moveType = 'Dragon'; abilityBoost = 1.2; }
+    }
+
+    // Liquid Voice
+    const soundMoves = ['Hyper Voice', 'Boomburst', 'Snarl', 'Relic Song', 'Sparkling Aria', 'Disarming Voice', 'Echoed Voice', 'Round', 'Overdrive', 'Torch Song', 'Blood Moon', 'Clanging Scales', 'Bug Buzz', 'Chatter', 'Uproar', 'Eerie Spell', 'Sing', 'Perish Song', 'Roar'];
+    if (attacker.ability === 'Liquid Voice' && soundMoves.includes(move.name)) {
+        moveType = 'Water';
     }
 
     // Status boosts
@@ -913,13 +989,16 @@ function calculateDamage(attacker, defender, move, field) {
     }
 
     // 1. Weather
-    if (field.weather === 'Sun') {
+    if (isSun) {
         if (moveType === 'Fire') modifier *= 1.5;
         if (moveType === 'Water') modifier *= 0.5;
-    } else if (field.weather === 'Rain') {
+    } else if (isRain) {
         if (moveType === 'Water') modifier *= 1.5;
         if (moveType === 'Fire') modifier *= 0.5;
     }
+
+    // Apply abilityBoost from Pixilate/Aerilate etc.
+    modifier *= abilityBoost;
 
     // 2. Critical Hit
     if (move.crit) modifier *= 1.5;
