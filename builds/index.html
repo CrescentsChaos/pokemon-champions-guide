@@ -227,21 +227,39 @@
         }
 
         .move-pill {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 5px 12px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 2px 8px;
+            border-radius: 4px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            gap: 6px;
+            margin-bottom: 3px;
+            transition: var(--transition);
+        }
+
+        .move-pill:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .move-pill span {
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            font-weight: 700;
             color: #eee;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .move-type-label {
+            font-size: 0.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1px 4px;
+            border-radius: 3px;
         }
 
         .stat-bar-mini {
@@ -1613,12 +1631,14 @@
 
             const movesHtml = p.moves.map(m => {
                 if (!m) return `<div class="move-pill" style="opacity:0.2;"><span>EMPTY SLOT</span></div>`;
-                const moveData = allMoves.find(x => x.name.toLowerCase() === m.toLowerCase()) || { type: 'Normal' };
+                const moveData = (allMoves || []).find(x => x.name.toLowerCase() === m.toLowerCase()) || { type: 'Normal' };
                 const mt = moveData.type.toLowerCase();
+                const typeColor = typeColors[mt] || '#A8A77A';
                 return `
                     <div class="move-pill">
-                        <span>${m.toUpperCase()}</span>
-                        <div style="width:8px; height:8px; border-radius:50%; background:${typeColors[mt]}; box-shadow: 0 0 8px ${typeColors[mt]}88;"></div>
+                        <div style="width:4px; height:4px; background:${typeColor}; border-radius:50%; box-shadow: 0 0 4px ${typeColor};"></div>
+                        <span>${m}</span>
+                        <span class="move-type-label" style="color:${typeColor}">${mt}</span>
                     </div>
                 `;
             }).join('');
