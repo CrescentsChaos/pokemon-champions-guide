@@ -106,7 +106,7 @@ function setupEventListeners() {
 
         const searchInput = document.getElementById(`${p}-search`);
         searchInput.addEventListener('input', (e) => handleSearch(p, e.target.value));
-        
+
         searchInput.addEventListener('keydown', (e) => {
             const resultsDiv = document.getElementById(`${p}-search-results`);
             if (e.key === 'Enter') {
@@ -154,7 +154,7 @@ function setupEventListeners() {
                         loadPokemon(id, nextForm);
                         return;
                     }
-                    
+
                     // Update Item Sprite specifically
                     const itemSprite = document.getElementById(`${p}-item-sprite`);
                     if (itemSprite) {
@@ -189,7 +189,7 @@ function setupEventListeners() {
             const target = e.target.closest('.search-item');
             if (target) {
                 e.preventDefault(); // Prevent blur on the input
-                
+
                 const buildId = target.getAttribute('data-build-id');
                 if (buildId) {
                     const bData = buildsDB.find(b => b.id === buildId);
@@ -251,7 +251,7 @@ function setupEventListeners() {
 
             // Default: appear to the right of cursor
             let left = e.clientX + offset;
-            let top  = e.clientY + offset;
+            let top = e.clientY + offset;
 
             // Flip left if overflowing right edge
             if (left + tipW > vw - 10) left = e.clientX - tipW - offset;
@@ -259,7 +259,7 @@ function setupEventListeners() {
             if (top + tipH > vh - 10) top = e.clientY - tipH - offset;
 
             pasteTooltip.style.left = left + 'px';
-            pasteTooltip.style.top  = top  + 'px';
+            pasteTooltip.style.top = top + 'px';
         }
     });
 
@@ -294,7 +294,7 @@ function handleSearch(p, query) {
 
     // Filter base pokemon matches
     const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(query.toLowerCase())).slice(0, 10);
-    
+
     // All matching builds
     const rawBuilds = buildsDB.filter(b => (b.pokemon || '').toLowerCase().includes(query.toLowerCase()));
 
@@ -320,7 +320,7 @@ function handleSearch(p, query) {
     const shownBuilds = labeledBuilds.slice(0, 6);
 
     let html = '';
-    
+
     // Add DB results
     html += filteredDB.map(x => `
         <div class="search-item" data-name="${x.Name}">
@@ -625,7 +625,7 @@ function getKOChance(rolls, hp) {
         return (prob === "100.0" || prob === "100") ? "Guaranteed 3HKO" : `${prob}% chance to 3HKO`;
     }
 
-    return "Nice play! (No immediate KO)";
+    return "No immediate KO";
 }
 
 function renderMoveResults(p1Results, p2Results) {
@@ -940,10 +940,10 @@ function openImportModal(id) {
     importTargetId = id;
     const label = document.getElementById('import-target-label');
     if (label) label.innerText = `Importing for Pokemon ${id}`;
-    
+
     const modal = document.getElementById('import-modal');
     modal.classList.add('active');
-    
+
     // Auto-focus input
     const input = document.getElementById('paste-input');
     input.value = '';
@@ -984,7 +984,7 @@ function importPokePaste(id, paste) {
 
         let mainName = namePart.split('(')[0].trim();
         let speciesName = mainName;
-        
+
         if (brackets.length === 2) {
             speciesName = brackets[0];
         } else if (brackets.length === 1) {
@@ -1079,7 +1079,7 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('active'), 3000);
 }
 
-window.handleSpriteError = function(img, name, shiny) {
+window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 
     const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
@@ -1109,7 +1109,7 @@ window.handleSpriteError = function(img, name, shiny) {
 
 function getMegaSpriteUrl(p) {
     if (!p || !p.name || !p.item) return null;
-    
+
     const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
     const base = p.shiny ? 'ani-shiny' : 'ani';
 
@@ -1147,7 +1147,7 @@ function getItemSpriteUrl(item) {
     return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
 }
 
-window.handleItemError = function(img, item) {
+window.handleItemError = function (img, item) {
     if (img.dataset.fallback === 'true' || !item) {
         img.style.display = 'none';
         return;
