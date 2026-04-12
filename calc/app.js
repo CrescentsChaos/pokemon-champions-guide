@@ -71,6 +71,7 @@ async function init() {
 
         setupStatsUI(p1);
         setupStatsUI(p2);
+        setupEventListeners();
         populateDropdowns();
 
         // Load defaults
