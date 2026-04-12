@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,24 +8,14 @@
     <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+<br>
+
 <body class="calc-page">
-    <nav class="main-nav">
-        <div class="nav-container">
-            <div class="logo-wrap" onclick="window.location.href='../'">
-                <img src="../assets/champions-logo.png" alt="Logo" class="logo-img">
-                <span class="logo-text">CHAMPIONS GUIDE</span>
-            </div>
-            <div class="nav-links">
-                <a href="../teambuilder/">Builder</a>
-                <a href="../builds/">Library</a>
-                <a href="../pokedex/">Pokedex</a>
-                <a href="#" class="active">Calculator</a>
-                <a href="../compare/">Compare</a>
-            </div>
-        </div>
-    </nav>
+    <script src="../js/main.js"></script>
 
     <main class="container">
         <div id="damage-banner" class="glass fade-in">
@@ -51,7 +42,7 @@
                     <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
                     <div class="search-results" id="p1-search-results"></div>
                 </div>
-                
+
                 <div class="panel-body">
                     <div class="config-row">
                         <select id="p1-type1" class="type-select"></select>
@@ -60,7 +51,8 @@
                             <input type="checkbox" id="p1-tera"> Tera
                             <select id="p1-tera-type" class="type-select"></select>
                         </label>
-                        <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle" onclick="toggleMega(1)">MEGA</button>
+                        <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle"
+                            onclick="toggleMega(1)">MEGA</button>
 
                     </div>
 
@@ -120,7 +112,8 @@
                         </div>
                     </div>
 
-                    <div class="hp-row" style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                    <div class="hp-row"
+                        style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label>Current HP (%)</label>
                             <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
@@ -211,7 +204,7 @@
                     <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
                     <div class="search-results" id="p2-search-results"></div>
                 </div>
-                
+
                 <div class="panel-body">
                     <div class="config-row">
                         <select id="p2-type1" class="type-select"></select>
@@ -220,7 +213,8 @@
                             <input type="checkbox" id="p2-tera"> Tera
                             <select id="p2-tera-type" class="type-select"></select>
                         </label>
-                        <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle" onclick="toggleMega(2)">MEGA</button>
+                        <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle"
+                            onclick="toggleMega(2)">MEGA</button>
 
                     </div>
 
@@ -279,8 +273,9 @@
                             <!-- 4 move slots -->
                         </div>
                     </div>
-                    
-                    <div class="hp-row" style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+
+                    <div class="hp-row"
+                        style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <label>Current HP (%)</label>
                             <button class="import-btn" onclick="openImportModal(2)">Import Paste</button>
@@ -314,4 +309,5 @@
     <script src="../js/utils.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
