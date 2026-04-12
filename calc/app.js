@@ -69,8 +69,8 @@ async function init() {
         p1 = window.p1;
         p2 = window.p2;
 
-        setupStatsUI(p1);
-        setupStatsUI(p2);
+        updateStatsUI(p1);
+        updateStatsUI(p2);
         setupEventListeners();
         populateDropdowns();
 
@@ -1062,21 +1062,7 @@ window.handleSpriteError = function(img, name, shiny) {
     img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
 }
 
-function getPermanentForm(p) {
-    if (!p || !p.item) return null;
-    const it = p.item.toLowerCase();
-    if (it === 'rusted sword') {
-        if (p.name === 'Zacian') return 'Zacian-Crowned';
-    }
-    if (it === 'rusted shield') {
-        if (p.name === 'Zamazenta') return 'Zamazenta-Crowned';
-    }
-    // Revert if item is lost
-    if (p.name === 'Zacian-Crowned' && it !== 'rusted sword') return 'Zacian';
-    if (p.name === 'Zamazenta-Crowned' && it !== 'rusted shield') return 'Zamazenta';
 
-    return null;
-}
 
 function getMegaSpriteUrl(p) {
     if (!p || !p.name || !p.item) return null;
