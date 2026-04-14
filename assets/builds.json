@@ -3490,7 +3490,8 @@
         "build": "Skarmory @ Skarmorite  \nAbility: Weak Armor  \nTera Type: Ground  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Brave Bird  \n- Drill Run  \n- Iron Head  \n- Swords Dance",
         "synergy": [
             "496",
-            "497"
+            "497",
+            "258"
         ],
         "format": "Doubles"
     },
@@ -3499,7 +3500,8 @@
         "pokemon": "Rhyperior",
         "build": "Rhyperior @ Quick Claw  \nAbility: Lightning Rod  \nEVs: 152 HP / 252 Atk / 104 SpD  \nBrave Nature  \n- Heat Crash  \n- Rock Slide  \n- Earthquake  \n- Ice Punch",
         "synergy": [
-            "495"
+            "495",
+            "498"
         ],
         "format": "Doubles"
     },
@@ -3516,7 +3518,10 @@
         "id": "498",
         "pokemon": "Greninja",
         "build": "Greninja @ Greninjite  \nAbility: Protean  \nTera Type: Water  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Dark Pulse  \n- Ice Beam  \n- Sludge Wave",
-        "synergy": [],
+        "synergy": [
+            "496",
+            "258"
+        ],
         "format": "Doubles"
     }
 ]
