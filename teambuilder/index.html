@@ -579,6 +579,7 @@
                 grid-template-columns: 1fr;
             }
         }
+
         /* Preset Chips */
         .preset-container {
             display: flex;
@@ -637,7 +638,8 @@
                         style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT
                         PASTE</button>
                     <button id="share-link-btn" class="analyze-btn"
-                        style="padding: 10px 25px; font-size: 0.8rem; background: #9c27b0; border: none; box-shadow: 0 0 15px rgba(156, 39, 176, 0.4);">SHARE LINK 🔗</button>
+                        style="padding: 10px 25px; font-size: 0.8rem; background: #9c27b0; border: none; box-shadow: 0 0 15px rgba(156, 39, 176, 0.4);">SHARE
+                        LINK 🔗</button>
                 </div>
                 <button onclick="toggleLibrary()" class="analyze-btn" aria-label="Open My Saved Builds Library"
                     style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY
@@ -790,8 +792,10 @@
                     <div class="input-group">
                         <span class="input-label">Tera Type</span>
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="text" id="tera-input" class="builder-input" placeholder="Optional" style="flex-grow: 1;">
-                            <label id="forme-toggle-group" style="display: none; align-items: center; gap: 5px; cursor: pointer; color: white; white-space: nowrap;">
+                            <input type="text" id="tera-input" class="builder-input" placeholder="Optional"
+                                style="flex-grow: 1;">
+                            <label id="forme-toggle-group"
+                                style="display: none; align-items: center; gap: 5px; cursor: pointer; color: white; white-space: nowrap;">
                                 <input type="checkbox" id="forme-toggle" style="width: 16px; height: 16px;">
                                 Battle Forme
                             </label>
@@ -1075,7 +1079,7 @@
                         parsePaste(decoded).forEach((pk, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...pk }; });
                         window.history.replaceState({}, document.title, window.location.pathname);
                         currentSlot = -1; // Default to Team View
-                    } catch(e) {
+                    } catch (e) {
                         console.error('Failed to parse team from URL', e);
                     }
                 }
@@ -1579,7 +1583,7 @@
         }, 3000);
 
         function getSpriteUrl(p) {
-            if (!p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+            if (!p.species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
@@ -1691,7 +1695,7 @@
             const toggleGrp = document.getElementById('forme-toggle-group');
             const toggleChk = document.getElementById('forme-toggle');
             if (toggleGrp && toggleChk) {
-            const hasBattleForme = ["Terapagos", "Aegislash", "Zygarde", "Zygarde-10%", "Wishiwashi", "Palafin"].includes(p.species);
+                const hasBattleForme = ["Terapagos", "Aegislash", "Zygarde", "Zygarde-10%", "Wishiwashi", "Palafin"].includes(p.species);
                 toggleGrp.style.display = hasBattleForme ? 'flex' : 'none';
                 toggleChk.checked = !!p.useBattleForme;
             }
@@ -1818,21 +1822,21 @@
             // Input handling for all inputs
             [document.getElementById('nickname-input'), document.getElementById('tera-input'),
             document.getElementById('shiny-input'), document.getElementById('gender-input'),
-            levelIn, natureIn].forEach(el => {
-                if (!el) return;
-                el.oninput = (e) => {
-                    const id = e.target.id;
-                    const p = team[currentSlot];
-                    if (id === 'nickname-input') p.nickname = e.target.value;
-                    if (id === 'ability-input') p.ability = e.target.value;
-                    if (id === 'tera-input') p.tera = e.target.value;
-                    if (id === 'level-input') p.level = e.target.value;
-                    if (id === 'nature-input') p.nature = e.target.value;
-                    if (id === 'shiny-input') p.shiny = e.target.value === 'yes';
-                    if (id === 'gender-input') p.gender = e.target.value;
-                    syncUI();
-                };
-            });
+                levelIn, natureIn].forEach(el => {
+                    if (!el) return;
+                    el.oninput = (e) => {
+                        const id = e.target.id;
+                        const p = team[currentSlot];
+                        if (id === 'nickname-input') p.nickname = e.target.value;
+                        if (id === 'ability-input') p.ability = e.target.value;
+                        if (id === 'tera-input') p.tera = e.target.value;
+                        if (id === 'level-input') p.level = e.target.value;
+                        if (id === 'nature-input') p.nature = e.target.value;
+                        if (id === 'shiny-input') p.shiny = e.target.value === 'yes';
+                        if (id === 'gender-input') p.gender = e.target.value;
+                        syncUI();
+                    };
+                });
 
             evSliders.forEach(s => { s.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value); syncUI(); }; });
             evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
@@ -3121,7 +3125,7 @@
         }
 
         // Share link button
-        document.getElementById('share-link-btn').onclick = async function() {
+        document.getElementById('share-link-btn').onclick = async function () {
             const btn = this;
             const pasteStr = getTeamPasteText();
             if (!pasteStr) {
@@ -3136,20 +3140,20 @@
             try {
                 const encoded = LZString.compressToEncodedURIComponent(pasteStr);
                 const longUrl = window.location.origin + window.location.pathname + '?team=' + encoded;
-                
+
                 // Attempt to shorten
                 const shortUrl = await shortenURL(longUrl);
                 const finalUrl = shortUrl || longUrl;
 
                 await navigator.clipboard.writeText(finalUrl);
-                
+
                 btn.style.background = '#4CAF50';
                 btn.innerHTML = '<span>COPIED!</span> ✅';
-                
+
                 if (!shortUrl) {
                     console.warn('Fallback to long URL used.');
                 }
-            } catch(e) {
+            } catch (e) {
                 alert('Could not generate share link.');
             } finally {
                 setTimeout(() => {

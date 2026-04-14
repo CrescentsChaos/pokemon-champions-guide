@@ -7,316 +7,408 @@
     <link rel="stylesheet" href="../css/style.css">
     <style>
         :root {
-            --input-bg: rgba(0, 0, 0, 0.2);
+            --input-bg: rgba(0, 0, 0, 0.4);
             --focus-border: var(--primary-red);
         }
 
         body {
             padding-top: 100px;
-            background: radial-gradient(circle at top right, rgba(255, 62, 62, 0.1), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.05), #0a0a0c 100%);
+            background: radial-gradient(circle at top right, rgba(255, 62, 62, 0.05), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.02), #0a0a0c 100%);
         }
 
         .counter-container {
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 2rem;
+            grid-template-columns: 450px 1fr;
+            gap: 2.5rem;
             align-items: start;
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1100px) {
             .counter-container {
                 grid-template-columns: 1fr;
             }
         }
 
-        .builder-column {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            position: sticky;
-            top: 120px;
+        /* Premium Input Styles */
+        .import-box {
+            transition: var(--transition);
+        }
+
+        .import-box.minimized {
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding: 0;
+            border: none;
         }
 
         .import-area {
             width: 100%;
-            height: 15rem;
-            background: var(--input-bg);
+            height: 12rem;
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 16px;
+            padding: 1.2rem;
             color: white;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            resize: vertical;
+            font-size: 0.8rem;
+            resize: none;
             transition: var(--transition);
+            margin-bottom: 1rem;
         }
 
         .import-area:focus {
             outline: none;
-            border-color: var(--focus-border);
-            box-shadow: 0 0 15px rgba(255, 62, 62, 0.2);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(255, 62, 62, 0.15);
         }
 
-        .target-editor {
+        /* Target Preview (Builder Style) */
+        .target-preview-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
             padding: 1.5rem;
+            backdrop-filter: blur(15px);
+            position: relative;
+            display: none; /* Shown after import */
+            animation: fadeIn 0.4s ease;
         }
 
-        .target-header {
+        .target-preview-card.active {
+            display: block;
+        }
+
+        .target-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 4px 15px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            box-shadow: var(--accent-glow);
+            z-index: 10;
+        }
+
+        .target-main-info {
             display: flex;
+            gap: 1.5rem;
             align-items: center;
-            gap: 1rem;
             margin-bottom: 1.5rem;
         }
 
-        .target-sprite {
-            width: 80px;
-            height: 80px;
+        .target-sprite-large {
+            width: 100px;
+            height: 100px;
             object-fit: contain;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
         }
 
-        .target-name-input {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: none;
-            border: none;
-            border-bottom: 2px solid var(--glass-border);
+        .target-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
             color: white;
-            width: 100%;
-            padding: 0.2rem 0;
+        }
+
+        .target-type-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .type-tag {
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 6px;
             text-transform: uppercase;
         }
 
-        .target-name-input:focus {
-            outline: none;
-            border-color: var(--primary-red);
-        }
-
-        .editor-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .editor-field {
+        /* Stat Grid (Builder Style) */
+        .stat-rows-mini {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
         }
 
-        .editor-field label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
+        .stat-row-mini {
+            display: grid;
+            grid-template-columns: 40px 1fr 35px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-label-mini {
+            font-size: 0.6rem;
+            font-weight: 800;
             color: var(--text-muted);
         }
 
-        .editor-field select, .editor-field input {
-            background: var(--input-bg);
+        .stat-bar-mini {
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .stat-fill-mini {
+            height: 100%;
+            background: var(--primary-red);
+            border-radius: 2px;
+        }
+
+        .stat-val-mini {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .moves-preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .move-tag-mini {
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--glass-border);
-            border-radius: 6px;
-            padding: 0.5rem;
-            color: white;
-            font-size: 0.85rem;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
         }
 
-        .results-column {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+        /* Editor Overrides */
+        .target-editor-toggle {
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
         }
 
+        .target-editor-toggle:hover {
+            background: rgba(255,255,255,0.05);
+            border-style: solid;
+            border-color: var(--primary-red);
+        }
+
+        /* Results Style */
         .results-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
         }
 
         .counter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
             gap: 1.5rem;
         }
 
-        @media (max-width: 600px) {
-            .counter-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .counter-card {
+        .counter-card-premium {
+            background: linear-gradient(160deg, rgba(255,255,255,0.03), rgba(0,0,0,0.4));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             padding: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .counter-card-premium:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 62, 62, 0.4);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        .counter-header-premium {
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            border-left: 4px solid var(--primary-red);
-            animation: slideIn 0.5s ease forwards;
+            gap: 1.2rem;
+            margin-bottom: 1.2rem;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .counter-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .counter-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .counter-mini-sprite {
-            width: 50px;
-            height: 50px;
+        .counter-sprite-premium {
+            width: 70px;
+            height: 70px;
             object-fit: contain;
         }
 
-        .counter-name {
+        .counter-meta-premium h4 {
             font-size: 1.1rem;
-            font-weight: 800;
-        }
-
-        .counter-score {
-            background: var(--primary-red);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 900;
-            box-shadow: var(--accent-glow);
-        }
-
-        .counter-rationale {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .rationale-point {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .rationale-point::before {
-            content: '•';
-            color: var(--primary-red);
-            font-weight: bold;
-        }
-
-        .counter-build-preview {
-            display: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            white-space: pre-wrap;
-            border-top: 1px solid var(--glass-border);
-            padding-top: 0.5rem;
-        }
-
-        .show-build-btn {
-            background: none;
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            cursor: pointer;
-            width: fit-content;
-            transition: var(--transition);
-        }
-
-        .show-build-btn:hover {
-            border-color: white;
             color: white;
+            margin-bottom: 4px;
         }
 
-        .analyze-btn {
-            width: 100%;
-            padding: 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1rem;
-            cursor: pointer;
-            border: none;
-            margin-top: 1rem;
-        }
-
-        .stat-badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #000;
-            margin-right: 4px;
-        }
-
-        .placeholder-text {
-            color: var(--text-muted);
-            text-align: center;
-            padding: 4rem;
-            font-style: italic;
-        }
-
-        /* Search Results for target name */
-        .search-results {
+        .counter-score-badge {
             position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #151518;
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff3e3e, #ff8000);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 900;
+            padding: 5px 12px;
+            border-bottom-left-radius: 15px;
+            box-shadow: -5px 5px 15px rgba(255, 62, 62, 0.2);
         }
 
-        .search-item {
-            padding: 0.8rem 1rem;
-            cursor: pointer;
+        .rationale-list-premium {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .rationale-item-premium {
             display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
+            gap: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            align-items: flex-start;
         }
 
-        .search-item:hover {
+        .rationale-item-premium:last-child { margin-bottom: 0; }
+
+        .rationale-icon {
+            color: var(--primary-red);
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        .build-btn-premium {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-top: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .build-btn-premium:hover {
             background: var(--primary-red);
+            color: white;
+            border-color: var(--primary-red);
+        }
+
+        .build-raw-premium {
+            display: none;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #ccc;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .manage-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
         }
     </style>
 </head>
 <body>
     <main class="container">
-        <div class="section-title fade-in">
-            <h2>Counter Tool</h2>
-            <p>Paste a build to find the most effective counters from our championship library.</p>
+        <div class="section-title fade-in" style="margin-bottom: 3rem;">
+            <h2>Counter Strategy Engine</h2>
+            <p>Optimize your competitive matchups with precision simulation and championship data.</p>
         </div>
 
         <div class="counter-container">
-            <!-- Left: Builder/Import -->
+            <!-- Left Column: Build Management -->
             <div class="builder-column">
-                <div class="glass" style="padding: 1.5rem;">
-                    <h3 style="margin-bottom: 1rem; font-size: 0.9rem;">Import Build</h3>
-                    <textarea id="paste-input" class="import-area" placeholder="Paste PokePaste here..."></textarea>
-                    <button id="analyze-btn" class="btn analyze-btn">
-                        <span>ANALYZE COUNTERS</span>
-                        <div class="loader" id="analyze-loader" style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
-                    </button>
+                
+                <!-- Import State -->
+                <div id="import-view" class="import-box fade-in">
+                    <div class="glass" style="padding: 1.8rem; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top:0; right:0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,62,62,0.1) 0%, transparent 70%); z-index: 0;"></div>
+                        <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; position: relative; z-index: 1;">Import Championship Build</h3>
+                        <textarea id="paste-input" class="import-area" placeholder="Paste PokePaste or raw build export here..."></textarea>
+                        
+                        <div style="display: flex; gap: 10px; position: relative; z-index: 1;">
+                            <button id="analyze-btn" class="btn analyze-btn" style="flex: 2; margin-top: 0;">
+                                <span>ANALYZE BUILD</span>
+                                <div class="loader" id="analyze-loader" style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
+                            </button>
+                            <button id="show-editor-btn" class="secondary-btn" title="Manual Entry">
+                                ⌨️
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="glass target-editor" id="target-editor">
+                <!-- Preview State (Builder Style Card) -->
+                <div id="target-preview" class="target-preview-card">
+                    <div class="target-badge">TARGET BUILD</div>
+                    
+                    <div class="target-main-info">
+                        <img id="preview-sprite" src="" class="target-sprite-large" alt="">
+                        <div class="target-details">
+                            <h3 id="preview-species">POKEMON</h3>
+                            <div id="preview-types" class="target-type-tags"></div>
+                            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;" id="preview-item">Item: None</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-rows-mini" id="preview-stats">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="moves-preview-grid" id="preview-moves">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="manage-controls">
+                        <button id="edit-build-btn" class="secondary-btn">EDIT BUILD</button>
+                        <button id="new-import-btn" class="secondary-btn">NEW IMPORT</button>
+                    </div>
+                </div>
+
+                <!-- Manual Editor Modal/Overlay (Initially Hidden) -->
+                <div id="editor-view" class="glass target-editor" style="display: none; margin-top: 1rem;">
                     <div class="target-header">
                         <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" alt="Target" class="target-sprite" id="target-sprite">
                         <div style="flex: 1; position: relative;">
@@ -357,44 +449,36 @@
                     <div style="margin-top: 1.5rem;">
                         <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">EVs</label>
                         <div class="editor-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5rem;">
-                            <div class="editor-field">
-                                <label>HP</label>
-                                <input type="number" class="target-ev" data-stat="hp" value="0">
-                            </div>
-                            <div class="editor-field">
-                                <label>Atk</label>
-                                <input type="number" class="target-ev" data-stat="atk" value="0">
-                            </div>
-                            <div class="editor-field">
-                                <label>Def</label>
-                                <input type="number" class="target-ev" data-stat="def" value="0">
-                            </div>
-                            <div class="editor-field">
-                                <label>SpA</label>
-                                <input type="number" class="target-ev" data-stat="spa" value="0">
-                            </div>
-                            <div class="editor-field">
-                                <label>SpD</label>
-                                <input type="number" class="target-ev" data-stat="spd" value="0">
-                            </div>
-                            <div class="editor-field">
-                                <label>Spe</label>
-                                <input type="number" class="target-ev" data-stat="spe" value="0">
-                            </div>
+                            <div class="editor-field"><label>HP</label><input type="number" class="target-ev" data-stat="hp" value="0"></div>
+                            <div class="editor-field"><label>Atk</label><input type="number" class="target-ev" data-stat="atk" value="0"></div>
+                            <div class="editor-field"><label>Def</label><input type="number" class="target-ev" data-stat="def" value="0"></div>
+                            <div class="editor-field"><label>SpA</label><input type="number" class="target-ev" data-stat="spa" value="0"></div>
+                            <div class="editor-field"><label>SpD</label><input type="number" class="target-ev" data-stat="spd" value="0"></div>
+                            <div class="editor-field"><label>Spe</label><input type="number" class="target-ev" data-stat="spe" value="0"></div>
                         </div>
                     </div>
+
+                    <button id="save-editor-btn" class="btn analyze-btn" style="margin-top: 1.5rem;">
+                        APPLY CHANGES
+                    </button>
+                    <button id="cancel-editor-btn" class="secondary-btn" style="width: 100%; margin-top: 10px;">
+                        CANCEL
+                    </button>
                 </div>
             </div>
 
-            <!-- Right: Results -->
+            <!-- Right Column: Results -->
             <div class="results-column">
                 <div class="results-header">
-                    <h3 id="results-title">Recommended Counters</h3>
-                    <span id="results-count" style="font-size: 0.8rem; color: var(--text-muted);">0 found</span>
+                    <h3>Optimal Counter Measures</h3>
+                    <span id="results-count" class="badge">0 RESULTS FOUND</span>
                 </div>
 
                 <div id="counter-results" class="counter-grid">
-                    <div class="placeholder-text">Paste a build or enter a Pokémon to see counters here.</div>
+                    <div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>
+                        Import a build on the left to begin strategic analysis.
+                    </div>
                 </div>
             </div>
         </div>
@@ -453,7 +537,9 @@
                 pokemonDB = pkmn; movesDB = mvs; buildsDB = blds;
                 populateNatures();
                 setupEventListeners();
-                document.getElementById('analyze-loader').style.display = 'none';
+                
+                // Set initial state
+                showImportView();
             } catch (e) { console.error("Load fail", e); }
         }
 
@@ -464,7 +550,25 @@
 
         function setupEventListeners() {
             document.getElementById('analyze-btn').addEventListener('click', analyze);
-            document.getElementById('paste-input').addEventListener('input', (e) => { if (e.target.value.trim().length > 10) parsePaste(e.target.value); });
+            document.getElementById('paste-input').addEventListener('input', (e) => { 
+                if (e.target.value.trim().length > 10) {
+                    parsePaste(e.target.value);
+                }
+            });
+
+            // UI Mode Toggles
+            document.getElementById('new-import-btn').addEventListener('click', showImportView);
+            document.getElementById('edit-build-btn').addEventListener('click', showEditorView);
+            document.getElementById('show-editor-btn').addEventListener('click', showEditorView);
+            document.getElementById('cancel-editor-btn').addEventListener('click', () => {
+                if (targetBuild.name) showPreviewView();
+                else showImportView();
+            });
+            document.getElementById('save-editor-btn').addEventListener('click', () => {
+                updateTargetFromUI();
+                analyze();
+            });
+
             const nameInput = document.getElementById('target-name');
             const searchResults = document.getElementById('search-results');
             nameInput.addEventListener('input', (e) => {
@@ -476,11 +580,86 @@
                     searchResults.style.display = 'block';
                 } else searchResults.style.display = 'none';
             });
+
             searchResults.addEventListener('click', (e) => {
                 const item = e.target.closest('.search-item');
                 if (item) { loadPokemon(item.dataset.name); searchResults.style.display = 'none'; }
             });
-            document.querySelectorAll('#target-editor input, #target-editor select').forEach(el => { el.addEventListener('change', updateTargetFromUI); });
+
+            document.querySelectorAll('#editor-view input, #editor-view select').forEach(el => { 
+                el.addEventListener('change', updateTargetFromUI); 
+            });
+        }
+
+        /* UI State Management */
+        function showImportView() {
+            document.getElementById('import-view').style.display = 'block';
+            document.getElementById('target-preview').classList.remove('active');
+            document.getElementById('editor-view').style.display = 'none';
+            document.getElementById('paste-input').value = '';
+        }
+
+        function showPreviewView() {
+            document.getElementById('import-view').style.display = 'none';
+            document.getElementById('target-preview').classList.add('active');
+            document.getElementById('editor-view').style.display = 'none';
+            updatePreviewCard();
+        }
+
+        function showEditorView() {
+            document.getElementById('import-view').style.display = 'none';
+            document.getElementById('target-preview').classList.remove('active');
+            document.getElementById('editor-view').style.display = 'block';
+        }
+
+        function updatePreviewCard() {
+            const data = pokemonDB.find(p => (p.Name || p.name) === targetBuild.name);
+            document.getElementById('preview-species').innerText = targetBuild.name.toUpperCase();
+            document.getElementById('preview-item').innerText = `Item: ${targetBuild.item || 'None'}`;
+            
+            const clean = targetBuild.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            document.getElementById('preview-sprite').src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+
+            // Types
+            const typeContainer = document.getElementById('preview-types');
+            typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t => 
+                `<span class="type-tag" style="background: var(--type-${t.toLowerCase()}); color: white;">${t}</span>`
+            ).join('');
+
+            // Stats
+            const statsContainer = document.getElementById('preview-stats');
+            const statLabels = { hp: 'HP', atk: 'ATK', def: 'DEF', spa: 'SPA', spd: 'SPD', spe: 'SPE' };
+            
+            // Calculate actual stats for display
+            if (data) {
+                const stats = {
+                    hp: getStat(parseInt(data.HP), 31, targetBuild.evs.hp, 50, targetBuild.nature, 'hp'),
+                    atk: getStat(parseInt(data.Attack), 31, targetBuild.evs.atk, 50, targetBuild.nature, 'atk'),
+                    def: getStat(parseInt(data.Defense), 31, targetBuild.evs.def, 50, targetBuild.nature, 'def'),
+                    spa: getStat(parseInt(data['Sp.Atk']), 31, targetBuild.evs.spa, 50, targetBuild.nature, 'spa'),
+                    spd: getStat(parseInt(data['Sp.Def']), 31, targetBuild.evs.spd, 50, targetBuild.nature, 'spd'),
+                    spe: getStat(parseInt(data.Speed), 31, targetBuild.evs.spe, 50, targetBuild.nature, 'spe')
+                };
+
+                statsContainer.innerHTML = Object.entries(statLabels).map(([key, label]) => {
+                    const val = stats[key];
+                    const percent = Math.min(100, (val / 250) * 100);
+                    return `
+                        <div class="stat-row-mini">
+                            <span class="stat-label-mini">${label}</span>
+                            <div class="stat-bar-mini"><div class="stat-fill-mini" style="width: ${percent}%;"></div></div>
+                            <span class="stat-val-mini">${val}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Moves
+            const movesContainer = document.getElementById('preview-moves');
+            movesContainer.innerHTML = targetBuild.moves.map(m => `<div class="move-tag-mini">${m}</div>`).join('');
+            for (let i = targetBuild.moves.length; i < 4; i++) {
+                movesContainer.innerHTML += `<div class="move-tag-mini" style="opacity: 0.2;">-</div>`;
+            }
         }
 
         function loadPokemon(name) {
@@ -562,9 +741,18 @@
             const loader = document.getElementById('analyze-loader');
             const resultsContainer = document.getElementById('counter-results');
             if (!targetBuild.name) return;
-            btn.disabled = true; loader.style.display = 'block'; resultsContainer.innerHTML = '';
-            await new Promise(r => setTimeout(r, 100));
+            
+            btn.disabled = true; loader.style.display = 'block'; 
+            resultsContainer.style.opacity = '0.4';
+
+            await new Promise(r => setTimeout(r, 400));
+            
             const targetData = pokemonDB.find(p => (p.Name || p.name).toLowerCase() === targetBuild.name.toLowerCase());
+            if (!targetData) {
+                btn.disabled = false; loader.style.display = 'none';
+                return;
+            }
+
             const targetStats = {
                 hp: getStat(parseInt(targetData.HP), 31, targetBuild.evs.hp, 50, targetBuild.nature, 'hp'),
                 atk: getStat(parseInt(targetData.Attack), 31, targetBuild.evs.atk, 50, targetBuild.nature, 'atk'),
@@ -573,6 +761,7 @@
                 spd: getStat(parseInt(targetData['Sp.Def']), 31, targetBuild.evs.spd, 50, targetBuild.nature, 'spd'),
                 spe: getStat(parseInt(targetData.Speed), 31, targetBuild.evs.spe, 50, targetBuild.nature, 'spe')
             };
+
             const counters = [];
             buildsDB.forEach(build => {
                 if (build.pokemon === targetBuild.name) return;
@@ -581,7 +770,8 @@
                 const cBuildParsed = parseCandidateBuild(build.build, candidateData);
                 const cStats = calculateCandidateStats(cBuildParsed, candidateData);
                 let score = 0, points = [], dead = false, maxTook = 0;
-                const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => m.name === mName)).filter(m => m);
+                
+                const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
                 targetMoves.forEach(m => {
                     const moveType = m.type.toLowerCase();
                     const isSpecial = m.damage_class === 'Special';
@@ -598,11 +788,11 @@
                     if (tookPercent > maxTook) maxTook = tookPercent;
                 });
                 if (maxTook >= 100) dead = true;
-                if (dead) score -= 100;
-                else if (maxTook < 50) { score += 40; points.push(`Defensive: Takes max ${Math.round(maxTook)}% from ${targetBuild.name}.`); }
-                else if (maxTook < 85) { score += 20; points.push(`Survival: Can tank hits (${Math.round(maxTook)}% max).`); }
+                if (maxTook < 50) { score += 40; points.push(`Takes max ${Math.round(maxTook)}% from moves.`); }
+                else if (maxTook < 85) { score += 20; points.push(`Can tank hits (${Math.round(maxTook)}% max).`); }
+                
                 let bestDealt = 0;
-                const candidateMoves = cBuildParsed.moves.map(mName => movesDB.find(m => m.name === mName)).filter(m => m);
+                const candidateMoves = cBuildParsed.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
                 candidateMoves.forEach(m => {
                     const moveType = m.type.toLowerCase();
                     const isSpecial = m.damage_class === 'Special';
@@ -618,13 +808,20 @@
                     const dealtPercent = (estDmg / targetStats.hp) * 100;
                     if (dealtPercent > bestDealt) bestDealt = dealtPercent;
                 });
-                if (bestDealt >= 100) { score += 45; points.push(`Offensive: Guaranteed OHKO or high damage (${Math.round(bestDealt)}%).`); }
-                else if (bestDealt >= 50) { score += 25; points.push(`Damage: Solid 2HKO pressure (${Math.round(bestDealt)}%).`); }
-                if (cStats.spe > targetStats.spe) { score += 15; points.push(`Speed: Outspeeds Target (${cStats.spe} > ${targetStats.spe}).`); }
+
+                if (bestDealt >= 100) { score += 45; points.push(`Guaranteed OHKO (${Math.round(bestDealt)}%).`); }
+                else if (bestDealt >= 50) { score += 25; points.push(`Solid 2HKO pressure (${Math.round(bestDealt)}%).`); }
+                
+                if (cStats.spe > targetStats.spe) { score += 15; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
+                
                 if (score > 35 && !dead) counters.push({ ...build, score: Math.min(100, Math.round(score)), points });
             });
+
             counters.sort((a, b) => b.score - a.score);
             loader.style.display = 'none'; btn.disabled = false;
+            resultsContainer.style.opacity = '1';
+            
+            showPreviewView();
             renderResults(counters.slice(0, 15));
         }
 
@@ -663,27 +860,40 @@
 
         function renderResults(counters) {
             const container = document.getElementById('counter-results');
-            document.getElementById('results-count').innerText = `${counters.length} found`;
-            if (counters.length === 0) { container.innerHTML = '<div class="placeholder-text">No strong counters found.</div>'; return; }
+            document.getElementById('results-count').innerText = `${counters.length} RESULTS FOUND`;
+            
+            if (counters.length === 0) { 
+                container.innerHTML = '<div class="placeholder-text">No strong counters found for this specific build.</div>'; 
+                return; 
+            }
+
             container.innerHTML = counters.map((c, i) => {
                 const clean = c.pokemon.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
                 return `
-                <div class="glass counter-card">
-                    <div class="counter-card-header">
-                        <div class="counter-info">
-                            <img src="https://play.pokemonshowdown.com/sprites/ani/${clean}.gif" class="counter-mini-sprite">
-                            <div>
-                                <div class="counter-name">${c.pokemon}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">${c.format.toUpperCase()} ${c.role || 'BUILD'}</div>
+                <div class="counter-card-premium fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="counter-score-badge">${c.score}% EFFECTIVE</div>
+                    
+                    <div class="counter-header-premium">
+                        <img src="https://play.pokemonshowdown.com/sprites/ani/${clean}.gif" class="counter-sprite-premium">
+                        <div class="counter-meta-premium">
+                            <h4>${c.pokemon}</h4>
+                            <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 800; letter-spacing: 0.5px;">
+                                ${c.format.toUpperCase()} ${c.role || 'COUNTER'}
                             </div>
                         </div>
-                        <div class="counter-score">${c.score}% MATCH</div>
                     </div>
-                    <div class="counter-rationale">
-                        ${c.points.map(p => `<div class="rationale-point">${p}</div>`).join('')}
+
+                    <div class="rationale-list-premium">
+                        ${c.points.map(p => `
+                            <div class="rationale-item-premium">
+                                <span class="rationale-icon">✓</span>
+                                <span>${p}</span>
+                            </div>
+                        `).join('')}
                     </div>
-                    <div id="build-${i}" class="counter-build-preview">${c.build}</div>
-                    <button class="show-build-btn" onclick="toggleBuild(${i})">VIEW FULL BUILD</button>
+
+                    <div id="build-${i}" class="build-raw-premium">${c.build}</div>
+                    <button class="build-btn-premium" onclick="toggleBuild(${i})">View Matchup Build</button>
                 </div>
             `}).join('');
         }
