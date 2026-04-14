@@ -3420,5 +3420,103 @@
         "build": "Aggron @ Aggronite  \nAbility: Heavy Metal  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 4 Def / 248 SpD / 4 Spe  \nCareful Nature  \n- Iron Defense  \n- Body Press  \n- Heavy Slam  \n- Protect",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "486",
+        "pokemon": "Delphox",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Psychic  \n- Encore  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "487",
+        "pokemon": "Delphox",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "488",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Lum Berry  \nAbility: Multiscale  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Scale Shot  \n- Extreme Speed  \n- Haze  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "489",
+        "pokemon": "Clefable",
+        "build": "Clefable @ Sitrus Berry  \nAbility: Unaware  \nEVs: 252 HP / 4 SpA / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Follow Me  \n- Helping Hand  \n- Moonblast  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "490",
+        "pokemon": "Clefable",
+        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 252 HP / 192 Def / 64 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Stored Power",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "491",
+        "pokemon": "Victreebel",
+        "build": "Victreebel @ Victreebelite  \nAbility: Chlorophyll  \nTera Type: Water  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Sucker Punch  \n- Power Whip  \n- Poison Jab  \n- Strength Sap",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "492",
+        "pokemon": "Starmie",
+        "build": "Starmie @ Starminite  \nAbility: Natural Cure  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Protect  \n- Liquidation  \n- Self-Destruct  \n- Psycho Cut",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "493",
+        "pokemon": "Starmie",
+        "build": "Starmie @ Starminite  \nAbility: Natural Cure  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Zen Headbutt  \n- Liquidation  \n- Self-Destruct  \n- Ice Spinner",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "494",
+        "pokemon": "Emboar",
+        "build": "Emboar @ Emboarite  \nAbility: Reckless  \nTera Type: Dark  \nEVs: 188 HP / 252 Atk / 4 Def / 1 SpA / 4 SpD / 60 Spe  \nAdamant Nature  \n- Flare Blitz  \n- Close Combat  \n- Head Smash  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "495",
+        "pokemon": "Skarmory",
+        "build": "Skarmory @ Skarmorite  \nAbility: Weak Armor  \nTera Type: Ground  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Brave Bird  \n- Drill Run  \n- Iron Head  \n- Swords Dance",
+        "synergy": [
+            "496",
+            "497"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "496",
+        "pokemon": "Rhyperior",
+        "build": "Rhyperior @ Quick Claw  \nAbility: Lightning Rod  \nEVs: 152 HP / 252 Atk / 104 SpD  \nBrave Nature  \n- Heat Crash  \n- Rock Slide  \n- Earthquake  \n- Ice Punch",
+        "synergy": [
+            "495"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "497",
+        "pokemon": "Talonflame",
+        "build": "Talonflame @ Bright Powder  \nAbility: Gale Wings  \nLevel: 50  \nTera Type: Fire  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Brave Bird  \n- Tailwind  \n- Flare Blitz  \n- Protect",
+        "synergy": [
+            "495"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "498",
+        "pokemon": "Greninja",
+        "build": "Greninja @ Greninjite  \nAbility: Protean  \nTera Type: Water  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Dark Pulse  \n- Ice Beam  \n- Sludge Wave",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
