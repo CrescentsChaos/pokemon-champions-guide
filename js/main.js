@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Determine path prefix (more robust for file:// URLs)
-    const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/'];
+    const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
     // Check if the current pathname contains any of the subdirectories preceded by a slash
     const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="${prefix}builds/" data-page="builds">Builds</a>
                     <a href="${prefix}calc/" data-page="calc">Calc</a>
                     <a href="${prefix}compare/" data-page="compare">Compare</a>
+                    <a href="${prefix}counter/" data-page="counter">Counters</a>
                     <div class="mobile-only" style="margin-top: 2rem;">
                         <a href="${prefix}teambuilder/" class="btn" style="width: 100%; text-align: center;">Build Team</a>
                     </div>
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}teambuilder/" style="color: var(--text-muted); text-decoration: none;">Team Builder</a></li>
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}calc/" style="color: var(--text-muted); text-decoration: none;">Damage Calc</a></li>
                             <li style="margin-bottom: 0.8rem;"><a href="${prefix}compare/" style="color: var(--text-muted); text-decoration: none;">Compare Builds</a></li>
+                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}counter/" style="color: var(--text-muted); text-decoration: none;">Counter Tool</a></li>
                         </ul>
                     </div>
                     <div>

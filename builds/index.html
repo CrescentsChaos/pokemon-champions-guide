@@ -13,408 +13,6 @@
     <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
 
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .builds-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 8rem 2rem;
-        }
-
-        .search-wrapper {
-            margin-bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            position: sticky;
-            top: 5rem;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1rem;
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            flex: 1;
-            min-width: 200px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            border-color: var(--primary-red);
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        .filter-select option {
-            background: #1a1a1a;
-            color: white;
-        }
-
-        #build-search {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.2rem 2rem;
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-
-        #build-search:focus {
-            border-color: var(--primary-red);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: var(--accent-glow);
-        }
-
-        /* Build Card Wrapper */
-        .build-card-wrapper {
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .build-card-wrapper:hover {
-            transform: translateY(-5px);
-        }
-
-        .build-card-wrapper.selected .pokemon-card-premium {
-            border-color: var(--primary-red) !important;
-            box-shadow: var(--accent-glow), 0 20px 40px rgba(0, 0, 0, 0.6) !important;
-            background: rgba(255, 51, 51, 0.06) !important;
-        }
-
-        /* Synergy Section */
-        #synergy-container {
-            margin-top: 5rem;
-            padding-top: 5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: none;
-        }
-
-        .synergy-header {
-            margin-bottom: 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        #builds-grid,
-        #synergy-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-
-        /* Premium Card Styles (Sync with Teambuilder) */
-        .pokemon-card-premium {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.4));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            position: relative;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-height: auto;
-            /* Allow card to shrink/grow naturally */
-        }
-
-        .card-header {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .card-sprite-area {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
-            width: 100px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .premium-sprite {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-        }
-
-        .header-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .roles-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
-
-        .role-badge {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.6);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.6rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .format-badge {
-            background: var(--primary-red);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.55rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .tera-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 2px 6px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tera-icon {
-            width: 10px;
-            height: 10px;
-            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 18% 100%, 0% 35%);
-        }
-
-        .type-badges-row {
-            display: flex;
-            gap: 6px;
-        }
-
-        .move-pill {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 2px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 3px;
-            transition: var(--transition);
-        }
-
-        .move-pill:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .move-pill span {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #eee;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .move-type-label {
-            font-size: 0.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 1px 4px;
-            border-radius: 3px;
-        }
-
-        .stat-bar-mini {
-            height: 5px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            flex: 1;
-            overflow: hidden;
-            margin: 0 8px;
-        }
-
-        .stat-fill-mini {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.8s ease-out;
-        }
-
-        @media (max-width: 1200px) {
-
-            #builds-grid,
-            #synergy-grid {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            }
-        }
-
-        @media (max-width: 850px) {
-
-            #builds-grid,
-            #synergy-grid {
-                grid-template-columns: 1fr !important;
-            }
-
-            .synergy-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-        }
-
-        /* Empty Slot */
-        .empty-slot-premium {
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.01);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 400px;
-            color: rgba(255, 255, 255, 0.1);
-            gap: 12px;
-        }
-
-        /* Analysis Styles */
-        .type-badge {
-            padding: 8px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 0.65rem;
-            font-weight: 900;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .type-badge:hover {
-            transform: scale(1.05);
-        }
-
-        .type-score {
-            position: absolute;
-            top: 2px;
-            right: 4px;
-            font-size: 0.5rem;
-            opacity: 0.7;
-        }
-
-        /* Toggle & Shuffle Styles */
-        .toggle-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.7rem;
-            font-weight: 900;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .toggle-btn.active {
-            background: var(--primary-red);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
-        }
-
-        .toggle-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-        }
-
-        #shuffle-team {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 18px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #shuffle-team:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        #shuffle-team:active {
-            transform: translateY(0);
-        }
-
-        #rcmd-team {
-            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
-        }
-
-        #rcmd-team:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
-        }
-
-        #rcmd-team:active {
-            transform: translateY(0);
-        }
-    </style>
 </head>
 
 <body>
@@ -779,6 +377,30 @@
             return pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
         }
 
+        function getPokemonAbilities(db) {
+            if (!db || !db.Ability) return [];
+            if (Array.isArray(db.Ability)) return db.Ability;
+            return [db.Ability];
+        }
+
+        function getPermanentForm(p) {
+            if (!p || !p.item) return null;
+            const item = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const species = (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+            // Form-altering items
+            if (item === 'rustedsword' && species === 'zacian') return 'zaciancrowned';
+            if (item === 'rustedshield' && species === 'zamazenta') return 'zamazentacrowned';
+            if (item === 'wellspringmask') return (species === 'ogerpon' ? 'ogerponwellspring' : null);
+            if (item === 'hearthflamemask') return (species === 'ogerpon' ? 'ogerponhearthflame' : null);
+            if (item === 'cornerstonemask') return (species === 'ogerpon' ? 'ogerponcornerstone' : null);
+            if (item === 'adamantcrystal' && species === 'dialga') return 'dialgaorigin';
+            if (item === 'lustrousglobe' && species === 'palkia') return 'palkiaorigin';
+            if (item === 'griseouscore' && species === 'giratina') return 'giratinaorigin';
+
+            return null;
+        }
+
 
 
         function getEffectivePokemonData(p, pokemonList) {
@@ -787,7 +409,7 @@
 
             if (p.item) {
                 const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
-                
+
                 // Priority 1: Permanent Form Changes
                 const permSearch = getPermanentForm(p);
                 if (permSearch) {
@@ -910,7 +532,7 @@
 
         function getMegaSpriteUrl(p) {
             if (!p || !p.species || !p.item) return null;
-            
+
             // Exclude permanent forms from Mega toggling
             if (getPermanentForm(p)) return null;
 
@@ -1184,6 +806,7 @@
             const resistances = {};
             Object.keys(TYPE_CHART).forEach(t => resistances[t] = 0);
 
+            const issues = [];
             activeMons.forEach(p => {
                 const dbBase = getBasePokemonData(p, allPokemon) || {};
                 const dbMega = getEffectivePokemonData(p, allPokemon);
@@ -1217,7 +840,7 @@
                 });
             });
 
-            const issues = [];
+
             Object.entries(weaknessCounts).forEach(([type, count]) => {
                 // Negative issues
                 if (count >= 3 && resistances[type] < 2) {
@@ -1303,7 +926,7 @@
             if (teamSpecies.some(s => s.includes('incineroar')) && teamSpecies.some(s => s.includes('rillaboom'))) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'The VGC Firewall (Incineroar + Rillaboom).', tip: 'Unmatched field control with Intimidate, Fake Out, and Grassy Terrain.', icon: '🔥', color: '#ff5722' });
             }
-            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) && 
+            if (allAbilitiesArr.some(a => ['drought', 'desolate land', 'orichalcum pulse'].includes(a)) &&
                 allAbilitiesArr.some(a => ['solar power', 'chlorophyll', 'protosynthesis'].includes(a))) {
                 issues.push({ type: 'Combo', count: 0, severity: 'synergy', text: 'Sun Offense core detected.', tip: 'Fast Sleep Powder or Protosynthesis boosts under Sun.', icon: '☀️', color: '#fbc02d' });
             }
@@ -1543,15 +1166,15 @@
         function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
             card.className = 'pokemon-card-premium fade-in';
-            
+
             const permForm = getPermanentForm(p);
             const dbEffective = getEffectivePokemonData(p, allPokemon);
-            
+
             // If it's a permanent form, use its data as the primary database reference
             const dbBase = (permForm && dbEffective) ? dbEffective : (allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Type_1: 'Normal', Type_2: null, Ability: []
             });
-            
+
             // Mega logic only applies if NOT a permanent form
             const dbMega = permForm ? dbBase : (dbEffective || dbBase);
             const isMegaActive = !permForm && dbMega !== dbBase;
@@ -1561,7 +1184,7 @@
             const t1Mega = (dbMega.Type_1 || 'Normal').toLowerCase();
             const t2Mega = dbMega.Type_2?.toLowerCase();
 
-            const roles = detectRole(p, dbMega); 
+            const roles = detectRole(p, dbMega);
             const rolesHtml = roles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('');
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
