@@ -1392,7 +1392,7 @@
             }, 300);
         }
 
-        function getSmartRecommendations(mainBuild, format, count = 5, excludedIds = []) {
+        function getSmartRecommendations(mainBuild, format, count = 5, excludedIds = [], baseTeam = null) {
             const typeChart = {
                 normal: { weaknesses: ['fighting'], resistances: [], immunities: ['ghost'] },
                 fire: { weaknesses: ['water', 'ground', 'rock'], resistances: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immunities: [] },
@@ -1424,29 +1424,42 @@
             const mainSpeciesClean = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainBuildData = getEffectivePokemonData(pMain, allPokemon) || getBasePokemonData(pMain, allPokemon);
             
-            const team = [{
-                build: mainBuild,
-                species: mainSpeciesClean,
-                types: [mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t),
-                roles: detectRole(pMain, mainBuildData),
-                weaknesses: getWeaknesses([mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t))
-            }];
-
-            let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
-            if (excludeMegas) candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
-            if (excludeHighBST) candidates = candidates.filter(b => getBST(b) <= 600);
-            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpeciesClean);
-            
-            // Filter out specifically excluded IDs
-            if (excludedIds.length > 0) {
-                candidates = candidates.filter(b => !excludedIds.includes(b.id));
-            }
-
-            const selected = [];
-            const usedSpecies = new Set([mainSpeciesClean]);
+            let team = [];
+            const usedSpecies = new Set();
             const usedItems = new Set();
-            const mainItem = (pMain.item || '').toLowerCase();
-            if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
+
+            if (baseTeam && baseTeam.length > 0) {
+                // If baseTeam is provided, start with it
+                baseTeam.forEach(member => {
+                    const p = parsePaste(member.build.build || member.build);
+                    const s = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const db = getEffectivePokemonData(p, allPokemon) || getBasePokemonData(p, allPokemon);
+                    const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
+                    const it = (p.item || '').toLowerCase();
+                    
+                    team.push({
+                        build: member.build,
+                        species: s,
+                        types: types,
+                        roles: detectRole(p, db),
+                        weaknesses: getWeaknesses(types)
+                    });
+                    usedSpecies.add(s);
+                    if (it && it !== 'none') usedItems.add(it);
+                });
+            } else {
+                // Default: Start with just the leader
+                team.push({
+                    build: mainBuild,
+                    species: mainSpeciesClean,
+                    types: [mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t),
+                    roles: detectRole(pMain, mainBuildData),
+                    weaknesses: getWeaknesses([mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t))
+                });
+                usedSpecies.add(mainSpeciesClean);
+                const mainItem = (pMain.item || '').toLowerCase();
+                if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
+            }
             let megaCount = isMega(mainBuild.pokemon, mainItem) ? 1 : 0;
 
             const partnerPairs = [
@@ -1590,13 +1603,21 @@
             if (cards[slotIndex + 1]) cards[slotIndex + 1].style.opacity = '0.3';
 
             setTimeout(() => {
-                // Get current IDs to exclude
+                // Get all current IDs to exclude the specific build being swapped
                 const excludeIds = currentRecommendedBuilds.map(item => {
                     return (typeof item.build === 'string') ? item.id : item.build.id;
                 });
 
-                // Get a single new recommendation
-                const newRec = getSmartRecommendations(currentMainBuild, recommendationFormat, 1, excludeIds);
+                // Create a base team consisting of the leader + all OTHER slots except the one being shuffled
+                const baseTeam = [];
+                currentRecommendedBuilds.forEach((item, idx) => {
+                    if (idx !== slotIndex) {
+                        baseTeam.push(item);
+                    }
+                });
+
+                // Get a single new recommendation that fits best with the REST of the team
+                const newRec = getSmartRecommendations(currentMainBuild, recommendationFormat, 1, excludeIds, baseTeam);
                 
                 if (newRec && newRec.length > 0) {
                     currentRecommendedBuilds[slotIndex] = newRec[0];
@@ -1647,7 +1668,7 @@
                     const scoreBadge = document.createElement('div');
                     scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
                     if (!isRawBuild && item.score !== undefined) {
-                        scoreBadge.innerText = `SYNERGY: ${Math.floor(item.score)}%`;
+                        scoreBadge.innerText = `SYNERGY: ${Math.min(100, Math.floor(item.score))}%`;
                     } else {
                         scoreBadge.innerText = `SYNERGY: MATCH`;
                     }
