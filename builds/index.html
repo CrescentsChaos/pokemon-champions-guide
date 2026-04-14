@@ -1059,7 +1059,7 @@
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
 
                 return `
-                    <div style="display:flex; align-items:center; font-size:0.65rem; margin-bottom:4px;">
+                    <div style="display:flex; align-items:center; font-size:0.75rem; margin-bottom:4px;">
                         <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
                         <div class="stat-bar-mini">
                             <div class="stat-fill-mini ${isMegaActive ? 'mega-data-fill' : ''}" 
@@ -1096,7 +1096,7 @@
                 return `
                     <div class="move-pill" title="${tooltipOptions}">
                         <img src="../assets/type-icons/${mt}_type.png" alt="${mt}" class="type-icon" style="height: 16px; margin-right: 4px; pointer-events: none;">
-                        <span>${m}</span>
+                        <span style="font-size: 0.75rem;">${m}</span>
                     </div>
                 `;
             }).join('');
@@ -1142,7 +1142,7 @@
                 </div>
 
                 <div style="margin-top:4px;">
-                    <div style="font-size:0.65rem; color:rgba(255,255,255,0.4); font-weight:700; display:flex; gap:8px;">
+                    <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); font-weight:700; display:flex; gap:8px;">
                         <span>LVL ${p.level}</span>
                         <span>Item: <span style="color:#eee">${(p.item || 'None').toUpperCase()}</span></span>
                     </div>
@@ -1154,7 +1154,7 @@
                 </div>
 
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
                         <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
                         ABILITY: <span class="${isMegaActive ? 'mega-ability-text' : ''}" 
                                        ${isMegaActive ? `data-base-ability="${(dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')}" data-mega-ability="${(dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : (p.ability || 'UNKNOWN')}"` : ''} 
