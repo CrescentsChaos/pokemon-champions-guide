@@ -1462,6 +1462,7 @@
             if (!mainBuildData) throw new Error("Base data for " + (pMain.species || 'Unknown') + " not found. Try another build.");
             
             let team = [];
+            let selected = [];
             const usedSpecies = new Set();
             const usedItems = new Set();
             let megaCount = 0;
