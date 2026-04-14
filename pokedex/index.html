@@ -226,9 +226,9 @@
                 <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="pokemon-img" 
                      onerror="handleSpriteError(this, '${pokemon.Name}')">
                 <h3 style="color: white; font-size: 1.4rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">${pokemon.Name}</h3>
-                <div style="margin-bottom: 1.5rem;">
-                    <span class="type-tag type-${pokemon.Type_1.toLowerCase()}">${pokemon.Type_1}</span>
-                    ${pokemon.Type_2 ? `<span class="type-tag type-${pokemon.Type_2.toLowerCase()}">${pokemon.Type_2}</span>` : ''}
+                <div class="type-container">
+                    <img src="../assets/type-icons/${pokemon.Type_1.toLowerCase()}_type.png" class="type-icon" alt="${pokemon.Type_1}">
+                    ${pokemon.Type_2 ? `<img src="../assets/type-icons/${pokemon.Type_2.toLowerCase()}_type.png" class="type-icon" alt="${pokemon.Type_2}">` : ''}
                 </div>
                 <div class="stat-container">
                     ${statHtml}
@@ -293,8 +293,8 @@
                         <p style="color: var(--primary-red); font-weight: 700; font-family: 'JetBrains Mono';">#${String(pokemon.id).padStart(4, '0')}</p>
                         
                         <div class="modal-badge-group">
-                            <span class="type-tag type-${pokemon.Type_1.toLowerCase()}" style="font-size: 1rem; padding: 8px 20px;">${pokemon.Type_1}</span>
-                            ${pokemon.Type_2 ? `<span class="type-tag type-${pokemon.Type_2.toLowerCase()}" style="font-size: 1rem; padding: 8px 20px;">${pokemon.Type_2}</span>` : ''}
+                            <img src="../assets/type-icons/${pokemon.Type_1.toLowerCase()}_type.png" class="type-icon" style="height: 32px;" alt="${pokemon.Type_1}">
+                            ${pokemon.Type_2 ? `<img src="../assets/type-icons/${pokemon.Type_2.toLowerCase()}_type.png" class="type-icon" style="height: 32px;" alt="${pokemon.Type_2}">` : ''}
                         </div>
 
                         <div class="modal-badge-group" style="margin-top: 15px;">

@@ -1270,8 +1270,8 @@
                             </div>
                             <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
                                 <div style="display:flex; gap:4px;">
-                                    <span style="background:${typeColors[t1]}; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t1.toUpperCase()}</span>
-                                    ${t2 ? `<span style="background:${typeColors[t2]}; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">${t2.toUpperCase()}</span>` : ''}
+                                    <img src="../assets/type-icons/${t1}_type.png" alt="${t1}" class="type-icon" style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                                    ${t2 ? `<img src="../assets/type-icons/${t2}_type.png" alt="${t2}" class="type-icon" style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : ''}
                                 </div>
                                 <span style="font-size:0.7rem; color:rgba(255,255,255,0.4); font-weight:900; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
                             </div>
@@ -1292,23 +1292,7 @@
                     <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:space-between;">
                         <div style="display:flex; gap:10px; align-items:center;">
                             ${p.tera ? `
-                                <div style="
-                                    background: linear-gradient(135deg, ${typeColors[p.tera.toLowerCase()]}ee, ${typeColors[p.tera.toLowerCase()]}88);
-                                    color: #fff;
-                                    font-size: 0.65rem;
-                                    font-weight: 900;
-                                    padding: 3px 12px;
-                                    border-radius: 8px;
-                                    box-shadow: 0 0 15px ${typeColors[p.tera.toLowerCase()]}66, inset 0 0 5px rgba(255,255,255,0.5);
-                                    text-transform: uppercase;
-                                    letter-spacing: 1px;
-                                    border: 1px solid rgba(255,255,255,0.4);
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 4px;
-                                ">
-                                    <span style="filter: drop-shadow(0 0 2px white);">💎</span> ${p.tera}
-                                </div>
+                                <img src="../assets/type-icons/tera_type_${p.tera.toLowerCase()}.png" alt="Tera ${p.tera}" class="tera-icon" style="height: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
                             ` : ''}
                             <span style="font-size:0.8rem; color:${natureMap[p.nature].color}; font-weight:900; text-transform:uppercase; text-shadow: 0 0 10px ${natureMap[p.nature].color}44;">${p.nature}</span>
                         </div>
@@ -2183,6 +2167,17 @@
                     ctx.fillText(t, x, y);
                 }
 
+                // Pre-load all type icons
+                const typeImages = {};
+                for (const t of Object.keys(typeColors)) {
+                    if (t === 'stellar') {
+                        typeImages['tera_stellar'] = await loadImage(`../assets/type-icons/tera_type_stellar.png`);
+                    } else {
+                        typeImages[t] = await loadImage(`../assets/type-icons/${t}_type.png`);
+                        typeImages['tera_' + t] = await loadImage(`../assets/type-icons/tera_type_${t}.png`);
+                    }
+                }
+
                 // Pre-load all sprites
                 const spritePromises = activeSlots.map(async (slot) => {
                     if (!slot.pokemon) return { sprite: null, itemSprite: null };
@@ -2285,22 +2280,17 @@
                     drawTextTruncated(p.item ? `Held: ${p.item}` : 'No Item', nameX, itemTextY, cardW - spriteSize - 50, '600 10px Inter, sans-serif', 'rgba(255,255,255,0.5)');
 
                     // Type badges
-                    const badgeY = itemTextY + 14;
+                    const badgeY = itemTextY + 6;
                     let badgeX = nameX;
-                    function drawBadge(text, color, x, y) {
-                        ctx.font = '900 8px Inter, sans-serif';
-                        const tw = ctx.measureText(text).width;
-                        const pw = tw + 12;
-                        roundedRect(x, y - 9, pw, 16, 4);
-                        ctx.fillStyle = color;
-                        ctx.fill();
-                        ctx.fillStyle = '#fff';
-                        ctx.fillText(text, x + 6, y + 2);
-                        return pw + 4;
+                    
+                    if (typeImages[t1]) {
+                        ctx.drawImage(typeImages[t1], badgeX, badgeY, 18, 18);
+                        badgeX += 22;
                     }
-
-                    badgeX += drawBadge(t1.toUpperCase(), tc1, badgeX, badgeY);
-                    if (t2) badgeX += drawBadge(t2.toUpperCase(), tc2, badgeX, badgeY);
+                    if (t2 && typeImages[t2]) {
+                        ctx.drawImage(typeImages[t2], badgeX, badgeY, 18, 18);
+                        badgeX += 22;
+                    }
 
                     // Level
                     ctx.font = '900 10px Inter, sans-serif';
@@ -2423,24 +2413,9 @@
                     let footX = cx + 14;
 
                     // Tera type badge
-                    if (p.tera) {
-                        const teraColor = typeColors[p.tera.toLowerCase()] || '#A8A77A';
-                        ctx.font = '900 8px Inter, sans-serif';
-                        const teraText = '💎 ' + p.tera.toUpperCase();
-                        const teraW = ctx.measureText(teraText).width + 16;
-                        roundedRect(footX, footY - 2, teraW, 20, 6);
-                        const teraGrad = ctx.createLinearGradient(footX, footY, footX + teraW, footY + 20);
-                        teraGrad.addColorStop(0, teraColor + 'ee');
-                        teraGrad.addColorStop(1, teraColor + '88');
-                        ctx.fillStyle = teraGrad;
-                        ctx.fill();
-                        roundedRect(footX, footY - 2, teraW, 20, 6);
-                        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                        ctx.fillStyle = '#fff';
-                        ctx.fillText(teraText, footX + 8, footY + 12);
-                        footX += teraW + 8;
+                    if (p.tera && typeImages['tera_' + p.tera.toLowerCase()]) {
+                        ctx.drawImage(typeImages['tera_' + p.tera.toLowerCase()], footX, footY - 2, 20, 20);
+                        footX += 28;
                     }
 
                     // Nature
@@ -2647,20 +2622,24 @@
 
             Object.entries(off).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
-                badge.className = 'type-badge';
-                badge.style.background = typeColors[type.toLowerCase()];
-                badge.style.opacity = count > 0 ? '1' : '0.2';
-                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                badge.style.cssText = 'position: relative; display: flex; align-items: center; justify-content: center; padding: 10px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 80%); opacity: ' + (count > 0 ? '1' : '0.2') + ';';
+                badge.title = type;
+                badge.innerHTML = `
+                    <img src="../assets/type-icons/${type.toLowerCase()}_type.png" alt="${type}" class="type-icon" style="height: 36px; width: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                    <span style="position: absolute; top: 0px; right: 0px; background: var(--primary-red); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">${count}</span>
+                `;
                 offBox.appendChild(badge);
             });
 
             Object.entries(def).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
-                badge.className = 'type-badge';
-                badge.style.background = typeColors[type.toLowerCase()];
-                badge.style.border = count > 2 ? '2px solid var(--primary-red)' : '1px solid rgba(255,255,255,0.1)';
-                badge.style.opacity = count > 0 ? '1' : '0.2';
-                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                const isWeak = count > 2;
+                badge.style.cssText = 'position: relative; display: flex; align-items: center; justify-content: center; padding: 10px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 80%); opacity: ' + (count > 0 ? '1' : '0.2') + ';' + (isWeak ? ' box-shadow: 0 0 15px rgba(244,67,54,0.3) inset;' : '');
+                badge.title = type;
+                badge.innerHTML = `
+                    <img src="../assets/type-icons/${type.toLowerCase()}_type.png" alt="${type}" class="type-icon" style="height: 36px; width: 36px; filter: drop-shadow(0 2px 4px ${isWeak ? 'var(--primary-red)' : 'rgba(0,0,0,0.5)'});">
+                    <span style="position: absolute; top: 0px; right: 0px; background: var(--primary-red); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">${count}</span>
+                `;
                 defBox.appendChild(badge);
             });
 

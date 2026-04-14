@@ -668,10 +668,9 @@
             const clean = targetBuild.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             document.getElementById('preview-sprite').src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
 
-            // Types
             const typeContainer = document.getElementById('preview-types');
             typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t => 
-                `<span class="type-tag" style="background: var(--type-${t.toLowerCase()}); color: white;">${t}</span>`
+                `<img src="../assets/type-icons/${t.toLowerCase()}_type.png" class="type-icon" alt="${t}">`
             ).join('');
 
             // Stats
