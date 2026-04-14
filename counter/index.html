@@ -914,7 +914,13 @@
                 spd: getStat(parseInt(pData['Sp.Def']), 31, build.evs.spd, 50, build.nature, 'spd'),
                 spe: getStat(parseInt(pData.Speed), 31, build.evs.spe, 50, build.nature, 'spe'),
             };
+            
+            // Competitive Item Modifiers
             if (build.item === 'Choice Scarf') stats.spe = Math.floor(stats.spe * 1.5);
+            if (build.item === 'Choice Band') stats.atk = Math.floor(stats.atk * 1.5);
+            if (build.item === 'Choice Specs') stats.spa = Math.floor(stats.spa * 1.5);
+            if (build.item === 'Assault Vest') stats.spd = Math.floor(stats.spd * 1.5);
+            
             return stats;
         }
 
