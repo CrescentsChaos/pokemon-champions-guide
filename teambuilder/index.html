@@ -635,6 +635,8 @@
                     <button id="export-paste-btn" class="analyze-btn"
                         style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT
                         PASTE</button>
+                    <button id="share-link-btn" class="analyze-btn"
+                        style="padding: 10px 25px; font-size: 0.8rem; background: #9c27b0; border: none; box-shadow: 0 0 15px rgba(156, 39, 176, 0.4);">SHARE LINK 🔗</button>
                 </div>
                 <button onclick="toggleLibrary()" class="analyze-btn" aria-label="Open My Saved Builds Library"
                     style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY
@@ -1059,8 +1061,26 @@
                     natureIn.appendChild(opt);
                 });
 
+                // Load from URL if present
+                const urlParams = new URLSearchParams(window.location.search);
+                const encodedTeam = urlParams.get('team');
+                if (encodedTeam) {
+                    try {
+                        const decoded = decodeURIComponent(escape(atob(encodedTeam)));
+                        parsePaste(decoded).forEach((pk, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...pk }; });
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        currentSlot = -1; // Default to Team View
+                    } catch(e) {
+                        console.error('Failed to parse team from URL', e);
+                    }
+                }
+
                 setupTabs();
-                syncUI();
+                if (currentSlot === -1) {
+                    switchSlot(-1);
+                } else {
+                    syncUI();
+                }
             } catch (e) {
                 console.error("Data error:", e);
             }
@@ -1495,6 +1515,8 @@
                     return `https://play.pokemonshowdown.com/sprites/${base}/zygarde-complete.gif`;
                 } else if (p.species === "Wishiwashi") {
                     return `https://play.pokemonshowdown.com/sprites/${base}/wishiwashi-school.gif`;
+                } else if (p.species === "Palafin") {
+                    return `https://play.pokemonshowdown.com/sprites/${base}/palafin-hero.gif`;
                 }
             }
 
@@ -1591,6 +1613,8 @@
                     targetName = "Zygarde-Complete";
                 } else if (p.species === "Wishiwashi") {
                     targetName = "Wishiwashi-School";
+                } else if (p.species === "Palafin") {
+                    targetName = "Palafin-Hero";
                 }
                 if (targetName) {
                     const targetDbRef = pokemonList.find(x => x.Name === targetName);
@@ -1662,7 +1686,7 @@
             const toggleGrp = document.getElementById('forme-toggle-group');
             const toggleChk = document.getElementById('forme-toggle');
             if (toggleGrp && toggleChk) {
-                const hasBattleForme = ["Terapagos", "Aegislash", "Zygarde", "Zygarde-10%", "Wishiwashi"].includes(p.species);
+            const hasBattleForme = ["Terapagos", "Aegislash", "Zygarde", "Zygarde-10%", "Wishiwashi", "Palafin"].includes(p.species);
                 toggleGrp.style.display = hasBattleForme ? 'flex' : 'none';
                 toggleChk.checked = !!p.useBattleForme;
             }
@@ -3037,8 +3061,7 @@
             setupTabs(); syncUI();
         };
 
-        // Export paste button
-        document.getElementById('export-paste-btn').onclick = () => {
+        function getTeamPasteText() {
             let fullPaste = '';
             team.forEach(p => {
                 if (!p.species) return;
@@ -3070,8 +3093,33 @@
                 p.moves.forEach(m => { if (m) fullPaste += `- ${m}\n`; });
                 fullPaste += '\n';
             });
-            document.getElementById('export-textarea').value = fullPaste.trim();
+            return fullPaste.trim();
+        }
+
+        // Export paste button
+        document.getElementById('export-paste-btn').onclick = () => {
+            document.getElementById('export-textarea').value = getTeamPasteText();
             document.getElementById('export-overlay').style.display = 'flex';
+        };
+
+        // Share link button
+        document.getElementById('share-link-btn').onclick = () => {
+            const pasteStr = getTeamPasteText();
+            if (!pasteStr) {
+                alert("Please add at least one Pokemon to share.");
+                return;
+            }
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(pasteStr)));
+                const url = window.location.origin + window.location.pathname + '?team=' + encoded;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Share link copied to clipboard!');
+                }).catch(() => {
+                    prompt('Copy this link to share your team:', url);
+                });
+            } catch(e) {
+                alert('Could not generate share link. Your team might contain unsupported characters.');
+            }
         };
 
         // Load data async (pokemon sprites, moves, items for search)

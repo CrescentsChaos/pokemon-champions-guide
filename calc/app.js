@@ -462,9 +462,9 @@ function populatePokemonUI(pk) {
 
     const formeBtn = document.getElementById(`${p}-forme-toggle`);
     if (formeBtn) {
-        const hasBattleForme = ["Terapagos", "Terapagos-Terastal", "Terapagos-Stellar", "Aegislash", "Aegislash-Blade", "Zygarde", "Zygarde-10%", "Zygarde-Complete", "Wishiwashi", "Wishiwashi-School"].includes(pk.name);
+        const hasBattleForme = ["Terapagos", "Terapagos-Terastal", "Terapagos-Stellar", "Aegislash", "Aegislash-Blade", "Zygarde", "Zygarde-10%", "Zygarde-Complete", "Wishiwashi", "Wishiwashi-School", "Palafin", "Palafin-Hero"].includes(pk.name);
         formeBtn.style.display = hasBattleForme ? 'inline-block' : 'none';
-        if (pk.name.includes("-Blade") || pk.name.includes("-School") || pk.name.includes("Terastal") || pk.name.includes("Stellar") || pk.name.includes("-Complete")) {
+        if (pk.name.includes("-Blade") || pk.name.includes("-School") || pk.name.includes("Terastal") || pk.name.includes("Stellar") || pk.name.includes("-Complete") || pk.name === "Palafin-Hero") {
             formeBtn.classList.add("active");
         } else {
             formeBtn.classList.remove("active");
@@ -559,6 +559,12 @@ function toggleForme(id) {
         targetName = "Wishiwashi-School";
     } else if (currentName === "Wishiwashi-School") {
         targetName = "Wishiwashi";
+    }
+    // Palafin rules
+    else if (currentName === "Palafin") {
+        targetName = "Palafin-Hero";
+    } else if (currentName === "Palafin-Hero") {
+        targetName = "Palafin";
     } else {
         showToast("No battle forme for " + currentName);
         return;
