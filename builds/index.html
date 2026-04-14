@@ -717,6 +717,16 @@
         }
 
         function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
+        
+        function getWeaknesses(types) {
+            if (!types || types.length === 0) return [];
+            const result = [];
+            Object.keys(TYPE_CHART).forEach(atkType => {
+                const eff = getEffectiveness(atkType, types);
+                if (eff > 1) result.push(atkType.toLowerCase());
+            });
+            return result;
+        }
 
         function analyzeBuildSynergy(mainBuild, synergyBuilds) {
             const activeMons = [mainBuild, ...synergyBuilds].filter(b => b).map(b => {
@@ -1539,7 +1549,7 @@
                     // 1. Synergy with Leader (Most Important)
                     team[0].weaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 30;
+                            if (getEffectiveness(w, [t]) < 1) score += 30;
                         });
                         abilities.forEach(a => {
                             if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 25;
@@ -1555,7 +1565,7 @@
                         team.slice(1).forEach(m => {
                             m.weaknesses.forEach(w => {
                                 types.forEach(t => {
-                                    if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 12;
+                                    if (getEffectiveness(w, [t]) < 1) score += 12;
                                 });
                             });
                             partnerPairs.forEach(pair => {
@@ -1568,7 +1578,7 @@
                     // 3. Dynamic Team Coverage
                     teamWeaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 6;
+                            if (getEffectiveness(w, [t]) < 1) score += 6;
                         });
                     });
 
