@@ -623,6 +623,21 @@
             content: ' ★';
             font-size: 0.8rem;
         }
+
+        /* Capture Overrides */
+        .is-capturing {
+            background: #0f0f11 !important;
+            padding: 40px !important;
+            width: fit-content !important;
+        }
+
+        .is-capturing .pokemon-config {
+            transform: none !important;
+            transition: none !important;
+            /* Fallback for backdrop-filter which html2canvas doesn't support */
+            background: rgba(30, 30, 35, 0.95) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
     </style>
 </head>
 
@@ -2078,389 +2093,101 @@
             return team;
         }
 
+        /**
+         * Snapshots all GIFs in a container by drawing them to temporary canvases 
+         * and swapping src to dataURLs. Returns a restore function.
+         */
+        async function freezeGifsForCapture(container) {
+            const imgs = container.querySelectorAll('img');
+            const originalSrcs = new Map();
+            const freezePromises = [];
+
+            imgs.forEach(img => {
+                if (img.src && (img.src.toLowerCase().includes('.gif') || img.src.includes('showdown.com/sprites'))) {
+                    freezePromises.push(new Promise((resolve) => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.naturalWidth || img.width;
+                        canvas.height = img.naturalHeight || img.height;
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Use a fresh image object to ensure CORS doesn't taint our canvas
+                        const tempImg = new Image();
+                        tempImg.crossOrigin = 'anonymous';
+                        tempImg.onload = () => {
+                            ctx.drawImage(tempImg, 0, 0);
+                            originalSrcs.set(img, img.src);
+                            try {
+                                img.src = canvas.toDataURL('image/png');
+                            } catch (e) {
+                                console.warn('CORS prevented GIF freeze for:', img.src);
+                            }
+                            resolve();
+                        };
+                        tempImg.onerror = () => resolve();
+                        tempImg.src = img.src;
+                    }));
+                }
+            });
+
+            await Promise.all(freezePromises);
+            return () => {
+                originalSrcs.forEach((src, img) => { img.src = src; });
+            };
+        }
+
         window.downloadTeamImage = async () => {
             const btn = document.getElementById('download-btn');
+            const target = document.getElementById('team-grid');
+            if (!target) return;
+
             const originalText = btn.innerText;
 
             try {
                 btn.innerText = "CAPTURING... ⏳";
                 btn.disabled = true;
-                btn.style.opacity = "0.7";
+                btn.style.opacity = "0.5";
 
-                const typeColors = {
-                    normal: '#A8A77A', fire: '#EE8130', water: '#6390F0', electric: '#F7D02C',
-                    grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
-                    ground: '#E2BF65', flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
-                    rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
-                    fairy: '#D685AD', dark: '#705746', stellar: '#44BBAA'
-                };
-                const statColors = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
-                const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
-                const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
-                const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
+                // 1. Prepare for capture
+                target.classList.add('is-capturing');
+                const unfreeze = await freezeGifsForCapture(target);
 
-                // Collect active pokemon
-                const activeSlots = [];
-                team.forEach((p, i) => {
-                    if (p.species) activeSlots.push({ pokemon: p, index: i });
+                // Use small delay to ensure DOM updates applied
+                await new Promise(r => setTimeout(r, 500));
+
+                // 2. Capture using html2canvas
+                const canvas = await html2canvas(target, {
+                    useCORS: true,
+                    scale: 2,
+                    backgroundColor: '#0f0f11',
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        // Ensure cloned elements are visible even if hidden in main doc
+                        const clonedGrid = clonedDoc.getElementById('team-grid');
+                        if (clonedGrid) clonedGrid.style.display = 'grid';
+                    }
                 });
 
-                // Add empty slots to fill up to 6
-                while (activeSlots.length < 6) {
-                    activeSlots.push({ pokemon: null, index: activeSlots.length });
-                }
+                // 3. Clean up
+                unfreeze();
+                target.classList.remove('is-capturing');
 
-                const cols = 3;
-                const rows = Math.ceil(activeSlots.length / cols);
-
-                // Card dimensions
-                const cardW = 340;
-                const cardH = 360;
-                const gap = 16;
-                const padding = 20;
-
-                const totalW = cols * cardW + (cols - 1) * gap + padding * 2;
-                const totalH = rows * cardH + (rows - 1) * gap + padding * 2;
-
-                const scale = 2;
-                const canvas = document.createElement('canvas');
-                canvas.width = totalW * scale;
-                canvas.height = totalH * scale;
-                const ctx = canvas.getContext('2d');
-                ctx.scale(scale, scale);
-
-                // Background
-                ctx.fillStyle = '#0f0f11';
-                ctx.fillRect(0, 0, totalW, totalH);
-
-                // Helper: load image as base64 via proxy canvas
-                async function loadImage(url) {
-                    if (!url) return null;
-                    return new Promise((resolve) => {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-                        img.onload = () => resolve(img);
-                        img.onerror = () => resolve(null);
-                        img.src = url;
-                        setTimeout(() => resolve(null), 5000);
-                    });
-                }
-
-                // Helper: rounded rect
-                function roundedRect(x, y, w, h, r) {
-                    ctx.beginPath();
-                    ctx.moveTo(x + r, y);
-                    ctx.lineTo(x + w - r, y);
-                    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-                    ctx.lineTo(x + w, y + h - r);
-                    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-                    ctx.lineTo(x + r, y + h);
-                    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-                    ctx.lineTo(x, y + r);
-                    ctx.quadraticCurveTo(x, y, x + r, y);
-                    ctx.closePath();
-                }
-
-                // Helper: draw text truncated
-                function drawTextTruncated(text, x, y, maxW, font, color) {
-                    ctx.font = font;
-                    ctx.fillStyle = color;
-                    let t = text;
-                    while (ctx.measureText(t).width > maxW && t.length > 1) {
-                        t = t.slice(0, -1);
-                    }
-                    if (t !== text) t += '…';
-                    ctx.fillText(t, x, y);
-                }
-
-                // Pre-load all type icons
-                const typeImages = {};
-                for (const t of Object.keys(typeColors)) {
-                    if (t === 'stellar') {
-                        typeImages['tera_stellar'] = await loadImage(`../assets/type-icons/tera_type_stellar.png`);
-                    } else {
-                        typeImages[t] = await loadImage(`../assets/type-icons/${t}_type.png`);
-                        typeImages['tera_' + t] = await loadImage(`../assets/type-icons/tera_type_${t}.png`);
-                    }
-                }
-
-                // Pre-load all sprites
-                const spritePromises = activeSlots.map(async (slot) => {
-                    if (!slot.pokemon) return { sprite: null, itemSprite: null };
-                    const sprite = await loadImage(getSpriteUrl(slot.pokemon));
-                    const itemSprite = slot.pokemon.item ? await loadImage(getItemSpriteUrl(slot.pokemon.item)) : null;
-                    return { sprite, itemSprite };
-                });
-                const sprites = await Promise.all(spritePromises);
-
-                // Draw each card
-                for (let idx = 0; idx < activeSlots.length; idx++) {
-                    const slot = activeSlots[idx];
-                    const col = idx % cols;
-                    const row = Math.floor(idx / cols);
-                    const cx = padding + col * (cardW + gap);
-                    const cy = padding + row * (cardH + gap);
-
-                    // Card background
-                    const grad = ctx.createLinearGradient(cx, cy, cx + cardW, cy + cardH);
-                    grad.addColorStop(0, 'rgba(35, 35, 40, 0.95)');
-                    grad.addColorStop(1, 'rgba(15, 15, 18, 0.98)');
-                    roundedRect(cx, cy, cardW, cardH, 16);
-                    ctx.fillStyle = grad;
-                    ctx.fill();
-
-                    // Card border
-                    roundedRect(cx, cy, cardW, cardH, 16);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    if (!slot.pokemon) {
-                        // Empty slot
-                        ctx.font = '800 28px Inter, sans-serif';
-                        ctx.fillStyle = 'rgba(255,255,255,0.15)';
-                        ctx.textAlign = 'center';
-                        ctx.fillText('+', cx + cardW / 2, cy + cardH / 2 - 10);
-                        ctx.font = '800 10px Inter, sans-serif';
-                        ctx.fillText('SELECT POKEMON', cx + cardW / 2, cy + cardH / 2 + 15);
-                        ctx.textAlign = 'left';
-                        continue;
-                    }
-
-                    const p = slot.pokemon;
-                    const { sprite, itemSprite } = sprites[idx];
-                    const dbRef = getEffectivePokemonData(p, allPokemon) || {};
-
-                    const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
-                    const t2 = (dbRef.Type_2 || '').toLowerCase();
-                    const tc1 = typeColors[t1] || '#A8A77A';
-                    const tc2 = t2 ? (typeColors[t2] || '#A8A77A') : null;
-
-                    // Subtle type glow at bottom of card
-                    const glowGrad = ctx.createRadialGradient(cx + cardW / 2, cy + cardH, 10, cx + cardW / 2, cy + cardH, cardW * 0.7);
-                    glowGrad.addColorStop(0, tc1 + '15');
-                    glowGrad.addColorStop(1, 'transparent');
-                    roundedRect(cx, cy, cardW, cardH, 16);
-                    ctx.fillStyle = glowGrad;
-                    ctx.fill();
-
-                    // === HEADER SECTION ===
-                    const hx = cx + 14;
-                    const hy = cy + 14;
-
-                    // Sprite background circle
-                    const spriteSize = 60;
-                    const sprCx = hx + spriteSize / 2;
-                    const sprCy = hy + spriteSize / 2;
-                    const sprGrad = ctx.createRadialGradient(sprCx, sprCy, 0, sprCx, sprCy, spriteSize / 2);
-                    sprGrad.addColorStop(0, 'rgba(255,255,255,0.1)');
-                    sprGrad.addColorStop(1, 'transparent');
-                    ctx.fillStyle = sprGrad;
-                    ctx.beginPath();
-                    ctx.arc(sprCx, sprCy, spriteSize / 2, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Draw sprite
-                    if (sprite) {
-                        ctx.drawImage(sprite, hx, hy, spriteSize, spriteSize);
-                    }
-
-                    // Draw item sprite
-                    if (itemSprite) {
-                        ctx.drawImage(itemSprite, hx + spriteSize - 16, hy + spriteSize - 16, 24, 24);
-                    }
-
-                    // Pokemon name
-                    const nameX = hx + spriteSize + 12;
-                    const nameY = hy + 18;
-                    ctx.textAlign = 'left';
-                    if (p.nickname) {
-                        drawTextTruncated(p.nickname, nameX, nameY, cardW - spriteSize - 50, '900 16px Inter, sans-serif', '#fff');
-                        drawTextTruncated(`(${p.species})`, nameX, nameY + 16, cardW - spriteSize - 50, '400 11px Inter, sans-serif', 'rgba(255,255,255,0.5)');
-                    } else {
-                        drawTextTruncated(p.species, nameX, nameY, cardW - spriteSize - 50, '900 16px Inter, sans-serif', '#fff');
-                    }
-
-                    // Held item text
-                    const itemTextY = p.nickname ? nameY + 32 : nameY + 18;
-                    drawTextTruncated(p.item ? `Held: ${p.item}` : 'No Item', nameX, itemTextY, cardW - spriteSize - 50, '600 10px Inter, sans-serif', 'rgba(255,255,255,0.5)');
-
-                    // Type badges
-                    const badgeY = itemTextY + 6;
-                    let badgeX = nameX;
-                    
-                    if (typeImages[t1]) {
-                        ctx.drawImage(typeImages[t1], badgeX, badgeY, 18, 18);
-                        badgeX += 22;
-                    }
-                    if (t2 && typeImages[t2]) {
-                        ctx.drawImage(typeImages[t2], badgeX, badgeY, 18, 18);
-                        badgeX += 22;
-                    }
-
-                    // Level
-                    ctx.font = '900 10px Inter, sans-serif';
-                    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(`LV.${p.level}`, cx + cardW - 14, badgeY + 2);
-                    ctx.textAlign = 'left';
-
-                    // === DIVIDER ===
-                    const divY = hy + spriteSize + 14;
-                    ctx.beginPath();
-                    ctx.moveTo(cx + 14, divY);
-                    ctx.lineTo(cx + cardW - 14, divY);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    // === CONTENT SECTION ===
-                    const contentY = divY + 10;
-                    const leftColW = (cardW - 28) * 0.55;
-                    const rightColX = cx + 14 + leftColW + 14;
-
-                    // Left: Moves
-                    ctx.font = '900 8px Inter, sans-serif';
-                    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                    ctx.fillText('CORE MOVES', cx + 14, contentY + 4);
-
-                    let moveY = contentY + 16;
-                    p.moves.forEach((m, mi) => {
-                        if (!m) return;
-                        const moveRef = (allMoves || []).find(x => (x.name || '').toLowerCase() === m.toLowerCase()) || {};
-                        const type = (moveRef.type || 'Normal').toLowerCase();
-                        const mc = typeColors[type] || '#A8A77A';
-
-                        // Move background
-                        roundedRect(cx + 14, moveY - 1, leftColW, 18, 4);
-                        ctx.fillStyle = 'rgba(0,0,0,0.25)';
-                        ctx.fill();
-
-                        // Type dot
-                        ctx.beginPath();
-                        ctx.arc(cx + 22, moveY + 8, 3, 0, Math.PI * 2);
-                        ctx.fillStyle = mc;
-                        ctx.fill();
-
-                        // Move name
-                        drawTextTruncated(m, cx + 30, moveY + 12, leftColW - 50, '700 9px Inter, sans-serif', '#eee');
-
-                        // Move type label
-                        ctx.font = '900 6px Inter, sans-serif';
-                        ctx.fillStyle = mc;
-                        const typeLabel = type.toUpperCase();
-                        const typeLabelW = ctx.measureText(typeLabel).width;
-                        ctx.fillText(typeLabel, cx + 14 + leftColW - typeLabelW - 6, moveY + 11);
-
-                        moveY += 24;
-                    });
-
-                    // Right: Stats
-                    // Vertical divider
-                    ctx.beginPath();
-                    ctx.moveTo(rightColX - 7, contentY - 4);
-                    ctx.lineTo(rightColX - 7, contentY + 150);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    ctx.font = '900 8px Inter, sans-serif';
-                    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                    ctx.fillText('BATTLE STATS', rightColX, contentY + 4);
-
-                    const barMaxW = cardW - 28 - leftColW - 14 - 50;
-                    let statY = contentY + 16;
-                    statsArr.forEach((s, si) => {
-                        const base = parseInt(dbRef[keys[s]]) || 0;
-                        const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
-                        const isPos = natureMap[p.nature] && natureMap[p.nature].pos === s;
-                        const isNeg = natureMap[p.nature] && natureMap[p.nature].neg === s;
-                        const valColor = isPos ? '#00ffcc' : (isNeg ? '#ff4d4d' : '#ddd');
-
-                        // Stat label
-                        ctx.font = '900 9px monospace';
-                        ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                        ctx.fillText(statLabels[si], rightColX, statY + 8);
-
-                        // Stat bar background
-                        const barX = rightColX + 32;
-                        roundedRect(barX, statY + 2, barMaxW, 5, 3);
-                        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-                        ctx.fill();
-
-                        // Stat bar fill
-                        const fillW = Math.min(barMaxW, (typeof val === 'number' ? val : 0) / 250 * barMaxW);
-                        if (fillW > 0) {
-                            roundedRect(barX, statY + 2, fillW, 5, 3);
-                            ctx.fillStyle = statColors[si];
-                            ctx.fill();
-                        }
-
-                        // Stat value
-                        ctx.font = '900 11px Inter, sans-serif';
-                        ctx.fillStyle = valColor;
-                        ctx.textAlign = 'right';
-                        const valStr = typeof val === 'number' ? val.toString() : '--';
-                        ctx.fillText(valStr, cx + cardW - 14, statY + 10);
-                        ctx.textAlign = 'left';
-
-                        statY += 20;
-                    });
-
-                    // === FOOTER SECTION ===
-                    const footY = cy + cardH - 28;
-                    ctx.beginPath();
-                    ctx.moveTo(cx + 14, footY - 6);
-                    ctx.lineTo(cx + cardW - 14, footY - 6);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    let footX = cx + 14;
-
-                    // Tera type badge
-                    if (p.tera && typeImages['tera_' + p.tera.toLowerCase()]) {
-                        ctx.drawImage(typeImages['tera_' + p.tera.toLowerCase()], footX, footY - 2, 20, 20);
-                        footX += 28;
-                    }
-
-                    // Nature
-                    const natColor = (natureMap[p.nature] && natureMap[p.nature].color) || '#ddd';
-                    ctx.font = '900 10px Inter, sans-serif';
-                    ctx.fillStyle = natColor;
-                    ctx.fillText(p.nature.toUpperCase(), footX, footY + 12);
-
-                    // Ability (right-aligned)
-                    ctx.textAlign = 'right';
-                    ctx.font = '800 9px Inter, sans-serif';
-                    const isMegaRef = dbRef.Name && dbRef.Name.includes('-Mega');
-                    ctx.fillStyle = isMegaRef ? '#ff4d4d' : 'rgba(255,255,255,0.6)';
-                    const abilityText = (p.ability) || 'No Ability';
-                    drawTextTruncated(abilityText.toUpperCase(), cx + cardW - 14, footY + 12, cardW / 2 - 10, '800 9px Inter, sans-serif', ctx.fillStyle);
-                    ctx.textAlign = 'left';
-                }
-
-                // Download
+                // 4. Download
                 const link = document.createElement('a');
-                link.download = `team-preview-${Date.now()}.png`;
-                link.href = canvas.toDataURL("image/png");
+                link.download = `my_team_${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
                 link.click();
 
-                btn.innerText = "SUCCESS! ✅";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                    btn.style.opacity = "1";
-                }, 2000);
-
             } catch (err) {
-                console.error("Capture Error:", err);
-                alert("Failed to capture image. Error: " + err.message);
+                console.error("Capture failed:", err);
+                alert("Failed to generate image. Please try again.");
+            } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
                 btn.style.opacity = "1";
             }
         };
+
+
 
         // --- ANALYSIS LOGIC ---
         const TYPE_CHART = {
