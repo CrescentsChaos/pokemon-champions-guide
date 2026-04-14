@@ -574,8 +574,10 @@
     <script src="../js/utils.js"></script>
     <script>
         let allPokemon = [];
+        let pokemonMap = {};
         let allBuilds = [];
         let allMoves = [];
+        let movesMap = {};
         let allItems = [];
         let selectedBuildId = null;
         let displayedCount = 12;
@@ -705,6 +707,16 @@
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
+
+                // Create high-speed lookup maps
+                allPokemon.forEach(p => {
+                    const key = (p.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    pokemonMap[key] = p;
+                });
+                allMoves.forEach(m => {
+                    const key = (m.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    movesMap[key] = m;
+                });
 
                 // Sort Alphabetically
                 allBuilds.sort((a, b) => a.pokemon.localeCompare(b.pokemon));
@@ -1088,13 +1100,14 @@
 
             activeMons.forEach((p) => {
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const dbRef = pokemonMap[speciesSearch] || {};
 
                 const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
 
                 // --- Offensive Coverage ---
                 const moveTypes = p.moves.map(m => {
-                    const moveRef = allMoves.find(x => x.name.toLowerCase() === m.toLowerCase());
+                    const search = (m || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const moveRef = movesMap[search];
                     return moveRef ? moveRef.type : null;
                 }).filter(x => x);
 
@@ -2005,7 +2018,7 @@
             const scoredCandidates = candidates.map(b => {
                 const p = parsePaste(b.build);
                 const speciesName = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const db = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesName);
+                const db = pokemonMap[speciesName];
                 const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                 const roles = detectRole(p, db);
                 const candAbilities = [(p.ability || '').toLowerCase()];
