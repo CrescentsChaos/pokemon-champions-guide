@@ -1292,7 +1292,7 @@
                 } catch (err) {
                     console.error("Synergy calculation failed:", err);
                     if (errorEl) {
-                        errorEl.innerText = `Synergy calculation failed: ${err.message}`;
+                        errorEl.innerHTML = `Synergy calculation failed: ${err.message}<br><small style="opacity:0.5; font-size:0.7rem;">${err.stack ? err.stack.split('\n')[0] : ''}</small>`;
                         errorEl.style.display = 'block';
                     }
                     // At least clear the list if it failed
@@ -1462,7 +1462,7 @@
             if (!mainBuildData) throw new Error("Base data for " + (pMain.species || 'Unknown') + " not found. Try another build.");
             
             let team = [];
-            let selected = [];
+            let rcmdResults = [];
             const usedSpecies = new Set();
             const usedItems = new Set();
             let megaCount = 0;
@@ -1640,7 +1640,7 @@
                 }
 
                 if (bestCand) {
-                    selected.push({ build: bestCand.build, score: Math.round(bestCand.score) });
+                    rcmdResults.push({ build: bestCand.build, score: Math.round(bestCand.score) });
                     usedSpecies.add(bestCand.species);
                     if (bestCand.item && bestCand.item !== 'none') usedItems.add(bestCand.item);
                     if (bestCand.isMega) megaCount++;
