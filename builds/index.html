@@ -194,6 +194,7 @@
         let excludeHighBST = false;
         let currentRecommendedBuilds = [];
         let currentMainBuild = null;
+        let rcmdHistory = new Map(); // Tracking recently suggested builds for variety
 
         function toggleExcludeMegas(checked) {
             excludeMegas = checked;
@@ -1357,10 +1358,40 @@
                 candTypes.forEach(t => usedTypes.push(t));
             }
 
-            return selected;
         }
 
-        function getSmartRecommendations(mainBuild, format, count = 5) {
+        function smartRecommendTeammates() {
+            if (!currentMainBuild) return;
+
+            const grid = document.getElementById('synergy-grid');
+            grid.style.opacity = '0.3';
+
+            setTimeout(() => {
+                currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
+                
+                // Track History
+                currentRecommendedBuilds.forEach(item => {
+                    const id = (typeof item.build === 'string') ? item.id : item.build.id;
+                    rcmdHistory.set(id, (rcmdHistory.get(id) || 0) + 1);
+                });
+
+                renderSynergy(currentMainBuild, currentRecommendedBuilds);
+                analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
+                grid.style.opacity = '1';
+
+                // Special button feedback
+                const rcmdBtn = document.getElementById('rcmd-team');
+                const originalText = rcmdBtn.innerHTML;
+                rcmdBtn.style.background = 'linear-gradient(135deg, #0cebeb 0%, #20e3b2 50%, #29ffc6 100%)';
+                rcmdBtn.innerHTML = '<span>STRATEGY APPLIED!</span> ⚡';
+                setTimeout(() => {
+                    rcmdBtn.style.background = '';
+                    rcmdBtn.innerHTML = originalText;
+                }, 2000);
+            }, 300);
+        }
+
+        function getSmartRecommendations(mainBuild, format, count = 5, excludedIds = []) {
             const typeChart = {
                 normal: { weaknesses: ['fighting'], resistances: [], immunities: ['ghost'] },
                 fire: { weaknesses: ['water', 'ground', 'rock'], resistances: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immunities: [] },
@@ -1404,6 +1435,11 @@
             if (excludeMegas) candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
             if (excludeHighBST) candidates = candidates.filter(b => getBST(b) <= 600);
             candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpeciesClean);
+            
+            // Filter out specifically excluded IDs
+            if (excludedIds.length > 0) {
+                candidates = candidates.filter(b => !excludedIds.includes(b.id));
+            }
 
             const selected = [];
             const usedSpecies = new Set([mainSpeciesClean]);
@@ -1451,7 +1487,7 @@
                     // 1. Synergy with Leader (Most Important)
                     team[0].weaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 25;
+                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 30;
                         });
                         abilities.forEach(a => {
                             if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 25;
@@ -1462,43 +1498,62 @@
                         });
                     });
 
-                    // 2. Dynamic Team Coverage (Resisting what the team is weak to)
+                    // 2. Cross-Synergy with other Teammates
+                    if (team.length > 1) {
+                        team.slice(1).forEach(m => {
+                            m.weaknesses.forEach(w => {
+                                types.forEach(t => {
+                                    if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 12;
+                                });
+                            });
+                            partnerPairs.forEach(pair => {
+                                const isMemberInPair = m.species.includes(pair.a) || m.species.includes(pair.b);
+                                if (isMemberInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 20;
+                            });
+                        });
+                    }
+
+                    // 3. Dynamic Team Coverage
                     teamWeaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 8;
+                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 6;
                         });
                     });
 
-                    // 3. Type Overlap Penalty (STOP THE MONOTYPE)
+                    // 4. Entropy / Variety Logic
+                    const hitCount = rcmdHistory.get(b.id) || 0;
+                    score -= (hitCount * 40); // Moderate penalty for repeats
+
+                    // 5. Type Overlap Penalty
                     types.forEach(t => {
                         const count = teamTypes.filter(tt => tt === t).length;
-                        if (count === 1) score -= 25; // First overlap is penalized
-                        if (count >= 2) score -= 60; // Second overlap is heavily penalized
+                        if (count === 1) score -= 30;
+                        if (count >= 2) score -= 80;
                     });
 
-                    // 4. Role Diversity
+                    // 6. Role Diversity
                     roles.forEach(r => {
                         const count = teamRoles.filter(tr => tr === r).length;
-                        if (count >= 1) score -= 10; // Penalize duplicate roles
+                        if (count >= 1) score -= 15;
                     });
 
-                    // 5. Hardcoded Synergy Pairs
+                    // 7. Hardcoded synergy for leader specifically
                     partnerPairs.forEach(pair => {
                         const isMainInPair = team[0].species.includes(pair.a) || team[0].species.includes(pair.b);
-                        if (isMainInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 40;
+                        if (isMainInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 50;
                     });
 
-                    // 6. Special Cores
+                    // 8. Special Cores
                     const allCurrentTypes = new Set([...teamTypes, ...types]);
-                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) score += 15;
-                    if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) score += 15;
+                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) score += 20;
+                    if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) score += 20;
 
-                    // 7. Predefined Synergy Bonus (Prioritize author-recommended partners)
+                    // 9. Predefined Synergy Bonus
                     if (mainBuild.synergy && mainBuild.synergy.includes(b.id)) {
                         score += 500;
                     }
 
-                    score += Math.random() * 10;
+                    score += Math.random() * 25; // Slightly more randomness for variety
 
                     if (score > bestScore) {
                         bestScore = score;
@@ -1523,6 +1578,31 @@
                 }
             }
             return selected;
+        }
+
+        function shuffleSingleTeammate(slotIndex) {
+            if (!currentMainBuild) return;
+
+            const grid = document.getElementById('synergy-grid');
+            // Find the specific card to dim
+            const cards = grid.children;
+            if (cards[slotIndex + 1]) cards[slotIndex + 1].style.opacity = '0.3';
+
+            setTimeout(() => {
+                // Get current IDs to exclude
+                const excludeIds = currentRecommendedBuilds.map(item => {
+                    return (typeof item.build === 'string') ? item.id : item.build.id;
+                });
+
+                // Get a single new recommendation
+                const newRec = getSmartRecommendations(currentMainBuild, recommendationFormat, 1, excludeIds);
+                
+                if (newRec && newRec.length > 0) {
+                    currentRecommendedBuilds[slotIndex] = newRec[0];
+                    renderSynergy(currentMainBuild, currentRecommendedBuilds);
+                    analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
+                }
+            }, 200);
         }
 
         function closeSynergy() {
@@ -1571,6 +1651,17 @@
                         scoreBadge.innerText = `SYNERGY: MATCH`;
                     }
                     card.appendChild(scoreBadge);
+
+                    // Add Shuffle Button (Individual Slot)
+                    const shuffleBtn = document.createElement('div');
+                    shuffleBtn.className = 'shuffle-slot-btn';
+                    shuffleBtn.innerHTML = '🔄';
+                    shuffleBtn.title = 'Shuffle this specific slot';
+                    shuffleBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        shuffleSingleTeammate(i);
+                    };
+                    card.appendChild(shuffleBtn);
 
                     grid.appendChild(card);
                 } else {

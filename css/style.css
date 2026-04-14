@@ -1409,3 +1409,39 @@ footer {
 #rcmd-team:active {
     transform: translateY(0);
 }
+
+.shuffle-slot-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 20;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(8px);
+    opacity: 0.2;
+}
+
+.pokemon-card-premium:hover .shuffle-slot-btn {
+    opacity: 1;
+}
+
+.shuffle-slot-btn:hover {
+    background: var(--primary-red);
+    transform: scale(1.15) rotate(180deg);
+    box-shadow: 0 0 15px rgba(255, 62, 62, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.shuffle-slot-btn:active {
+    transform: scale(0.95);
+}
