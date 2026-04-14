@@ -1251,7 +1251,7 @@
                 if (synergyBuilds.length > 0) {
                     currentRecommendedBuilds = synergyBuilds;
                 } else {
-                    currentRecommendedBuilds = getRecommendedTeammates(build, recommendationFormat);
+                    currentRecommendedBuilds = getSmartRecommendations(build, recommendationFormat);
                 }
                 if (rcmdBtn) rcmdBtn.style.display = 'flex';
 
@@ -1295,7 +1295,7 @@
             grid.style.opacity = '0.3';
 
             setTimeout(() => {
-                currentRecommendedBuilds = getRecommendedTeammates(currentMainBuild, recommendationFormat);
+                currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
                 renderSynergy(currentMainBuild, currentRecommendedBuilds);
                 analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
                 grid.style.opacity = '1';
@@ -1358,6 +1358,7 @@
                 candTypes.forEach(t => usedTypes.push(t));
             }
 
+            return selected;
         }
 
         function smartRecommendTeammates() {
