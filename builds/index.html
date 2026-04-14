@@ -1303,38 +1303,30 @@
         }
 
         function getRecommendedTeammates(mainBuild, format, count = 5) {
-            const mainP = parsePaste(mainBuild.build);
-            const mainSpecies = mainP.species.toLowerCase();
-            const mainItem = (mainP.item || '').toLowerCase();
+            const pMain = parsePaste(mainBuild.build);
+            const mainSpecies = pMain.species.toLowerCase();
+            
+            const dbBase = getBasePokemonData(pMain, allPokemon);
+            const dbMega = getEffectivePokemonData(pMain, allPokemon);
+            const mainTypes = [dbBase?.Type_1?.toLowerCase(), dbBase?.Type_2?.toLowerCase()].filter(t => t);
 
-            // Filter by format
             let pool = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
 
-            // Exclude Megas if toggled
             if (excludeMegas) {
-                pool = pool.filter(b => {
-                    const p = parsePaste(b.build);
-                    return !isMega(b.pokemon, p.item);
-                });
+                pool = pool.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
             }
-
-            // Exclude High BST if toggled
             if (excludeHighBST) {
                 pool = pool.filter(b => getBST(b) <= 600);
             }
 
-            // Exclude main species
-            pool = pool.filter(b => {
-                const p = parsePaste(b.build);
-                return p.species.toLowerCase() !== mainSpecies;
-            });
-
-            // Randomize
+            pool = pool.filter(b => parsePaste(b.build).species.toLowerCase() !== mainSpecies);
             pool.sort(() => Math.random() - 0.5);
 
             const selected = [];
             const usedSpecies = new Set([mainSpecies]);
+            const usedTypes = [...mainTypes];
             const usedItems = new Set();
+            const mainItem = (pMain.item || '').toLowerCase();
             if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
 
             let megaCount = isMega(mainBuild.pokemon, mainItem) ? 1 : 0;
@@ -1347,97 +1339,29 @@
                 const item = (p.item || '').toLowerCase();
                 const isCandMega = isMega(b.pokemon, item);
 
-                // Mega Limit Logic
-                if (isCandMega) {
-                    if (megaCount >= 2) continue;
-                    if (megaCount >= 1 && Math.random() > 0.1) continue;
-                }
-
-                // Species Clause
+                if (isCandMega && (megaCount >= 2 || (megaCount >= 1 && Math.random() > 0.1))) continue;
                 if (usedSpecies.has(species)) continue;
-
-                // Item Clause (exclude consumables if you want, but standard is strictly unique)
                 if (item && item !== 'none' && usedItems.has(item)) continue;
+
+                // Basic Type Diversity Check
+                const dbB = getBasePokemonData(p, allPokemon);
+                const dbM = getEffectivePokemonData(p, allPokemon);
+                const candTypes = [dbB?.Type_1?.toLowerCase(), dbB?.Type_2?.toLowerCase()].filter(t => t);
+                
+                const overlap = candTypes.filter(t => usedTypes.includes(t));
+                if (overlap.length > 0 && Math.random() > 0.3) continue; // 70% chance to skip if type overlap
 
                 selected.push(b);
                 usedSpecies.add(species);
                 if (item && item !== 'none') usedItems.add(item);
                 if (isCandMega) megaCount++;
+                candTypes.forEach(t => usedTypes.push(t));
             }
 
             return selected;
         }
 
-        function smartRecommendTeammates() {
-            if (!currentMainBuild) return;
-
-            const grid = document.getElementById('synergy-grid');
-            grid.style.opacity = '0.3';
-
-            setTimeout(() => {
-                currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
-                renderSynergy(currentMainBuild, currentRecommendedBuilds);
-                analyzeBuildSynergy(currentMainBuild, currentRecommendedBuilds);
-                grid.style.opacity = '1';
-
-                // Special button feedback
-                const rcmdBtn = document.getElementById('rcmd-team');
-                const originalText = rcmdBtn.innerHTML;
-                rcmdBtn.style.background = 'linear-gradient(135deg, #0cebeb 0%, #20e3b2 50%, #29ffc6 100%)';
-                rcmdBtn.innerHTML = '<span>STRATEGY APPLIED!</span> ⚡';
-                setTimeout(() => {
-                    rcmdBtn.style.background = '';
-                    rcmdBtn.innerHTML = originalText;
-                }, 2000);
-            }, 300);
-        }
-
         function getSmartRecommendations(mainBuild, format, count = 5) {
-            const pMain = parsePaste(mainBuild.build);
-            const mainSpecies = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const mainItem = (pMain.item || '').toLowerCase();
-            const mainMoves = pMain.moves.map(m => (m || '').toLowerCase());
-
-            const dbBase = getBasePokemonData(pMain, allPokemon);
-            const dbMega = getEffectivePokemonData(pMain, allPokemon);
-            const mainRoles = detectRole(pMain, [dbBase, dbMega].filter(x => x));
-
-            const dbAbilities = (dbMega || dbBase) ? getPokemonAbilities(dbMega || dbBase) : [];
-            const mainAbility = (pMain.ability || dbAbilities[0] || '').toLowerCase();
-
-            // Use Mega stats for role scoring logic if available, otherwise base
-            const statsRef = dbMega || dbBase;
-            const mainStats = statsRef ? {
-                hp: parseInt(statsRef.HP), atk: parseInt(statsRef.Attack), def: parseInt(statsRef.Defense),
-                spa: parseInt(statsRef['Sp.Atk']), spd: parseInt(statsRef['Sp.Def']), spe: parseInt(statsRef.Speed)
-            } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
-
-            // Combined types for broader coverage recommendations
-            const mainTypes = new Set([
-                dbBase?.Type_1?.toLowerCase(), dbBase?.Type_2?.toLowerCase(),
-                dbMega?.Type_1?.toLowerCase(), dbMega?.Type_2?.toLowerCase()
-            ].filter(t => t));
-            const mainTypesArr = Array.from(mainTypes);
-
-            const weatherSetters = {
-                'drizzle': 'rain', 'drought': 'sun', 'orichalcum pulse': 'sun',
-                'sand stream': 'sand', 'sand spit': 'sand', 'snow warning': 'snow', 'chilling neigh': 'snow'
-            };
-            const weatherAbusers = {
-                'rain': ['swift swim', 'rain dish', 'hydration', 'dry skin'],
-                'sun': ['chlorophyll', 'solar power', 'protosynthesis', 'hadron engine'],
-                'sand': ['sand rush', 'sand force', 'sand veil'],
-                'snow': ['slush rush', 'ice body', 'snow cloak']
-            };
-            const terrainSetters = {
-                'electric surge': 'electric', 'hadron engine': 'electric',
-                'grassy surge': 'grassy', 'psychic surge': 'psychic', 'misty surge': 'misty'
-            };
-
-            const isTRSetter = mainMoves.includes('trick room');
-            const isMainSlow = mainStats.spe < 55;
-            const mainWeather = weatherSetters[mainAbility] || (mainMoves.includes('rain dance') ? 'rain' : mainMoves.includes('sunny day') ? 'sun' : null);
-
             const typeChart = {
                 normal: { weaknesses: ['fighting'], resistances: [], immunities: ['ghost'] },
                 fire: { weaknesses: ['water', 'ground', 'rock'], resistances: ['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], immunities: [] },
@@ -1464,127 +1388,135 @@
                 types.forEach(t => { if (typeChart[t]) weak = [...weak, ...typeChart[t].weaknesses]; });
                 return [...new Set(weak)];
             };
-            const mainWeaknesses = getWeaknesses(mainTypesArr);
+
+            const pMain = parsePaste(mainBuild.build);
+            const mainSpeciesClean = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const mainBuildData = getEffectivePokemonData(pMain, allPokemon) || getBasePokemonData(pMain, allPokemon);
+            
+            const team = [{
+                build: mainBuild,
+                species: mainSpeciesClean,
+                types: [mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t),
+                roles: detectRole(pMain, mainBuildData),
+                weaknesses: getWeaknesses([mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t))
+            }];
 
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === format.toLowerCase());
-
-            // Exclude Megas if toggled
-            if (excludeMegas) {
-                candidates = candidates.filter(b => {
-                    const p = parsePaste(b.build);
-                    return !isMega(b.pokemon, p.item);
-                });
-            }
-
-            // Exclude High BST if toggled
-            if (excludeHighBST) {
-                candidates = candidates.filter(b => getBST(b) <= 600);
-            }
-
-            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpecies);
-
-            const scoredCandidates = candidates.map(b => {
-                const p = parsePaste(b.build);
-                const speciesClean = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbBaseCand = pokemonMap[speciesClean];
-                const dbEffCand = getEffectivePokemonData(p, allPokemon);
-                
-                const db = dbEffCand || dbBaseCand;
-                const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
-                const roles = detectRole(p, db);
-                const candAbilities = getPokemonAbilities(db).map(a => (a || '').toLowerCase());
-                if (p.ability) candAbilities.push(p.ability.toLowerCase());
-                
-                const moves = p.moves.map(m => (m || '').toLowerCase());
-                
-                let score = 0;
-
-                // 1. Core Synergy: Cover main weaknesses
-                mainWeaknesses.forEach(w => {
-                    types.forEach(t => {
-                        if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) {
-                            score += 20; // Increased weight for switch-ins
-                        }
-                    });
-                    candAbilities.forEach(a => {
-                        if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 20;
-                        if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) score += 20;
-                        if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) score += 20;
-                        if (w === 'grass' && (a === 'sap sipper')) score += 20;
-                        if (w === 'ground' && (a === 'levitate')) score += 20;
-                    });
-                });
-
-                // 2. Role Balance
-                const candRoles = new Set(roles);
-                if (mainRoles.includes('Setup Sweeper') && (candRoles.has('Speed Control') || candRoles.has('Redirection') || candRoles.has('Pivot'))) score += 20;
-                if ((mainRoles.includes('Physical Wall') || mainRoles.includes('Special Wall') || mainRoles.includes('Hazard Setter')) && candRoles.has('Pivot')) score += 12;
-                if ((mainRoles.includes('Cleric/Healer') || mainRoles.includes('Damage Mitigation')) && (candRoles.has('Physical Sweeper') || candRoles.has('Special Sweeper'))) score += 15;
-                if (mainRoles.includes('Trick Room Setter') && candRoles.has('Trick Room Abuser')) score += 25;
-                if (mainRoles.includes('Weather Setter') && candRoles.has('Weather Abuser')) score += 25;
-
-                // 3. Shared Weakness Penalty - DON'T STACK WEAKNESSES
-                const candWeaknesses = getWeaknesses(types);
-                mainWeaknesses.forEach(w => {
-                    if (candWeaknesses.includes(w)) score -= 30; // Heavily penalize stacking weaknesses
-                });
-
-                // 4. Elite Elemental Cores (F/W/G & S/F/D)
-                // We reward if the candidate completes or adds to a core
-                const hasType = (t) => mainTypesArr.includes(t) || types.includes(t);
-                const teamTypes = new Set([...mainTypesArr, ...types]);
-                if (teamTypes.has('fire') && teamTypes.has('water') && teamTypes.has('grass')) score += 25;
-                if (teamTypes.has('steel') && teamTypes.has('fairy') && teamTypes.has('dragon')) score += 25;
-
-                // hardcoded partner pairs logic
-                const partnerPairs = [
-                    { a: 'pelipper', b: 'archaludon' }, { a: 'pelipper', b: 'urshifu' },
-                    { a: 'torkoal', b: 'lilligant' }, { a: 'torkoal', b: 'flutter mane' },
-                    { a: 'indeedee', b: 'armarouge' }, { a: 'indeedee', b: 'hatterene' },
-                    { a: 'calyrex', b: 'indeedee' }, { a: 'miraidon', b: 'iron hands' },
-                    { a: 'miraidon', b: 'farigiraf' }, { a: 'kyogre', b: 'tornadus' },
-                    { a: 'incineroar', b: 'rillaboom' }
-                ];
-
-                partnerPairs.forEach(pair => {
-                    if ((mainSpecies.includes(pair.a) && speciesClean.includes(pair.b)) ||
-                        (mainSpecies.includes(pair.b) && speciesClean.includes(pair.a))) {
-                        score += 30;
-                    }
-                });
-
-                score += Math.random() * 5;
-
-                return { build: b, score, species: p.species, item: p.item };
-            });
-
-            scoredCandidates.sort((a, b) => (b.score || 0) - (a.score || 0));
+            if (excludeMegas) candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
+            if (excludeHighBST) candidates = candidates.filter(b => getBST(b) <= 600);
+            candidates = candidates.filter(b => parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '') !== mainSpeciesClean);
 
             const selected = [];
-            const usedSpecies = new Set([mainSpecies]);
+            const usedSpecies = new Set([mainSpeciesClean]);
             const usedItems = new Set();
+            const mainItem = (pMain.item || '').toLowerCase();
             if (mainItem && mainItem !== 'none') usedItems.add(mainItem);
-
             let megaCount = isMega(mainBuild.pokemon, mainItem) ? 1 : 0;
 
-            for (const c of scoredCandidates) {
-                if (selected.length >= count) break;
-                const s = c.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const i = (c.item || '').toLowerCase();
-                const isCandMega = isMega(c.build.pokemon, i);
+            const partnerPairs = [
+                { a: 'pelipper', b: 'archaludon' }, { a: 'pelipper', b: 'urshifu' },
+                { a: 'torkoal', b: 'lilligant' }, { a: 'torkoal', b: 'flutter mane' },
+                { a: 'indeedee', b: 'armarouge' }, { a: 'indeedee', b: 'hatterene' },
+                { a: 'calyrex', b: 'indeedee' }, { a: 'miraidon', b: 'iron hands' },
+                { a: 'miraidon', b: 'farigiraf' }, { a: 'kyogre', b: 'tornadus' },
+                { a: 'incineroar', b: 'rillaboom' }
+            ];
 
-                if (isCandMega) {
-                    if (megaCount >= 2) continue;
-                    if (megaCount >= 1 && Math.random() > 0.1) continue;
+            for (let i = 0; i < count; i++) {
+                let bestCand = null;
+                let bestScore = -Infinity;
+
+                const teamTypes = team.flatMap(m => m.types);
+                const teamRoles = team.flatMap(m => m.roles);
+                const teamWeaknesses = team.flatMap(m => m.weaknesses);
+
+                for (const b of candidates) {
+                    const p = parsePaste(b.build);
+                    const s = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const item = (p.item || '').toLowerCase();
+                    if (usedSpecies.has(s)) continue;
+                    if (item && item !== 'none' && usedItems.has(item)) continue;
+                    
+                    const isCandMega = isMega(b.pokemon, item);
+                    if (isCandMega && (megaCount >= 2 || (megaCount >= 1 && Math.random() > 0.1))) continue;
+
+                    const db = getEffectivePokemonData(p, allPokemon) || getBasePokemonData(p, allPokemon);
+                    const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
+                    const roles = detectRole(p, db);
+                    const weaknesses = getWeaknesses(types);
+                    const abilities = getPokemonAbilities(db).map(a => (a || '').toLowerCase());
+                    if (p.ability) abilities.push(p.ability.toLowerCase());
+
+                    let score = 0;
+
+                    // 1. Synergy with Leader (Most Important)
+                    team[0].weaknesses.forEach(w => {
+                        types.forEach(t => {
+                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 25;
+                        });
+                        abilities.forEach(a => {
+                            if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 25;
+                            if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) score += 25;
+                            if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) score += 25;
+                            if (w === 'grass' && (a === 'sap sipper')) score += 25;
+                            if (w === 'ground' && (a === 'levitate')) score += 25;
+                        });
+                    });
+
+                    // 2. Dynamic Team Coverage (Resisting what the team is weak to)
+                    teamWeaknesses.forEach(w => {
+                        types.forEach(t => {
+                            if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 8;
+                        });
+                    });
+
+                    // 3. Type Overlap Penalty (STOP THE MONOTYPE)
+                    types.forEach(t => {
+                        const count = teamTypes.filter(tt => tt === t).length;
+                        if (count === 1) score -= 25; // First overlap is penalized
+                        if (count >= 2) score -= 60; // Second overlap is heavily penalized
+                    });
+
+                    // 4. Role Diversity
+                    roles.forEach(r => {
+                        const count = teamRoles.filter(tr => tr === r).length;
+                        if (count >= 1) score -= 10; // Penalize duplicate roles
+                    });
+
+                    // 5. Hardcoded Synergy Pairs
+                    partnerPairs.forEach(pair => {
+                        const isMainInPair = team[0].species.includes(pair.a) || team[0].species.includes(pair.b);
+                        if (isMainInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 40;
+                    });
+
+                    // 6. Special Cores
+                    const allCurrentTypes = new Set([...teamTypes, ...types]);
+                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) score += 15;
+                    if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) score += 15;
+
+                    score += Math.random() * 10;
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega, score };
+                    }
                 }
 
-                if (usedSpecies.has(s)) continue;
-                if (i && i !== 'none' && usedItems.has(i)) continue;
-
-                selected.push({ build: c.build, score: Math.round(c.score || 0) });
-                usedSpecies.add(s);
-                if (i && i !== 'none') usedItems.add(i);
-                if (isCandMega) megaCount++;
+                if (bestCand) {
+                    selected.push({ build: bestCand.build, score: Math.round(bestCand.score) });
+                    usedSpecies.add(bestCand.species);
+                    if (bestCand.item && bestCand.item !== 'none') usedItems.add(bestCand.item);
+                    if (bestCand.isMega) megaCount++;
+                    
+                    team.push({
+                        species: bestCand.species,
+                        types: bestCand.types,
+                        roles: bestCand.roles,
+                        weaknesses: bestCand.weaknesses
+                    });
+                } else {
+                    break;
+                }
             }
             return selected;
         }
