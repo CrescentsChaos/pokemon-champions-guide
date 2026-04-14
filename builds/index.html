@@ -134,6 +134,7 @@
                 </div>
             </div>
 
+            <div id="synergy-error" style="display:none; background:rgba(255, 59, 48, 0.15); color:#ff453a; padding:15px; border-radius:12px; border:1px solid rgba(255, 59, 48, 0.3); margin-bottom:20px; font-size:0.9rem; font-weight:600; text-align:center;"></div>
             <div id="synergy-grid">
                 <!-- Synergy cards injected here -->
             </div>
@@ -1162,7 +1163,7 @@
                             ${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}
                         </span>
                     </div>
-                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">COPY PASTE</button>
+                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY PASTE</button>
                 </div>
             `;
             return card;
@@ -1271,6 +1272,9 @@
                 const activeBtn = document.getElementById(`toggle-${recommendationFormat.toLowerCase()}`);
                 if (activeBtn) activeBtn.classList.add('active');
 
+                const errorEl = document.getElementById('synergy-error');
+                if (errorEl) errorEl.style.display = 'none';
+
                 try {
                     // Initial Recommendations: Use pre-defined synergy or random shuffle
                     const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
@@ -1287,7 +1291,11 @@
                     analyzeBuildSynergy(build, currentRecommendedBuilds);
                 } catch (err) {
                     console.error("Synergy calculation failed:", err);
-                    // At least show the main build even if analysis fails
+                    if (errorEl) {
+                        errorEl.innerText = `Synergy calculation failed: ${err.message}`;
+                        errorEl.style.display = 'block';
+                    }
+                    // At least clear the list if it failed
                     renderSynergy(build, []);
                 }
 
@@ -1451,6 +1459,7 @@
             const pMain = parsePaste(mainBuild.build);
             const mainSpeciesClean = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainBuildData = getEffectivePokemonData(pMain, allPokemon) || getBasePokemonData(pMain, allPokemon);
+            if (!mainBuildData) throw new Error("Base data for " + (pMain.species || 'Unknown') + " not found. Try another build.");
             
             let team = [];
             const usedSpecies = new Set();
@@ -1493,11 +1502,17 @@
             }
 
             const partnerPairs = [
-                { a: 'pelipper', b: 'archaludon' }, { a: 'pelipper', b: 'urshifu' },
-                { a: 'torkoal', b: 'lilligant' }, { a: 'torkoal', b: 'flutter mane' },
-                { a: 'indeedee', b: 'armarouge' }, { a: 'indeedee', b: 'hatterene' },
-                { a: 'calyrex', b: 'indeedee' }, { a: 'miraidon', b: 'iron hands' },
-                { a: 'miraidon', b: 'farigiraf' }, { a: 'kyogre', b: 'tornadus' },
+                { a: 'abomasnow', b: 'ninetalesalola' },
+                { a: 'abomasnow', b: 'cetitan' },
+                { a: 'abomasnow', b: 'arctozolt' },
+                { a: 'pelipper', b: 'archaludon' },
+                { a: 'pelipper', b: 'basculegion' },
+                { a: 'pelipper', b: 'overqwil' },
+                { a: 'torkoal', b: 'fluttermane' },
+                { a: 'torkoal', b: 'lilligant' },
+                { a: 'indeedee', b: 'armarouge' },
+                { a: 'indeedee', b: 'hatterene' },
+                { a: 'miraidon', b: 'ironhands' },
                 { a: 'incineroar', b: 'rillaboom' }
             ];
 
@@ -1569,8 +1584,8 @@
                                 });
                             });
                             partnerPairs.forEach(pair => {
-                                const isMemberInPair = m.species.includes(pair.a) || m.species.includes(pair.b);
-                                if (isMemberInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 20;
+                                const isMemberInPair = m.species === pair.a || m.species === pair.b;
+                                if (isMemberInPair && (s === pair.a || s === pair.b)) score += 20;
                             });
                         });
                     }
@@ -1601,8 +1616,8 @@
 
                     // 7. Hardcoded synergy for leader specifically
                     partnerPairs.forEach(pair => {
-                        const isMainInPair = team[0].species.includes(pair.a) || team[0].species.includes(pair.b);
-                        if (isMainInPair && (s.includes(pair.a) || s.includes(pair.b))) score += 50;
+                        const isMainInPair = mainSpecies === pair.a || mainSpecies === pair.b;
+                        if (isMainInPair && (s === pair.a || s === pair.b)) score += 50;
                     });
 
                     // 8. Special Cores
