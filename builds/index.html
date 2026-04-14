@@ -1480,6 +1480,24 @@
                 { a: 'incineroar', b: 'rillaboom' }
             ];
 
+            // Build the candidate pool from allBuilds
+            let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === (format || 'Singles').toLowerCase());
+            if (excludeMegas) {
+                candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
+            }
+            if (excludeHighBST) {
+                candidates = candidates.filter(b => getBST(b) <= 600);
+            }
+            // Remove the main build's species and any explicitly excluded IDs
+            candidates = candidates.filter(b => {
+                const s = parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (s === mainSpeciesClean) return false;
+                if (excludedIds && excludedIds.includes(b.id)) return false;
+                return true;
+            });
+            // Shuffle for variety
+            candidates.sort(() => Math.random() - 0.5);
+
             for (let i = 0; i < count; i++) {
                 let bestCand = null;
                 let bestScore = -Infinity;

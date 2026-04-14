@@ -958,6 +958,7 @@
         // Data & State
         let allPokemon = [];
         let allMoves = [];
+        let movesMap = {};
         let allItems = [];
         let pokemon_database = []; // Alias for user request
         let moves_database = [];   // Alias for user request
@@ -1059,6 +1060,7 @@
                 allMoves = m;
                 moves_database = m;
                 allItems = i;
+                m.forEach(mv => { const key = (mv.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''); movesMap[key] = mv; });
 
                 Object.keys(natureMap).forEach(n => {
                     const opt = document.createElement('option');
@@ -1244,13 +1246,17 @@
                     // Move processing
                     let movesHtml = p.moves.map(m => {
                         if (!m) return `<div style="height:16px; border-left:2px solid rgba(255,255,255,0.03); margin-bottom:2px;"></div>`;
-                        const moveRef = (allMoves || []).find(x => (x.name || '').toLowerCase() === m.toLowerCase()) || {};
+                        const searchKey = m.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const moveRef = movesMap[searchKey] || (allMoves || []).find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === searchKey) || {};
                         const type = (moveRef.type || 'Normal').toLowerCase();
+                        const pwr = moveRef.power !== null && moveRef.power !== undefined ? moveRef.power : '-';
+                        const acc = moveRef.accuracy !== null && moveRef.accuracy !== undefined ? moveRef.accuracy : '-';
+                        const desc = (moveRef.short_descripton || moveRef.short_description || moveRef.desc || 'No description available.').replace(/"/g, '&quot;');
+                        const tooltip = `Type: ${type.toUpperCase()}\nCategory: ${moveRef.damage_class || 'Status'}\nPower: ${pwr} | Accuracy: ${acc} | PP: ${moveRef.pp || '-'}\n\n${desc}`;
                         return `
-                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.03);">
-                            <div style="width:4px; height:4px; background:${typeColors[type]}; border-radius:50%; box-shadow: 0 0 4px ${typeColors[type]};"></div>
+                        <div title="${tooltip}" style="display:flex; align-items:center; gap:6px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.03); cursor:default;">
+                            <img src="../assets/type-icons/${type}_type.png" alt="${type}" style="height:14px; border-radius:3px; pointer-events:none;">
                             <span style="font-size:0.68rem; color:#eee; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1;">${m}</span>
-                            <span style="font-size:0.45rem; color:${typeColors[type]}; font-weight:900; text-transform:uppercase; letter-spacing:0.5px;">${type}</span>
                         </div>
                     `;
                     }).join('');
