@@ -1108,7 +1108,7 @@
                 </div>
             `;
 
-            // --- STRATEGY OVERVIEW SNIPPETS ---
+                // --- STRATEGY OVERVIEW SNIPPETS ---
             const strategyCard = document.getElementById('strategy-overview-card');
             const strategyText = document.getElementById('strategy-overview-text');
 
@@ -1116,8 +1116,8 @@
                 strategyCard.style.display = 'block';
                 
                 let playstyle = 'Balanced';
-                const hasHO = flatRoles.some(r => ['Setup Sweeper', 'Wallbreaker', 'Revenge Killer'].includes(r));
-                const hasStall = flatRoles.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r));
+                const hasHO = ctx.flatRoles.some(r => ['Setup Sweeper', 'Wallbreaker', 'Revenge Killer'].includes(r));
+                const hasStall = ctx.flatRoles.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r));
                 if (hasHO && !hasStall) playstyle = 'Hyper Offense';
                 else if (hasHO && hasStall) playstyle = 'Bulky Offense';
                 else if (!hasHO && hasStall) playstyle = 'Stall';
@@ -1130,8 +1130,8 @@
                 // 2. Sword (Offensive)
                 const highCov = Object.entries(coverage).filter(e => e[1] > 0).length;
                 let sword = `<strong>THE SWORD:</strong> Offensive output covers <strong>${highCov}/18</strong> elemental sectors. `;
-                if (flatRoles.includes('Wallbreaker')) sword += "Heavy artillery is present to breach stalling cores. ";
-                if (utils.priority) sword += "Clean-up operations are secured with priority-tier maneuvers. ";
+                if (ctx.flatRoles.includes('Wallbreaker')) sword += "Heavy artillery is present to breach stalling cores. ";
+                if (ctx.utils.priority) sword += "Clean-up operations are secured with priority-tier maneuvers. ";
                 snippets.push(sword);
 
                 // 3. Shield (Defensive)
@@ -1139,11 +1139,11 @@
                 let shield = `<strong>THE SHIELD:</strong> `;
                 if (highWeak.length > 0) shield += `Structural vulnerabilities detected in <span style="color:#ff453a">${highWeak.map(w => w[0]).join('/')}</span> defensive sectors. `;
                 else shield += "Defensive integrity is maintained with no critical shared gaps. ";
-                if (flatRoles.includes('Physical Wall') || flatRoles.includes('Special Wall')) shield += "The composition features a dedicated defensive anchor. ";
+                if (ctx.flatRoles.includes('Physical Wall') || ctx.flatRoles.includes('Special Wall')) shield += "The composition features a dedicated defensive anchor. ";
                 snippets.push(shield);
 
                 // 4. Momentum (Tactical)
-                const coreTexts = issues.filter(i => i.type === 'synergy').map(i => i.text);
+                const coreTexts = activeIssues.filter(i => i.type === 'synergy').map(i => i.text);
                 let momentum = `<strong>MOMENTUM:</strong> `;
                 if (coreTexts.length > 0) momentum += `Operational synergy is driven by <span style="color:#4CAF50">${coreTexts.join(' & ')}</span> protocols. `;
                 else momentum += "Tactical flow relies on standard swapping and prediction cycles. ";
