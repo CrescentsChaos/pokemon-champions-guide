@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <style>
         .builder-container {
             max-width: 1300px;
@@ -1066,7 +1067,11 @@
                 const encodedTeam = urlParams.get('team');
                 if (encodedTeam) {
                     try {
-                        const decoded = decodeURIComponent(escape(atob(encodedTeam)));
+                        let decoded = LZString.decompressFromEncodedURIComponent(encodedTeam);
+                        if (!decoded) {
+                            // Fallback for legacy base64 links
+                            decoded = decodeURIComponent(escape(atob(encodedTeam)));
+                        }
                         parsePaste(decoded).forEach((pk, idx) => { if (idx < 6) team[idx] = { ...team[idx], ...pk }; });
                         window.history.replaceState({}, document.title, window.location.pathname);
                         currentSlot = -1; // Default to Team View
@@ -3110,7 +3115,7 @@
                 return;
             }
             try {
-                const encoded = btoa(unescape(encodeURIComponent(pasteStr)));
+                const encoded = LZString.compressToEncodedURIComponent(pasteStr);
                 const url = window.location.origin + window.location.pathname + '?team=' + encoded;
                 navigator.clipboard.writeText(url).then(() => {
                     alert('Share link copied to clipboard!');
@@ -3118,7 +3123,7 @@
                     prompt('Copy this link to share your team:', url);
                 });
             } catch(e) {
-                alert('Could not generate share link. Your team might contain unsupported characters.');
+                alert('Could not generate share link.');
             }
         };
 
