@@ -1249,11 +1249,10 @@
                 const rcmdBtn = document.getElementById('rcmd-team');
                 if (synergyBuilds.length > 0) {
                     currentRecommendedBuilds = synergyBuilds;
-                    if (rcmdBtn) rcmdBtn.style.display = 'none';
                 } else {
                     currentRecommendedBuilds = getRecommendedTeammates(build, recommendationFormat);
-                    if (rcmdBtn) rcmdBtn.style.display = 'flex';
                 }
+                if (rcmdBtn) rcmdBtn.style.display = 'flex';
 
                 renderSynergy(build, currentRecommendedBuilds);
                 analyzeBuildSynergy(build, currentRecommendedBuilds);
@@ -1493,6 +1492,11 @@
                     const allCurrentTypes = new Set([...teamTypes, ...types]);
                     if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) score += 15;
                     if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) score += 15;
+
+                    // 7. Predefined Synergy Bonus (Prioritize author-recommended partners)
+                    if (mainBuild.synergy && mainBuild.synergy.includes(b.id)) {
+                        score += 500;
+                    }
 
                     score += Math.random() * 10;
 
