@@ -1616,7 +1616,7 @@
 
                     // 7. Hardcoded synergy for leader specifically
                     partnerPairs.forEach(pair => {
-                        const isMainInPair = mainSpecies === pair.a || mainSpecies === pair.b;
+                        const isMainInPair = mainSpeciesClean === pair.a || mainSpeciesClean === pair.b;
                         if (isMainInPair && (s === pair.a || s === pair.b)) score += 50;
                     });
 
