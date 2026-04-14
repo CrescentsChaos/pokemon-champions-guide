@@ -3109,23 +3109,54 @@
             document.getElementById('export-overlay').style.display = 'flex';
         };
 
+        async function shortenURL(longUrl) {
+            try {
+                const response = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(longUrl)}`);
+                const data = await response.json();
+                return data.shorturl || null;
+            } catch (e) {
+                console.error('Shortening failed:', e);
+                return null;
+            }
+        }
+
         // Share link button
-        document.getElementById('share-link-btn').onclick = () => {
+        document.getElementById('share-link-btn').onclick = async function() {
+            const btn = this;
             const pasteStr = getTeamPasteText();
             if (!pasteStr) {
                 alert("Please add at least one Pokemon to share.");
                 return;
             }
+
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span>GENERATING...</span> ⏳';
+
             try {
                 const encoded = LZString.compressToEncodedURIComponent(pasteStr);
-                const url = window.location.origin + window.location.pathname + '?team=' + encoded;
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('Share link copied to clipboard!');
-                }).catch(() => {
-                    prompt('Copy this link to share your team:', url);
-                });
+                const longUrl = window.location.origin + window.location.pathname + '?team=' + encoded;
+                
+                // Attempt to shorten
+                const shortUrl = await shortenURL(longUrl);
+                const finalUrl = shortUrl || longUrl;
+
+                await navigator.clipboard.writeText(finalUrl);
+                
+                btn.style.background = '#4CAF50';
+                btn.innerHTML = '<span>COPIED!</span> ✅';
+                
+                if (!shortUrl) {
+                    console.warn('Fallback to long URL used.');
+                }
             } catch(e) {
                 alert('Could not generate share link.');
+            } finally {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.style.background = '';
+                    btn.innerHTML = originalHTML;
+                }, 2000);
             }
         };
 
