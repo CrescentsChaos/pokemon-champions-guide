@@ -634,9 +634,31 @@
         .is-capturing .pokemon-config {
             transform: none !important;
             transition: none !important;
-            /* Fallback for backdrop-filter which html2canvas doesn't support */
-            background: rgba(30, 30, 35, 0.95) !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            /* html2canvas struggles with backdrop-filter and box-shadow */
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+            background: rgba(20, 20, 25, 0.98) !important;
+            border: 2px solid rgba(255, 255, 255, 0.15) !important;
+            position: relative;
+        }
+
+        /* Border overlay for better definition during capture */
+        .is-capturing .pokemon-config::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: 2px solid var(--card-theme);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .is-capturing .download-btn,
+        .is-capturing .nav-links,
+        .is-capturing .header,
+        .is-capturing .import-export-row {
+            display: none !important;
         }
     </style>
 </head>
@@ -1279,8 +1301,8 @@
                     card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
-                            ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
+                            <img src="${sprite}" crossorigin="anonymous" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                            ${p.item ? `<img src="${itemSprite}" crossorigin="anonymous" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
                             <div style="font-weight:900; font-size:1.1rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
@@ -1331,7 +1353,8 @@
         function getItemSpriteUrl(item) {
             if (!item) return '';
             const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+            // Using Showdown sprites for better CORS compatibility
+            return `https://play.pokemonshowdown.com/sprites/itemdex/${clean}.png`;
         }
 
         function handleItemError(img, item) {
@@ -1342,7 +1365,7 @@
             img.dataset.fallback = 'true';
             if (item.toLowerCase().endsWith('ite')) {
                 const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-                img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
+                img.src = `https://play.pokemonshowdown.com/sprites/itemdex/${clean}.png`;
                 img.style.display = 'block';
             } else {
                 img.style.display = 'none';
@@ -2112,14 +2135,14 @@
                         
                         // Use a fresh image object to ensure CORS doesn't taint our canvas
                         const tempImg = new Image();
-                        tempImg.crossOrigin = 'anonymous';
+                        tempImg.crossOrigin = "anonymous";
                         tempImg.onload = () => {
-                            ctx.drawImage(tempImg, 0, 0);
-                            originalSrcs.set(img, img.src);
                             try {
+                                ctx.drawImage(tempImg, 0, 0);
+                                originalSrcs.set(img, img.src);
                                 img.src = canvas.toDataURL('image/png');
                             } catch (e) {
-                                console.warn('CORS prevented GIF freeze for:', img.src);
+                                console.warn('CORS tainted canvas for:', img.src);
                             }
                             resolve();
                         };
