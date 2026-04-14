@@ -1111,7 +1111,7 @@
             card.innerHTML = `
                 <div class="card-header">
                     <div class="card-sprite-area">
-                        <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                        <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species.replace(/"/g, '&quot;')}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species.replace(/'/g, "\\'")}', ${p.shiny})">
                         ${p.tera ? `<img src="../assets/type-icons/tera_type_${p.tera.toLowerCase()}.png" class="tera-icon" alt="${p.tera} Tera" style="position: absolute; top: 5px; right: 5px; height: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : ''}
                         ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
@@ -1152,7 +1152,7 @@
                             ${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}
                         </span>
                     </div>
-                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`')}\`)">COPY PASTE</button>
+                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">COPY PASTE</button>
                 </div>
             `;
             return card;
@@ -1243,6 +1243,16 @@
                 currentMainBuild = build;
                 recommendationFormat = build.format || 'Singles';
 
+                const container = document.getElementById('synergy-container');
+                if (container) {
+                    container.style.display = 'block';
+                    // Trigger animation reflow
+                    container.offsetHeight;
+                    setTimeout(() => {
+                        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+
                 const titleEl = document.getElementById('synergy-title');
                 if (titleEl) titleEl.innerText = `STRATEGIC SYNERGY FOR ${build.pokemon.toUpperCase()}`;
 
@@ -1251,33 +1261,34 @@
                 const activeBtn = document.getElementById(`toggle-${recommendationFormat.toLowerCase()}`);
                 if (activeBtn) activeBtn.classList.add('active');
 
-                // Initial Recommendations: Use pre-defined synergy or random shuffle
-                const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
+                try {
+                    // Initial Recommendations: Use pre-defined synergy or random shuffle
+                    const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
 
-                const rcmdBtn = document.getElementById('rcmd-team');
-                if (synergyBuilds.length > 0) {
-                    currentRecommendedBuilds = synergyBuilds;
-                } else {
-                    currentRecommendedBuilds = getSmartRecommendations(build, recommendationFormat);
+                    const rcmdBtn = document.getElementById('rcmd-team');
+                    if (synergyBuilds.length > 0) {
+                        currentRecommendedBuilds = synergyBuilds;
+                    } else {
+                        currentRecommendedBuilds = getSmartRecommendations(build, recommendationFormat);
+                    }
+                    if (rcmdBtn) rcmdBtn.style.display = 'flex';
+
+                    renderSynergy(build, currentRecommendedBuilds);
+                    analyzeBuildSynergy(build, currentRecommendedBuilds);
+                } catch (err) {
+                    console.error("Synergy calculation failed:", err);
+                    // At least show the main build even if analysis fails
+                    renderSynergy(build, []);
                 }
-                if (rcmdBtn) rcmdBtn.style.display = 'flex';
-
-                renderSynergy(build, currentRecommendedBuilds);
-                analyzeBuildSynergy(build, currentRecommendedBuilds);
-
-                const container = document.getElementById('synergy-container');
-                container.style.display = 'block';
-                // Trigger animation reflow
-                container.offsetHeight;
-                setTimeout(() => {
-                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
 
                 // Setup Export Button
                 const exportBtn = document.getElementById('export-synergy-team');
                 if (exportBtn) {
                     exportBtn.onclick = () => {
-                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => typeof b.build === 'string' ? b.build : b.build.build).join('\n\n');
+                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => {
+                            if (!b) return '';
+                            return typeof b.build === 'string' ? b.build : (b.build.build || '');
+                        }).join('\n\n');
                         copyPaste(fullPaste);
                         exportBtn.innerText = 'TEAM COPIED! ✅';
                         setTimeout(() => exportBtn.innerText = 'EXPORT FULL TEAM PASTE 📋', 2000);
