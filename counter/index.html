@@ -527,6 +527,54 @@
 
         let targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
 
+        /* Form Handling Helpers */
+        function getBasePokemonData(name) {
+            if (!name) return null;
+            const search = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return pokemonDB.find(x => ((x.Name || x.name) || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
+        }
+
+        function getPermanentForm(name, item) {
+            if (!name || !item) return null;
+            const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const species = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+            if (it === 'rustedsword' && species === 'zacian') return 'zaciancrowned';
+            if (it === 'rustedshield' && species === 'zamazenta') return 'zamazentacrowned';
+            if (it === 'wellspringmask' && species === 'ogerpon') return 'ogerponwellspring';
+            if (it === 'hearthflamemask' && species === 'ogerpon') return 'ogerponhearthflame';
+            if (it === 'cornerstonemask' && species === 'ogerpon') return 'ogerponcornerstone';
+            if (it === 'adamantcrystal' && species === 'dialga') return 'dialgaorigin';
+            if (it === 'lustrousglobe' && species === 'palkia') return 'palkiaorigin';
+            if (it === 'griseouscore' && species === 'giratina') return 'giratinaorigin';
+
+            return null;
+        }
+
+        function getEffectivePokemonData(name, item) {
+            const dbRef = getBasePokemonData(name);
+            if (!dbRef) return null;
+
+            if (item) {
+                const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const permSearch = getPermanentForm(name, item);
+                if (permSearch) {
+                    const permDbRef = getBasePokemonData(permSearch);
+                    if (permDbRef) return permDbRef;
+                }
+
+                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+                    let suffix = '-Mega';
+                    if (it.endsWith('itex')) suffix = '-Mega-X';
+                    else if (it.endsWith('itey')) suffix = '-Mega-Y';
+                    const megaSearch = (name + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const megaDbRef = getBasePokemonData(megaSearch);
+                    if (megaDbRef) return megaDbRef;
+                }
+            }
+            return dbRef;
+        }
+
         async function init() {
             try {
                 const [pkmn, mvs, blds] = await Promise.all([
@@ -724,8 +772,12 @@
             targetBuild.level = parseInt(document.getElementById('target-level').value) || 50;
             targetBuild.moves = Array.from(document.querySelectorAll('.target-move')).map(i => i.value.trim()).filter(v => v !== '');
             document.querySelectorAll('.target-ev').forEach(el => { targetBuild.evs[el.dataset.stat] = parseInt(el.value) || 0; });
-            const pkData = pokemonDB.find(p => (p.Name || p.name).toLowerCase() === targetBuild.name.toLowerCase());
-            if (pkData) { targetBuild.types = [pkData.Type_1, pkData.Type_2 || 'None']; updateSprite(targetBuild.name); }
+            
+            const effTargetData = getEffectivePokemonData(targetBuild.name, targetBuild.item);
+            if (effTargetData) { 
+                targetBuild.types = [effTargetData.Type_1, effTargetData.Type_2 || 'None']; 
+                updateSprite(effTargetData.Name || effTargetData.name); 
+            }
         }
 
         function getStat(base, iv, ev, level, nature, type) {
@@ -747,7 +799,7 @@
 
             await new Promise(r => setTimeout(r, 400));
             
-            const targetData = pokemonDB.find(p => (p.Name || p.name).toLowerCase() === targetBuild.name.toLowerCase());
+            const targetData = getEffectivePokemonData(targetBuild.name, targetBuild.item);
             if (!targetData) {
                 btn.disabled = false; loader.style.display = 'none';
                 return;
@@ -765,9 +817,17 @@
             const counters = [];
             buildsDB.forEach(build => {
                 if (build.pokemon === targetBuild.name) return;
-                const candidateData = pokemonDB.find(p => (p.Name || p.name) === build.pokemon);
+                
+                // Parse the candidate build to get its item
+                const cBuildParsed = parseCandidateBuild(build.build, { Type_1: 'Normal' }); // Placeholder data, fixed below
+                
+                // Get effective data for candidate (Mega/Form check)
+                const candidateData = getEffectivePokemonData(build.pokemon, cBuildParsed.item);
                 if (!candidateData) return;
-                const cBuildParsed = parseCandidateBuild(build.build, candidateData);
+
+                // Re-parse with correct types if form changed
+                cBuildParsed.types = [candidateData.Type_1, candidateData.Type_2 || 'None'];
+                
                 const cStats = calculateCandidateStats(cBuildParsed, candidateData);
                 let score = 0, points = [], dead = false, maxTook = 0;
                 
@@ -814,7 +874,7 @@
                 
                 if (cStats.spe > targetStats.spe) { score += 15; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
                 
-                if (score > 35 && !dead) counters.push({ ...build, score: Math.min(100, Math.round(score)), points });
+                if (score > 35 && !dead) counters.push({ ...build, pokemon: candidateData.Name || candidateData.name, score: Math.min(100, Math.round(score)), points });
             });
 
             counters.sort((a, b) => b.score - a.score);

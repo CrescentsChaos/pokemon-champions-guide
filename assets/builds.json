@@ -3385,5 +3385,40 @@
         "build": "Rotom-Heat @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \n- Protect  \n- Thunderbolt  \n- Overheat  \n- Helping Hand",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "481",
+        "pokemon": "Blastoise",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Torrent  \nLevel: 50  \nTera Type: Water  \nEVs: 140 HP / 252 SpA / 4 SpD / 112 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Water Spout  \n- Ice Beam  \n- Shell Smash  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "482",
+        "pokemon": "Glimmora",
+        "build": "Glimmora @ Glimmoranite  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "483",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan @ Kangaskhanite  \nAbility: Scrappy  \nEVs: 168 HP / 252 Atk / 88 Spe  \nAdamant Nature  \n- Double-Edge  \n- Fake Out  \n- Sucker Punch  \n- Drain Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "484",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Dual Wingbeat  \n- Protect  \n- Crunch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "485",
+        "pokemon": "Aggron",
+        "build": "Aggron @ Aggronite  \nAbility: Heavy Metal  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 4 Def / 248 SpD / 4 Spe  \nCareful Nature  \n- Iron Defense  \n- Body Press  \n- Heavy Slam  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]

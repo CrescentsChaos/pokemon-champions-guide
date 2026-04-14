@@ -721,31 +721,24 @@
             types.forEach(t => { offensive[t] = 0; defensive[t] = 0; });
 
             activeMons.forEach((p) => {
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const dbRef = pokemonMap[speciesSearch] || {};
-
-                const pTypes = [dbRef.Type_1, dbRef.Type_2].filter(x => x);
+                const dbEffective = getEffectivePokemonData(p, allPokemon) || {};
+                const pTypes = [dbEffective.Type_1, dbEffective.Type_2].filter(x => x);
 
                 // --- Offensive Coverage ---
                 const moveTypes = p.moves.map(m => {
-                    const search = (m || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const moveRef = movesMap[search];
-                    return moveRef ? moveRef.type : null;
-                }).filter(x => x);
+                    const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    return movesMap[clean]?.type;
+                }).filter(t => t);
+                [...new Set(moveTypes)].forEach(t => { if (offensive[t] !== undefined) offensive[t]++; });
 
-                types.forEach(defType => {
-                    const canHit = moveTypes.some(moveType => getEffectiveness(moveType, [defType]) > 1);
-                    if (canHit) offensive[defType]++;
+                // --- Defensive Coverage ---
+                types.forEach(atkTypeArr => {
+                    const eff = getEffectiveness(atkTypeArr, pTypes);
+                    if (eff < 1) defensive[atkTypeArr]++;
                 });
 
-                // --- Defensive Weaknesses ---
-                types.forEach(atkType => {
-                    const eff = getEffectiveness(atkType, pTypes);
-                    if (eff > 1) defensive[atkType]++;
-                });
-
-                // --- Role Detection ---
-                roles.push(detectRole(p, dbRef));
+                // --- Roles ---
+                roles.push(detectRole(p, dbEffective));
             });
 
             renderAnalysis(offensive, defensive, roles, activeMons);
@@ -1640,216 +1633,74 @@
 
             const scoredCandidates = candidates.map(b => {
                 const p = parsePaste(b.build);
-                const speciesName = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const db = pokemonMap[speciesName];
+                const speciesClean = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbBaseCand = pokemonMap[speciesClean];
+                const dbEffCand = getEffectivePokemonData(p, allPokemon);
+                
+                const db = dbEffCand || dbBaseCand;
                 const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                 const roles = detectRole(p, db);
-                const candAbilities = [(p.ability || '').toLowerCase()];
-                const dbMegaCand = getEffectivePokemonData(p, allPokemon);
-                if (dbMegaCand) {
-                    getPokemonAbilities(dbMegaCand).forEach(a => {
-                        const low = a.toLowerCase();
-                        if (!candAbilities.includes(low)) candAbilities.push(low);
-                    });
-                }
-
+                const candAbilities = getPokemonAbilities(db).map(a => (a || '').toLowerCase());
+                if (p.ability) candAbilities.push(p.ability.toLowerCase());
+                
                 const moves = p.moves.map(m => (m || '').toLowerCase());
-                const stats = db ? {
-                    hp: parseInt(db.HP), atk: parseInt(db.Attack), def: parseInt(db.Defense),
-                    spa: parseInt(db['Sp.Atk']), spd: parseInt(db['Sp.Def']), spe: parseInt(db.Speed)
-                } : { hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
-
+                
                 let score = 0;
 
-                // 1. Weather Synergy
-                if (mainWeather && candAbilities.some(a => weatherAbusers[mainWeather]?.includes(a))) score += 20;
-
-                // Enhance Snow synergy specifically as requested
-                if (mainWeather === 'snow') {
-                    // Ice types get a huge boost in Snow (Def boost simulation)
-                    if (types.includes('ice')) score += 12;
-                    // Specific Snow abilities
-                    if (candAbilities.some(a => ['slush rush', 'ice body', 'snow cloak'].includes(a))) score += 20;
-                }
-
-                const candWeather = candAbilities.map(a => weatherSetters[a]).find(w => w);
-                if (candWeather && weatherAbusers[candWeather]?.includes(mainAbility)) score += 20;
-
-                if (candWeather === 'snow' && mainTypesArr.includes('ice')) score += 12;
-
-                // 2. Trick Room Synergy
-                const isCandTR = moves.includes('trick room');
-                const isCandSlow = stats.spe < 55;
-                if ((isTRSetter || isMainSlow) && isCandSlow) score += 15;
-                if (isCandTR && isMainSlow) score += 15;
-
-                // 3. Terrain Synergy
-                const mainTerrain = terrainSetters[mainAbility];
-                if (mainTerrain === 'electric' && (candAbilities.some(a => a === 'quark drive') || types.includes('electric'))) score += 12;
-                if (mainTerrain === 'grassy' && (moves.includes('grassy glide') || types.includes('grass'))) score += 12;
-                if (mainTerrain === 'psychic' && (moves.includes('expanding force') || types.includes('psychic'))) score += 12;
-
-                // 4. Defensive Synergy
+                // 1. Core Synergy: Cover main weaknesses
                 mainWeaknesses.forEach(w => {
                     types.forEach(t => {
-                        if (typeChart[t]?.resistances.includes(w)) score += 5;
-                        if (typeChart[t]?.immunities.includes(w)) score += 8;
+                        if (typeChart[t]?.resistances.includes(w) || typeChart[t]?.immunities.includes(w)) score += 15;
+                    });
+                    candAbilities.forEach(a => {
+                        if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 15;
+                        if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) score += 15;
+                        if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) score += 15;
+                        if (w === 'grass' && (a === 'sap sipper')) score += 15;
+                        if (w === 'ground' && (a === 'levitate')) score += 15;
                     });
                 });
 
-                // 5. Role Balancing
-                const isMainOffensive = mainRoles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'));
-                const isMainSupport = mainRoles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Redirection'));
-                if (isMainOffensive && roles.some(r => r.includes('Support') || r.includes('Wall') || r.includes('Pivot'))) score += 7;
-                if (isMainSupport && roles.some(r => r.includes('Sweeper') || r.includes('Wallbreaker'))) score += 7;
+                // 2. Role Balance
+                const candRoles = new Set(roles);
+                if (mainRoles.includes('Setup Sweeper') && (candRoles.has('Tailwind Setter') || candRoles.has('Redirection'))) score += 20;
+                if ((mainRoles.includes('Wall') || mainRoles.includes('Hazard Setter')) && candRoles.has('Pivot')) score += 12;
 
-                // 6. Core Boosts (F/W/G, S/F/D)
-                const hasType = (t) => mainTypesArr.includes(t) || types.includes(t);
-                if ((hasType('fire') && hasType('water')) || (hasType('fire') && hasType('grass')) || (hasType('water') && hasType('grass'))) score += 5;
-                if ((hasType('steel') && hasType('fairy')) || (hasType('steel') && hasType('dragon')) || (hasType('fairy') && hasType('dragon'))) score += 5;
+                // 3. Type Synergy: Don't stack weaknesses
+                const candWeaknesses = getWeaknesses(types);
+                mainTypesArr.forEach(mt => {
+                    if (candWeaknesses.includes(mt)) score -= 10;
+                });
 
-                // 7. Ability Utilities
-                if (ability === 'intimidate' && mainStats.def < 80) score += 5;
-                if (ability === 'friend guard' && format.toLowerCase() === 'doubles') score += 10;
-
-                // 8. Strategic Speed Control (Tailwind/TR)
-                const isBreaker = mainRoles.some(r => r.includes('Wallbreaker') || r.includes('Sweeper') || r.includes('Restricted'));
-                const isMidSpeed = mainStats.spe >= 70 && mainStats.spe <= 110;
-                if (isBreaker && isMidSpeed && roles.includes('Speed Control') && format.toLowerCase() === 'doubles') score += 15;
-                if (isBreaker && !isMidSpeed && stats.spe > 110 && roles.includes('Speed Control')) score += 10;
-
-                // 9. Redirection & Setup Support
-                const isSetup = mainRoles.includes('Setup Sweeper');
-                if (isSetup && roles.includes('Redirection')) score += 18;
-                if (isSetup && roles.includes('Screener')) score += 12;
-
-                // 10. Momentum/VoltTurn
-                if (isBreaker && roles.includes('Pivot')) score += 10;
-                if (mainRoles.includes('Pivot') && isBreaker) score += 10;
-
-                // 11. Format Specifics
-                if (format.toLowerCase() === 'doubles') {
-                    if (roles.includes('Fake Out Pressure')) score += 12;
-                    if (roles.includes('Damage Amplification')) score += 6;
-                    if (roles.includes('Weather Abuser')) score += 10;
-                    if (roles.includes('Terrain Abuser')) score += 10;
-                    if (roles.includes('Priority Denial')) score += 7;
-                    if (roles.includes('Redirection')) score += 12;
-                    if (moves.includes('helping hand')) score += 8;
-                    if (roles.includes('Damage Mitigation')) score += 10;
-                    if (roles.includes('Trick Room Abuser')) score += 10;
-
-                } else {
-                    // Singles focus: Hazards & Hazard Control
-                    if (roles.includes('Hazard Setter')) score += 10;
-                    if (roles.includes('Hazard Control')) {
-                        const isSRWeak = mainWeaknesses.includes('rock');
-                        if (isSRWeak && mainItem !== 'heavy-duty boots') score += 20;
-                    }
-                    if (ability === 'regenerator' && mainAbility === 'regenerator') score += 15; // Regen Core
+                // 4. Weather Synergy
+                if (mainWeather) {
+                    candAbilities.forEach(a => {
+                        if (weatherAbusers[mainWeather]?.includes(a)) score += 25;
+                    });
+                    const candWeather = weatherSetters[candAbilities[0]];
+                    if (candWeather === mainWeather) score += 10;
                 }
 
-                // 12. Psyspam & Terrain Synergy
-                const hasExpanding = mainMoves.includes('expanding force');
-                const hasPsychicSurge = mainAbility.includes('psychic surge');
-                if ((hasExpanding || hasPsychicSurge) && (moves.includes('expanding force') || ability.includes('psychic surge'))) score += 25;
-
-                // 13. Ruin Abilities Support
-                const isPhysical = stats.atk > stats.spa;
-                const isSpecial = stats.spa > stats.atk;
-                const mainIsPhysical = mainStats.atk > mainStats.spa;
-                const mainIsSpecial = mainStats.spa > mainStats.atk;
-                if (mainAbility === 'sword of ruin' && isPhysical) score += 18;
-                if (mainAbility === 'beads of ruin' && isSpecial) score += 18;
-                if (ability === 'sword of ruin' && mainIsPhysical) score += 18;
-                if (ability === 'beads of ruin' && mainIsSpecial) score += 18;
-
-                // 14. Commander Synergy
-                if ((mainSpecies === 'dondozo' && speciesName === 'tatsugiri') || (mainSpecies === 'tatsugiri' && speciesName === 'dondozo')) score += 50;
-
-                // 15. Justified & Beat Up Core
-                const hasBeatUp = mainMoves.includes('beat up') || moves.includes('beat up');
-                const hasJustified = mainAbility === 'justified' || ability === 'justified';
-                if (format.toLowerCase() === 'doubles' && hasBeatUp && hasJustified) score += 40;
-
-                // 16. Steely Spirit Synergy
-                if ((mainTypesArr.includes('steel') && candAbilities.includes('steely spirit')) || (candAbilities.includes('steely spirit') && mainTypesArr.includes('steel'))) score += 20;
-
-                // 17. Neutralizing gas + bad abilities or raw stats
-                const isGas = mainAbility === 'neutralizing gas' || ability === 'neutralizing gas';
-                if (isGas) {
-                    const badAbilities = ['slow start', 'truant', 'defeatist'];
-                    if (badAbilities.includes(mainAbility) || badAbilities.includes(ability)) score += 35;
+                // 5. Trick Room Synergy
+                if (isTRSetter) {
+                    const stats = db ? { spe: parseInt(db.Speed) } : { spe: 100 };
+                    if (stats.spe < 50) score += 20;
+                    if (candRoles.has('Trick Room Sweeper')) score += 15;
                 }
 
-                // 18. Unburden & Terrain/Seeds
-                const hasUnburden = mainAbility === 'unburden' || ability === 'unburden';
-                const hasTerrain = terrainSetters[mainAbility] || terrainSetters[ability];
-                if (hasUnburden && hasTerrain) score += 25; // Massive synergy for Hawlucha/Sneasler + Setters
-
-                // 19. Weakness Policy + Self-Proc (Doubles)
-                if (format.toLowerCase() === 'doubles') {
-                    const hasWP = mainItem === 'weakness policy' || p.item.toLowerCase() === 'weakness policy';
-                    const weakPriority = ['aqua jet', 'mach punch', 'bullet punch', 'ice shard', 'shadow sneak', 'vacuum wave'];
-                    const hasWeakPriority = mainMoves.some(m => weakPriority.includes(m)) || moves.some(m => weakPriority.includes(m));
-                    if (hasWP && hasWeakPriority) score += 30; // E.g. Coalossal + Aqua Jet
-                }
-
-                // 20. Prankster Tailwind + Full HP Nukes (Eruption / Water Spout)
-                const hasTailwind = (mainMoves.includes('tailwind') && mainAbility === 'prankster') || (moves.includes('tailwind') && ability === 'prankster');
-                const hasNukes = (mainMoves.includes('eruption') || mainMoves.includes('water spout')) || (moves.includes('eruption') || moves.includes('water spout'));
-                if (hasTailwind && hasNukes && format.toLowerCase() === 'doubles') score += 25;
-
-                // 21. Guts + Healing/Pivoting
-                const isGuts = (mainAbility === 'guts' || ability === 'guts') || (mainItem.includes('orb') || p.item.toLowerCase().includes('orb'));
-                const hasHealingWish = mainMoves.includes('healing wish') || mainMoves.includes('lunar dance') || moves.includes('healing wish') || moves.includes('lunar dance');
-                if (isGuts && hasHealingWish) score += 20;
-
-                // 22. Status (T-Spikes) + Hex/Merciless
-                const setsTSpikes = mainMoves.includes('toxic spikes') || moves.includes('toxic spikes') || mainAbility === 'toxic debris' || ability === 'toxic debris';
-                const abusesAbnormal = mainMoves.includes('hex') || mainAbility === 'merciless' || moves.includes('hex') || ability === 'merciless';
-                const abusesVenoshock = mainMoves.includes('venoshock') || moves.includes('venoshock');
-                if (setsTSpikes && (abusesAbnormal || abusesVenoshock)) score += 22;
-
-                // 23. Baton Pass + Stored Power / Power Trip
-                const hasBP = mainMoves.includes('baton pass') || moves.includes('baton pass');
-                const hasStoredPower = mainMoves.includes('stored power') || mainMoves.includes('power trip') || moves.includes('stored power') || moves.includes('power trip');
-                if (hasBP && hasStoredPower) score += 20;
-
-                // 24. Heavy Hazard Stack + Phazing
-                const hasHazards = mainMoves.includes('stealth rock') || mainMoves.includes('spikes') || moves.includes('stealth rock') || moves.includes('spikes');
-                const hasPhaze = mainMoves.includes('roar') || mainMoves.includes('whirlwind') || mainMoves.includes('dragon tail') || moves.includes('roar') || moves.includes('whirlwind') || moves.includes('dragon tail');
-                if (hasHazards && hasPhaze) score += 15;
-
-                // 25. Screens + Setup Sweeper
-                const hasScreens = (mainMoves.includes('reflect') || mainMoves.includes('light screen') || mainMoves.includes('aurora veil')) && mainItem === 'light clay' ||
-                    (moves.includes('reflect') || moves.includes('light screen') || moves.includes('aurora veil')) && p.item.toLowerCase() === 'light clay';
-                const hasBellyDrum = mainMoves.includes('belly drum') || moves.includes('belly drum');
-                if (hasScreens && (isSetup || hasBellyDrum)) score += 22;
-
-                // 26. VoltTurn Core Completer
-                const isVoltTurn = mainMoves.includes('u-turn') || mainMoves.includes('volt switch') || mainMoves.includes('flip turn');
-                const candIsVoltTurn = moves.includes('u-turn') || moves.includes('volt switch') || moves.includes('flip turn');
-                if (isVoltTurn && candIsVoltTurn) score += 12;
-
-                // 27. Elite Meta Pairings (Hardcoded Species Logic)
+                // hardcoded partner pairs logic
                 const partnerPairs = [
-                    { a: 'pelipper', b: 'archaludon' },
-                    { a: 'pelipper', b: 'urshifu' },
-                    { a: 'torkoal', b: 'lilligant' },
-                    { a: 'torkoal', b: 'flutter mane' },
-                    { a: 'indeedee', b: 'armarouge' },
-                    { a: 'indeedee', b: 'hatterene' },
-                    { a: 'calyrex', b: 'indeedee' },
-                    { a: 'miraidon', b: 'iron hands' },
-                    { a: 'miraidon', b: 'farigiraf' },
-                    { a: 'kyogre', b: 'tornadus' },
+                    { a: 'pelipper', b: 'archaludon' }, { a: 'pelipper', b: 'urshifu' },
+                    { a: 'torkoal', b: 'lilligant' }, { a: 'torkoal', b: 'flutter mane' },
+                    { a: 'indeedee', b: 'armarouge' }, { a: 'indeedee', b: 'hatterene' },
+                    { a: 'calyrex', b: 'indeedee' }, { a: 'miraidon', b: 'iron hands' },
+                    { a: 'miraidon', b: 'farigiraf' }, { a: 'kyogre', b: 'tornadus' },
                     { a: 'incineroar', b: 'rillaboom' }
                 ];
 
                 partnerPairs.forEach(pair => {
-                    if ((mainSpecies.includes(pair.a) && speciesName.includes(pair.b)) ||
-                        (mainSpecies.includes(pair.b) && speciesName.includes(pair.a))) {
+                    if ((mainSpecies.includes(pair.a) && speciesClean.includes(pair.b)) ||
+                        (mainSpecies.includes(pair.b) && speciesClean.includes(pair.a))) {
                         score += 30;
                     }
                 });
@@ -1859,7 +1710,7 @@
                 return { build: b, score, species: p.species, item: p.item };
             });
 
-            scoredCandidates.sort((a, b) => b.score - a.score);
+            scoredCandidates.sort((a, b) => (b.score || 0) - (a.score || 0));
 
             const selected = [];
             const usedSpecies = new Set([mainSpecies]);
@@ -1874,7 +1725,6 @@
                 const i = (c.item || '').toLowerCase();
                 const isCandMega = isMega(c.build.pokemon, i);
 
-                // Mega Limit Logic
                 if (isCandMega) {
                     if (megaCount >= 2) continue;
                     if (megaCount >= 1 && Math.random() > 0.1) continue;
@@ -1883,7 +1733,7 @@
                 if (usedSpecies.has(s)) continue;
                 if (i && i !== 'none' && usedItems.has(i)) continue;
 
-                selected.push({ build: c.build, score: Math.round(c.score) });
+                selected.push({ build: c.build, score: Math.round(c.score || 0) });
                 usedSpecies.add(s);
                 if (i && i !== 'none') usedItems.add(i);
                 if (isCandMega) megaCount++;
