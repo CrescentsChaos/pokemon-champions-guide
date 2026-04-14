@@ -13,6 +13,100 @@
     <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
 
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .type-badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .analysis-type-badge {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .analysis-type-badge:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .analysis-type-badge img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .type-score-bubble {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--primary-red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 2;
+        }
+
+        .critical-weakness {
+            border-color: var(--primary-red) !important;
+            box-shadow: 0 0 15px rgba(255, 62, 62, 0.3), inset 0 0 10px rgba(255, 62, 62, 0.2) !important;
+        }
+
+        .critical-weakness img {
+            filter: drop-shadow(0 0 5px var(--primary-red)) !important;
+        }
+
+        .synergy-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .synergy-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .synergy-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px var(--glow-color);
+        }
+    </style>
 </head>
 
 <body>
@@ -777,6 +871,85 @@
             renderAnalysis(coverage, weaknesses, resistances, roles, activeMons);
         }
 
+        // --- Synergy Engine Configuration ---
+        // Easy to add newer synergies here! Image paths or emojis supported.
+        const SYNERGY_RULES = [
+            {
+                id: 'trifecta',
+                text: 'Elemental Trifecta',
+                type: 'synergy',
+                icon: '../assets/type-icons/grass_type.png',
+                check: (ctx) => ctx.activeTypes.has('Fire') && ctx.activeTypes.has('Water') && ctx.activeTypes.has('Grass'),
+                tip: 'FWG core provides excellent defensive pivoting options.'
+            },
+            {
+                id: 'fantasy',
+                text: 'Fantasy Core',
+                type: 'synergy',
+                icon: '../assets/type-icons/dragon_type.png',
+                check: (ctx) => ctx.activeTypes.has('Steel') && ctx.activeTypes.has('Fairy') && ctx.activeTypes.has('Dragon'),
+                tip: 'Steel/Fairy/Dragon is the premier defensive backbone.'
+            },
+            {
+                id: 'commander',
+                text: 'Commander Synergy',
+                type: 'synergy',
+                icon: 'https://play.pokemonshowdown.com/sprites/ani/tatsugiri.gif',
+                check: (ctx) => ctx.abilities.includes('commander') && ctx.speciesList.includes('tatsugiri'),
+                tip: 'Dondozo + Tatsugiri core detected. Field dominance is imminent.'
+            },
+            {
+                id: 'ghost-normal',
+                text: 'Ghost-Normal Core',
+                type: 'synergy',
+                icon: '../assets/type-icons/ghost_type.png',
+                check: (ctx) => ctx.activeTypes.has('Ghost') && ctx.activeTypes.has('Normal'),
+                tip: 'Ghost and Normal types cover each other\'s immunities perfectly.'
+            },
+            {
+                id: 'weather',
+                text: 'Weather Synergy',
+                type: 'synergy',
+                icon: '☀️',
+                check: (ctx) => ctx.flatRoles.includes('Weather Setter') && ctx.flatRoles.includes('Weather Abuser'),
+                tip: 'Optimized weather engine detected. Field effects will be dominant.'
+            },
+            {
+                id: 'trick-room',
+                text: 'Dimensions Locked',
+                type: 'synergy',
+                icon: '🌀',
+                check: (ctx) => ctx.utils.tr && ctx.flatRoles.includes('Trick Room Abuser'),
+                tip: 'Your Trick Room engine is ready to reverse the flow of battle.'
+            },
+            // Gaps - High Priority
+            {
+                id: 'no-speed-doubles',
+                text: 'No Speed Control',
+                type: 'high',
+                icon: '⚠️',
+                check: (ctx) => ctx.format === 'Doubles' && !ctx.utils.tailwind && !ctx.utils.tr,
+                tip: 'Speed is everything in Doubles. Add Tailwind or Trick Room.'
+            },
+            // Gaps - Medium Priority
+            {
+                id: 'no-fakeout-doubles',
+                text: 'No Fake Out',
+                type: 'medium',
+                icon: '⚡',
+                check: (ctx) => ctx.format === 'Doubles' && !ctx.utils.fakeout,
+                tip: 'Lacking early-game pressure. Fake Out helps secure safe setups.'
+            },
+            {
+                id: 'no-hazard-control',
+                text: 'No Hazard Control',
+                type: 'medium',
+                icon: '🧹',
+                check: (ctx) => ctx.format !== 'Doubles' && !ctx.utils.removal && ctx.utils.hazards,
+                tip: 'You set hazards but can\'t remove them. Defog or Rapid Spin recommended.'
+            }
+        ];
+
         function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons) {
             const offBox = document.getElementById('offensive-coverage');
             const defBox = document.getElementById('defensive-coverage');
@@ -797,27 +970,32 @@
             // --- Offensive Coverage Grid ---
             Object.entries(coverage).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
-                badge.className = 'type-badge';
-                badge.style.background = (typeColors[type.toLowerCase()] || '#888');
+                badge.className = 'analysis-type-badge';
                 badge.style.opacity = count > 0 ? '1' : '0.2';
-                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                badge.title = `${type}: ${count} Super Effective moves`;
+                
+                badge.innerHTML = `
+                    <img src="../assets/type-icons/${type.toLowerCase()}_type.png" alt="${type}">
+                    ${count > 0 ? `<div class="type-score-bubble">${count}</div>` : ''}
+                `;
                 offBox.appendChild(badge);
             });
 
             // --- Defensive Weakness Grid ---
             Object.entries(weaknesses).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
                 const badge = document.createElement('div');
-                badge.className = 'type-badge';
-                badge.style.background = (typeColors[type.toLowerCase()] || '#888');
-                const resCount = resistances[type] || 0;
-                if (count >= 2 && resCount === 0) {
-                    badge.style.border = '2px solid var(--primary-red)';
-                    badge.style.boxShadow = 'inset 0 0 10px rgba(255,0,0,0.4)';
-                } else if (count > 0) {
-                    badge.style.border = '1px solid rgba(255,255,255,0.1)';
-                }
+                badge.className = 'analysis-type-badge';
                 badge.style.opacity = count > 0 ? '1' : '0.2';
-                badge.innerHTML = `${type} <span class="type-score">${count}</span>`;
+                badge.title = `${type}: ${count}x Team Weakness`;
+
+                if (count >= 3) {
+                    badge.classList.add('critical-weakness');
+                }
+
+                badge.innerHTML = `
+                    <img src="../assets/type-icons/${type.toLowerCase()}_type.png" alt="${type}">
+                    ${count > 0 ? `<div class="type-score-bubble">${count}</div>` : ''}
+                `;
                 defBox.appendChild(badge);
             });
 
@@ -840,78 +1018,74 @@
                 roleBox.appendChild(div);
             });
 
-            // --- Strategic Insights Dashboard ---
-            const issues = [];
-            const flatRoles = roles.flat();
-            const moves = activeMons.flatMap(p => p.moves.map(m => m.toLowerCase().replace(/[^a-z0-9]/g, '')));
-            const abilities = activeMons.map(p => (p.ability || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
-            const activeTypes = new Set(activeMons.flatMap(p => {
-                const db = getEffectivePokemonData(p, allPokemon);
-                return [db?.Type_1, db?.Type_2].filter(x => x);
-            }));
-            const speciesList = activeMons.map(p => p.species.toLowerCase().replace(/[^a-z0-9]/g, ''));
-
-            // Utility Logic
-            const has = (mList) => mList.some(m => moves.includes(m));
-            const utils = {
-                hazards: has(['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe']),
-                removal: has(['rapidspin', 'defog', 'mortalspin', 'tidypup', 'courtchange']),
-                tailwind: has(['tailwind']),
-                tr: has(['trickroom']),
-                fakeout: has(['fakeout']),
-                redirection: has(['followme', 'ragepowder', 'allyswitch']),
-                priority: has(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock'])
+            // --- Strategic Insights Engine ---
+            const ctx = {
+                coverage, weaknesses, resistances, format,
+                flatRoles: roles.flat(),
+                moves: activeMons.flatMap(p => p.moves.map(m => m.toLowerCase().replace(/[^a-z0-9]/g, ''))),
+                abilities: activeMons.map(p => (p.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '')),
+                activeTypes: new Set(activeMons.flatMap(p => {
+                    const db = getEffectivePokemonData(p, allPokemon);
+                    return [db?.Type_1, db?.Type_2].filter(x => x);
+                })),
+                speciesList: activeMons.map(p => p.species.toLowerCase().replace(/[^a-z0-9]/g, '')),
+                utils: {}
             };
 
-            // CORE DETECTION
-            if (activeTypes.has('Fire') && activeTypes.has('Water') && activeTypes.has('Grass')) {
-                issues.push({ type: 'synergy', text: 'Elemental Trifecta', tip: 'FWG core provides excellent defensive pivoting options.', color: '#4CAF50', icon: '🌱' });
-            }
-            if (activeTypes.has('Steel') && activeTypes.has('Fairy') && activeTypes.has('Dragon')) {
-                issues.push({ type: 'synergy', text: 'Fantasy Core', tip: 'Steel/Fairy/Dragon is the premier defensive backbone.', color: '#9C27B0', icon: '🐉' });
-            }
-            if (abilities.includes('commander') && speciesList.includes('tatsugiri')) {
-                issues.push({ type: 'synergy', text: 'Commander Synergy', tip: 'Dondozo + Tatsugiri core detected. Ensure Dondozo is present.', color: '#2196F3', icon: '🍣' });
-            }
-            if (activeTypes.has('Ghost') && activeTypes.has('Normal')) {
-                 issues.push({ type: 'synergy', text: 'Ghost-Normal Core', tip: 'Ghost and Normal types cover each other\'s immunities perfectly.', color: '#735797', icon: '👻' });
-            }
-            if (flatRoles.includes('Weather Setter') && flatRoles.includes('Weather Abuser')) {
-                issues.push({ type: 'synergy', text: 'Weather Synergy', tip: 'Optimized weather engine detected. Field effects will be dominant.', color: '#FFEB3B', icon: '☀️' });
-            }
-            if (utils.tr && flatRoles.includes('Trick Room Abuser')) {
-                issues.push({ type: 'synergy', text: 'Dimensions Locked', tip: 'Your Trick Room engine is ready to reverse the flow of battle.', color: '#E91E63', icon: '🌀' });
-            }
+            const hasMove = (mList) => mList.some(m => ctx.moves.includes(m));
+            ctx.utils = {
+                hazards: hasMove(['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe']),
+                removal: hasMove(['rapidspin', 'defog', 'mortalspin', 'tidypup', 'courtchange']),
+                tailwind: hasMove(['tailwind']),
+                tr: hasMove(['trickroom']),
+                fakeout: hasMove(['fakeout']),
+                redirection: hasMove(['followme', 'ragepowder', 'allyswitch']),
+                priority: hasMove(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock'])
+            };
 
-            // GAPS
-            if (format === 'Doubles') {
-                if (!utils.tailwind && !utils.tr) issues.push({ type: 'high', text: 'No Speed Control', tip: 'Speed is everything in Doubles. Add Tailwind or Trick Room.' });
-                if (!utils.fakeout) issues.push({ type: 'medium', text: 'No Fake Out', tip: 'Lacking early-game pressure. Fake Out helps secure safe setups.' });
-            } else {
-                if (!utils.removal && utils.hazards) issues.push({ type: 'medium', text: 'No Hazard Control', tip: 'You set hazards but can\'t remove them. Defog or Rapid Spin recommended.' });
-            }
+            const activeIssues = SYNERGY_RULES
+                .filter(rule => rule.check(ctx))
+                .map(rule => ({ ...rule }));
 
+            // Add dynamic gap analysis (Weakness based)
             Object.entries(weaknesses).forEach(([type, count]) => {
                 if (count >= 2 && resistances[type] === 0) {
-                    issues.push({ type: 'high', text: `Critical ${type} Gap`, tip: `No resistances to ${type}. A single sweeper could end the match.` });
+                    activeIssues.push({
+                        type: 'high',
+                        text: `Critical ${type} Gap`,
+                        tip: `No resistances to ${type}. A single sweeper could end the match.`,
+                        icon: '⚠️'
+                    });
                 }
             });
 
             // Render Insights
-            if (issues.length === 0) {
-                synergyBox.innerHTML = '<div class="synergy-item" style="background:rgba(255,255,255,0.02); margin-bottom:10px;"><div class="synergy-icon">🛡️</div><div><div style="font-weight:800;">Balanced Foundation</div><div style="font-size:0.7rem; opacity:0.5;">No critical flaws detected in current deployment.</div></div></div>';
+            if (activeIssues.length === 0) {
+                synergyBox.innerHTML = `
+                    <div class="synergy-item">
+                        <div class="synergy-icon">🛡️</div>
+                        <div>
+                            <div style="font-weight:800;">Balanced Foundation</div>
+                            <div style="font-size:0.7rem; opacity:0.5;">No critical flaws detected in current deployment.</div>
+                        </div>
+                    </div>`;
             } else {
-                issues.sort((a,b) => {
+                activeIssues.sort((a,b) => {
                     const order = { synergy: 0, high: 1, medium: 2, low: 3 };
                     return order[a.type] - order[b.type];
                 }).forEach(issue => {
                     const palette = { synergy: '#4CAF50', high: '#f44336', medium: '#FFC107', low: 'rgba(255,255,255,0.2)' };
-                    const iconPalette = { synergy: issue.icon || '⭐', high: '⚠️', medium: '⚡', low: '🔍' };
-                    const color = palette[issue.type];
+                    const defaultIcons = { synergy: '⭐', high: '⚠️', medium: '⚡', low: '🔍' };
+                    const color = issue.color || palette[issue.type];
+                    const iconVal = issue.icon || defaultIcons[issue.type];
+                    
+                    const isImageIcon = iconVal.match(/\.(png|jpg|gif|svg|webp)/i) || iconVal.startsWith('http');
                     
                     synergyBox.innerHTML += `
                         <div class="synergy-item" style="border-left: 3px solid ${color}; background:rgba(255,255,255,0.01); transition: transform 0.2s ease; margin-bottom:8px;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
-                            <div class="synergy-icon text-glow" style="--glow-color:${color}">${iconPalette[issue.type]}</div>
+                            <div class="synergy-icon ${!isImageIcon ? 'text-glow' : ''}" style="--glow-color:${color}">
+                                ${isImageIcon ? `<img src="${iconVal}" alt="icon">` : iconVal}
+                            </div>
                             <div>
                                 <div style="font-weight:900; color: ${color}; font-size: 0.75rem; letter-spacing:1px; text-transform:uppercase;">${issue.text}</div>
                                 <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">${issue.tip}</div>
