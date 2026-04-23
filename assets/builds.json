@@ -1919,7 +1919,7 @@
         "pokemon": "Vivillon",
         "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
         "synergy": [],
-        "format": "Singles"
+        "format": "Doubles"
     },
     {
         "id": "275",
