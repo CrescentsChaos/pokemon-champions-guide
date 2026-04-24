@@ -3550,5 +3550,47 @@
             "499"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "502",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 252 HP / 4 SpA / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Coil  \n- Hypnosis  \n- Recover",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "503",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Tyranitarite  \nAbility: Sand Stream  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Protect  \n- Crunch  \n- Rock Slide  \n- High Horsepower",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "504",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite X  \nAbility: Blaze  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Protect  \n- Dragon Dance  \n- Dragon Claw  \n- Flare Blitz",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "505",
+        "pokemon": "Corviknight",
+        "build": "Corviknight @ Leftovers  \nAbility: Mirror Armor  \nEVs: 252 HP / 4 Atk / 252 SpD  \nCareful Nature  \n- Bulk Up  \n- Brave Bird  \n- Tailwind  \n- Roost",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "506",
+        "pokemon": "Rotom-Wash",
+        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nEVs: 248 HP / 8 SpA / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Will-O-Wisp  \n- Thunderbolt  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "507",
+        "pokemon": "Mimikyu",
+        "build": "Mimikyu @ White Herb  \nAbility: Disguise  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Shadow Claw  \n- Shadow Sneak  \n- Play Rough  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
