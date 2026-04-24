@@ -3523,5 +3523,32 @@
             "258"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "499",
+        "pokemon": "Ting-Lu",
+        "build": "Ting-Lu @ Sitrus Berry  \nAbility: Vessel of Ruin  \nEVs: 252 HP / 4 Atk / 252 Def  \nImpish Nature  \nIVs: 0 Atk  \n- Stealth Rock  \n- Whirlwind  \n- Spikes  \n- Fissure",
+        "synergy": [
+            "500"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "500",
+        "pokemon": "Clodsire",
+        "build": "Clodsire @ Rocky Helmet  \nAbility: Unaware  \nEVs: 248 HP / 8 Atk / 252 SpD  \nTera Type: Dark \nCareful Nature  \n- Toxic Spikes  \n- Spikes  \n- Poison Jab  \n- Recover",
+        "synergy": [
+            "499"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "501",
+        "pokemon": "Magmar",
+        "build": "Magmar @ Eviolite\nLevel: 50\nAbility: Vital Spirit\nEVs: 252 HP / 236 Def / 20 SpD\nIVs: 0 Atk\nTera Type: Ghost\nCalm Nature\n- Overheat\n- Will-O-Wisp\n- Follow Me\n- Protect",
+        "synergy": [
+            "499"
+        ],
+        "format": "Doubles"
     }
 ]
