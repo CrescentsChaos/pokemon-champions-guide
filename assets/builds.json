@@ -3648,5 +3648,12 @@
         "build": "Zamazenta @ Rusted Shield  \nAbility: Dauntless Shield  \nLevel: 50  \nTera Type: Water  \nEVs: 188 HP / 196 Def / 124 Spe  \nImpish Nature  \n- Protect  \n- Body Press  \n- Iron Head  \n- Wide Guard",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "516",
+        "pokemon": "Terapagos",
+        "build": "Terapagos @ Leftovers  \nAbility: Tera Shift  \nTera Type: Stellar  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 15 Atk  \n- Tera Starstorm  \n- Calm Mind  \n- Protect  \n- Dark Pulse",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
