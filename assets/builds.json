@@ -3620,5 +3620,33 @@
         "build": "Rillaboom @ Assault Vest  \nAbility: Grassy Surge  \nLevel: 50  \nTera Type: Fire  \nEVs: 248 HP / 84 Def / 68 SpA / 84 SpD  \nAdamant Nature  \n- Fake Out  \n- Grassy Glide  \n- Drum Beating  \n- U-turn",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "512",
+        "pokemon": "Calyrex-Shadow",
+        "build": "Calyrex-Shadow @ Focus Sash  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Astral Barrage  \n- Psychic  \n- Encore",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "513",
+        "pokemon": "Chien-Pao",
+        "build": "Chien-Pao @ Life Orb  \nAbility: Sword of Ruin  \nLevel: 50  \nTera Type: Stellar  \nEVs: 252 Atk / 4 Def / 252 Spe  \nAdamant Nature  \n- Protect  \n- Ice Spinner  \n- Sucker Punch  \n- Taunt",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "514",
+        "pokemon": "Amoonguss",
+        "build": "Amoonguss @ Rocky Helmet  \nAbility: Regenerator  \nLevel: 50  \nTera Type: Water  \nEVs: 236 HP / 236 Def / 36 SpD  \nBold Nature  \nIVs: 28 Spe  \n- Protect  \n- Spore  \n- Pollen Puff  \n- Rage Powder",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "515",
+        "pokemon": "Zamazenta",
+        "build": "Zamazenta @ Rusted Shield  \nAbility: Dauntless Shield  \nLevel: 50  \nTera Type: Water  \nEVs: 188 HP / 196 Def / 124 Spe  \nImpish Nature  \n- Protect  \n- Body Press  \n- Iron Head  \n- Wide Guard",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
