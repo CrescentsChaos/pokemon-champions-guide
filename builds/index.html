@@ -222,9 +222,13 @@
                     <button id="shuffle-team" onclick="shuffleTeammates()">
                         <span>SHUFFLE TEAM</span> 🎲
                     </button>
-                    <button id="export-synergy-team" class="btn"
-                        style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
-                        FULL TEAM PASTE 📋</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="export-synergy-team" class="btn"
+                            style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
+                            FULL TEAM PASTE 📋</button>
+                        <button id="export-champ-team" class="btn"
+                            style="background: #4a90e2; border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">CHAMP EXPORT 🏆</button>
+                    </div>
                 </div>
             </div>
 
@@ -1298,7 +1302,10 @@
                             ${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}
                         </span>
                     </div>
-                    <button class="btn" style="padding: 4px 10px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY PASTE</button>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY PASTE</button>
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem; background: #4a90e2;" onclick="event.stopPropagation(); copyChampPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">CHAMP PASTE</button>
+                    </div>
                 </div>
             `;
             return card;
@@ -1439,6 +1446,19 @@
                         copyPaste(fullPaste);
                         exportBtn.innerText = 'TEAM COPIED! ✅';
                         setTimeout(() => exportBtn.innerText = 'EXPORT FULL TEAM PASTE 📋', 2000);
+                    };
+                }
+
+                const champBtn = document.getElementById('export-champ-team');
+                if (champBtn) {
+                    champBtn.onclick = () => {
+                        const fullPaste = [build, ...currentRecommendedBuilds].map(b => {
+                            if (!b) return '';
+                            return typeof b.build === 'string' ? b.build : (b.build.build || '');
+                        }).join('\n\n');
+                        copyChampPaste(fullPaste, 'Champ Team');
+                        champBtn.innerText = 'CHAMP TEAM COPIED! ✅';
+                        setTimeout(() => champBtn.innerText = 'CHAMP EXPORT 🏆', 2000);
                     };
                 }
             }
@@ -1926,12 +1946,40 @@
             return div;
         }
 
-        function copyPaste(text) {
+        function copyPaste(text, type = 'Build') {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('toast');
+                toast.innerText = `${type} Paste Copied!`;
                 toast.classList.add('active');
                 setTimeout(() => toast.classList.remove('active'), 3000);
             });
+        }
+
+        function copyChampPaste(text, type = 'Champ Build') {
+            const transformed = text.replace(/EVs:\s*([^\n]+)/g, (match, evString) => {
+                const parts = evString.split('/').map(p => p.trim());
+                const newParts = parts.map(p => {
+                    const m = p.match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (m) {
+                        const val = parseInt(m[1]);
+                        const stat = m[2];
+                        let champVal = 0;
+                        if (val > 0) {
+                            // Scale 252 -> 32, 4 -> 2
+                            // Champion system uses SP (Stat Points)
+                            // 32 SP is max (equiv to 252 EV)
+                            // User example: 32 atk, 32 speed, 2 hp (for 252/252/4)
+                            champVal = Math.round(val / 7.875);
+                            if (champVal < 2) champVal = 2; // Min 2 for non-zero as per user request
+                            if (champVal > 32) champVal = 32; // Hard cap at 32
+                        }
+                        return `${champVal} ${stat}`;
+                    }
+                    return p;
+                });
+                return `EVs: ${newParts.join(' / ')}`;
+            });
+            copyPaste(transformed, type);
         }
 
         document.getElementById('build-search').addEventListener('input', () => renderBuilds());

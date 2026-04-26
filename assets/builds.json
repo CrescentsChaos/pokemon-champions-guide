@@ -2496,7 +2496,9 @@
         "id": "121",
         "pokemon": "Garchomp",
         "build": "Garchomp @ Lum Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Dragon Claw  \n- Stomping Tantrum  \n- Rock Slide  \n- Protect",
-        "synergy": [],
+        "synergy": [
+            "527"
+        ],
         "format": "Doubles"
     },
     {
@@ -3750,6 +3752,55 @@
         "build": "Kangaskhan @ Silk Scarf  \nAbility: Scrappy  \nLevel: 50  \nEVs: 240 HP / 252 Atk / 12 Spe  \nAdamant Nature  \n- Fake Out  \n- Last Resort",
         "synergy": [
             "523"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "527",
+        "pokemon": "Greninja",
+        "build": "Greninja @ Greninjite  \nAbility: Protean  \nTera Type: Water  \nEVs: 4 Atk / 252 SpA / 252 Spe  \nHasty Nature  \n- Protect  \n- Dark Pulse  \n- Blizzard  \n- Low Kick",
+        "synergy": [
+            "121",
+            "528",
+            "529",
+            "530",
+            "531"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "528",
+        "pokemon": "Vanilluxe",
+        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nEVs: 4 HP / 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Aurora Veil  \n- Icy Wind",
+        "synergy": [
+            "527"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "529",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Sitrus Berry  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Flare Blitz  \n- Throat Chop  \n- Parting Shot  \n- Fake Out",
+        "synergy": [
+            "527"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "530",
+        "pokemon": "Gengar",
+        "build": "Gengar @ Focus Sash  \nAbility: Cursed Body  \nTera Type: Ghost  \nEVs: 4 Def / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Shadow Ball  \n- Sludge Bomb  \n- Destiny Bond",
+        "synergy": [
+            "527"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "531",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Scald  \n- Icy Wind  \n- Protect  \n- Recover",
+        "synergy": [
+            "527"
         ],
         "format": "Doubles"
     }
