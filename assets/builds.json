@@ -3655,5 +3655,55 @@
         "build": "Terapagos @ Leftovers  \nAbility: Tera Shift  \nTera Type: Stellar  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 15 Atk  \n- Tera Starstorm  \n- Calm Mind  \n- Protect  \n- Dark Pulse",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "517",
+        "pokemon": "Swampert",
+        "build": "Swampert @ Swampertite  \nAbility: Torrent  \nLevel: 50  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Waterfall  \n- Ice Punch  \n- Earthquake  \n- Poison Jab",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "518",
+        "pokemon": "Scovillain",
+        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nEVs: 244 HP / 12 SpA / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Leech Seed  \n- Rage Powder  \n- Protect  \n- Overheat",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "519",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ Choice Scarf  \nAbility: Sturdy  \nLevel: 50  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Electro Shot  \n- Snarl  \n- Flash Cannon  \n- Draco Meteor",
+        "synergy": [
+            "518"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "520",
+        "pokemon": "Pelipper",
+        "build": "Pelipper @ Sitrus Berry  \nAbility: Drizzle  \nLevel: 50  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Protect  \n- Hurricane  \n- Weather Ball  \n- Wide Guard",
+        "synergy": [
+            "518"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "521",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ White Herb  \nAbility: Unburden  \nLevel: 50  \nTera Type: Fighting  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Close Combat  \n- Dire Claw  \n- Fake Out  \n- Protect",
+        "synergy": [
+            "518"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "522",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Dual Wingbeat  \n- Protect  \n- Tailwind",
+        "synergy": [
+            "518"
+        ],
+        "format": "Doubles"
     }
 ]
