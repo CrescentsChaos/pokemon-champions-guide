@@ -1411,15 +1411,9 @@
                 if (errorEl) errorEl.style.display = 'none';
 
                 try {
-                    // Initial Recommendations: Use pre-defined synergy or random shuffle
-                    const synergyBuilds = (build.synergy || []).map(sid => allBuilds.find(b => b.id === sid)).filter(b => b);
-
+                    // Initial Recommendations: Use smart recommender which now prioritizes synergy
+                    currentRecommendedBuilds = getSmartRecommendations(build, recommendationFormat);
                     const rcmdBtn = document.getElementById('rcmd-team');
-                    if (synergyBuilds.length > 0) {
-                        currentRecommendedBuilds = synergyBuilds;
-                    } else {
-                        currentRecommendedBuilds = getSmartRecommendations(build, recommendationFormat);
-                    }
                     if (rcmdBtn) rcmdBtn.style.display = 'flex';
 
                     renderSynergy(build, currentRecommendedBuilds);
@@ -1602,8 +1596,12 @@
             const usedItems = new Set();
             let megaCount = 0;
 
+            // SYNERGY TRACKING
+            const directSynergyIds = new Set(mainBuild.synergy || []);
+            const priorityPool = new Set(directSynergyIds);
+            const recursiveSynergyIds = new Set();
+
             if (baseTeam && baseTeam.length > 0) {
-                // If baseTeam is provided, start with it
                 baseTeam.forEach(member => {
                     const p = parsePaste(member.build.build || member.build);
                     const s = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1623,7 +1621,6 @@
                     if (isMega((member.build.pokemon || p.species), it)) megaCount++;
                 });
             } else {
-                // Default: Start with just the leader
                 team.push({
                     build: mainBuild,
                     species: mainSpeciesClean,
@@ -1652,7 +1649,6 @@
                 { a: 'incineroar', b: 'rillaboom' }
             ];
 
-            // Build the candidate pool from allBuilds
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === (format || 'Singles').toLowerCase());
             if (excludeMegas) {
                 candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
@@ -1660,19 +1656,19 @@
             if (excludeHighBST) {
                 candidates = candidates.filter(b => getBST(b) <= 600);
             }
-            // Remove the main build's species and any explicitly excluded IDs
             candidates = candidates.filter(b => {
                 const s = parsePaste(b.build).species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 if (s === mainSpeciesClean) return false;
                 if (excludedIds && excludedIds.includes(b.id)) return false;
                 return true;
             });
-            // Shuffle for variety
             candidates.sort(() => Math.random() - 0.5);
 
             for (let i = 0; i < count; i++) {
                 let bestCand = null;
-                let bestScore = -Infinity;
+                let bestTotalScore = -Infinity;
+                let bestSmartScore = 0;
+                let bestSource = 'smart'; // 'direct', 'recursive', or 'smart'
 
                 const teamTypes = team.flatMap(m => m.types);
                 const teamRoles = team.flatMap(m => m.roles);
@@ -1695,33 +1691,35 @@
                     const abilities = getPokemonAbilities(db).map(a => (a || '').toLowerCase());
                     if (p.ability) abilities.push(p.ability.toLowerCase());
 
-                    let score = 0;
+                    let smartScore = 0;
+                    let synergyBoost = 0;
+                    let source = 'smart';
 
-                    // 1. Synergy with Leader (Most Important)
+                    // 1. Synergy with Leader
                     team[0].weaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (getEffectiveness(w, [t]) < 1) score += 30;
+                            if (getEffectiveness(w, [t]) < 1) smartScore += 30;
                         });
                         abilities.forEach(a => {
-                            if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) score += 25;
-                            if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) score += 25;
-                            if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) score += 25;
-                            if (w === 'grass' && (a === 'sap sipper')) score += 25;
-                            if (w === 'ground' && (a === 'levitate')) score += 25;
+                            if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) smartScore += 25;
+                            if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) smartScore += 25;
+                            if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) smartScore += 25;
+                            if (w === 'grass' && (a === 'sap sipper')) smartScore += 25;
+                            if (w === 'ground' && (a === 'levitate')) smartScore += 25;
                         });
                     });
 
-                    // 2. Cross-Synergy with other Teammates
+                    // 2. Cross-Synergy
                     if (team.length > 1) {
                         team.slice(1).forEach(m => {
                             m.weaknesses.forEach(w => {
                                 types.forEach(t => {
-                                    if (getEffectiveness(w, [t]) < 1) score += 12;
+                                    if (getEffectiveness(w, [t]) < 1) smartScore += 12;
                                 });
                             });
                             partnerPairs.forEach(pair => {
                                 const isMemberInPair = m.species === pair.a || m.species === pair.b;
-                                if (isMemberInPair && (s === pair.a || s === pair.b)) score += 20;
+                                if (isMemberInPair && (s === pair.a || s === pair.b)) smartScore += 20;
                             });
                         });
                     }
@@ -1729,53 +1727,78 @@
                     // 3. Dynamic Team Coverage
                     teamWeaknesses.forEach(w => {
                         types.forEach(t => {
-                            if (getEffectiveness(w, [t]) < 1) score += 6;
+                            if (getEffectiveness(w, [t]) < 1) smartScore += 6;
                         });
                     });
 
                     // 4. Entropy / Variety Logic
                     const hitCount = rcmdHistory.get(b.id) || 0;
-                    score -= (hitCount * 40); // Moderate penalty for repeats
+                    smartScore -= (hitCount * 40);
 
                     // 5. Type Overlap Penalty
                     types.forEach(t => {
                         const count = teamTypes.filter(tt => tt === t).length;
-                        if (count === 1) score -= 30;
-                        if (count >= 2) score -= 80;
+                        if (count === 1) smartScore -= 30;
+                        if (count >= 2) smartScore -= 80;
                     });
 
                     // 6. Role Diversity
                     roles.forEach(r => {
                         const count = teamRoles.filter(tr => tr === r).length;
-                        if (count >= 1) score -= 15;
+                        if (count >= 1) smartScore -= 15;
                     });
 
                     // 7. Hardcoded synergy for leader specifically
                     partnerPairs.forEach(pair => {
                         const isMainInPair = mainSpeciesClean === pair.a || mainSpeciesClean === pair.b;
-                        if (isMainInPair && (s === pair.a || s === pair.b)) score += 50;
+                        if (isMainInPair && (s === pair.a || s === pair.b)) smartScore += 50;
                     });
 
                     // 8. Special Cores
                     const allCurrentTypes = new Set([...teamTypes, ...types]);
-                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) score += 20;
-                    if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) score += 20;
+                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) smartScore += 20;
+                    if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) smartScore += 20;
 
-                    // 9. Predefined Synergy Bonus
-                    if (mainBuild.synergy && mainBuild.synergy.includes(b.id)) {
-                        score += 500;
+                    // 9. Predefined Synergy (Recursive Priority)
+                    if (directSynergyIds.has(b.id)) {
+                        synergyBoost = 10000; // Absolute priority
+                        source = 'direct';
+                    } else if (priorityPool.has(b.id)) {
+                        synergyBoost = 5000; // High priority for recursive
+                        source = 'recursive';
                     }
 
-                    score += Math.random() * 25; // Slightly more randomness for variety
+                    let totalScore = smartScore + synergyBoost + (Math.random() * 25);
 
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega, score };
+                    if (totalScore > bestTotalScore) {
+                        bestTotalScore = totalScore;
+                        bestSmartScore = smartScore;
+                        bestSource = source;
+                        bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega };
                     }
                 }
 
                 if (bestCand) {
-                    rcmdResults.push({ build: bestCand.build, score: Math.round(bestCand.score) });
+                    // CALCULATE MEANINGFUL PERCENTAGE
+                    let finalPercentage = 0;
+                    if (bestSource === 'direct') {
+                        finalPercentage = 100;
+                    } else if (bestSource === 'recursive') {
+                        finalPercentage = 95 + Math.min(4, Math.max(0, bestSmartScore / 100)); // 95-99%
+                    } else {
+                        // Smart Fit: Base 60%, adds up based on score. 
+                        // A score of 150 (very good) leads to 60 + 150/5 = 90%.
+                        finalPercentage = Math.min(94, Math.floor(65 + (bestSmartScore / 5)));
+                        finalPercentage = Math.max(40, finalPercentage); // Floor at 40%
+                    }
+
+                    rcmdResults.push({ build: bestCand.build, score: finalPercentage });
+                    
+                    // Add new synergies to priority pool
+                    if (bestCand.build.synergy) {
+                        bestCand.build.synergy.forEach(sid => priorityPool.add(sid));
+                    }
+
                     usedSpecies.add(bestCand.species);
                     if (bestCand.item && bestCand.item !== 'none') usedItems.add(bestCand.item);
                     if (bestCand.isMega) megaCount++;
