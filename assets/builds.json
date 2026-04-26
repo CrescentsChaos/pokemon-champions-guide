@@ -3671,7 +3671,12 @@
         "id": "518",
         "pokemon": "Scovillain",
         "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nEVs: 244 HP / 12 SpA / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Leech Seed  \n- Rage Powder  \n- Protect  \n- Overheat",
-        "synergy": [],
+        "synergy": [
+            "519",
+            "520",
+            "521",
+            "522"
+        ],
         "format": "Doubles"
     },
     {
@@ -3714,7 +3719,11 @@
         "id": "523",
         "pokemon": "Chesnaught",
         "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nEVs: 252 HP / 44 Def / 208 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Body Press  \n- Iron Defense  \n- Leech Seed",
-        "synergy": [],
+        "synergy": [
+            "524",
+            "525",
+            "526"
+        ],
         "format": "Doubles"
     },
     {
