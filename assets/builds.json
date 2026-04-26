@@ -3803,5 +3803,48 @@
             "527"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "532",
+        "pokemon": "Floette-Eternal",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "533",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ White Herb  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Earthquake  \n- Dragon Claw  \n- Rock Slide  \n- Protect",
+        "synergy": [
+            "532"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "534",
+        "pokemon": "Aegislash",
+        "build": "Aegislash @ Spell Tag  \nAbility: Stance Change  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Poltergeist  \n- Shadow Sneak  \n- Sacred Sword  \n- King's Shield",
+        "synergy": [
+            "532"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "535",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Focus Sash  \nAbility: Unnerve  \nEVs: 248 HP / 8 Atk / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Wide Guard  \n- Tailwind  \n- Protect",
+        "synergy": [
+            "532"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "536",
+        "pokemon": "Rotom-Wash",
+        "build": "Rotom-Wash @ Choice Scarf  \nAbility: Levitate  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Electroweb  \n- Will-O-Wisp  \n- Thunderbolt  \n- Hydro Pump",
+        "synergy": [
+            "532"
+        ],
+        "format": "Doubles"
     }
 ]
