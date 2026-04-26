@@ -805,7 +805,9 @@
         "id": "114",
         "pokemon": "Pelipper",
         "build": "Pelipper @ Focus Sash\nLevel: 50\nAbility: Drizzle\nEVs: 4 HP / 252 SpA / 252 Spe\nIVs: 0 Atk\nTera Type: Stellar\nModest Nature\n- Hurricane\n- Weather Ball\n- Tailwind\n- Protect",
-        "synergy": [],
+        "synergy": [
+            "523"
+        ],
         "format": "Doubles"
     },
     {
@@ -2928,7 +2930,9 @@
         "id": "415",
         "pokemon": "Basculegion",
         "build": "Basculegion @ Choice Scarf\nLevel: 50\nAbility: Adaptability\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Wave Crash\n- Last Respects\n- Flip Turn\n- Aqua Jet",
-        "synergy": [],
+        "synergy": [
+            "523"
+        ],
         "format": "Doubles"
     },
     {
@@ -3703,6 +3707,40 @@
         "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Dual Wingbeat  \n- Protect  \n- Tailwind",
         "synergy": [
             "518"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "523",
+        "pokemon": "Chesnaught",
+        "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nEVs: 252 HP / 44 Def / 208 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Body Press  \n- Iron Defense  \n- Leech Seed",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "524",
+        "pokemon": "Archaludon",
+        "build": "Archaludon @ Leftovers  \nAbility: Stamina  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 4 SpA / 252 SpD  \nBold Nature  \nIVs: 0 Atk  \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Flash Cannon",
+        "synergy": [
+            "523"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "525",
+        "pokemon": "Slowking-Galar",
+        "build": "Slowking-Galar @ Sitrus Berry  \nAbility: Regenerator  \nTera Type: Water  \nEVs: 252 HP / 224 Def / 32 SpD  \nRelaxed Nature  \nIVs: 0 Atk / 0 Spe  \n- Eerie Spell  \n- Sludge Bomb  \n- Heal Pulse  \n- Trick Room",
+        "synergy": [
+            "523"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "526",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan @ Silk Scarf  \nAbility: Scrappy  \nLevel: 50  \nEVs: 240 HP / 252 Atk / 12 Spe  \nAdamant Nature  \n- Fake Out  \n- Last Resort",
+        "synergy": [
+            "523"
         ],
         "format": "Doubles"
     }
