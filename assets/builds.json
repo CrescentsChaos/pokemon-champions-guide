@@ -3808,7 +3808,12 @@
         "id": "532",
         "pokemon": "Floette-Eternal",
         "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
-        "synergy": [],
+        "synergy": [
+            "533",
+            "534",
+            "535",
+            "536"
+        ],
         "format": "Doubles"
     },
     {
@@ -3845,6 +3850,69 @@
         "synergy": [
             "532"
         ],
+        "format": "Doubles"
+    },
+    {
+        "id": "537",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Leftovers\nAbility: Drought\nEVs: 240 HP / 252 Def / 16 Spe\nTera Type: Water\nImpish Nature\n- Spikes\n- Precipice Blades\n- Stone Edge\n- Will-O-Wisp",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "538",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Lum Berry\nAbility: Drought\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Fairy\nAdamant Nature\n- Swords Dance\n- Precipice Blades\n- Stone Edge\n- Heat Crash",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "539",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Leftovers\nAbility: Drought\nEVs: 244 HP / 252 Def / 12 Spe\nTera Type: Water\nImpish Nature\n- Spikes\n- Precipice Blades\n- Will-O-Wisp\n- Roar",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "540",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Clear Amulet\nLevel: 50\nAbility: Drought\nEVs: 108 HP / 156 Atk / 4 Def / 228 SpD / 12 Spe\nTera Type: Fire\nAdamant Nature\n- Precipice Blades\n- Heat Crash\n- High Horsepower\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "541",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Red Orb\nAbility: Desolate Land\nEVs: 248 HP / 68 Def / 192 SpD\nRelaxed Nature\n- Precipice Blades\n- Stealth Rock\n- Toxic\n- Overheat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "542",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Leftovers\nAbility: Drought\nEVs: 240 HP / 252 Atk / 16 Spe\nAdamant Nature\n- Precipice Blades\n- Stone Edge\n- Bulk Up\n- Heat Crash",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "543",
+        "pokemon": "Groudon",
+        "build": "Groudon @ Sitrus Berry\nLevel: 50\nAbility: Drought\nEVs: 244 HP / 180 Atk / 4 Def / 4 SpD / 76 Spe\nAdamant Nature\n- Precipice Blades\n- Rock Slide\n- Swords Dance\n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "544",
+        "pokemon": "Raichu",
+        "build": "Raichu @ Raichunite Y  \nAbility: Lightning Rod  \nLevel: 50  \nEVs: 4 Atk / 252 SpA / 252 Spe  \nHasty Nature  \n- Zap Cannon  \n- Focus Blast  \n- Fake Out  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "545",
+        "pokemon": "Staraptor",
+        "build": "Staraptor @ Staraptite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 244 HP / 252 Atk / 12 SpD  \nAdamant Nature  \n- Brave Bird  \n- Close Combat  \n- Roost  \n- Tailwind",
+        "synergy": [],
         "format": "Doubles"
     }
 ]
