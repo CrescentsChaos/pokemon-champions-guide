@@ -3904,7 +3904,7 @@
     {
         "id": "544",
         "pokemon": "Raichu",
-        "build": "Raichu @ Raichunite Y  \nAbility: Lightning Rod  \nLevel: 50  \nEVs: 4 Atk / 252 SpA / 252 Spe  \nHasty Nature  \n- Zap Cannon  \n- Focus Blast  \n- Fake Out  \n- Protect",
+        "build": "Raichu @ Raichunite Y  \nAbility: Lightning Rod  \nLevel: 50  \nEVs: 4 Atk / 252 SpA / 252 Spe  \nTimid Nature  \n- Zap Cannon  \n- Focus Blast  \n- Fake Out  \n- Protect",
         "synergy": [],
         "format": "Doubles"
     },
@@ -3913,6 +3913,85 @@
         "pokemon": "Staraptor",
         "build": "Staraptor @ Staraptite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 244 HP / 252 Atk / 12 SpD  \nAdamant Nature  \n- Brave Bird  \n- Close Combat  \n- Roost  \n- Tailwind",
         "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "546",
+        "pokemon": "Gholdengo",
+        "build": "Gholdengo @ Life Orb  \nAbility: Good as Gold  \nEVs: 4 HP / 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Make It Rain  \n- Shadow Ball  \n- Protect  \n- Nasty Plot",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "547",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Mystic Water  \nAbility: Adaptability  \nLevel: 50  \nTera Type: Water  \nEVs: 96 HP / 252 Atk / 40 Def / 120 Spe  \nAdamant Nature  \n- Protect  \n- Wave Crash  \n- Last Respects  \n- Aqua Jet",
+        "synergy": [
+            "546"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "548",
+        "pokemon": "Raichu",
+        "build": "Raichu @ Raichunite Y  \nAbility: Lightning Rod  \nLevel: 50  \nEVs: 128 HP / 190 SpA / 192 Spe  \nModest Nature  \n- Zap Cannon  \n- Focus Blast  \n- Fake Out  \n- Protect",
+        "synergy": [
+            "547",
+            "546"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "549",
+        "pokemon": "Vanilluxe",
+        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Icy Wind  \n- Sheer Cold",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "550",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Dragon Fang  \nAbility: Multiscale  \nLevel: 50  \nTera Type: Dragon  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Dragon Claw  \n- Extreme Speed  \n- Low Kick  \n- Protect",
+        "synergy": [
+            "549"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "551",
+        "pokemon": "Raichu",
+        "build": "Raichu @ Raichunite Y  \nAbility: Lightning Rod  \nLevel: 50  \nEVs: 252 HP / 160 Def / 32 SpD / 64 Spe  \nJolly Nature  \n- Zap Cannon  \n- Focus Blast  \n- Fake Out  \n- Protect",
+        "synergy": [
+            "549",
+            "550"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "552",
+        "pokemon": "Dragalge",
+        "build": "Dragalge @ Dragalgite  \nAbility: Adaptability  \nLevel: 50  \nTera Type: Poison  \nEVs: 252 HP / 88 Def / 168 SpA  \nModest Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Sludge Bomb  \n- Thunderbolt  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "553",
+        "pokemon": "Eelektross",
+        "build": "Eelektross @ Eelektrossite  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 252 HP / 4 Def / 252 SpA  \nModest Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Discharge  \n- Grass Knot  \n- Protect",
+        "synergy": [
+            "552",
+            "554"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "554",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Focus Sash  \nAbility: Levitate  \nEVs: 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Snarl  \n- Earth Power  \n- Protect",
+        "synergy": [
+            "552",
+            "553"
+        ],
         "format": "Doubles"
     }
 ]
