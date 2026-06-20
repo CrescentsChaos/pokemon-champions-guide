@@ -3993,5 +3993,38 @@
             "553"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "555",
+        "pokemon": "Grimmsnarl",
+        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 168 Def / 88 SpD  \nCareful Nature  \n- Spirit Break  \n- Parting Shot  \n- Reflect  \n- Light Screen",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "556",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Rock  \nEVs: 176 HP / 80 Atk / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Ice Fang  \n- Dual Wingbeat  \n- Tailwind",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "557",
+        "pokemon": "Pyroar",
+        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Fire  \nEVs: 4 HP / 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Overheat  \n- Solar Beam  \n- Protect",
+        "synergy": [
+            "556"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "558",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Heat Rock  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 4 SpA / 252 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Helping Hand  \n- Yawn  \n- Protect",
+        "synergy": [
+            "557",
+            "556"
+        ],
+        "format": "Doubles"
     }
 ]
