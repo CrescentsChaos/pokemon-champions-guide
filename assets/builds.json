@@ -2954,7 +2954,7 @@
     {
         "id": "418",
         "pokemon": "F",
-        "build": "Basculegion-F (F) @ Weakness Policy\nAbility: Adaptability\nEVs: 52 Def / 236 SpA / 24 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Agility\n- Shadow Ball\n- Surf\n- Ice Beam",
+        "build": "Basculegion-F @ Weakness Policy\nAbility: Adaptability\nEVs: 52 Def / 236 SpA / 24 SpD / 196 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Agility\n- Shadow Ball\n- Surf\n- Ice Beam",
         "synergy": [],
         "format": "Singles"
     },
