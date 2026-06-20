@@ -873,7 +873,10 @@
     "Egg_Cycles": 10,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 585
+    "Total_Stats": 585,
+    "Ability": [
+      "Electric Surge"
+    ]
   },
   {
     "id": 26,
@@ -899,7 +902,10 @@
     "Egg_Cycles": 10,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 585
+    "Total_Stats": 585,
+    "Ability": [
+      "No Guard"
+    ]
   },
   {
     "id": 27,
@@ -18166,7 +18172,7 @@
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 615,
     "Ability": [
-      "Levitate"
+      "Eelevate"
     ]
   },
   {
@@ -20201,7 +20207,7 @@
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 607,
     "Ability": [
-      "Competitive"
+      "Fire Mane"
     ]
   },
   {
