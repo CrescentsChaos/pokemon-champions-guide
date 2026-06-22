@@ -560,144 +560,148 @@
         "description": "It converts Z-Power into crystals that upgrade Mimikyu's Play Rough to a Z-Move."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Mind Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of psychic energy and boosts the power of the holder's Psychic-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Miracle Seed",
+        "description": "An item to be held by a Pokémon. It's a seed imbued with life force that boosts the power of the holder's Grass-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Mirror Herb",
+        "description": "An item to be held by a Pokémon. This herb will allow the holder to mirror an opponent's stat increases to boost its own stats—but only once."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Misty Seed",
+        "description": "An item to be held by a Pokémon. If the terrain becomes Misty Terrain, the holder will use this seed to boost its own Sp. Def stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Muscle Band",
+        "description": "An item to be held by a Pokémon. This headband exudes strength, slightly boosting the power of the holder's physical moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Mystic Water",
+        "description": "An item to be held by a Pokémon. This teardrop-shaped gem boosts the power of the holder's Water-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Never-Melt Ice",
+        "description": "An item to be held by a Pokémon. It's a heat-repelling piece of ice that boosts the power of the holder's Ice- type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Normal Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of normalcy and will boost the power of a Normal-type move—but only once."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Normalium Z",
+        "description": "It converts Z-Power into crystals that upgrade Normal-type moves to Normal-type Z-Moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Odd Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that boosts the power of the holder's Psychic-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pikanium Z",
+        "description": "It converts Z-Power into crystals that upgrade Pikachu's Volt Tackle to a Z-Move."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pikashunium Z",
+        "description": "This is a crystallized form of Z-Power. It upgrades Thunderbolt to a Z-Move when used by a Pikachu wearing a cap."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pink Bow",
+        "description": "Powers up normal-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pink Scarf",
+        "description": "When a Pokémon holds this during a contest, it looks even cuter than usual."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pixie Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of fairies and boosts the power of the holder's Fairy-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Poison Barb",
+        "description": "An item to be held by a Pokémon. This small poisonous barb boosts the power of the holder's Poison-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Poison Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of poison and will boost the power of a Poison-type move—but only once."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Poison Memory",
+        "description": "A memory disc that contains Poison-type data. It changes the type of the holder if held by a certain species of Pokémon."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Poisonium Z",
+        "description": "It converts Z-Power into crystals that upgrade Poison-type moves to Poison-type Z-Moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Polkadot Bow",
+        "description": "Powers up normal-type moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Anklet",
+        "description": "An item to be held by a Pokémon. This anklet reduces a Pokémon's Speed in battle but allows its Speed stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Band",
+        "description": "An item to be held by a Pokémon. This band reduces a Pokémon's Speed in battle but allows its Sp. Def stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Belt",
+        "description": "An item to be held by a Pokémon. This belt reduces a Pokémon's Speed in battle but allows its Defense stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Bracer",
+        "description": "An item to be held by a Pokémon. This bracer reduces a Pokémon's Speed in battle but allows its Attack stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Herb",
+        "description": "An item to be held by a Pokémon. It allows the holder to immediately use a move that normally requires a turn to charge—but only once."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Lens",
+        "description": "An item to be held by a Pokémon. This lens reduces a Pokémon's Speed in battle but allows its Sp. Atk stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Power Weight",
+        "description": "An item to be held by a Pokémon. This weight reduces a Pokémon's Speed in battle but allows its HP stat to grow more quickly."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Primarium Z",
+        "description": "It converts Z-Power into crystals that upgrade Primarina's Sparkling Aria to a Z-Move."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Protective Pads",
+        "description": "An item to be held by a Pokémon. These pads protect the holder from effects triggered by making direct contact with another Pokémon."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Psychic Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of psychic energy and will boost the power of a Psychic-type move—but only once."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Psychic Memory",
+        "description": "A memory disc that contains Psychic-type data. It changes the type of the holder if held by a certain species of Pokémon."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Protector",
+        "description": "A protective item of some sort. It is extremely stiff and heavy. It's loved by a certain Pokémon."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Psychic Seed",
+        "description": "An item to be held by a Pokémon. If the terrain becomes Psychic Terrain, the holder will use this seed to boost its own Sp. Def stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Psychium Z",
+        "description": "It converts Z-Power into crystals that upgrade Psychic-type moves to Psychic-type Z-Moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Punching Glove",
+        "description": "An item to be held by a Pokémon. This protective glove boosts the power of the holder's punching moves and prevents direct contact with targets."
+    },
+    {
+        "name": "Pure Incense",
+        "description": "An item to be held by a Pokémon. It helps keep wild Pokémon away when the holder is the head of the party."
     },
     {
         "name": "",
