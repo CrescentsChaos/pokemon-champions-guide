@@ -1,22 +1,962 @@
 [
-    {"name": "Life Orb", "description": "Holder's attacks do 1.3x damage, and it loses 1/10 its max HP after the attack."},
-    {"name": "Focus Sash", "description": "If holder's HP is full, it survives an attack that would KO it with 1 HP. Single use."},
-    {"name": "Choice Band", "description": "Holder's Attack is 1.5x, but it can only select the first move it executes."},
-    {"name": "Choice Specs", "description": "Holder's Sp. Atk is 1.5x, but it can only select the first move it executes."},
-    {"name": "Choice Scarf", "description": "Holder's Speed is 1.5x, but it can only select the first move it executes."},
-    {"name": "Assault Vest", "description": "Holder's Sp. Def is 1.5x, but it can only select damaging moves."},
-    {"name": "Leftovers", "description": "At the end of every turn, holder restores 1/16 of its max HP."},
-    {"name": "Black Sludge", "description": "Each turn, if holder is a Poison type, restores 1/16 max HP; loses 1/8 if not."},
-    {"name": "Rocky Helmet", "description": "If the holder is hit by a contact move, the attacker loses 1/6 of its max HP."},
-    {"name": "Safety Goggles", "description": "Holder is immune to powder moves and damage from Sandstorm or Hail."},
-    {"name": "Heavy-Duty Boots", "description": "Holder is unaffected by hazards (Spikes, Stealth Rock, etc.)."},
-    {"name": "Booster Energy", "description": "If holder has Protosynthesis or Quark Drive, its highest stat is boosted by 1.3x (1.5x for Speed)."},
-    {"name": "Clear Amulet", "description": "Prevents other Pokemon from lowering the holder's stat stages."},
-    {"name": "Covert Cloak", "description": "Holder is not affected by the secondary effects of another Pokemon's attack."},
-    {"name": "Eject Button", "description": "If holder survives a hit, it immediately switches out to a chosen ally. Single use."},
-    {"name": "Mental Herb", "description": "Cures holder of Attract, Disable, Encore, Heal Block, Taunt, Torment. Single use."},
-    {"name": "Sitrus Berry", "description": "Restores 1/4 max HP when at or below 1/2 max HP. Single use."},
-    {"name": "Lum Berry", "description": "Cures any status condition or confusion. Single use."},
-    {"name": "White Herb", "description": "Restores all lowered stat stages once. Single use."},
-    {"name": "Weakness Policy", "description": "If hit by a super effective move, Attack and Sp. Atk rise by 2 stages. Single use."}
+    {
+        "name": "Ability Shield",
+        "description": "An item to be held by a Pokémon. This cute and rather unique-looking shield protects the holder from having its Ability changed by others."
+    },
+    {
+        "name": "Absorb Bulb",
+        "description": "An item to be held by a Pokémon. This single-use bulb boosts the Sp. Atk stat if the holder is damaged by a Water-type attack."
+    },
+    {
+        "name": "Adamant Crystal",
+        "description": "An item to be held by Dialga. This large, glowing gem wells with power and allows the Pokémon to change form."
+    },
+    {
+        "name": "Adamant Orb",
+        "description": "A brightly shining gem to be held by Dialga. It boosts the power of Dialga's Dragon- and Steel-type moves."
+    },
+    {
+        "name": "Air Balloon",
+        "description": "An item to be held by a Pokémon. This balloon makes the holder float in the air. If the holder is hit with an attack, the balloon will burst."
+    },
+    {
+        "name": "Aloraichium Z",
+        "description": "It converts Z-Power into crystals that upgrade Alolan Raichu's Thunderbolt to a Z-Move."
+    },
+    {
+        "name": "Amulet Coin",
+        "description": "An item to be held by a Pokémon. It doubles any prize money received as long as the holder joins the battle at least once."
+    },
+    {
+        "name": "Assault Vest",
+        "description": "An item to be held by a Pokémon. This offensive vest boosts the holder's Sp. Def stat but prevents the use of status moves."
+    },
+    {
+        "name": "Berry Sweet",
+        "description": "A berry-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Berserk Gene",
+        "description": "Boosts ATTACK but causes confusion."
+    },
+    {
+        "name": "Big Root",
+        "description": "An item to be held by a Pokémon. This root boosts the amount of HP the holder restores to itself when it uses HP-stealing moves."
+    },
+    {
+        "name": "Binding Band",
+        "description": "An item to be held by a Pokémon. This band boosts the power of binding moves used by the holder."
+    },
+    {
+        "name": "Black Belt",
+        "description": "An item to be held by a Pokémon. This belt helps with focus and boosts the power of the holder's Fighting-type moves."
+    },
+    {
+        "name": "Black Glasses",
+        "description": "An item to be held by a Pokémon. It's a pair of shady- looking glasses that boost the power of the holder's Dark-type moves."
+    },
+    {
+        "name": "Black Sludge",
+        "description": "An item to be held by a Pokémon. If the holder is a Poison type, this sludge will gradually restore its HP. It damages any other type."
+    },
+    {
+        "name": "Blue Orb",
+        "description": "A shiny blue orb that is said to have a deep connection to a legend of the Hoenn region."
+    },
+    {
+        "name": "Blue Scarf",
+        "description": "When a Pokémon holds this during a contest, it looks even more beautiful than usual."
+    },
+    {
+        "name": "Blunder Policy",
+        "description": "An item to be held by a Pokémon. If the holder misses with a move due to low accuracy, this policy will sharply boost its Speed stat."
+    },
+    {
+        "name": "Booster Energy",
+        "description": "An item to be held by Pokémon with certain Abilities. The energy that fills this capsule boosts the strength of the Pokémon."
+    },
+    {
+        "name": "Bright Powder",
+        "description": "An item to be held by a Pokémon. This glittery powder casts a tricky glare that lowers the accuracy of opposing Pokémon's moves."
+    },
+    {
+        "name": "Bug Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of bugs and will boost the power of a Bug-type move—but only once."
+    },
+    {
+        "name": "Bug Memory",
+        "description": "A memory disc that contains Bug-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Buginium Z",
+        "description": "It converts Z-Power into crystals that upgrade Bug-type moves to Bug-type Z-Moves."
+    },
+    {
+        "name": "Burn Drive",
+        "description": "A cassette to be held by Genesect. It changes Genesect's Techno Blast move so it becomes Fire type."
+    },
+    {
+        "name": "Cell Battery",
+        "description": "An item to be held by a Pokémon. This single-use battery boosts the Attack stat if the holder is damaged by an Electric-type attack."
+    },
+    {
+        "name": "Charcoal",
+        "description": "An item to be held by a Pokémon. It's a combustible fuel that boosts the power of the holder's Fire-type moves."
+    },
+    {
+        "name": "Chill Drive",
+        "description": "A cassette to be held by Genesect. It changes Genesect's Techno Blast move so it becomes Ice type."
+    },
+    {
+        "name": "Choice Band",
+        "description": "An item to be held by a Pokémon. This curious headband boosts the holder's Attack stat but only allows the use of a single move."
+    },
+    {
+        "name": "Choice Scarf",
+        "description": "An item to be held by a Pokémon. This curious scarf boosts the holder's Speed stat but only allows the use of a single move."
+    },
+    {
+        "name": "Choice Specs",
+        "description": "An item to be held by a Pokémon. These curious glasses boost the holder's Sp. Atk stat but only allow the use of a single move."
+    },
+    {
+        "name": "Cleanse Tag",
+        "description": "An item to be held by a Pokémon. This clear, sparkling amulet protects the holder from having its stats lowered by moves used against it or by other Pokémon's Abilities."
+    },
+    {
+        "name": "Clover Sweet",
+        "description": "A clover-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Cornerstone Mask",
+        "description": "An item to be held by Ogerpon. This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Rock type during battle."
+    },
+    {
+        "name": "Covert Cloak",
+        "description": "An item to be held by a Pokémon. This hooded cloak conceals the holder, tricking the eyes of its enemies and protecting it from the additional effects of moves."
+    },
+    {
+        "name": "Damp Rock",
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to rain, the rain will persist for longer than usual."
+    },
+    {
+        "name": "Dark Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of darkness and will boost the power of a Dark-type move—but only once."
+    },
+    {
+        "name": "Dark Memory",
+        "description": "A memory disc that contains Dark-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Darkinium Z",
+        "description": "It converts Z-Power into crystals that upgrade Dark-type moves to Dark-type Z-Moves."
+    },
+    {
+        "name": "Decidium Z",
+        "description": "It converts Z-Power into crystals that upgrade Decidueye's Spirit Shackle to a Z-Move."
+    },
+    {
+        "name": "Deep Sea Scale",
+        "description": "An item to be held by Clamperl. This scale shines with a faint pink and boosts Clamperl's Sp. Def stat."
+    },
+    {
+        "name": "Deep Sea Tooth",
+        "description": "An item to be held by Clamperl. This fang gleams a sharp silver and boosts Clamperl's Sp. Atk stat."
+    },
+    {
+        "name": "Destiny Knot",
+        "description": "An item to be held by a Pokémon. Should the holder of this bright-red thread become infatuated, the Pokémon it is infatuated with will be similarly afflicted."
+    },
+    {
+        "name": "Douse Drive",
+        "description": "A cassette to be held by Genesect. It changes Genesect's Techno Blast move so it becomes Water type."
+    },
+    {
+        "name": "Draco Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of dragons and boosts the power of the holder's Dragon-type moves."
+    },
+    {
+        "name": "Dragon Fang",
+        "description": "An item to be held by a Pokémon. This hard, sharp fang boosts the power of the holder's Dragon-type moves."
+    },
+    {
+        "name": "Dragon Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of dragons and will boost the power of a Dragon-type move—but only once."
+    },
+    {
+        "name": "Dragon Memory",
+        "description": "A memory disc that contains Dragon-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Dragonium Z",
+        "description": "It converts Z-Power into crystals that upgrade Dragon-type moves to Dragon-type Z-Moves."
+    },
+    {
+        "name": "Dread Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of darkness and boosts the power of the holder's Dark-type moves."
+    },
+    {
+        "name": "Dubious Disc",
+        "description": "A transparent device overflowing with dubious data. It's loved by a certain Pokémon."
+    },
+    {
+        "name": "Earth Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of the earth and boosts the power of the holder's Ground-type moves."
+    },
+    {
+        "name": "Eevium Z",
+        "description": "It converts Z-Power into crystals that upgrade Eevee's Last Resort to a Z-Move."
+    },
+    {
+        "name": "Eject Button",
+        "description": "An item to be held by a Pokémon. If the holder is damaged by an attack, it will be switched out of battle to be replaced by another Pokémon on your team."
+    },
+    {
+        "name": "Eject Pack",
+        "description": "An item to be held by a Pokémon. If the holder's stats are lowered, it will be switched out of battle."
+    },
+    {
+        "name": "Electirizer",
+        "description": "A box packed with a tremendous amount of electric energy. It's loved by a certain Pokémon."
+    },
+    {
+        "name": "Electric Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of electricity and will boost the power of an Electric-type move—but only once."
+    },
+    {
+        "name": "Electric Memory",
+        "description": "A memory disc that contains Electric-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Electric Seed",
+        "description": "An item to be held by a Pokémon. If the terrain becomes Electric Terrain, the holder will use this seed to boost its own Defense stat."
+    },
+    {
+        "name": "Electrium Z",
+        "description": "It converts Z-Power into crystals that upgrade Electric-type moves to Electric-type Z-Moves."
+    },
+    {
+        "name": "Everstone",
+        "description": "An item to be held by a Pokémon. A Pokémon holding this peculiar stone is prevented from evolving."
+    },
+    {
+        "name": "Eviolite",
+        "description": "An item to be held by a Pokémon. This mysterious evolutionary lump boosts the Defense and Sp. Def stats when held by a Pokémon that can still evolve."
+    },
+    {
+        "name": "Exp. Share",
+        "description": "Turning on this special device will allow all the Pokémon on your team to share in Exp. Points gained."
+    },
+    {
+        "name": "Expert Belt",
+        "description": "An item to be held by a Pokémon. It's a well-worn belt that slightly boosts the power of the holder's supereffective moves."
+    },
+    {
+        "name": "Fairium Z",
+        "description": "An item to be held by a Pokémon. This feather, which gleams faintly when hit by light, boosts the power of the holder's Fairy-type moves."
+    },
+    {
+        "name": "Fairy Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of fairies and will boost the power of a Fairy-type move—but only once."
+    },
+    {
+        "name": "Fairy Memory",
+        "description": "A memory disc that contains Fairy-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Fighting Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of the fighting spirit and will boost the power of a Fighting-type move—but only once."
+    },
+    {
+        "name": "Fighting Memory",
+        "description": "A memory disc that contains Fighting-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Fightinium Z",
+        "description": "It converts Z-Power into crystals that upgrade Fighting-type moves to Fighting-type Z-Moves."
+    },
+    {
+        "name": "Fire Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of fire and will boost the power of a Fire-type move—but only once."
+    },
+    {
+        "name": "Fire Memory",
+        "description": "A memory disc that contains Fire-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Firium Z",
+        "description": "It converts Z-Power into crystals that upgrade Fire-type moves to Fire-type Z-Moves."
+    },
+    {
+        "name": "Fist Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of the fighting spirit and boosts the power of the holder's Fighting-type moves."
+    },
+    {
+        "name": "Flame Orb",
+        "description": "An item to be held by a Pokémon. It's a bizarre orb that gives off heat when touched and will afflict the holder with a burn during battle."
+    },
+    {
+        "name": "Flame Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of fire and boosts the power of the holder's Fire-type moves."
+    },
+    {
+        "name": "Float Stone",
+        "description": "An item to be held by a Pokémon. This very light stone reduces the weight of the holder."
+    },
+    {
+        "name": "Flower Sweet",
+        "description": "A flower-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Flying Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of flight and will boost the power of a Flying-type move—but only once."
+    },
+    {
+        "name": "Flying Memory",
+        "description": "A memory disc that contains Flying-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Flyinium Z",
+        "description": "It converts Z-Power into crystals that upgrade Flying-type moves to Flying-type Z-Moves."
+    },
+    {
+        "name": "Focus Band",
+        "description": "An item to be held by a Pokémon. When the holder is hit with a move that should knock it out, it may be able to endure with 1 HP."
+    },
+    {
+        "name": "Focus Sash",
+        "description": "An item to be held by a Pokémon. If the holder has full HP and it is hit with a move that should knock it out, it will endure with 1 HP—but only once."
+    },
+    {
+        "name": "Full Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that makes the holder move slower than usual."
+    },
+    {
+        "name": "Ghost Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of ghosts and will boost the power of a Ghost-type move—but only once."
+    },
+    {
+        "name": "Ghost Memory",
+        "description": "A memory disc that contains Ghost-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Ghostium Z",
+        "description": "It converts Z-Power into crystals that upgrade Ghost-type moves to Ghost-type Z-Moves."
+    },
+    {
+        "name": "Grass Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of plants and will boost the power of a Grass-type move—but only once."
+    },
+    {
+        "name": "Grass Memory",
+        "description": "A memory disc that contains Grass-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Grassium Z",
+        "description": "It converts Z-Power into crystals that upgrade Grass-type moves to Grass-type Z-Moves."
+    },
+    {
+        "name": "Grassy Seed",
+        "description": "An item to be held by a Pokémon. If the terrain becomes Grassy Terrain, the holder will use this seed to boost its own Defense stat."
+    },
+    {
+        "name": "Green Scarf",
+        "description": "When a Pokémon holds this during a contest, it looks even cleverer than usual."
+    },
+    {
+        "name": "Grip Claw",
+        "description": "An item to be held by a Pokémon. When the holder uses moves that deal damage over several turns, such as Bind or Wrap, their effects will last longer than usual."
+    },
+    {
+        "name": "Griseous Core",
+        "description": "An item to be held by Giratina. This large, glowing gem wells with power and allows the Pokémon to change form."
+    },
+    {
+        "name": "Ground Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of the earth and will boost the power of a Ground-type move—but only once."
+    },
+    {
+        "name": "Griseous Orb",
+        "description": "A shining gem to be held by Giratina. It boosts the power of Giratina's Dragon- and Ghost-type moves."
+    },
+    {
+        "name": "Ground Memory",
+        "description": "A memory disc that contains Ground-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Groundium Z",
+        "description": "It converts Z-Power into crystals that upgrade Ground-type moves to Ground-type Z-Moves."
+    },
+    {
+        "name": "Hard Stone",
+        "description": "An item to be held by a Pokémon. It's a durable stone that boosts the power of the holder's Rock-type moves."
+    },
+    {
+        "name": "Hearthflame Mask",
+        "description": "An item to be held by Ogerpon. This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Fire type during battle."
+    },
+    {
+        "name": "Heat Rock",
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to harsh sunlight, the sunlight will persist for longer than usual."
+    },
+    {
+        "name": "Heavy-Duty Boots",
+        "description": "An item to be held by a Pokémon. These boots protect the holder from the effects of traps and the like set on the battlefield."
+    },
+    {
+        "name": "Ice Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of ice and will boost the power of an Ice-type move—but only once."
+    },
+    {
+        "name": "Ice Memory",
+        "description": "A memory disc that contains Ice-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Icicle Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of ice and boosts the power of the holder's Ice-type moves."
+    },
+    {
+        "name": "Icium Z",
+        "description": "It converts Z-Power into crystals that upgrade Ice-type moves to Ice-type Z-Moves."
+    },
+    {
+        "name": "Icy Rock",
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to snow, the snow will persist for longer than usual."
+    },
+    {
+        "name": "Incinium Z",
+        "description": "It converts Z-Power into crystals that upgrade Incineroar's Darkest Lariat to a Z-Move."
+    },
+    {
+        "name": "Insect Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of bugs and boosts the power of the holder's Bug-type moves."
+    },
+    {
+        "name": "Iron Ball",
+        "description": "An item to be held by a Pokémon. It lowers the holder's Speed stat and makes the holder vulnerable to Ground- type moves even if it is a Flying type or is levitating."
+    },
+    {
+        "name": "Iron Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of steel and boosts the power of the holder's Steel-type moves."
+    },
+    {
+        "name": "King's Rock",
+        "description": "An item to be held by a Pokémon. It may cause the target to flinch whenever the holder successfully inflicts damage on them with an attack."
+    },
+    {
+        "name": "Kommonium Z",
+        "description": "It converts Z-Power into crystals that upgrade Kommo-o's Clanging Scales to a Z-Move."
+    },
+    {
+        "name": "Lagging Tail",
+        "description": "An item to be held by a Pokémon. A tail of something, this item is tremendously heavy and makes the holder move slower than usual."
+    },
+    {
+        "name": "Lax Incense",
+        "description": "An item to be held by a Pokémon. The curious aroma of this incense may cause moves to miss its holder."
+    },
+    {
+        "name": "Leek",
+        "description": "An item to be held by Farfetch'd or Sirfetch'd. This very long and stiff stalk of leek boosts the critical-hit ratio of their moves."
+    },
+    {
+        "name": "Leftovers",
+        "description": "An item to be held by a Pokémon. It slowly but steadily restores the holder's HP."
+    },
+    {
+        "name": "Life Orb",
+        "description": "An item to be held by a Pokémon. It boosts the power of the holder's moves, but the holder also loses a small amount of HP upon landing an attack."
+    },
+    {
+        "name": "Light Ball",
+        "description": "An item to be held by Pikachu. It's a mysterious orb that boosts Pikachu's Attack and Sp. Atk stats."
+    },
+    {
+        "name": "Light Clay",
+        "description": "An item to be held by a Pokémon. When the holder uses protective moves like Light Screen or Reflect, their effects will last longer than usual."
+    },
+    {
+        "name": "Loaded Dice",
+        "description": "An item to be held by a Pokémon. This loaded dice always rolls a good number, and holding one can ensure that the holder's multistrike moves hit more times."
+    },
+    {
+        "name": "Love Sweet",
+        "description": "A heart-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Luck Incense",
+        "description": "An item to be held by a Pokémon. It doubles any prize money received as long as the holder joins the battle at least once."
+    },
+    {
+        "name": "Lucky Egg",
+        "description": "An item to be held by a Pokémon. It's an egg filled with happiness that earns the holder extra Exp. Points."
+    },
+    {
+        "name": "Lucky Punch",
+        "description": "An item to be held by a Pokémon. When this item is held by a Happiny, it causes the holder's critical-hit ratio to increase sharply."
+    },
+    {
+        "name": "Luminous Moss",
+        "description": "An item to be held by a Pokémon. This single-use luminous moss boosts the Sp. Def stat if the holder is damaged by a Water-type move."
+    },
+    {
+        "name": "Lunalium Z",
+        "description": "It converts Z-Power into crystals that upgrade Lunala's Moongeist Beam to a Z-Move."
+    },
+    {
+        "name": "Lustrous Globe",
+        "description": "An item to be held by Palkia. This large, glowing orb wells with power and allows the Pokémon to change form."
+    },
+    {
+        "name": "Lustrous Orb",
+        "description": "A beautifully shining gem to be held by Palkia. It boosts the power of Palkia's Dragon- and Water-type moves."
+    },
+    {
+        "name": "Lycanium Z",
+        "description": "It converts Z-Power into crystals that upgrade Lycanroc's Stone Edge to a Z-Move."
+    },
+    {
+        "name": "Macho Brace",
+        "description": "An item to be held by a Pokémon. Holding this stiff, heavy brace reduces a Pokémon's Speed in battle but allows its stats to grow more quickly."
+    },
+    {
+        "name": "Magmarizer",
+        "description": "A box packed with a tremendous amount of magma energy. It's loved by a certain Pokémon."
+    },
+    {
+        "name": "Magnet",
+        "description": "An item to be held by a Pokémon. It's a powerful magnet that boosts the power of the holder's Electric-type moves."
+    },
+    {
+        "name": "Marshadium Z",
+        "description": "It converts Z-Power into crystals that upgrade Marshadow's Spectral Thief to a Z-Move."
+    },
+    {
+        "name": "Meadow Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of plants and boosts the power of the holder's Grass-type moves."
+    },
+    {
+        "name": "Mental Herb",
+        "description": "An item to be held by a Pokémon. The holder will be able to shake off move-binding effects to move freely— but only once."
+    },
+    {
+        "name": "Metal Coat",
+        "description": "An item to be held by a Pokémon. It boosts the power of the holder's Steel-type moves."
+    },
+    {
+        "name": "Metal Powder",
+        "description": "An item to be held by Ditto. Extremely fine yet hard, this odd powder boosts Ditto's Defense stat."
+    },
+    {
+        "name": "Metronome",
+        "description": "An item to be held by a Pokémon. It boosts the power of a move that's used repeatedly. Once the chain is broken, the move's power returns to normal."
+    },
+    {
+        "name": "Mewnium Z",
+        "description": "It converts Z-Power into crystals that upgrade Mew's Psychic to a Z-Move."
+    },
+    {
+        "name": "Mimikium Z",
+        "description": "It converts Z-Power into crystals that upgrade Mimikyu's Play Rough to a Z-Move."
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    },
+    {
+        "name": "",
+        "description": ""
+    }
 ]
