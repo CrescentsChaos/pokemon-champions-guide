@@ -704,20 +704,312 @@
         "description": "An item to be held by a Pokémon. It helps keep wild Pokémon away when the holder is the head of the party."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Quick Claw",
+        "description": "An item to be held by a Pokémon. This light, sharp claw lets the holder move first occasionally."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Quick Powder",
+        "description": "An item to be held by Ditto. Extremely fine yet hard, this odd powder boosts Ditto's Speed stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Razor Claw",
+        "description": "An item to be held by a Pokémon. This sharply hooked claw boosts the critical-hit ratio of the holder's moves."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Razor Fang",
+        "description": "An item to be held by a Pokémon. This sharply hooked fang may cause the target to flinch whenever the holder successfully inflicts damage on them with an attack."
+    },
+    {
+        "name": "Reaper Cloth",
+        "description": "A cloth imbued with horrifyingly strong spiritual energy. It's loved by a certain Pokémon."
+    },
+    {
+        "name": "Red Card",
+        "description": "An item to be held by a Pokémon. If the holder is damaged by an attack, the mysterious power of this card can remove the attacker from the battle."
+    },
+    {
+        "name": "Red Orb",
+        "description": "A shiny red orb that is said to have a deep connection to a legend of the Hoenn region."
+    },
+    {
+        "name": "Red Scarf",
+        "description": "When a Pokémon holds this during a contest, it looks even cooler than usual."
+    },
+    {
+        "name": "Ribbon Sweet",
+        "description": "A ribbon-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Ring Target",
+        "description": "An item to be held by a Pokémon. Moves that would normally have no effect due to type matchups will still hit the holder."
+    },
+    {
+        "name": "Rock Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of rock and will boost the power of a Rock-type move—but only once."
+    },
+    {
+        "name": "Rock Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that boosts the power of the holder's Rock-type moves."
+    },
+    {
+        "name": "Rock Memory",
+        "description": "A memory disc that contains Rock-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Rockium Z",
+        "description": "It converts Z-Power into crystals that upgrade Rock-type moves to Rock-type Z-Moves."
+    },
+    {
+        "name": "Rocky Helmet",
+        "description": "An item to be held by a Pokémon. This helmet damages any attacker that makes direct contact with the holder."
+    },
+    {
+        "name": "Room Service",
+        "description": "An item to be held by a Pokémon. If Trick Room takes effect, this item will lower the holder's Speed stat."
+    },
+    {
+        "name": "Rose Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that boosts the power of the holder's Grass-type moves."
+    },
+    {
+        "name": "Rusted Shield",
+        "description": "It is said that a hero used this shield to halt a terrible disaster in ancient times. But it's grown rusty and worn."
+    },
+    {
+        "name": "Rusted Sword",
+        "description": "It is said that a hero used this sword to halt a terrible disaster in ancient times. But it's grown rusty and worn."
+    },
+    {
+        "name": "Safety Goggles",
+        "description": "An item to be held by a Pokémon. These goggles protect the holder from both sandstorm damage and the effects of powders and spores."
+    },
+    {
+        "name": "Scope Lens",
+        "description": "An item to be held by a Pokémon. It's a lens for scoping out weak points. It boosts the holder's critical-hit ratio."
+    },
+    {
+        "name": "Sea Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that boosts the power of the holder's Water-type moves."
+    },
+    {
+        "name": "Sharp Beak",
+        "description": "An item to be held by a Pokémon. It's a long, sharp beak that boosts the power of the holder's Flying-type moves."
+    },
+    {
+        "name": "Shed Shell",
+        "description": "An item to be held by a Pokémon. Hard and sturdy, this discarded carapace enables the holder to switch out of battle without fail."
+    },
+    {
+        "name": "Shell Bell",
+        "description": "An item to be held by a Pokémon. The holder restores a little HP to itself every time it inflicts damage with an attack."
+    },
+    {
+        "name": "Shock Drive",
+        "description": "A cassette to be held by Genesect. It changes Genesect's Techno Blast move so it becomes Electric type."
+    },
+    {
+        "name": "Silk Scarf",
+        "description": "An item to be held by a Pokémon. It's a sumptuous scarf that boosts the power of the holder's Normal-type moves."
+    },
+    {
+        "name": "Silver Powder",
+        "description": "An item to be held by a Pokémon. It's a shiny silver powder that boosts the power of the holder's Bug-type moves."
+    },
+    {
+        "name": "Sky Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of flight and boosts the power of the holder's Flying-type moves."
+    },
+    {
+        "name": "Smoke Ball",
+        "description": "An item to be held by a Pokémon. It enables the holder to flee from any wild Pokémon encounter without fail."
+    },
+    {
+        "name": "Smooth Rock",
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to a sandstorm, the storm will persist for longer than usual."
+    },
+    {
+        "name": "Snorlium Z",
+        "description": "It converts Z-Power into crystals that upgrade Snorlax's Giga Impact to a Z-Move."
+    },
+    {
+        "name": "Snowball",
+        "description": "An item to be held by a Pokémon. This single-use ball of snow boosts the Attack stat if the holder is damaged by an Ice-type move."
+    },
+    {
+        "name": "Soft Sand",
+        "description": "An item to be held by a Pokémon. This loose, silky sand boosts the power of the holder's Ground-type moves."
+    },
+    {
+        "name": "Solganium Z",
+        "description": "It converts Z-Power into crystals that upgrade Solgaleo's Sunsteel Strike to a Z-Move."
+    },
+    {
+        "name": "Soothe Bell",
+        "description": "An item to be held by a Pokémon. The comforting chime of this bell calms the holder, making it friendly."
+    },
+    {
+        "name": "Soul Dew",
+        "description": "A wondrous orb to be held by Latios or Latias. It boosts the power of their Psychic- and Dragon-type moves."
+    },
+    {
+        "name": "Spell Tag",
+        "description": "An item to be held by a Pokémon. It's a sinister, eerie tag that boosts the power of the holder's Ghost-type moves."
+    },
+    {
+        "name": "Splash Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of water and boosts the power of the holder's Water-type moves."
+    },
+    {
+        "name": "Spooky Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of ghosts and boosts the power of the holder's Ghost-type moves."
+    },
+    {
+        "name": "Star Sweet",
+        "description": "A star-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Steel Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of steel and will boost the power of a Steel-type move—but only once."
+    },
+    {
+        "name": "Steel Memory",
+        "description": "A memory disc that contains Steel-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Steelium Z",
+        "description": "It converts Z-Power into crystals that upgrade Steel-type moves to Steel-type Z-Moves."
+    },
+    {
+        "name": "Sticky Barb",
+        "description": "An item to be held by a Pokémon. It damages the holder every turn and may latch on to Pokémon that make direct contact with the holder."
+    },
+    {
+        "name": "Stone Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of rock and boosts the power of the holder's Rock-type moves."
+    },
+    {
+        "name": "Strawberry Sweet",
+        "description": "A strawberry-shaped sweet. When a Milcery holds this, it spins around happily."
+    },
+    {
+        "name": "Tapunium Z",
+        "description": "It converts Z-Power into crystals that upgrade the tapu's Nature's Madness to a Z-Move."
+    },
+    {
+        "name": "Terrain Extender",
+        "description": "An item to be held by a Pokémon. It extends the duration of terrain caused by the holder's move or Ability."
+    },
+    {
+        "name": "Thick Club",
+        "description": "An item to be held by Cubone or Marowak. This hard bone of unknown origin boosts their Attack stat."
+    },
+    {
+        "name": "Throat Spray",
+        "description": "An item to be held by Cubone or Marowak. This hard bone of unknown origin boosts their Attack stat."
+    },
+    {
+        "name": "Toxic Orb",
+        "description": "An item to be held by a Pokémon. It's a bizarre orb that exudes toxins when touched and will badly poison the holder during battle."
+    },
+    {
+        "name": "Toxic Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of poison and boosts the power of the holder's Poison-type moves."
+    },
+    {
+        "name": "Twisted Spoon",
+        "description": "An item to be held by a Pokémon. This spoon is imbued with telekinetic energy and boosts the power of the holder's Psychic-type moves."
+    },
+    {
+        "name": "Ultranecrozium Z",
+        "description": "It's a crystal that turns Necrozma fused with Solgaleo or Lunala into a new form."
+    },
+    {
+        "name": "Utility Umbrella",
+        "description": "An item to be held by a Pokémon. This sturdy umbrella protects the holder from the effects of rain and harsh sunlight."
+    },
+    {
+        "name": "Water Gem",
+        "description": "An item to be held by a Pokémon. This gem is imbued with the essence of water and will boost the power of a Water-type move—but only once."
+    },
+    {
+        "name": "Water Memory",
+        "description": "A memory disc that contains Water-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Waterium Z",
+        "description": "It converts Z-Power into crystals that upgrade Water-type moves to Water-type Z-Moves."
+    },
+    {
+        "name": "Wave Incense",
+        "description": "An item to be held by a Pokémon. This incense has a curious aroma that boosts the power of the holder's Water-type moves."
+    },
+    {
+        "name": "Weakness Policy",
+        "description": "An item to be held by a Pokémon. This policy boosts the holder's Attack and Sp. Atk. stats for a while if the holder is hit with a move it's weak to."
+    },
+    {
+        "name": "Wellspring Mask",
+        "description": "An item to be held by Ogerpon. This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Water type during battle."
+    },
+    {
+        "name": "White Herb",
+        "description": "An item to be held by a Pokémon. It will restore any lowered stat in battle—but only once."
+    },
+    {
+        "name": "Wide Lens",
+        "description": "An item to be held by a Pokémon. It's a magnifying lens that slightly boosts the accuracy of the holder's moves."
+    },
+    {
+        "name": "Wise Glasses",
+        "description": "An item to be held by a Pokémon. This thick pair of glasses slightly boosts the power of the holder's special moves."
+    },
+    {
+        "name": "Yellow Scarf",
+        "description": "When a Pokémon holds this during a contest, it looks even tougher than usual."
+    },
+    {
+        "name": "Zap Plate",
+        "description": "An item to be held by a Pokémon. This stone tablet is imbued with the essence of electricity and boosts the power of the holder's Electric-type moves."
+    },
+    {
+        "name": "Zoom Lens",
+        "description": "An item to be held by a Pokémon. When the holder acts after its target, its move will be more accurate than usual."
+    },
+    {
+        "name": "Aguav Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore some HP should it find itself in a pinch. But it will become confused if it hates the Berry's taste."
+    },
+    {
+        "name": "Apicot Berry",
+        "description": "If a Pokémon holds one of these Berries, its Sp. Def stat will be boosted should it find itself in a pinch."
+    },
+    {
+        "name": "Aspear Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to thaw itself after being frozen."
+    },
+    {
+        "name": "Babiri Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Steel-type move, the power of that move will be weakened."
+    },
+    {
+        "name": "Belue Berry",
+        "description": "Used to make Pokéblocks that will enhance Beauty. This Berry is rare in other regions."
+    },
+    {
+        "name": "Bluk Berry",
+        "description": "Used to make Pokéblocks that will enhance Beauty. Its blue flesh is dry if eaten."
+    },
+    {
+        "name": "Charti Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Rock-type move, the power of that move will be weakened."
+    },
+    {
+        "name": "Cheri Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to free itself from paralysis."
+    },
+    {
+        "name": "Chesto Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to shake off its drowsiness."
     },
     {
         "name": "",
