@@ -1382,7 +1382,27 @@
         function updateSearchResults(q) {
             resultsBox.innerHTML = '';
             let data = [];
-            if (overlayTarget === 'species') data = allPokemon;
+            if (overlayTarget === 'species') {
+                // Collect teammates recommended by current team members
+                const recommendedTeammates = new Set();
+                team.forEach((slot, idx) => {
+                    if (idx === currentSlot || !slot.species) return;
+                    const sKey = slot.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const dbSlot = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === sKey) || {};
+                    (dbSlot.Teammates || []).forEach(t => recommendedTeammates.add(t.toLowerCase()));
+                });
+                // Also: recommended teammates of the currently-focused slot's existing species
+                const curSpec = team[currentSlot] && team[currentSlot].species;
+                if (curSpec) {
+                    const curKey = curSpec.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const curDb = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === curKey) || {};
+                    (curDb.Teammates || []).forEach(t => recommendedTeammates.add(t.toLowerCase()));
+                }
+                data = allPokemon.map(pk => {
+                    const isRec = recommendedTeammates.has((pk.Name || '').toLowerCase());
+                    return { ...pk, eligible: isRec, rank: isRec ? 0 : Infinity };
+                });
+            }
             else if (overlayTarget === 'item') {
                 const p = team[currentSlot];
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1438,7 +1458,12 @@
             const filtered = data.filter(x =>
                 (x.Name || x.name || '').toLowerCase().includes(q.toLowerCase()) ||
                 (x.id && String(x.id).includes(q))
-            ).sort((a, b) => (b.eligible ? 1 : 0) - (a.eligible ? 1 : 0)).slice(0, 100);
+            ).sort((a, b) => {
+                const rankA = (a.rank !== undefined ? a.rank : (a.eligible ? 0 : Infinity));
+                const rankB = (b.rank !== undefined ? b.rank : (b.eligible ? 0 : Infinity));
+                if (rankA !== rankB) return rankA - rankB;
+                return 0;
+            }).slice(0, 100);
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
@@ -1458,6 +1483,21 @@
                     iconHtml = `<img src="${itemSprite}" style="width:24px; height:24px; object-fit:contain; vertical-align:middle; margin-right:5px;" onerror="handleItemError(this, '${name.replace(/'/g, "\\'")}')">`;
                 }
 
+                // Species: show sprite + type + recommended badge
+                if (overlayTarget === 'species') {
+                    const sprUrl = getSpriteUrl({ species: name, shiny: false });
+                    const t1 = (item.Type_1 || '').toLowerCase();
+                    const t2 = (item.Type_2 || '').toLowerCase();
+                    const typeIcon1 = t1 ? `<img src="../assets/type-icons/${t1}_type.png" style="height:12px; vertical-align:middle;" alt="${t1}">` : '';
+                    const typeIcon2 = t2 ? `<img src="../assets/type-icons/${t2}_type.png" style="height:12px; vertical-align:middle; margin-left:2px;" alt="${t2}">` : '';
+                    const recBadge = item.eligible ? `<span style="font-size:0.55rem; background:rgba(255,51,51,0.3); color:var(--primary-red); border:1px solid rgba(255,51,51,0.4); border-radius:3px; padding:1px 5px; display:block; margin-top:3px;">RECOMMENDED TEAMMATE</span>` : '';
+                    card.innerHTML = `
+                        <img src="${sprUrl}" onerror="this.style.display='none'" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto;">
+                        <div style="font-weight:900; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : ''}">${idStr}${name} ${starStr}</div>
+                        <div style="display:flex; justify-content:center; gap:2px; margin-top:2px;">${typeIcon1}${typeIcon2}</div>
+                        ${recBadge}
+                    `;
+                } else {
                 card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${starStr}</span></div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
                 
@@ -1485,6 +1525,8 @@
                 if (overlayTarget && overlayTarget.startsWith('move') && (item.short_descripton || item.desc)) {
                     card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_descripton || item.desc}</div>`;
                 }
+
+                } // end else (non-species)
 
                 card.onclick = () => selectItem(name);
                 resultsBox.appendChild(card);
