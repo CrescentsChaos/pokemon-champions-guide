@@ -133,9 +133,10 @@
         async function initPokedex() {
             try {
                 // Load Pokemon and Moves in parallel
+                const cb = '?v=' + Date.now();
                 const [pokeRes, movesRes] = await Promise.all([
-                    fetch('../assets/pokemon.json'),
-                    fetch('../assets/moves.json')
+                    fetch('../assets/pokemon.json' + cb),
+                    fetch('../assets/moves.json' + cb)
                 ]);
 
                 allPokemon = await pokeRes.json();
@@ -238,13 +239,20 @@
         }
 
         function showPokemonDetails(pokemon) {
-            // Find moves of the same types
-            const compatibleMoves = allMoves.filter(m =>
-            (m.type && (m.type.toLowerCase() === pokemon.Type_1.toLowerCase() ||
-                (pokemon.Type_2 && m.type.toLowerCase() === pokemon.Type_2.toLowerCase())))
-            ).slice(0, 10); // Show top 10 relevant moves
+            let movesToShow = [];
+            if (pokemon.Moves && pokemon.Moves.length > 0) {
+                movesToShow = pokemon.Moves.map(mName => {
+                    const searchKey = mName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    return allMoves.find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === searchKey) || { name: mName, type: 'Normal', power: '--', accuracy: '--', pp: '--', short_description: 'No description available.' };
+                });
+            } else {
+                movesToShow = allMoves.filter(m =>
+                (m.type && (m.type.toLowerCase() === pokemon.Type_1.toLowerCase() ||
+                    (pokemon.Type_2 && m.type.toLowerCase() === pokemon.Type_2.toLowerCase())))
+                ).slice(0, 10);
+            }
 
-            const movesHtml = compatibleMoves.length > 0 ? compatibleMoves.map(m => `
+            const movesHtml = movesToShow.length > 0 ? movesToShow.map(m => `
                 <div class="move-card">
                     <div class="move-header">
                         <div class="move-name-wrap">
@@ -257,9 +265,11 @@
                             <span class="move-stat-item">PP: <b>${m.pp || '--'}</b></span>
                         </div>
                     </div>
-                    <p class="move-description">${m.short_description || 'No description available.'}</p>
+                    <p class="move-description">${m.short_description || m.desc || 'No description available.'}</p>
                 </div>
-            `).join('') : '<p>No specific moves found for these types.</p>';
+            `).join('') : '<p>No moves found.</p>';
+
+            const abilitiesHtml = pokemon.Ability && pokemon.Ability.length > 0 ? pokemon.Ability.map(a => `<span class="special-badge" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">${a}</span>`).join('') : '';
 
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
@@ -295,6 +305,10 @@
                         <div class="modal-badge-group">
                             <img src="../assets/type-icons/${pokemon.Type_1.toLowerCase()}_type.png" class="type-icon" style="height: 32px;" alt="${pokemon.Type_1}">
                             ${pokemon.Type_2 ? `<img src="../assets/type-icons/${pokemon.Type_2.toLowerCase()}_type.png" class="type-icon" style="height: 32px;" alt="${pokemon.Type_2}">` : ''}
+                        </div>
+                        
+                        <div class="modal-badge-group" style="margin-top: 15px;">
+                            ${abilitiesHtml}
                         </div>
 
                         <div class="modal-badge-group" style="margin-top: 15px;">

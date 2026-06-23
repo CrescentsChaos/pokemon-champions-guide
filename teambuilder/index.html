@@ -151,8 +151,8 @@
         .builder-input,
         select {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             padding: 14px 20px;
             color: white;
@@ -237,8 +237,9 @@
         }
 
         .base-val {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.95rem;
+            color: white;
+            font-weight: 800;
             text-align: center;
         }
 
@@ -265,13 +266,14 @@
 
         .ev-input,
         .iv-input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 5px;
             color: white;
             padding: 4px;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 800;
         }
 
         .actual-stat {
@@ -1065,10 +1067,11 @@
 
         async function init() {
             try {
+                const cb = '?v=' + Date.now();
                 const [p, m, i] = await Promise.all([
-                    fetch('../assets/pokemon.json').then(r => r.json()),
-                    fetch('../assets/moves.json').then(r => r.json()),
-                    fetch('../assets/items.json').then(r => r.json())
+                    fetch('../assets/pokemon.json' + cb).then(r => r.json()),
+                    fetch('../assets/moves.json' + cb).then(r => r.json()),
+                    fetch('../assets/items.json' + cb).then(r => r.json())
                 ]);
                 allPokemon = p;
                 pokemon_database = p;
