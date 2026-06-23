@@ -34,7 +34,7 @@
         .team-tab {
             background: var(--glass-bg);
             border: var(--glass-border);
-            border-radius: 12px;
+            border-radius: 4px;
             padding: 15px 10px;
             display: flex;
             flex-direction: column;
@@ -107,8 +107,8 @@
         .pokemon-config {
             background: var(--glass-bg);
             border: var(--glass-border);
-            border-radius: 24px;
-            padding: 30px;
+            border-radius: 6px;
+            padding: 24px;
             backdrop-filter: blur(10px);
         }
 
@@ -122,7 +122,7 @@
             width: 150px;
             height: 150px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
+            border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -153,8 +153,8 @@
             width: 100%;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 14px 20px;
+            border-radius: 4px;
+            padding: 10px 15px;
             color: white;
             font-size: 1rem;
             outline: none;
@@ -193,7 +193,7 @@
         .pokemon-config {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.6));
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            border-radius: 6px;
             padding: 1.2rem !important;
             backdrop-filter: blur(15px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -218,8 +218,8 @@
         .stat-rows {
             background: var(--glass-bg);
             border: var(--glass-border);
-            border-radius: 24px;
-            padding: 30px;
+            border-radius: 6px;
+            padding: 24px;
         }
 
         .stat-row {
@@ -313,7 +313,7 @@
         .overlay-content {
             background: var(--glass-bg);
             border: var(--glass-border);
-            border-radius: 30px;
+            border-radius: 6px;
             width: 90%;
             max-width: 800px;
             max-height: 80vh;
@@ -331,7 +331,7 @@
         .search-item {
             padding: 15px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -1390,7 +1390,11 @@
                 if (eligible.length > 0) {
                     data = eligible.map(n => ({ name: n, description: '✅ Eligible Ability', eligible: true }));
                 } else {
-                    data = [];
+                    const allAbilitiesSet = new Set();
+                    (allPokemon || []).forEach(pk => {
+                        if (pk.Ability) pk.Ability.forEach(a => allAbilitiesSet.add(a));
+                    });
+                    data = Array.from(allAbilitiesSet).map(a => ({ name: a, description: 'Ability' }));
                 }
             } else if (overlayTarget && overlayTarget.startsWith('move')) {
                 const p = team[currentSlot];
@@ -1430,7 +1434,31 @@
 
                 card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${item.eligible ? '⭐' : ''}</span></div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
-                if (item.description) card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
+                
+                if (overlayTarget && overlayTarget.startsWith('move')) {
+                    const typeIcon = item.type ? `<img src="../assets/type-icons/${item.type.toLowerCase()}_type.png" style="height:14px; vertical-align:middle; margin-right:4px;" alt="${item.type}">` : '';
+                    const classIcon = item.damage_class ? `<span style="font-size:0.6rem; background:rgba(255,255,255,0.1); padding:2px 4px; border-radius:2px; vertical-align:middle;">${item.damage_class.toUpperCase()}</span>` : '';
+                    
+                    const pwr = item.power || '--';
+                    const acc = item.accuracy || '--';
+                    const pp = item.pp || '--';
+                    
+                    card.innerHTML += `
+                        <div style="margin-top:5px; display:flex; justify-content:center; gap:3px; align-items:center;">
+                            ${typeIcon}
+                            ${classIcon}
+                        </div>
+                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.7); font-family:monospace; margin-top:6px;">
+                            PWR: ${pwr} | ACC: ${acc} | PP: ${pp}
+                        </div>
+                    `;
+                } else if (item.description) {
+                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
+                }
+
+                if (overlayTarget && overlayTarget.startsWith('move') && (item.short_description || item.desc)) {
+                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_description || item.desc}</div>`;
+                }
 
                 card.onclick = () => selectItem(name);
                 resultsBox.appendChild(card);
