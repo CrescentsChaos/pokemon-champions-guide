@@ -1472,18 +1472,57 @@
                 }
             } else if (overlayTarget && overlayTarget.startsWith('move')) {
                 const p = team[currentSlot];
-                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const speciesSearch = (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
                 const eligibleMoves = dbRef.Moves || [];
+
+                const moveFreq = new Map();
+                if (p && p.species) {
+                    const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
+                    speciesBuilds.forEach(b => {
+                        try {
+                            const parsed = parsePaste(b.build)[0];
+                            if (parsed && parsed.moves) {
+                                parsed.moves.forEach(m => {
+                                    if (!m) return;
+                                    const mKey = m.toLowerCase().replace(/[^a-z0-9]/g, '');
+                                    moveFreq.set(mKey, (moveFreq.get(mKey) || 0) + 1);
+                                });
+                            }
+                        } catch(e){}
+                    });
+                }
 
                 if (eligibleMoves.length > 0) {
                     data = eligibleMoves.map(n => {
                         const searchKey = n.toLowerCase().replace(/[^a-z0-9]/g, '');
                         const mData = movesMap[searchKey] || {};
-                        return { ...mData, name: n, Name: n, eligible: true, description: '✅ Eligible Move' };
+                        const freq = moveFreq.get(searchKey) || 0;
+                        const isRec = freq > 0;
+                        
+                        return { 
+                            ...mData, 
+                            name: n, 
+                            Name: n, 
+                            eligible: true,
+                            isRecommended: isRec,
+                            rank: isRec ? -freq : Infinity, 
+                            description: isRec ? `✨ Recommended Move (${freq} build${freq>1?'s':''})` : '✅ Eligible Move' 
+                        };
                     });
                 } else {
-                    data = allMoves;
+                    data = allMoves.map(mData => {
+                        const searchKey = (mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const freq = moveFreq.get(searchKey) || 0;
+                        const isRec = freq > 0;
+                        return {
+                            ...mData,
+                            isRecommended: isRec,
+                            eligible: isRec,
+                            rank: isRec ? -freq : Infinity,
+                            description: isRec ? `✨ Recommended Move (${freq} build${freq>1?'s':''})` : (mData.description || '')
+                        };
+                    });
                 }
             } else if (overlayTarget === 'build') {
                 const p = team[currentSlot];
@@ -1529,6 +1568,9 @@
                 if (overlayTarget !== 'ability' && !overlayTarget.startsWith('move')) {
                     idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
                     starStr = item.eligible && overlayTarget !== 'species' ? '⭐' : '';
+                }
+                if (overlayTarget && overlayTarget.startsWith('move') && item.isRecommended) {
+                    starStr = '⭐';
                 }
                 
                 let iconHtml = '';
