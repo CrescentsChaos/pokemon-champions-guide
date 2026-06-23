@@ -1401,9 +1401,11 @@
                 tab.onclick = () => switchSlot(i);
 
                 const p = team[i];
+                const baseSprite = getSpriteUrl(p);
+                const megaUrl = getMegaSpriteUrl(p);
                 tab.innerHTML = `
                     <div class="preview-sprite-box">
-                        <img src="${getSpriteUrl(p)}" alt="${p.species}" class="preview-sprite" id="tab-sprite-${i}" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                        <img src="${baseSprite}" alt="${p.species}" class="preview-sprite ${megaUrl ? 'mega-toggle' : ''}" id="tab-sprite-${i}" ${megaUrl ? `data-base="${baseSprite}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                     </div>
                     <div class="tab-info">
                         <span class="tab-name" id="tab-name-${i}">${p.nickname ? p.nickname : (p.species || 'Empty')}</span>
@@ -2093,7 +2095,7 @@
         searchInput.oninput = (e) => updateSearchResults(e.target.value);
 
         function handleSpriteError(img, species, shiny) {
-            if (!species || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
+            if (!species || img.dataset.fallbackState === 'mega_only') return;
 
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
@@ -2105,7 +2107,6 @@
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
                 else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
 
-                // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
                 const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
@@ -2114,11 +2115,26 @@
                 return;
             }
 
+            if (img.dataset.fallbackState === 'final') {
+                if (img.dataset.mega) {
+                    img.src = img.dataset.mega;
+                    img.dataset.fallbackState = 'mega_only';
+                    img.classList.remove('mega-toggle');
+                } else {
+                    img.dataset.fallbackState = 'dead';
+                }
+                return;
+            }
+
             img.dataset.fallbackState = 'final';
-            img.dataset.fallback = 'true'; // Prevent infinite loops
-            img.classList.remove('mega-toggle');
+            
+            // If it's a base sprite that failed, update the dataset base to Smogon
             const folder = shiny ? 'xy-shiny' : 'xy';
-            img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+            const smogonUrl = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+            img.src = smogonUrl;
+            if (img.classList.contains('mega-toggle') && img.dataset.currentSrc === 'base') {
+                img.dataset.base = smogonUrl;
+            }
         }
 
         function getMegaSpriteUrl(p) {
@@ -2332,7 +2348,7 @@
             const baseSprite = getSpriteUrl(p);
             bigSprite.dataset.fallback = 'false';
             bigSprite.src = baseSprite;
-            bigSprite.className = megaUrl ? 'mega-toggle' : '';
+            bigSprite.className = megaUrl ? 'big-sprite mega-toggle' : 'big-sprite';
             if (megaUrl) {
                 bigSprite.dataset.base = baseSprite;
                 bigSprite.dataset.mega = megaUrl;
@@ -2347,8 +2363,9 @@
 
             const tabSprite = document.getElementById(`tab-sprite-${currentSlot}`);
             if (tabSprite) {
+                tabSprite.dataset.fallback = 'false';
                 tabSprite.src = baseSprite;
-                tabSprite.className = megaUrl ? 'mega-toggle tab-img-sprite' : 'tab-img-sprite';
+                tabSprite.className = megaUrl ? 'preview-sprite mega-toggle' : 'preview-sprite';
                 if (megaUrl) {
                     tabSprite.dataset.base = baseSprite;
                     tabSprite.dataset.mega = megaUrl;
