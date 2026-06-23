@@ -348,7 +348,9 @@
             margin-bottom: 20px;
         }
 
-        /* Responsive Breakpoints */
+        /* =============================================
+           RESPONSIVE BREAKPOINTS
+        ============================================= */
         @media (max-width: 1200px) {
             .builder-container {
                 padding: 5rem 20px;
@@ -366,115 +368,322 @@
 
         @media (max-width: 768px) {
             .builder-container {
-                padding: 4rem 15px;
+                padding: 4.5rem 12px 2rem;
             }
 
             .config-header {
-                gap: 15px;
-                margin-bottom: 20px;
+                gap: 12px;
+                margin-bottom: 16px;
             }
 
             .big-sprite-box {
-                width: 120px;
-                height: 120px;
+                width: 110px;
+                height: 110px;
+                flex-shrink: 0;
             }
 
             .big-sprite {
-                width: 90px;
-                height: 90px;
+                width: 85px;
+                height: 85px;
             }
 
             .stat-row {
-                grid-template-columns: 70px 35px 1fr 50px 50px;
-                gap: 10px;
+                grid-template-columns: 65px 32px 1fr 48px 48px;
+                gap: 8px;
             }
 
             .team-tab {
-                min-width: 130px;
-                padding: 8px 15px;
+                min-width: 100px;
+                padding: 8px 10px;
             }
 
             .overlay-content {
-                padding: 25px;
-                width: 95%;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .import-export-row {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .config-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .big-sprite-box {
-                width: 100%;
-                height: 180px;
-            }
-
-            .big-sprite {
-                width: 150px;
-                height: 150px;
-            }
-
-            .stat-row {
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas: "label actual" "slider slider" "base ev";
-                gap: 10px;
-                padding: 15px;
-                background: rgba(255, 255, 255, 0.02);
-                border-radius: 12px;
-                margin-bottom: 15px;
-            }
-
-            .stat-label {
-                grid-area: label;
-            }
-
-            .actual-stat {
-                grid-area: actual;
-            }
-
-            .slider-wrap {
-                grid-area: slider;
-                margin: 5px 0;
-            }
-
-            .base-val {
-                grid-area: base;
-                text-align: left;
-            }
-
-            .ev-input {
-                grid-area: ev;
-                width: 60px !important;
-                margin-left: auto;
-            }
-
-            .moves-grid {
-                grid-template-columns: 1fr;
+                padding: 20px 16px;
+                width: 96%;
+                max-height: 88vh;
+                border-radius: 16px;
             }
 
             .search-results {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 10px;
             }
         }
 
-        @media (max-width: 500px) {
-            .team-tab {
-                min-width: 110px;
-                padding: 6px 12px;
-                font-size: 0.75rem;
+        /* =============================================
+           MOBILE: Full professional layout overhaul
+        ============================================= */
+        @media (max-width: 600px) {
+            /* --- Top bar / Import-export row --- */
+            .import-export-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .import-export-row > div {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+            .import-export-row > div .analyze-btn,
+            .import-export-row > button.analyze-btn {
+                padding: 10px 6px !important;
+                font-size: 0.72rem !important;
+                text-align: center;
+                width: 100%;
+                border-radius: 8px;
             }
 
-            .tab-sprite {
-                width: 30px;
-                height: 30px;
+            /* --- Team tabs strip --- */
+            .team-tabs {
+                gap: 6px;
+                padding-bottom: 6px;
+                margin-bottom: 16px;
+                /* Smooth scroll snap */
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+            .team-tab {
+                min-width: 80px;
+                max-width: 90px;
+                padding: 8px 6px;
+                border-radius: 10px;
+                scroll-snap-align: start;
+                gap: 4px;
+            }
+            .tab-sprite img, .preview-sprite {
+                width: 36px !important;
+                height: 36px !important;
+            }
+            .tab-name {
+                font-size: 0.72rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 76px;
+            }
+            .tab-role {
+                font-size: 0.6rem;
+            }
+
+            /* --- Builder main layout: single column stacked --- */
+            .builder-main {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            /* --- Pokémon config card --- */
+            .pokemon-config {
+                padding: 16px !important;
+                border-radius: 14px !important;
+                min-height: unset !important;
+            }
+            .pokemon-config:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            /* --- Config header: sprite left, fields right --- */
+            .config-header {
+                flex-direction: row !important;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+            .big-sprite-box {
+                width: 90px !important;
+                height: 90px !important;
+                flex-shrink: 0;
+                border-radius: 12px;
+            }
+            .big-sprite {
+                width: 72px !important;
+                height: 72px !important;
+            }
+            /* Fields next to sprite */
+            .config-header > div[style*="flex-grow"] {
+                flex-grow: 1;
+                min-width: 0;
+            }
+
+            /* Species field full-width */
+            #species-input {
+                font-size: 0.95rem;
+                padding: 8px 10px;
+            }
+
+            /* Nickname + Level: side by side */
+            .config-header > div > div[style*="grid-template-columns: 1fr 100px"] {
+                grid-template-columns: 1fr 70px !important;
+                gap: 8px !important;
+            }
+
+            /* Gender + Shiny: side by side */
+            .config-header > div > div[style*="grid-template-columns: 1fr 1fr"] {
+                gap: 8px !important;
+            }
+
+            /* --- Item + Ability --- */
+            div[style*="grid-template-columns: 1fr 1fr"] {
+                gap: 8px;
+            }
+
+            /* --- Builder inputs global --- */
+            .builder-input, select {
+                padding: 9px 10px;
+                font-size: 0.88rem;
+                border-radius: 8px;
+            }
+            .input-label {
+                font-size: 0.65rem;
+                margin-bottom: 4px;
+            }
+            .input-group {
+                margin-bottom: 10px;
+            }
+
+            /* --- Item sprite preview --- */
+            #item-sprite-preview {
+                width: 26px !important;
+                height: 26px !important;
+            }
+
+            /* --- Moves: 2-column grid on mobile --- */
+            .moves-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px;
+                margin-top: 12px;
+            }
+
+            /* --- Stat rows section --- */
+            .stat-rows {
+                padding: 14px !important;
+                border-radius: 14px;
+            }
+
+            /* Header: label + nature picker stacked neatly */
+            .stat-rows > div[style*="justify-content: space-between"] {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                margin-bottom: 14px !important;
+            }
+            #nature-input {
+                width: 100% !important;
+                font-size: 0.85rem !important;
+                padding: 8px 10px !important;
+            }
+
+            /* Preset chips: compact wrap */
+            .preset-container {
+                padding: 10px;
+                gap: 6px;
+                margin-bottom: 14px;
+                border-radius: 10px;
+            }
+            .preset-chip {
+                padding: 5px 10px;
+                font-size: 0.65rem;
+                border-radius: 100px;
+            }
+
+            /* Individual stat rows: clean card layout */
+            .stat-row {
+                display: grid;
+                grid-template-columns: 60px 36px 1fr 52px 48px;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 8px;
+                padding: 0;
+                background: transparent;
+                border-radius: 0;
+            }
+            .stat-label {
+                font-size: 0.78rem;
+            }
+            .base-val {
+                font-size: 0.82rem;
+                text-align: center;
+            }
+            .ev-input {
+                width: 100% !important;
+                padding: 4px 2px;
+                font-size: 0.8rem;
+            }
+            .actual-stat {
+                font-size: 0.88rem;
+                text-align: right;
+            }
+            .ev-remaining {
+                font-size: 0.75rem;
+                margin-top: 10px;
+            }
+
+            /* --- Overlays: full-screen professional modal --- */
+            .overlay-content {
+                width: 100% !important;
+                max-height: 92vh !important;
+                padding: 16px !important;
+                border-radius: 20px 20px 0 0 !important;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                top: auto !important;
+                transform: none !important;
+            }
+            .overlay {
+                align-items: flex-end !important;
+            }
+            #overlay-title {
+                font-size: 1.1rem !important;
+                margin-bottom: 10px;
+            }
+            #overlay-search {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+                margin-top: 10px;
+            }
+            .search-results {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+                gap: 8px !important;
+                margin-top: 12px;
+            }
+            .search-item {
+                padding: 10px 8px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .builder-container {
+                padding: 4rem 8px 2rem;
+            }
+            .team-tab {
+                min-width: 72px;
+                max-width: 80px;
+                padding: 6px 4px;
+            }
+            .tab-name {
+                font-size: 0.65rem;
+                max-width: 68px;
+            }
+            .config-header {
+                gap: 8px;
+            }
+            .big-sprite-box {
+                width: 76px !important;
+                height: 76px !important;
+            }
+            .big-sprite {
+                width: 60px !important;
+                height: 60px !important;
+            }
+            .moves-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .stat-row {
+                grid-template-columns: 55px 32px 1fr 46px 42px;
+                gap: 4px;
             }
         }
 
