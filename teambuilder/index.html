@@ -763,28 +763,31 @@
                                 <input type="text" id="species-input" class="builder-input"
                                     placeholder="Enter Pokemon Name...">
                             </div>
-                            <div class="input-group">
-                                <span class="input-label">Nickname</span>
-                                <input type="text" id="nickname-input" class="builder-input" placeholder="No Nickname">
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <div class="input-group" style="width: 30%;">
-                                    <span class="input-label">Level</span>
-                                    <input type="number" id="level-input" class="builder-input" value="50">
+                            <div style="display: grid; grid-template-columns: 1fr 100px; gap: 15px;">
+                                <div class="input-group">
+                                    <span class="input-label">Nickname</span>
+                                    <input type="text" id="nickname-input" class="builder-input" placeholder="No Nickname">
                                 </div>
-                                <div class="input-group" style="flex-grow: 1;">
-                                    <span class="input-label">Gender / Shiny</span>
-                                    <div style="display: flex; gap: 5px;">
-                                        <select id="shiny-input" class="builder-input" style="width: 50%;">
-                                            <option value="no">Normal</option>
-                                            <option value="yes">Shiny ✨</option>
-                                        </select>
-                                        <select id="gender-input" class="builder-input" style="width: 50%;">
-                                            <option value="-">-</option>
-                                            <option value="M">Male</option>
-                                            <option value="F">Female</option>
-                                        </select>
-                                    </div>
+                                <div class="input-group">
+                                    <span class="input-label">Level</span>
+                                    <input type="number" id="level-input" class="builder-input" value="50" min="1" max="100">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div class="input-group">
+                                    <span class="input-label">Gender</span>
+                                    <select id="gender-input" class="builder-input">
+                                        <option value="-">Any / No Gender</option>
+                                        <option value="M">Male ♂</option>
+                                        <option value="F">Female ♀</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-label">Shiny</span>
+                                    <select id="shiny-input" class="builder-input">
+                                        <option value="no">Normal</option>
+                                        <option value="yes">Shiny ✨</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -1380,8 +1383,17 @@
             resultsBox.innerHTML = '';
             let data = [];
             if (overlayTarget === 'species') data = allPokemon;
-            else if (overlayTarget === 'item') data = allItems;
-            else if (overlayTarget === 'ability') {
+            else if (overlayTarget === 'item') {
+                const p = team[currentSlot];
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const recommendedItems = dbRef.Items || [];
+                
+                data = allItems.map(item => {
+                    const isRecommended = recommendedItems.includes(item.name) || recommendedItems.includes(item.Name);
+                    return { ...item, eligible: isRecommended, description: isRecommended ? '✨ Recommended Item' : item.description };
+                });
+            } else if (overlayTarget === 'ability') {
                 const p = team[currentSlot];
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
@@ -1424,7 +1436,13 @@
                 const card = document.createElement('div');
                 card.className = 'search-item';
                 const name = item.Name || item.name;
-                const idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
+                
+                let idStr = '';
+                let starStr = '';
+                if (overlayTarget !== 'ability' && !overlayTarget.startsWith('move')) {
+                    idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
+                    starStr = item.eligible ? '⭐' : '';
+                }
                 
                 let iconHtml = '';
                 if (overlayTarget === 'item') {
@@ -1432,7 +1450,7 @@
                     iconHtml = `<img src="${itemSprite}" style="width:24px; height:24px; object-fit:contain; vertical-align:middle; margin-right:5px;" onerror="handleItemError(this, '${name.replace(/'/g, "\\'")}')">`;
                 }
 
-                card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${item.eligible ? '⭐' : ''}</span></div>`;
+                card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${starStr}</span></div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
                 
                 if (overlayTarget && overlayTarget.startsWith('move')) {
@@ -1456,8 +1474,8 @@
                     card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
                 }
 
-                if (overlayTarget && overlayTarget.startsWith('move') && (item.short_description || item.desc)) {
-                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_description || item.desc}</div>`;
+                if (overlayTarget && overlayTarget.startsWith('move') && (item.short_descripton || item.desc)) {
+                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_descripton || item.desc}</div>`;
                 }
 
                 card.onclick = () => selectItem(name);
