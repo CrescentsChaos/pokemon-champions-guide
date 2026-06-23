@@ -26,13 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="${prefix}calc/" data-page="calc">Calc</a>
                     <a href="${prefix}compare/" data-page="compare">Compare</a>
                     <a href="${prefix}counter/" data-page="counter">Counters</a>
-                    <div class="mobile-only" style="margin-top: 2rem;">
-                        <a href="${prefix}teambuilder/" class="btn" style="width: 100%; text-align: center;">Build Team</a>
-                    </div>
                 </nav>
-                <div class="header-action desktop-only">
-                    <a href="${prefix}teambuilder/" class="btn" style="padding: 0.6rem 1.2rem; font-size: 0.75rem;">Build Team</a>
-                </div>
             </div>
         </header>
     `;
