@@ -2362,9 +2362,14 @@
                 const slider = document.querySelector(`.ev-slider[data-stat="${key}"]`);
                 const input = document.querySelector(`.ev-input[data-stat="${key}"]`);
                 if (slider) slider.value = ev;
-                if (input) input.value = ev;
+                if (input) {
+                    const maxEV = isChampionsMode ? 32 : 252;
+                    input.max = maxEV;
+                    input.value = ev;
+                }
                 const fill = document.getElementById(`fill-${key}`);
-                if (fill) fill.style.width = (ev / 252 * 100) + '%';
+                const maxForFill = isChampionsMode ? 32 : 252;
+                if (fill) fill.style.width = (ev / maxForFill * 100) + '%';
 
                 // Stat Color highlighting for nature
                 const nature = natureMap[p.nature] || {};
@@ -2378,7 +2383,7 @@
             natureIn.style.color = natMeta.color;
             natureIn.style.borderColor = natMeta.color + '44';
             natureIn.style.boxShadow = `0 0 15px ${natMeta.color}22`;
-            document.getElementById('rem-ev').textContent = 508 - totalEVs;
+            document.getElementById('rem-ev').textContent = (isChampionsMode ? 66 : 508) - totalEVs;
 
             // Moves Update
             p.moves.forEach((m, i) => {
