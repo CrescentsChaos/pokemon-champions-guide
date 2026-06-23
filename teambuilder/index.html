@@ -1376,7 +1376,8 @@
                 type === 'species' ? 'Select Pokemon' :
                     type === 'item' ? 'Select Item' :
                         type === 'nature' ? 'Select Nature' :
-                            type === 'ability' ? 'Select Ability' : 'Select Move';
+                            type === 'ability' ? 'Select Ability' : 
+                                type === 'build' ? 'Select Pre-made Build' : 'Select Move';
 
             updateSearchResults('');
         }
@@ -1484,6 +1485,26 @@
                 } else {
                     data = allMoves;
                 }
+            } else if (overlayTarget === 'build') {
+                const p = team[currentSlot];
+                if (p && p.species) {
+                    const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
+                    data = speciesBuilds.map((b, idx) => {
+                        let parsed = null;
+                        try { parsed = parsePaste(b.build)[0]; } catch(e){}
+                        return {
+                            id: b.id || idx,
+                            name: `${b.format || 'Standard'} Build`,
+                            Name: `${b.format || 'Standard'} Build`,
+                            description: parsed ? `<span style="color:#00ffcc">${parsed.item ? '@ ' + parsed.item : 'No Item'}</span> | <span style="color:#ffeb3b">${parsed.ability || 'No Ability'}</span><br><span style="color:#fff">${parsed.moves.join(' / ')}</span>` : 'Invalid Build',
+                            buildObj: parsed,
+                            eligible: true,
+                            rank: idx
+                        };
+                    }).filter(x => x.buildObj);
+                } else {
+                    data = [];
+                }
             } else {
                 data = allMoves;
             }
@@ -1561,7 +1582,28 @@
 
                 } // end else (non-species)
 
-                card.onclick = () => selectItem(name);
+                if (overlayTarget === 'build') {
+                    card.innerHTML = `<div style="font-weight:900; color:#e040fb; margin-bottom: 5px;">✨ ${item.name}</div>
+                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.8); line-height: 1.4;">${item.description}</div>`;
+                    card.onclick = () => {
+                        const b = item.buildObj;
+                        const t = team[currentSlot];
+                        if (b.item) t.item = b.item;
+                        if (b.ability) t.ability = b.ability;
+                        if (b.nature) t.nature = b.nature;
+                        t.evs = JSON.parse(JSON.stringify(b.evs));
+                        t.ivs = JSON.parse(JSON.stringify(b.ivs));
+                        t.moves = [...b.moves];
+                        while(t.moves.length < 4) t.moves.push('');
+                        if (b.tera) t.tera = b.tera;
+                        
+                        overlay.style.display = 'none';
+                        syncUI();
+                    };
+                } else {
+                    card.onclick = () => selectItem(name);
+                }
+                
                 resultsBox.appendChild(card);
             });
         }
@@ -2005,6 +2047,21 @@
 
             const p = team[currentSlot];
             const customBuild = getBuildRecommendation(p);
+
+            const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
+            if (speciesBuilds.length > 0) {
+                const browseChip = document.createElement('div');
+                browseChip.className = 'preset-chip';
+                browseChip.style.background = 'rgba(156, 39, 176, 0.2)';
+                browseChip.style.borderColor = '#9c27b0';
+                browseChip.style.color = '#e1bee7';
+                browseChip.textContent = '📚 Browse Pre-made Builds';
+                browseChip.onclick = (e) => {
+                    e.stopPropagation();
+                    openSearch('build');
+                };
+                container.appendChild(browseChip);
+            }
 
             if (customBuild) {
                 const chip = document.createElement('div');
