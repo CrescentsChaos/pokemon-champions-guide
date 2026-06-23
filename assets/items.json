@@ -1012,247 +1012,631 @@
         "description": "If a Pokémon holds one of these Berries, it will be able to shake off its drowsiness."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Chilan Berry",
+        "description": "If a Pokémon holding this Berry is hit with a Normal-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Chople Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fighting-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Coba Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Flying-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Colbur Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Dark-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Cornn Berry",
+        "description": "Used to make Pokéblocks that will enhance Beauty. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Custap Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to act faster should it find itself in a pinch—but only for the next move it uses."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Durin Berry",
+        "description": "Used to make Pokéblocks that will enhance Cleverness. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Enigma Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to regain some HP if it is hit with a supereffective move."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Figy Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore some HP should it find itself in a pinch. But it will become confused if it hates the Berry's taste."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Ganlon Berry",
+        "description": "If a Pokémon holds one of these Berries, its Defense stat will be boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Golden Nanab Berry",
+        "description": "A Berry that drastically calms Pokémon you're trying to catch when given to them."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Golden Pinap Berry",
+        "description": "A Berry that makes you drastically more likely to get an item when given to Pokémon you're trying to catch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Golden Razz Berry",
+        "description": "A Berry that makes it drastically easier to catch Pokémon when given to them."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Grepa Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its Sp. Def stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Haban Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Dragon-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Hondew Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its Sp. Atk stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Hopo Berry",
+        "description": "A Berry that can be fed to a Pokémon to restore its PP. If a wild Pokémon eats one of these Berries, that Pokémon's reactions will be dulled."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Iapapa Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore some HP should it find itself in a pinch. But it will become confused if it hates the Berry's taste."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Jaboca Berry",
+        "description": "If a Pokémon holding this Berry is hit with a physical move, the attacker will also take damage."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Kasib Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ghost-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Kebia Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Poison-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Kee Berry",
+        "description": "If a Pokémon holding this Berry is hit with a physical move, the holder's Defense stat will be boosted."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Kelpsy Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its Attack stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Lansat Berry",
+        "description": "If a Pokémon holds one of these Berries, its critical-hit ratio will be boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Leppa Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 PP to a move."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Liechi Berry",
+        "description": "If a Pokémon holds one of these Berries, its Attack stat will be boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Lum Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of any status condition it may have."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Mago Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore some HP should it find itself in a pinch. But it will become confused if it hates the Berry's taste."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Magost Berry",
+        "description": "Used to make Pokéblocks that will enhance Cuteness. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Maranga Berry",
+        "description": "If a Pokémon holding this Berry is hit with a special move, the holder's Sp. Def stat will be boosted."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Micle Berry",
+        "description": "If a Pokémon holds one of these Berries, its accuracy will be boosted should it find itself in a pinch—but only for the next move it uses."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Nanab Berry",
+        "description": "Used to make Pokéblocks that will enhance Cuteness. Its pink flesh is sweet if eaten."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Nomel Berry",
+        "description": "Used to make Pokéblocks that will enhance Toughness. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Occa Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fire-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Oran Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 HP to itself."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pamtre Berry",
+        "description": "Used to make Pokéblocks that will enhance Beauty. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Passho Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Water-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Payapa Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Psychic-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pecha Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to lift the effects of being poisoned from itself."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Persim Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of confusion."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Petaya Berry",
+        "description": "If a Pokémon holds one of these Berries, its Sp. Atk stat will be boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pinap Berry",
+        "description": "Used to make Pokéblocks that will enhance Toughness. Its yellow flesh is sour if eaten."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Pomeg Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its HP stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Qualot Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its Defense stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Rabuta Berry",
+        "description": "Used to make Pokéblocks that will enhance Cleverness. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Rawst Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of a burn."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Razz Berry",
+        "description": "Used to make Pokéblocks that will enhance Coolness. Its red flesh is spicy if eaten."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Rindo Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Grass-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Roseli Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fairy-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Rowap Berry",
+        "description": "If a Pokémon holding this Berry is hit with a special move, the attacker will also take damage."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Salac Berry",
+        "description": "If a Pokémon holds one of these Berries, its Speed stat will be boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Shuca Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ground-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Silver Nanab Berry",
+        "description": "A Berry that calms Pokémon you're trying to catch when given to them."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Silver Pinap Berry",
+        "description": "A Berry that makes you more likely to get an item when given to Pokémon you're trying to catch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Silver Razz Berry",
+        "description": "A Berry that makes it easier to catch Pokémon when given to them."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Sitrus Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore a small amount of HP to itself."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Spelon Berry",
+        "description": "Used to make Pokéblocks that will enhance Cuteness. This Berry is rare in other regions."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Starf Berry",
+        "description": "If a Pokémon holds one of these Berries, one of its stats will be sharply boosted should it find itself in a pinch."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Tamato Berry",
+        "description": "If a Pokémon is fed this Berry, it will grow more friendly, but it will lose base points for its Speed stat."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Tanga Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Bug-type move, the power of that move will be weakened."
     },
     {
-        "name": "",
-        "description": ""
+        "name": "Wacan Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Electric-type move, the power of that move will be weakened."
+    },
+    {
+        "name": "Watmel Berry",
+        "description": "Used to make Pokéblocks that will enhance Cleverness. This Berry is rare in other regions."
+    },
+    {
+        "name": "Wepear Berry",
+        "description": "Used to make Pokéblocks that will enhance Cleverness. Its green flesh is bitter if eaten."
+    },
+    {
+        "name": "Wiki Berry",
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore some HP should it find itself in a pinch. But it will become confused if it hates the Berry's taste."
+    },
+    {
+        "name": "Yache Berry",
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ice-type move, the power of that move will be weakened."
+    },
+    {
+        "name": "Gengarite",
+        "description": "Enables the Mega Evolution of Mega Gengar."
+    },
+    {
+        "name": "Gardevoirite",
+        "description": "Enables the Mega Evolution of Mega Gardevoir."
+    },
+    {
+        "name": "Ampharosite",
+        "description": "Enables the Mega Evolution of Mega Ampharos."
+    },
+    {
+        "name": "Venusaurite",
+        "description": "Enables the Mega Evolution of Mega Venusaur."
+    },
+    {
+        "name": "Charizardite X",
+        "description": "Enables the Mega Evolution of Mega Charizard X."
+    },
+    {
+        "name": "Charizardite Y",
+        "description": "Enables the Mega Evolution of Mega Charizard Y."
+    },
+    {
+        "name": "Blastoisinite",
+        "description": "Enables the Mega Evolution of Mega Blastoise."
+    },
+    {
+        "name": "Mewtwonite X",
+        "description": "Enables the Mega Evolution of Mega Mewtwo X."
+    },
+    {
+        "name": "Mewtwonite Y",
+        "description": "Enables the Mega Evolution of Mega Mewtwo Y."
+    },
+    {
+        "name": "Blazikenite",
+        "description": "Enables the Mega Evolution of Mega Blaziken."
+    },
+    {
+        "name": "Medichamite",
+        "description": "Enables the Mega Evolution of Mega Medicham."
+    },
+    {
+        "name": "Houndoominite",
+        "description": "Enables the Mega Evolution of Mega Houndoom."
+    },
+    {
+        "name": "Heracronite",
+        "description": "Enables the Mega Evolution of Mega Heracross."
+    },
+    {
+        "name": "Aggronite",
+        "description": "Enables the Mega Evolution of Mega Aggron."
+    },
+    {
+        "name": "Banettite",
+        "description": "Enables the Mega Evolution of Mega Banette."
+    },
+    {
+        "name": "Sablenite",
+        "description": "Enables the Mega Evolution of Mega Sableye."
+    },
+    {
+        "name": "Tyranitarite",
+        "description": "Enables the Mega Evolution of Mega Tyranitar."
+    },
+    {
+        "name": "Abomasite",
+        "description": "Enables the Mega Evolution of Mega Abomasnow."
+    },
+    {
+        "name": "Scizorite",
+        "description": "Enables the Mega Evolution of Mega Scizor."
+    },
+    {
+        "name": "Pinsirite",
+        "description": "Enables the Mega Evolution of Mega Pinsir."
+    },
+    {
+        "name": "Aerodactylite",
+        "description": "Enables the Mega Evolution of Mega Aerodactyl."
+    },
+    {
+        "name": "Lucarionite",
+        "description": "Enables the Mega Evolution of Mega Lucario."
+    },
+    {
+        "name": "Kangaskhanite",
+        "description": "Enables the Mega Evolution of Mega Kangaskhan."
+    },
+    {
+        "name": "Gyaradosite",
+        "description": "Enables the Mega Evolution of Mega Gyarados."
+    },
+    {
+        "name": "Absolite",
+        "description": "Enables the Mega Evolution of Mega Absol."
+    },
+    {
+        "name": "Manectite",
+        "description": "Enables the Mega Evolution of Mega Manectric."
+    },
+    {
+        "name": "Mawilite",
+        "description": "Enables the Mega Evolution of Mega Mawile."
+    },
+    {
+        "name": "Beedrillite",
+        "description": "Enables the Mega Evolution of Mega Beedrill."
+    },
+    {
+        "name": "Garchompite",
+        "description": "Enables the Mega Evolution of Mega Garchomp."
+    },
+    {
+        "name": "Latiasite",
+        "description": "Enables the Mega Evolution of Mega Latias."
+    },
+    {
+        "name": "Latiosite",
+        "description": "Enables the Mega Evolution of Mega Latios."
+    },
+    {
+        "name": "Swampertite",
+        "description": "Enables the Mega Evolution of Mega Swampert."
+    },
+    {
+        "name": "Sceptilite",
+        "description": "Enables the Mega Evolution of Mega Sceptile."
+    },
+    {
+        "name": "Altarianite",
+        "description": "Enables the Mega Evolution of Mega Altaria."
+    },
+    {
+        "name": "Galladite",
+        "description": "Enables the Mega Evolution of Mega Gallade."
+    },
+    {
+        "name": "Audinite",
+        "description": "Enables the Mega Evolution of Mega Audino."
+    },
+    {
+        "name": "Metagrossite",
+        "description": "Enables the Mega Evolution of Mega Metagross."
+    },
+    {
+        "name": "Sharpedonite",
+        "description": "Enables the Mega Evolution of Mega Sharpedo."
+    },
+    {
+        "name": "Slowbronite",
+        "description": "Enables the Mega Evolution of Mega Slowbro."
+    },
+    {
+        "name": "Steelixite",
+        "description": "Enables the Mega Evolution of Mega Steelix."
+    },
+    {
+        "name": "Glalitite",
+        "description": "Enables the Mega Evolution of Mega Glalie."
+    },
+    {
+        "name": "Pidgeotite",
+        "description": "Enables the Mega Evolution of Mega Pidgeot."
+    },
+    {
+        "name": "Diancite",
+        "description": "Enables the Mega Evolution of Mega Diancie."
+    },
+    {
+        "name": "Cameruptite",
+        "description": "Enables the Mega Evolution of Mega Camerupt."
+    },
+    {
+        "name": "Lopunnite",
+        "description": "Enables the Mega Evolution of Mega Lopunny."
+    },
+    {
+        "name": "Salamancite",
+        "description": "Enables the Mega Evolution of Mega Salamence."
+    },
+    {
+        "name": "Clefablite",
+        "description": "Enables the Mega Evolution of Mega Clefable."
+    },
+    {
+        "name": "Victreebelite",
+        "description": "Enables the Mega Evolution of Mega Victreebel."
+    },
+    {
+        "name": "Starmite",
+        "description": "Enables the Mega Evolution of Mega Starmie."
+    },
+    {
+        "name": "Dragoninite",
+        "description": "Enables the Mega Evolution of Mega Dragonite."
+    },
+    {
+        "name": "Meganiumite",
+        "description": "Enables the Mega Evolution of Mega Meganium."
+    },
+    {
+        "name": "Feraligite",
+        "description": "Enables the Mega Evolution of Mega Feraligatr."
+    },
+    {
+        "name": "Skarmorite",
+        "description": "Enables the Mega Evolution of Mega Skarmory."
+    },
+    {
+        "name": "Froslassite",
+        "description": "Enables the Mega Evolution of Mega Froslass."
+    },
+    {
+        "name": "Heatranite",
+        "description": "Enables the Mega Evolution of Mega Heatran."
+    },
+    {
+        "name": "Darkranite",
+        "description": "Enables the Mega Evolution of Mega Darkrai."
+    },
+    {
+        "name": "Emboarite",
+        "description": "Enables the Mega Evolution of Mega Emboar."
+    },
+    {
+        "name": "Excadrite",
+        "description": "Enables the Mega Evolution of Mega Excadrill."
+    },
+    {
+        "name": "Scolipite",
+        "description": "Enables the Mega Evolution of Mega Scolipede."
+    },
+    {
+        "name": "Scraftinite",
+        "description": "Enables the Mega Evolution of Mega Scrafty."
+    },
+    {
+        "name": "Eelektrossite",
+        "description": "Enables the Mega Evolution of Mega Eelektross."
+    },
+    {
+        "name": "Chandelurite",
+        "description": "Enables the Mega Evolution of Mega Chandelure."
+    },
+    {
+        "name": "Chesnaughtite",
+        "description": "Enables the Mega Evolution of Mega Chesnaught."
+    },
+    {
+        "name": "Delphoxite",
+        "description": "Enables the Mega Evolution of Mega Delphox."
+    },
+    {
+        "name": "Greninjite",
+        "description": "Enables the Mega Evolution of Mega Greninja."
+    },
+    {
+        "name": "Pyroarite",
+        "description": "Enables the Mega Evolution of Mega Pyroar."
+    },
+    {
+        "name": "Floettite",
+        "description": "Enables the Mega Evolution of Mega Eternal Floette."
+    },
+    {
+        "name": "Malamarite",
+        "description": "Enables the Mega Evolution of Mega Malamar."
+    },
+    {
+        "name": "Barbaracite",
+        "description": "Enables the Mega Evolution of Mega Barbaracle."
+    },
+    {
+        "name": "Dragalgite",
+        "description": "Enables the Mega Evolution of Mega Dragalge."
+    },
+    {
+        "name": "Hawluchanite",
+        "description": "Enables the Mega Evolution of Mega Hawlucha."
+    },
+    {
+        "name": "Zygardite",
+        "description": "Enables the Mega Evolution of Mega Zygarde."
+    },
+    {
+        "name": "Drampanite",
+        "description": "Enables the Mega Evolution of Mega Diancie."
+    },
+    {
+        "name": "Zeraorite",
+        "description": "Enables the Mega Evolution of Mega Zeraora."
+    },
+    {
+        "name": "Falinksite",
+        "description": "Enables the Mega Evolution of Mega Falinks."
+    },
+    {
+        "name": "Raichunite X",
+        "description": "Enables the Mega Evolution of Mega Raichu X."
+    },
+    {
+        "name": "Raichunite Y",
+        "description": "Enables the Mega Evolution of Mega Raichu Y."
+    },
+    {
+        "name": "Chimechite",
+        "description": "Enables the Mega Evolution of Mega Chimecho."
+    },
+    {
+        "name": "Absolite Z",
+        "description": "Enables the Mega Evolution of Mega Absol Z."
+    },
+    {
+        "name": "Staraptite",
+        "description": "Enables the Mega Evolution of Mega Staraptor."
+    },
+    {
+        "name": "Garchompite Z",
+        "description": "Enables the Mega Evolution of Mega Garchomp Z."
+    },
+    {
+        "name": "Lucarionite Z",
+        "description": "Enables the Mega Evolution of Mega Lucario Z."
+    },
+    {
+        "name": "Golurkite",
+        "description": "Enables the Mega Evolution of Mega Golurk."
+    },
+    {
+        "name": "Meowsticite",
+        "description": "Enables the Mega Evolution of Mega Meowstic."
+    },
+    {
+        "name": "Crabominite",
+        "description": "Enables the Mega Evolution of Mega Crabominable."
+    },
+    {
+        "name": "Golisopite",
+        "description": "Enables the Mega Evolution of Mega Golisopod."
+    },
+    {
+        "name": "Magearnite",
+        "description": "Enables the Mega Evolution of Mega Magearna."
+    },
+    {
+        "name": "Scovillainite",
+        "description": "Enables the Mega Evolution of Mega Scovillain."
+    },
+    {
+        "name": "Chimechite",
+        "description": "Enables the Mega Evolution of Mega Chimecho."
+    },
+    {
+        "name": "Baxcalibrite",
+        "description": "Enables the Mega Evolution of Mega Baxcalibur."
+    },
+    {
+        "name": "Tatsugirinite",
+        "description": "Enables the Mega Evolution of Mega Tatsugiri."
+    },
+    {
+        "name": "Glimmoranite",
+        "description": "Enables the Mega Evolution of Mega Glimmora."
     }
 ]
