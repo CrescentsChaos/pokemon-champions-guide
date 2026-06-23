@@ -127,9 +127,12 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
 
         .big-sprite {
+            max-width: 100%;
+            max-height: 100%;
             width: 120px;
             height: 120px;
             object-fit: contain;
@@ -259,10 +262,13 @@
 
         input[type="range"] {
             width: 100%;
+            height: 24px;
             position: absolute;
-            top: 0;
+            top: -9px;
             opacity: 0;
             cursor: pointer;
+            margin: 0;
+            -webkit-appearance: none;
         }
 
         .ev-input,
@@ -1204,6 +1210,33 @@
 
         function toggleChampionsMode() {
             isChampionsMode = !isChampionsMode;
+
+            team.forEach(p => {
+                let total = 0;
+                const maxTotal = isChampionsMode ? 66 : 508;
+                const maxStat = isChampionsMode ? 32 : 252;
+                
+                ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+                    if (isChampionsMode) {
+                        p.evs[k] = Math.min(32, Math.floor((p.evs[k] || 0) / 8));
+                    } else {
+                        p.evs[k] = Math.min(252, (p.evs[k] || 0) * 8);
+                    }
+                    total += p.evs[k];
+                });
+                
+                if (total > maxTotal) {
+                    let excess = total - maxTotal;
+                    ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+                        if (excess > 0 && p.evs[k] > 0) {
+                            const sub = Math.min(p.evs[k], excess);
+                            p.evs[k] -= sub;
+                            excess -= sub;
+                        }
+                    });
+                }
+            });
+
             const btn = document.getElementById('champions-mode-toggle');
             if (btn) {
                 btn.textContent = `CHAMPIONS EV MODE: ${isChampionsMode ? 'ON' : 'OFF'}`;
@@ -1522,8 +1555,8 @@
 
                     card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                            <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
@@ -2369,9 +2402,13 @@
 
                 const slider = document.querySelector(`.ev-slider[data-stat="${key}"]`);
                 const input = document.querySelector(`.ev-input[data-stat="${key}"]`);
-                if (slider) slider.value = ev;
+                const maxEV = isChampionsMode ? 32 : 252;
+                if (slider) {
+                    slider.max = maxEV;
+                    slider.step = isChampionsMode ? 1 : 4;
+                    slider.value = ev;
+                }
                 if (input) {
-                    const maxEV = isChampionsMode ? 32 : 252;
                     input.max = maxEV;
                     input.value = ev;
                 }
