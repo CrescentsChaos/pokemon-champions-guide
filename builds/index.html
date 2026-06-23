@@ -703,13 +703,9 @@
                 return;
             }
             img.dataset.fallback = 'true';
-            if (item.toLowerCase().endsWith('ite')) {
-                const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-                img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
-                img.style.display = 'block';
-            } else {
-                img.style.display = 'none';
-            }
+            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
+            img.style.display = 'block';
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {

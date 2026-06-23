@@ -478,12 +478,16 @@ function populatePokemonUI(pk) {
         const isMulti = mData && (mData.name === 'Bullet Seed' || mData.name === 'Water Shuriken' || mData.name === 'Icicle Spear' || mData.name === 'Rock Blast' || mData.name === 'Pin Missile' || mData.name === 'Population Bomb' || mData.name === 'Dual Wingbeat' || mData.name === 'Surging Strikes' || mData.name === 'Bonemerang' || mData.name === 'Dragon Dart' || mData.name === 'Double Iron Bash');
 
         return `
-        <div class="move-row">
-            <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)">
+        <div class="move-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)" style="width: 100%; margin-bottom: 6px;">
                 <option value="None">None</option>
                 ${movesDB.map(m => `<option value="${m.name}" ${move.name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
             </select>
-            <div class="move-configs">
+            <div class="move-configs" style="display: flex; align-items: center; gap: 8px;">
+                ${mData && mData.name !== 'None' ? `
+                    <span class="type-tag type-${mData.type.toLowerCase()}" style="font-size: 0.6rem; padding: 2px 6px;">${mData.type}</span>
+                    <span style="font-size: 0.65rem; color: #888; font-weight: 600; margin-right: auto;">${mData.damage_class || mData.category || ''} ${mData.power ? '| ' + mData.power + ' BP' : ''} ${mData.accuracy ? '| ' + mData.accuracy + '%' : ''}</span>
+                ` : '<div style="margin-right: auto;"></div>'}
                 ${isMulti ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${[2, 3, 4, 5, 10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
@@ -1414,13 +1418,9 @@ window.handleItemError = function (img, item) {
         return;
     }
     img.dataset.fallback = 'true';
-    if (item.toLowerCase().endsWith('ite')) {
-        const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
-        img.style.display = 'block';
-    } else {
-        img.style.display = 'none';
-    }
-};
+    const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+    img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
+    img.style.display = 'block';
+};;
 
 init();

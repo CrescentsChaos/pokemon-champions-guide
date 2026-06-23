@@ -244,6 +244,7 @@
         }
 
         .slider-wrap {
+            width: 100%;
             height: 6px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -1583,13 +1584,9 @@
                 return;
             }
             img.dataset.fallback = 'true';
-            if (item.toLowerCase().endsWith('ite')) {
-                const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-                img.src = `https://www.serebii.net/itemdex/sprites/pgl/${clean}.png`;
-                img.style.display = 'block';
-            } else {
-                img.style.display = 'none';
-            }
+            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
+            img.style.display = 'block';
         }
 
 
