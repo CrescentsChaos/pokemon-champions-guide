@@ -1390,8 +1390,16 @@
                 const recommendedItems = dbRef.Items || [];
                 
                 data = allItems.map(item => {
-                    const isRecommended = recommendedItems.includes(item.name) || recommendedItems.includes(item.Name);
-                    return { ...item, eligible: isRecommended, description: isRecommended ? '✨ Recommended Item' : item.description };
+                    const rIdx1 = recommendedItems.indexOf(item.name);
+                    const rIdx2 = recommendedItems.indexOf(item.Name);
+                    const rIdx = rIdx1 !== -1 ? rIdx1 : (rIdx2 !== -1 ? rIdx2 : -1);
+                    const isRecommended = rIdx !== -1;
+                    return { 
+                        ...item, 
+                        eligible: isRecommended, 
+                        rank: isRecommended ? rIdx : Infinity,
+                        description: isRecommended ? '✨ Recommended Item - ' + (item.description || '') : item.description 
+                    };
                 });
             } else if (overlayTarget === 'ability') {
                 const p = team[currentSlot];
@@ -1740,6 +1748,37 @@
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
             document.getElementById('gender-input').value = p.gender || '';
             levelIn.value = p.level;
+
+            // Dynamically build Nature options to sort recommended ones to the top
+            const recNatures = dbMega.Nature || dbBase.Nature || [];
+            natureIn.innerHTML = '';
+            
+            const sortedNatures = Object.keys(natureMap).sort((a, b) => {
+                const idxA = recNatures.indexOf(a);
+                const idxB = recNatures.indexOf(b);
+                const rankA = idxA !== -1 ? idxA : Infinity;
+                const rankB = idxB !== -1 ? idxB : Infinity;
+                if (rankA !== rankB) return rankA - rankB;
+                return a.localeCompare(b);
+            });
+            
+            sortedNatures.forEach(n => {
+                const opt = document.createElement('option');
+                opt.value = n;
+                const pos = natureMap[n].pos;
+                const neg = natureMap[n].neg;
+                const statLabels = {hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
+                
+                let text = n;
+                if (pos && neg && pos !== neg) {
+                    text = `${n} (+${statLabels[pos]}, -${statLabels[neg]})`;
+                }
+                if (recNatures.includes(n)) {
+                    text = `⭐ ${text}`;
+                }
+                opt.textContent = text;
+                natureIn.appendChild(opt);
+            });
             natureIn.value = p.nature;
 
             const bigSprite = document.getElementById('current-big-sprite');
