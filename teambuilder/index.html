@@ -1079,7 +1079,15 @@
 
                 Object.keys(natureMap).forEach(n => {
                     const opt = document.createElement('option');
-                    opt.value = n; opt.textContent = n;
+                    opt.value = n;
+                    const pos = natureMap[n].pos;
+                    const neg = natureMap[n].neg;
+                    const statLabels = {hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
+                    if (pos && neg && pos !== neg) {
+                        opt.textContent = `${n} (+${statLabels[pos]}, -${statLabels[neg]})`;
+                    } else {
+                        opt.textContent = n;
+                    }
                     natureIn.appendChild(opt);
                 });
 
@@ -1372,65 +1380,33 @@
             else if (overlayTarget === 'item') data = allItems;
             else if (overlayTarget === 'ability') {
                 const p = team[currentSlot];
-                const species = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-                // Mapping for common competitive mons (eligible filtering)
-                const speciesAbilities = {
-                    'indeedeef': ['Psychic Surge', 'Own Tempo', 'Synchronize'],
-                    'indeedee': ['Inner Focus', 'Synchronize', 'Psychic Surge'],
-                    'pelipper': ['Drizzle', 'Keen Eye', 'Rain Dish'],
-                    'torkoal': ['Drought', 'White Smoke', 'Shell Armor'],
-                    'fluttermane': ['Protosynthesis'],
-                    'ironhands': ['Quark Drive'],
-                    'incineroar': ['Intimidate', 'Blaze'],
-                    'rillaboom': ['Grassy Surge', 'Overgrow'],
-                    'amoonguss': ['Regenerator', 'Effect Spore'],
-                    'urshifu': ['Unseen Fist'],
-                    'urshifurapidstrike': ['Unseen Fist'],
-                    'kingambit': ['Supreme Overlord', 'Defiant', 'Pressure'],
-                    'gholdengo': ['Good as Gold'],
-                    'dragonite': ['Multiscale', 'Inner Focus'],
-                    'ogerpon': ['Defiant'],
-                    'ogerponwellspring': ['Water Absorb'],
-                    'ogerponhearthflame': ['Mold Breaker'],
-                    'ogerponcornerstone': ['Sturdy'],
-                    'whimsicott': ['Prankster', 'Infiltrator', 'Chlorophyll'],
-                    'tornadus': ['Prankster', 'Defiant'],
-                    'landorus': ['Sand Force', 'Sheer Force'],
-                    'landorustherian': ['Intimidate'],
-                    'grimmsnarl': ['Prankster', 'Frisk', 'Pickpocket']
-                };
-
-                const eligible = speciesAbilities[species] || [];
-                const commonAbilities = [
-                    'Intimidate', 'Psychic Surge', 'Grassy Surge', 'Misty Surge', 'Electric Surge',
-                    'Levitate', 'Prankster', 'Regenerator', 'Swift Swim', 'Chlorophyll',
-                    'Sand Rush', 'Snow Cloak', 'Slush Rush', 'Magic Bounce', 'Shadow Tag',
-                    'Huge Power', 'Guts', 'Defiant', 'Competitive', 'Unnerve', 'Inner Focus',
-                    'Libero', 'Protean', 'Beast Boost', 'Soul-Heart', 'Teravolt', 'Turboblaze',
-                    'Multiscale', 'Sturdy', 'Focus Sash', 'Mold Breaker', 'Sheer Force',
-                    'Serene Grace', 'Iron Fist', 'Strong Jaw', 'Tough Claws', 'Adaptability',
-                    'Technician', 'Skill Link', 'No Guard', 'Lightning Rod', 'Storm Drain',
-                    'Water Absorb', 'Flash Fire', 'Volt Absorb', 'Sap Sipper', 'Clear Body',
-                    'Full Metal Body', 'Prism Armor', 'Mirror Armor', 'Unaware', 'Infiltrator',
-                    'Contrary', 'Solar Power', 'Drought', 'Drizzle', 'Sand Stream', 'Snow Warning'
-                ];
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const eligible = dbRef.Ability || [];
 
                 if (eligible.length > 0) {
-                    // Filter: Only show eligible or all if searching specifically
-                    if (!q) {
-                        data = eligible.map(n => ({ name: n, description: '✅ Eligible Ability', eligible: true }));
-                    } else {
-                        data = [...new Set([...eligible, ...commonAbilities])].map(n => ({
-                            name: n,
-                            description: eligible.includes(n) ? '✅ Eligible Ability' : 'Common Ability',
-                            eligible: eligible.includes(n)
-                        }));
-                    }
+                    data = eligible.map(n => ({ name: n, description: '✅ Eligible Ability', eligible: true }));
                 } else {
-                    data = commonAbilities.map(n => ({ name: n, description: 'Common competitive ability.' }));
+                    data = [];
                 }
-            } else data = allMoves;
+            } else if (overlayTarget && overlayTarget.startsWith('move')) {
+                const p = team[currentSlot];
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const eligibleMoves = dbRef.Moves || [];
+
+                if (eligibleMoves.length > 0) {
+                    data = eligibleMoves.map(n => {
+                        const searchKey = n.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const mData = movesMap[searchKey] || {};
+                        return { ...mData, name: n, Name: n, eligible: true, description: '✅ Eligible Move' };
+                    });
+                } else {
+                    data = allMoves;
+                }
+            } else {
+                data = allMoves;
+            }
 
             const filtered = data.filter(x =>
                 (x.Name || x.name || '').toLowerCase().includes(q.toLowerCase()) ||
@@ -1442,7 +1418,14 @@
                 card.className = 'search-item';
                 const name = item.Name || item.name;
                 const idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
-                card.innerHTML = `<div style="font-weight:900; ${item.eligible ? 'color: var(--primary-red);' : ''}">${idStr}${name} ${item.eligible ? '⭐' : ''}</div>`;
+                
+                let iconHtml = '';
+                if (overlayTarget === 'item') {
+                    const itemSprite = getItemSpriteUrl(name);
+                    iconHtml = `<img src="${itemSprite}" style="width:24px; height:24px; object-fit:contain; vertical-align:middle; margin-right:5px;" onerror="handleItemError(this, '${name.replace(/'/g, "\\'")}')">`;
+                }
+
+                card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${item.eligible ? '⭐' : ''}</span></div>`;
                 if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
                 if (item.description) card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
 
