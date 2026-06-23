@@ -1956,7 +1956,7 @@
                             };
                         });
                 } else {
-                    data = allMoves
+                    const recommendedFromBuilds = allMoves
                         .filter(mData => !pickedMoves.has((mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')))
                         .map(mData => {
                             const searchKey = (mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1969,7 +1969,22 @@
                                 rank: isRec ? -freq : Infinity,
                                 description: isRec ? `✨ Recommended Move (${freq} build${freq > 1 ? 's' : ''})` : (mData.description || '')
                             };
-                        });
+                        })
+                        .filter(mData => mData.isRecommended);
+
+                    if (recommendedFromBuilds.length > 0) {
+                        data = recommendedFromBuilds;
+                    } else {
+                        data = allMoves
+                            .filter(mData => !pickedMoves.has((mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')))
+                            .map(mData => ({
+                                ...mData,
+                                isRecommended: false,
+                                eligible: false,
+                                rank: Infinity,
+                                description: mData.description || ''
+                            }));
+                    }
                 }
             } else if (overlayTarget === 'build') {
                 const p = team[currentSlot];
