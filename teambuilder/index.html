@@ -839,10 +839,8 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                         <span class="input-label" style="font-size: 1.2rem; color: white;">Base Stats & EV Spread</span>
-                        <select id="nature-input" class="builder-input"
-                            style="width: 150px; background: rgba(255,51,51,0.1); border-color: var(--primary-red);">
-                            <!-- Natures loaded via JS -->
-                        </select>
+                        <input type="text" id="nature-input" class="builder-input" readonly placeholder="Select Nature"
+                            style="width: 150px; background: rgba(255,51,51,0.1); border-color: var(--primary-red); cursor: pointer; text-align: center;">
                     </div>
 
 
@@ -980,6 +978,7 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
+        let allBuilds = [];
         let pokemon_database = []; // Alias for user request
         let moves_database = [];   // Alias for user request
         let currentSlot = 0;
@@ -1071,12 +1070,14 @@
         async function init() {
             try {
                 const cb = '?v=' + Date.now();
-                const [p, m, i] = await Promise.all([
+                const [p, m, i, b] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb).then(r => r.json()),
                     fetch('../assets/moves.json' + cb).then(r => r.json()),
-                    fetch('../assets/items.json' + cb).then(r => r.json())
+                    fetch('../assets/items.json' + cb).then(r => r.json()),
+                    fetch('../assets/builds.json' + cb).then(r => r.json()).catch(() => [])
                 ]);
                 allPokemon = p;
+                allBuilds = b;
                 pokemon_database = p;
                 allMoves = m;
                 moves_database = m;
@@ -1374,7 +1375,8 @@
             document.getElementById('overlay-title').textContent =
                 type === 'species' ? 'Select Pokemon' :
                     type === 'item' ? 'Select Item' :
-                        type === 'ability' ? 'Select Ability' : 'Select Move';
+                        type === 'nature' ? 'Select Nature' :
+                            type === 'ability' ? 'Select Ability' : 'Select Move';
 
             updateSearchResults('');
         }
@@ -1384,23 +1386,36 @@
             let data = [];
             if (overlayTarget === 'species') {
                 // Collect teammates recommended by current team members
-                const recommendedTeammates = new Set();
+                const recommendedTeammates = new Map();
+                const currentlySelected = new Set(team.map(t => (t.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')));
+                
                 team.forEach((slot, idx) => {
                     if (idx === currentSlot || !slot.species) return;
                     const sKey = slot.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const dbSlot = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === sKey) || {};
-                    (dbSlot.Teammates || []).forEach(t => recommendedTeammates.add(t.toLowerCase()));
+                    (dbSlot.Teammates || []).forEach(t => {
+                        const tKey = t.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (!currentlySelected.has(tKey)) recommendedTeammates.set(tKey, (recommendedTeammates.get(tKey) || 0) + 1);
+                    });
                 });
                 // Also: recommended teammates of the currently-focused slot's existing species
                 const curSpec = team[currentSlot] && team[currentSlot].species;
                 if (curSpec) {
                     const curKey = curSpec.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const curDb = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === curKey) || {};
-                    (curDb.Teammates || []).forEach(t => recommendedTeammates.add(t.toLowerCase()));
+                    (curDb.Teammates || []).forEach(t => {
+                        const tKey = t.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (!currentlySelected.has(tKey)) recommendedTeammates.set(tKey, (recommendedTeammates.get(tKey) || 0) + 1);
+                    });
                 }
-                data = allPokemon.map(pk => {
-                    const isRec = recommendedTeammates.has((pk.Name || '').toLowerCase());
-                    return { ...pk, eligible: isRec, rank: isRec ? 0 : Infinity };
+                data = allPokemon.filter(pk => {
+                    const n = pk.Name || '';
+                    return !n.includes('-Mega') && !n.includes('-Primal');
+                }).map(pk => {
+                    const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const recCount = recommendedTeammates.get(tKey) || 0;
+                    const isRec = recCount > 0;
+                    return { ...pk, eligible: isRec, rank: isRec ? -recCount : Infinity };
                 });
             }
             else if (overlayTarget === 'item') {
@@ -1420,6 +1435,24 @@
                         rank: isRecommended ? rIdx : Infinity,
                         description: isRecommended ? '✨ Recommended Item - ' + (item.description || '') : item.description 
                     };
+                });
+            } else if (overlayTarget === 'nature') {
+                const p = team[currentSlot];
+                const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
+                const recNatures = dbRef.Nature || [];
+                
+                const statLabels = {hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed'};
+                data = Object.keys(natureMap).map(n => {
+                    const isRecommended = recNatures.includes(n);
+                    const pos = natureMap[n].pos;
+                    const neg = natureMap[n].neg;
+                    let desc = 'Neutral Nature';
+                    if (pos && neg && pos !== neg) {
+                        desc = `<span style="color:#00ffcc">+${statLabels[pos]}</span>, <span style="color:#ff4d4d">-${statLabels[neg]}</span>`;
+                    }
+                    if (isRecommended) desc = '✨ Recommended Nature - ' + desc;
+                    return { name: n, Name: n, eligible: isRecommended, rank: isRecommended ? recNatures.indexOf(n) : Infinity, description: desc };
                 });
             } else if (overlayTarget === 'ability') {
                 const p = team[currentSlot];
@@ -1474,7 +1507,7 @@
                 let starStr = '';
                 if (overlayTarget !== 'ability' && !overlayTarget.startsWith('move')) {
                     idStr = item.id ? `#${String(item.id).padStart(4, '0')} ` : '';
-                    starStr = item.eligible ? '⭐' : '';
+                    starStr = item.eligible && overlayTarget !== 'species' ? '⭐' : '';
                 }
                 
                 let iconHtml = '';
@@ -1543,7 +1576,6 @@
                     if (nextForm) {
                         p.species = nextForm;
                     } else {
-                        // Revert to base form if item removed or changed to non-form item
                         const s = p.species.toLowerCase();
                         if (s.startsWith('ogerpon-')) p.species = 'Ogerpon';
                         else if (s.startsWith('zacian-')) p.species = 'Zacian';
@@ -1556,6 +1588,7 @@
                     }
                 }
             }
+            else if (overlayTarget === 'nature') p.nature = name;
             else if (overlayTarget === 'ability') p.ability = name;
             else {
                 const idx = overlayTarget.split('-')[1];
@@ -1790,38 +1823,7 @@
             document.getElementById('shiny-input').value = p.shiny ? 'yes' : 'no';
             document.getElementById('gender-input').value = p.gender || '';
             levelIn.value = p.level;
-
-            // Dynamically build Nature options to sort recommended ones to the top
-            const recNatures = dbMega.Nature || dbBase.Nature || [];
-            natureIn.innerHTML = '';
-            
-            const sortedNatures = Object.keys(natureMap).sort((a, b) => {
-                const idxA = recNatures.indexOf(a);
-                const idxB = recNatures.indexOf(b);
-                const rankA = idxA !== -1 ? idxA : Infinity;
-                const rankB = idxB !== -1 ? idxB : Infinity;
-                if (rankA !== rankB) return rankA - rankB;
-                return a.localeCompare(b);
-            });
-            
-            sortedNatures.forEach(n => {
-                const opt = document.createElement('option');
-                opt.value = n;
-                const pos = natureMap[n].pos;
-                const neg = natureMap[n].neg;
-                const statLabels = {hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
-                
-                let text = n;
-                if (pos && neg && pos !== neg) {
-                    text = `${n} (+${statLabels[pos]}, -${statLabels[neg]})`;
-                }
-                if (recNatures.includes(n)) {
-                    text = `⭐ ${text}`;
-                }
-                opt.textContent = text;
-                natureIn.appendChild(opt);
-            });
-            natureIn.value = p.nature;
+            natureIn.value = p.nature || '';
 
             const bigSprite = document.getElementById('current-big-sprite');
             const megaUrl = getMegaSpriteUrl(p);
@@ -1936,11 +1938,12 @@
             itemInput.onclick = () => openSearch('item');
 
             document.getElementById('ability-input').onclick = () => openSearch('ability');
+            natureIn.onclick = () => openSearch('nature');
 
             // Input handling for all inputs
             [document.getElementById('nickname-input'), document.getElementById('tera-input'),
             document.getElementById('shiny-input'), document.getElementById('gender-input'),
-                levelIn, natureIn].forEach(el => {
+                levelIn].forEach(el => {
                     if (!el) return;
                     el.oninput = (e) => {
                         const id = e.target.id;
@@ -1960,17 +1963,69 @@
             evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
         } // end syncUI
 
+        function getBuildRecommendation(p) {
+            if (!allBuilds || !allBuilds.length || !p.species) return null;
+            
+            const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
+            if (speciesBuilds.length === 0) return null;
+            
+            let bestBuild = null;
+            let bestScore = -1;
+            
+            speciesBuilds.forEach(b => {
+                try {
+                    const parsed = parsePaste(b.build)[0];
+                    if (!parsed) return;
+                    
+                    let score = 0;
+                    if (p.ability && parsed.ability === p.ability) score += 2;
+                    
+                    const pMoves = p.moves.filter(m => m);
+                    if (pMoves.length > 0) {
+                        pMoves.forEach(m => {
+                            if (parsed.moves.includes(m)) score += 1;
+                        });
+                    }
+                    if (p.item && parsed.item === p.item) score += 1;
+                    
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestBuild = parsed;
+                    }
+                } catch (e) {}
+            });
+            
+            return bestScore >= 0 ? bestBuild : null;
+        }
+
         function renderPresetChips(dbRef) {
             const container = document.getElementById('preset-container');
             if (!container) return;
             container.innerHTML = '';
+
+            const p = team[currentSlot];
+            const customBuild = getBuildRecommendation(p);
+
+            if (customBuild) {
+                const chip = document.createElement('div');
+                chip.className = 'preset-chip recommended';
+                chip.textContent = '✨ Best Match (builds.json)';
+                chip.title = `Nature: ${customBuild.nature}\nEVs: ${Object.entries(customBuild.evs).filter(([k,v])=>v>0).map(([k,v])=>`${v} ${k.toUpperCase()}`).join(' / ')}`;
+                chip.onclick = (e) => {
+                    e.stopPropagation();
+                    p.evs = JSON.parse(JSON.stringify(customBuild.evs));
+                    p.nature = customBuild.nature;
+                    syncUI();
+                };
+                container.appendChild(chip);
+            }
 
             const rec = getRecommendedPreset(dbRef);
 
             Object.keys(PRESET_SPREADS).forEach(key => {
                 const preset = PRESET_SPREADS[key];
                 const chip = document.createElement('div');
-                chip.className = `preset-chip ${key === rec ? 'recommended' : ''}`;
+                chip.className = `preset-chip ${key === rec && !customBuild ? 'recommended' : ''}`;
                 chip.textContent = preset.name;
                 chip.onclick = (e) => {
                     e.stopPropagation();
