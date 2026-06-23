@@ -45,7 +45,7 @@
             width: 32px;
             height: 32px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
 
         .type-score-bubble {
@@ -62,8 +62,8 @@
             justify-content: center;
             font-size: 10px;
             font-weight: 900;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 2;
         }
 
@@ -100,7 +100,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .text-glow {
@@ -227,12 +227,15 @@
                             style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
                             FULL TEAM PASTE 📋</button>
                         <button id="export-champ-team" class="btn"
-                            style="background: #4a90e2; border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">CHAMP EXPORT 🏆</button>
+                            style="background: #4a90e2; border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">CHAMP
+                            EXPORT 🏆</button>
                     </div>
                 </div>
             </div>
 
-            <div id="synergy-error" style="display:none; background:rgba(255, 59, 48, 0.15); color:#ff453a; padding:15px; border-radius:12px; border:1px solid rgba(255, 59, 48, 0.3); margin-bottom:20px; font-size:0.9rem; font-weight:600; text-align:center;"></div>
+            <div id="synergy-error"
+                style="display:none; background:rgba(255, 59, 48, 0.15); color:#ff453a; padding:15px; border-radius:12px; border:1px solid rgba(255, 59, 48, 0.3); margin-bottom:20px; font-size:0.9rem; font-weight:600; text-align:center;">
+            </div>
             <div id="synergy-grid">
                 <!-- Synergy cards injected here -->
             </div>
@@ -269,6 +272,7 @@
 
     <script src="../js/main.js"></script>
     <script src="../js/utils.js"></script>
+    <script src="../js/analysis.js"></script>
     <script>
         let allPokemon = [];
         let pokemonMap = {};
@@ -276,6 +280,7 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
+        let topPokemonList = [];
         let selectedBuildId = null;
         let displayedCount = 12;
         const batchSize = 12;
@@ -395,16 +400,18 @@
 
         async function loadData() {
             try {
-                const [pResp, bResp, mResp, iResp] = await Promise.all([
+                const [pResp, bResp, mResp, iResp, tResp] = await Promise.all([
                     fetch('../assets/pokemon.json'),
                     fetch('../assets/builds.json'),
                     fetch('../assets/moves.json'),
-                    fetch('../assets/items.json')
+                    fetch('../assets/items.json'),
+                    fetch('../assets/top_pokemon.json').catch(() => ({ json: () => [] }))
                 ]);
                 allPokemon = await pResp.json();
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
+                try { topPokemonList = await tResp.json(); } catch (e) { topPokemonList = []; }
 
                 // Create high-speed lookup maps
                 allPokemon.forEach(p => {
@@ -540,7 +547,7 @@
             }
             const db = getEffectivePokemonData(p, allPokemon);
             if (!db) return 0;
-            return (parseInt(db.HP)||0) + (parseInt(db.Attack)||0) + (parseInt(db.Defense)||0) + (parseInt(db["Sp.Atk"])||0) + (parseInt(db["Sp.Def"])||0) + (parseInt(db.Speed)||0);
+            return (parseInt(db.HP) || 0) + (parseInt(db.Attack) || 0) + (parseInt(db.Defense) || 0) + (parseInt(db["Sp.Atk"]) || 0) + (parseInt(db["Sp.Def"]) || 0) + (parseInt(db.Speed) || 0);
         }
 
         function detectRole(p, dbList) {
@@ -816,7 +823,7 @@
         }
 
         function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
-        
+
         function getWeaknesses(types) {
             if (!types || types.length === 0) return [];
             const result = [];
@@ -838,20 +845,20 @@
             const resistances = {};
             const coverage = {};
             const roles = [];
-            
+
             const types = Object.keys(TYPE_CHART);
             types.forEach(t => { weaknesses[t] = 0; resistances[t] = 0; coverage[t] = 0; });
 
             activeMons.forEach((p) => {
                 const dbEffective = getEffectivePokemonData(p, allPokemon) || {};
                 const pTypes = [dbEffective.Type_1, dbEffective.Type_2].filter(x => x);
-                
+
                 // Offensive Coverage
                 const moveTypes = p.moves.map(m => {
                     const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
                     return movesMap[clean]?.type;
                 }).filter(t => t);
-                
+
                 types.forEach(defType => {
                     if (moveTypes.some(mt => getEffectiveness(mt, [defType]) > 1)) {
                         coverage[defType]++;
@@ -863,7 +870,7 @@
                     const eff = getEffectiveness(atkType, pTypes);
                     if (eff > 2) weaknesses[atkType] += 2;
                     else if (eff > 1) weaknesses[atkType]++;
-                    
+
                     if (eff === 0) resistances[atkType] += 2;
                     else if (eff < 1) resistances[atkType]++;
                 });
@@ -977,7 +984,7 @@
                 badge.className = 'analysis-type-badge';
                 badge.style.opacity = count > 0 ? '1' : '0.2';
                 badge.title = `${type}: ${count} Super Effective moves`;
-                
+
                 badge.innerHTML = `
                     <img src="../assets/type-icons/${type.toLowerCase()}_type.png" alt="${type}">
                     ${count > 0 ? `<div class="type-score-bubble">${count}</div>` : ''}
@@ -1074,7 +1081,7 @@
                         </div>
                     </div>`;
             } else {
-                activeIssues.sort((a,b) => {
+                activeIssues.sort((a, b) => {
                     const order = { synergy: 0, high: 1, medium: 2, low: 3 };
                     return order[a.type] - order[b.type];
                 }).forEach(issue => {
@@ -1082,9 +1089,9 @@
                     const defaultIcons = { synergy: '⭐', high: '⚠️', medium: '⚡', low: '🔍' };
                     const color = issue.color || palette[issue.type];
                     const iconVal = issue.icon || defaultIcons[issue.type];
-                    
+
                     const isImageIcon = iconVal.match(/\.(png|jpg|gif|svg|webp)/i) || iconVal.startsWith('http');
-                    
+
                     synergyBox.innerHTML += `
                         <div class="synergy-item" style="border-left: 3px solid ${color}; background:rgba(255,255,255,0.01); transition: transform 0.2s ease; margin-bottom:8px;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
                             <div class="synergy-icon ${!isImageIcon ? 'text-glow' : ''}" style="--glow-color:${color}">
@@ -1112,13 +1119,13 @@
                 </div>
             `;
 
-                // --- STRATEGY OVERVIEW SNIPPETS ---
+            // --- STRATEGY OVERVIEW SNIPPETS ---
             const strategyCard = document.getElementById('strategy-overview-card');
             const strategyText = document.getElementById('strategy-overview-text');
 
             if (activeMons.length > 0) {
                 strategyCard.style.display = 'block';
-                
+
                 let playstyle = 'Balanced';
                 const hasHO = ctx.flatRoles.some(r => ['Setup Sweeper', 'Wallbreaker', 'Revenge Killer'].includes(r));
                 const hasStall = ctx.flatRoles.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r));
@@ -1127,7 +1134,7 @@
                 else if (!hasHO && hasStall) playstyle = 'Stall';
 
                 const snippets = [];
-                
+
                 // 1. Identity
                 snippets.push(`<strong>IDENTITY:</strong> This deployment operates as a <span style="color:var(--primary-red)">${playstyle}</span> composition optimized for <strong>${format}</strong>. The mechanical cohesion centers around ${activeMons[0].species}'s specific tactical requirements.`);
 
@@ -1221,11 +1228,11 @@
                 const searchName = m.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const moveData = movesMap[searchName] || (allMoves || []).find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === searchName) || { type: 'Normal', damage_class: 'Status', power: null, accuracy: null, short_desc: '', pp: '-' };
                 const mt = (moveData.type || 'Normal').toLowerCase();
-                
+
                 const pwr = moveData.power !== null && moveData.power !== undefined ? moveData.power : '-';
                 const acc = moveData.accuracy !== null && moveData.accuracy !== undefined ? moveData.accuracy : '-';
                 const desc = (moveData.short_descripton || moveData.short_description || moveData.desc || 'No description available.').replace(/"/g, '&quot;');
-                
+
                 const tooltipOptions = [
                     `Type: ${mt.toUpperCase()}`,
                     `Category: ${moveData.damage_class || 'Status'}`,
@@ -1490,7 +1497,7 @@
         function getRecommendedTeammates(mainBuild, format, count = 5) {
             const pMain = parsePaste(mainBuild.build);
             const mainSpecies = pMain.species.toLowerCase();
-            
+
             const dbBase = getBasePokemonData(pMain, allPokemon);
             const dbMega = getEffectivePokemonData(pMain, allPokemon);
             const mainTypes = [dbBase?.Type_1?.toLowerCase(), dbBase?.Type_2?.toLowerCase()].filter(t => t);
@@ -1532,7 +1539,7 @@
                 const dbB = getBasePokemonData(p, allPokemon);
                 const dbM = getEffectivePokemonData(p, allPokemon);
                 const candTypes = [dbB?.Type_1?.toLowerCase(), dbB?.Type_2?.toLowerCase()].filter(t => t);
-                
+
                 const overlap = candTypes.filter(t => usedTypes.includes(t));
                 if (overlap.length > 0 && Math.random() > 0.3) continue; // 70% chance to skip if type overlap
 
@@ -1554,7 +1561,7 @@
 
             setTimeout(() => {
                 currentRecommendedBuilds = getSmartRecommendations(currentMainBuild, recommendationFormat);
-                
+
                 // Track History
                 currentRecommendedBuilds.forEach(item => {
                     const id = (typeof item.build === 'string') ? item.id : item.build.id;
@@ -1609,7 +1616,7 @@
             const mainSpeciesClean = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
             const mainBuildData = getEffectivePokemonData(pMain, allPokemon) || getBasePokemonData(pMain, allPokemon);
             if (!mainBuildData) throw new Error("Base data for " + (pMain.species || 'Unknown') + " not found. Try another build.");
-            
+
             let team = [];
             let rcmdResults = [];
             const usedSpecies = new Set();
@@ -1628,7 +1635,7 @@
                     const db = getEffectivePokemonData(p, allPokemon) || getBasePokemonData(p, allPokemon);
                     const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                     const it = (p.item || '').toLowerCase();
-                    
+
                     team.push({
                         build: member.build,
                         species: s,
@@ -1700,7 +1707,7 @@
                     const item = (p.item || '').toLowerCase();
                     if (usedSpecies.has(s)) continue;
                     if (item && item !== 'none' && usedItems.has(item)) continue;
-                    
+
                     const isCandMega = isMega(b.pokemon, item);
                     if (isCandMega && (megaCount >= 2 || (megaCount >= 1 && Math.random() > 0.1))) continue;
 
@@ -1813,7 +1820,7 @@
                     }
 
                     rcmdResults.push({ build: bestCand.build, score: finalPercentage });
-                    
+
                     // Add new synergies to priority pool
                     if (bestCand.build.synergy) {
                         bestCand.build.synergy.forEach(sid => priorityPool.add(sid));
@@ -1822,7 +1829,7 @@
                     usedSpecies.add(bestCand.species);
                     if (bestCand.item && bestCand.item !== 'none') usedItems.add(bestCand.item);
                     if (bestCand.isMega) megaCount++;
-                    
+
                     team.push({
                         species: bestCand.species,
                         types: bestCand.types,
@@ -1860,7 +1867,7 @@
 
                 // Get a single new recommendation that fits best with the REST of the team
                 const newRec = getSmartRecommendations(currentMainBuild, recommendationFormat, 1, excludeIds, baseTeam);
-                
+
                 if (newRec && newRec.length > 0) {
                     currentRecommendedBuilds[slotIndex] = newRec[0];
                     renderSynergy(currentMainBuild, currentRecommendedBuilds);

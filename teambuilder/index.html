@@ -1201,6 +1201,17 @@
         let overlayTarget = null; // 'species', 'item', 'move-0', etc.
         let isChampionsMode = false;
 
+        function toggleChampionsMode() {
+            isChampionsMode = !isChampionsMode;
+            const btn = document.getElementById('champions-mode-toggle');
+            if (btn) {
+                btn.textContent = `CHAMPIONS EV MODE: ${isChampionsMode ? 'ON' : 'OFF'}`;
+                btn.style.background = isChampionsMode ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.05)';
+                btn.style.color = isChampionsMode ? 'white' : 'rgba(255, 255, 255, 0.7)';
+            }
+            syncUI();
+        }
+
         let team = Array(6).fill(null).map(() => ({
             species: '', item: '', ability: '', level: 50, shiny: false,
             tera: '', nickname: '', gender: '-', nature: 'Serious',
