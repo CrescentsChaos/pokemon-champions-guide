@@ -1515,14 +1515,34 @@
                 const moveFreq = new Map();
                 if (p && p.species) {
                     const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
-                    speciesBuilds.forEach(b => {
+                    
+                    // Filter builds to those containing ALL already-selected moves
+                    const currentMoveIdx2 = parseInt(overlayTarget.split('-')[1]);
+                    const alreadyPicked = p.moves.filter((m, idx) => idx !== currentMoveIdx2 && m);
+                    
+                    const matchingBuilds = alreadyPicked.length > 0
+                        ? speciesBuilds.filter(b => {
+                            try {
+                                const parsed = parsePaste(b.build)[0];
+                                if (!parsed || !parsed.moves) return false;
+                                const buildMoveKeys = parsed.moves.map(m => (m || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
+                                return alreadyPicked.every(pm => buildMoveKeys.includes(pm.toLowerCase().replace(/[^a-z0-9]/g, '')));
+                            } catch(e){ return false; }
+                        })
+                        : speciesBuilds;
+                    
+                    // Use matching builds for frequency, fall back to all if none match
+                    const buildsToScore = matchingBuilds.length > 0 ? matchingBuilds : speciesBuilds;
+                    buildsToScore.forEach(b => {
                         try {
                             const parsed = parsePaste(b.build)[0];
                             if (parsed && parsed.moves) {
                                 parsed.moves.forEach(m => {
                                     if (!m) return;
                                     const mKey = m.toLowerCase().replace(/[^a-z0-9]/g, '');
-                                    moveFreq.set(mKey, (moveFreq.get(mKey) || 0) + 1);
+                                    // Bonus weight for builds that contain already-picked moves
+                                    const weight = matchingBuilds.length > 0 ? 2 : 1;
+                                    moveFreq.set(mKey, (moveFreq.get(mKey) || 0) + weight);
                                 });
                             }
                         } catch(e){}
