@@ -2436,8 +2436,33 @@
                     };
                 });
 
-            evSliders.forEach(s => { s.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value); syncUI(); }; });
-            evInputs.forEach(i => { i.oninput = (e) => { team[currentSlot].evs[e.target.dataset.stat] = parseInt(e.target.value || 0); syncUI(); }; });
+            const handleEvUpdate = (e) => {
+                const stat = e.target.dataset.stat;
+                let val = parseInt(e.target.value || 0);
+                const maxStat = isChampionsMode ? 32 : 252;
+                const maxTotal = isChampionsMode ? 66 : 508;
+                
+                // Clamp individual stat
+                if (val < 0) val = 0;
+                if (val > maxStat) val = maxStat;
+                
+                // Clamp based on remaining EVs
+                const p = team[currentSlot];
+                let currentTotal = 0;
+                ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+                    if (k !== stat) currentTotal += p.evs[k] || 0;
+                });
+                
+                if (currentTotal + val > maxTotal) {
+                    val = maxTotal - currentTotal;
+                }
+                
+                p.evs[stat] = val;
+                syncUI();
+            };
+
+            evSliders.forEach(s => { s.oninput = handleEvUpdate; });
+            evInputs.forEach(i => { i.oninput = handleEvUpdate; });
         } // end syncUI
 
         function getBuildRecommendation(p) {
@@ -2726,7 +2751,13 @@
                                 else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
                                 else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
                                 else if (key === 'spe' || key === 'speed') key = 'spe';
-                                if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(match[1]);
+                                if (slot.evs[key] !== undefined) {
+                                    let parsedEv = parseInt(match[1]);
+                                    if (isChampionsMode) {
+                                        parsedEv = Math.round(parsedEv / 8);
+                                    }
+                                    slot.evs[key] = parsedEv;
+                                }
                             }
                         });
                     } else if (line.match(/^IVs\s*:/i)) {
