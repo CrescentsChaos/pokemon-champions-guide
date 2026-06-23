@@ -313,8 +313,10 @@
             z-index: 1000;
             display: none;
             justify-content: center;
-            align-items: flex-start; /* Start from top */
-            padding-top: 5vh; /* Slight gap from top on desktop */
+            align-items: flex-start;
+            /* Start from top */
+            padding-top: 5vh;
+            /* Slight gap from top on desktop */
         }
 
         .overlay-content {
@@ -421,18 +423,21 @@
            MOBILE: Full professional layout overhaul
         ============================================= */
         @media (max-width: 600px) {
+
             /* --- Top bar / Import-export row --- */
             .import-export-row {
                 flex-direction: column;
                 gap: 8px;
             }
-            .import-export-row > div {
+
+            .import-export-row>div {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 6px;
             }
-            .import-export-row > div .analyze-btn,
-            .import-export-row > button.analyze-btn {
+
+            .import-export-row>div .analyze-btn,
+            .import-export-row>button.analyze-btn {
                 padding: 10px 6px !important;
                 font-size: 0.72rem !important;
                 text-align: center;
@@ -449,6 +454,7 @@
                 scroll-snap-type: x mandatory;
                 -webkit-overflow-scrolling: touch;
             }
+
             .team-tab {
                 min-width: 80px;
                 max-width: 90px;
@@ -457,10 +463,13 @@
                 scroll-snap-align: start;
                 gap: 4px;
             }
-            .tab-sprite img, .preview-sprite {
+
+            .tab-sprite img,
+            .preview-sprite {
                 width: 36px !important;
                 height: 36px !important;
             }
+
             .tab-name {
                 font-size: 0.72rem;
                 white-space: nowrap;
@@ -468,6 +477,7 @@
                 text-overflow: ellipsis;
                 max-width: 76px;
             }
+
             .tab-role {
                 font-size: 0.6rem;
             }
@@ -484,6 +494,7 @@
                 border-radius: 14px !important;
                 min-height: unset !important;
             }
+
             .pokemon-config:hover {
                 transform: none !important;
                 box-shadow: none !important;
@@ -496,18 +507,21 @@
                 gap: 12px;
                 margin-bottom: 14px;
             }
+
             .big-sprite-box {
                 width: 90px !important;
                 height: 90px !important;
                 flex-shrink: 0;
                 border-radius: 12px;
             }
+
             .big-sprite {
                 width: 72px !important;
                 height: 72px !important;
             }
+
             /* Fields next to sprite */
-            .config-header > div[style*="flex-grow"] {
+            .config-header>div[style*="flex-grow"] {
                 flex-grow: 1;
                 min-width: 0;
             }
@@ -519,13 +533,13 @@
             }
 
             /* Nickname + Level: side by side */
-            .config-header > div > div[style*="grid-template-columns: 1fr 100px"] {
+            .config-header>div>div[style*="grid-template-columns: 1fr 100px"] {
                 grid-template-columns: 1fr 70px !important;
                 gap: 8px !important;
             }
 
             /* Gender + Shiny: side by side */
-            .config-header > div > div[style*="grid-template-columns: 1fr 1fr"] {
+            .config-header>div>div[style*="grid-template-columns: 1fr 1fr"] {
                 gap: 8px !important;
             }
 
@@ -535,15 +549,18 @@
             }
 
             /* --- Builder inputs global --- */
-            .builder-input, select {
+            .builder-input,
+            select {
                 padding: 9px 10px;
                 font-size: 0.88rem;
                 border-radius: 8px;
             }
+
             .input-label {
                 font-size: 0.65rem;
                 margin-bottom: 4px;
             }
+
             .input-group {
                 margin-bottom: 10px;
             }
@@ -568,12 +585,13 @@
             }
 
             /* Header: label + nature picker stacked neatly */
-            .stat-rows > div[style*="justify-content: space-between"] {
+            .stat-rows>div[style*="justify-content: space-between"] {
                 flex-direction: column !important;
                 align-items: flex-start !important;
                 gap: 8px !important;
                 margin-bottom: 14px !important;
             }
+
             #nature-input {
                 width: 100% !important;
                 font-size: 0.85rem !important;
@@ -587,6 +605,7 @@
                 margin-bottom: 14px;
                 border-radius: 10px;
             }
+
             .preset-chip {
                 padding: 5px 10px;
                 font-size: 0.65rem;
@@ -604,22 +623,27 @@
                 background: transparent;
                 border-radius: 0;
             }
+
             .stat-label {
                 font-size: 0.78rem;
             }
+
             .base-val {
                 font-size: 0.82rem;
                 text-align: center;
             }
+
             .ev-input {
                 width: 100% !important;
                 padding: 4px 2px;
                 font-size: 0.8rem;
             }
+
             .actual-stat {
                 font-size: 0.88rem;
                 text-align: right;
             }
+
             .ev-remaining {
                 font-size: 0.75rem;
                 margin-top: 10px;
@@ -639,24 +663,29 @@
                 right: 0 !important;
                 transform: none !important;
             }
+
             .overlay {
                 align-items: flex-start !important;
                 padding-top: 0 !important;
             }
+
             #overlay-title {
                 font-size: 1.1rem !important;
                 margin-bottom: 10px;
             }
+
             #overlay-search {
                 padding: 10px 12px;
                 font-size: 0.9rem;
                 margin-top: 10px;
             }
+
             .search-results {
                 grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
                 gap: 8px !important;
                 margin-top: 12px;
             }
+
             .search-item {
                 padding: 10px 8px;
                 border-radius: 10px;
@@ -667,29 +696,36 @@
             .builder-container {
                 padding: 4rem 8px 2rem;
             }
+
             .team-tab {
                 min-width: 72px;
                 max-width: 80px;
                 padding: 6px 4px;
             }
+
             .tab-name {
                 font-size: 0.65rem;
                 max-width: 68px;
             }
+
             .config-header {
                 gap: 8px;
             }
+
             .big-sprite-box {
                 width: 76px !important;
                 height: 76px !important;
             }
+
             .big-sprite {
                 width: 60px !important;
                 height: 60px !important;
             }
+
             .moves-grid {
                 grid-template-columns: 1fr !important;
             }
+
             .stat-row {
                 grid-template-columns: 55px 32px 1fr 46px 42px;
                 gap: 4px;
@@ -989,11 +1025,13 @@
                             <div style="display: grid; grid-template-columns: 1fr 100px; gap: 15px;">
                                 <div class="input-group">
                                     <span class="input-label">Nickname</span>
-                                    <input type="text" id="nickname-input" class="builder-input" placeholder="No Nickname">
+                                    <input type="text" id="nickname-input" class="builder-input"
+                                        placeholder="No Nickname">
                                 </div>
                                 <div class="input-group">
                                     <span class="input-label">Level</span>
-                                    <input type="number" id="level-input" class="builder-input" value="50" min="1" max="100">
+                                    <input type="number" id="level-input" class="builder-input" value="50" min="1"
+                                        max="100">
                                 </div>
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -1215,7 +1253,7 @@
                 let total = 0;
                 const maxTotal = isChampionsMode ? 66 : 508;
                 const maxStat = isChampionsMode ? 32 : 252;
-                
+
                 ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
                     if (isChampionsMode) {
                         p.evs[k] = Math.min(32, Math.floor((p.evs[k] || 0) / 8));
@@ -1224,7 +1262,7 @@
                     }
                     total += p.evs[k];
                 });
-                
+
                 if (total > maxTotal) {
                     let excess = total - maxTotal;
                     ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
@@ -1351,7 +1389,7 @@
                     opt.value = n;
                     const pos = natureMap[n].pos;
                     const neg = natureMap[n].neg;
-                    const statLabels = {hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
+                    const statLabels = { hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe' };
                     if (pos && neg && pos !== neg) {
                         opt.textContent = `${n} (+${statLabels[pos]}, -${statLabels[neg]})`;
                     } else {
@@ -1637,7 +1675,7 @@
                 type === 'species' ? 'Select Pokemon' :
                     type === 'item' ? 'Select Item' :
                         type === 'nature' ? 'Select Nature' :
-                            type === 'ability' ? 'Select Ability' : 
+                            type === 'ability' ? 'Select Ability' :
                                 type === 'build' ? 'Select Pre-made Build' : 'Select Move';
 
             updateSearchResults('');
@@ -1650,7 +1688,7 @@
                 // Collect teammates recommended by current team members
                 const recommendedTeammates = new Map();
                 const currentlySelected = new Set(team.map(t => (t.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')));
-                
+
                 team.forEach((slot, idx) => {
                     if (idx === currentSlot || !slot.species) return;
                     const sKey = slot.species.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1688,7 +1726,7 @@
                 const itemFreq = new Map();
                 if (p && p.species) {
                     const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
-                    
+
                     const alreadyPicked = p.moves.filter(m => m);
                     const matchingBuilds = alreadyPicked.length > 0
                         ? speciesBuilds.filter(b => {
@@ -1697,7 +1735,7 @@
                                 if (!parsed || !parsed.moves) return false;
                                 const buildMoveKeys = parsed.moves.map(m => (m || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
                                 return alreadyPicked.every(pm => buildMoveKeys.includes(pm.toLowerCase().replace(/[^a-z0-9]/g, '')));
-                            } catch(e){ return false; }
+                            } catch (e) { return false; }
                         })
                         : speciesBuilds;
 
@@ -1720,10 +1758,10 @@
                                 const weight = (matchingBuilds.length > 0 ? 2 : 1) + synergyBonus;
                                 itemFreq.set(iKey, (itemFreq.get(iKey) || 0) + weight);
                             }
-                        } catch(e){}
+                        } catch (e) { }
                     });
                 }
-                
+
                 const equippedItems = new Set(team.map((t, idx) => {
                     if (idx !== currentSlot && t.item) return t.item.toLowerCase().replace(/[^a-z0-9]/g, '');
                     return null;
@@ -1735,26 +1773,26 @@
                 }).map(item => {
                     const iKey = (item.name || item.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const freq = itemFreq.get(iKey) || 0;
-                    
+
                     const rIdx1 = recommendedItems.indexOf(item.name);
                     const rIdx2 = recommendedItems.indexOf(item.Name);
                     const rIdx = rIdx1 !== -1 ? rIdx1 : (rIdx2 !== -1 ? rIdx2 : -1);
-                    
+
                     const isRecommended = freq > 0 || rIdx !== -1;
                     const rank = freq > 0 ? -freq : (rIdx !== -1 ? rIdx : Infinity);
-                    
+
                     let desc = item.description || '';
                     if (freq > 0) {
-                        desc = `✨ Recommended Item (${freq} build${freq>1?'s':''}) - ` + desc;
+                        desc = `✨ Recommended Item (${freq} build${freq > 1 ? 's' : ''}) - ` + desc;
                     } else if (rIdx !== -1) {
                         desc = `✨ Recommended Item - ` + desc;
                     }
-                    
-                    return { 
-                        ...item, 
-                        eligible: isRecommended, 
+
+                    return {
+                        ...item,
+                        eligible: isRecommended,
                         rank: rank,
-                        description: desc 
+                        description: desc
                     };
                 });
             } else if (overlayTarget === 'nature') {
@@ -1762,8 +1800,8 @@
                 const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const dbRef = (allPokemon || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch) || {};
                 const recNatures = dbRef.Nature || [];
-                
-                const statLabels = {hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed'};
+
+                const statLabels = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
                 data = Object.keys(natureMap).map(n => {
                     const isRecommended = recNatures.includes(n);
                     const pos = natureMap[n].pos;
@@ -1801,7 +1839,7 @@
                                 }
                                 abilityFreq.set(aKey, (abilityFreq.get(aKey) || 0) + 1 + synergyBonus);
                             }
-                        } catch(e){}
+                        } catch (e) { }
                     });
                 }
 
@@ -1810,12 +1848,12 @@
                         const searchKey = n.toLowerCase().replace(/[^a-z0-9]/g, '');
                         const freq = abilityFreq.get(searchKey) || 0;
                         const isRec = freq > 0;
-                        return { 
-                            name: n, 
-                            eligible: true, 
+                        return {
+                            name: n,
+                            eligible: true,
                             isRecommended: isRec,
                             rank: isRec ? -freq : Infinity,
-                            description: isRec ? `✨ Recommended Ability (${freq} build${freq>1?'s':''})` : '✅ Eligible Ability' 
+                            description: isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : '✅ Eligible Ability'
                         };
                     });
                 } else {
@@ -1827,12 +1865,12 @@
                         const searchKey = a.toLowerCase().replace(/[^a-z0-9]/g, '');
                         const freq = abilityFreq.get(searchKey) || 0;
                         const isRec = freq > 0;
-                        return { 
-                            name: a, 
+                        return {
+                            name: a,
                             eligible: isRec,
                             isRecommended: isRec,
                             rank: isRec ? -freq : Infinity,
-                            description: isRec ? `✨ Recommended Ability (${freq} build${freq>1?'s':''})` : 'Ability' 
+                            description: isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : 'Ability'
                         };
                     });
                 }
@@ -1845,11 +1883,11 @@
                 const moveFreq = new Map();
                 if (p && p.species) {
                     const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
-                    
+
                     // Filter builds to those containing ALL already-selected moves
                     const currentMoveIdx2 = parseInt(overlayTarget.split('-')[1]);
                     const alreadyPicked = p.moves.filter((m, idx) => idx !== currentMoveIdx2 && m);
-                    
+
                     const matchingBuilds = alreadyPicked.length > 0
                         ? speciesBuilds.filter(b => {
                             try {
@@ -1857,10 +1895,10 @@
                                 if (!parsed || !parsed.moves) return false;
                                 const buildMoveKeys = parsed.moves.map(m => (m || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
                                 return alreadyPicked.every(pm => buildMoveKeys.includes(pm.toLowerCase().replace(/[^a-z0-9]/g, '')));
-                            } catch(e){ return false; }
+                            } catch (e) { return false; }
                         })
                         : speciesBuilds;
-                    
+
                     const teammateIds = team.map((t, idx) => {
                         if (idx === currentSlot || !t.species) return null;
                         const sData = getEffectivePokemonData(t, allPokemon);
@@ -1886,7 +1924,7 @@
                                     moveFreq.set(mKey, (moveFreq.get(mKey) || 0) + weight);
                                 });
                             }
-                        } catch(e){}
+                        } catch (e) { }
                     });
                 }
 
@@ -1902,36 +1940,36 @@
                     data = eligibleMoves
                         .filter(n => !pickedMoves.has(n.toLowerCase().replace(/[^a-z0-9]/g, '')))
                         .map(n => {
-                        const searchKey = n.toLowerCase().replace(/[^a-z0-9]/g, '');
-                        const mData = movesMap[searchKey] || {};
-                        const freq = moveFreq.get(searchKey) || 0;
-                        const isRec = freq > 0;
-                        
-                        return { 
-                            ...mData, 
-                            name: n, 
-                            Name: n, 
-                            eligible: true,
-                            isRecommended: isRec,
-                            rank: isRec ? -freq : Infinity, 
-                            description: isRec ? `✨ Recommended Move (${freq} build${freq>1?'s':''})` : '✅ Eligible Move' 
-                        };
-                    });
+                            const searchKey = n.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const mData = movesMap[searchKey] || {};
+                            const freq = moveFreq.get(searchKey) || 0;
+                            const isRec = freq > 0;
+
+                            return {
+                                ...mData,
+                                name: n,
+                                Name: n,
+                                eligible: true,
+                                isRecommended: isRec,
+                                rank: isRec ? -freq : Infinity,
+                                description: isRec ? `✨ Recommended Move (${freq} build${freq > 1 ? 's' : ''})` : '✅ Eligible Move'
+                            };
+                        });
                 } else {
                     data = allMoves
                         .filter(mData => !pickedMoves.has((mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')))
                         .map(mData => {
-                        const searchKey = (mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                        const freq = moveFreq.get(searchKey) || 0;
-                        const isRec = freq > 0;
-                        return {
-                            ...mData,
-                            isRecommended: isRec,
-                            eligible: isRec,
-                            rank: isRec ? -freq : Infinity,
-                            description: isRec ? `✨ Recommended Move (${freq} build${freq>1?'s':''})` : (mData.description || '')
-                        };
-                    });
+                            const searchKey = (mData.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const freq = moveFreq.get(searchKey) || 0;
+                            const isRec = freq > 0;
+                            return {
+                                ...mData,
+                                isRecommended: isRec,
+                                eligible: isRec,
+                                rank: isRec ? -freq : Infinity,
+                                description: isRec ? `✨ Recommended Move (${freq} build${freq > 1 ? 's' : ''})` : (mData.description || '')
+                            };
+                        });
                 }
             } else if (overlayTarget === 'build') {
                 const p = team[currentSlot];
@@ -1939,7 +1977,7 @@
                     const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
                     data = speciesBuilds.map((b, idx) => {
                         let parsed = null;
-                        try { parsed = parsePaste(b.build)[0]; } catch(e){}
+                        try { parsed = parsePaste(b.build)[0]; } catch (e) { }
                         return {
                             id: b.id || idx,
                             name: `${b.format || 'Standard'} Build`,
@@ -1971,7 +2009,7 @@
                 const card = document.createElement('div');
                 card.className = 'search-item';
                 const name = item.Name || item.name;
-                
+
                 let idStr = '';
                 let starStr = '';
                 if (overlayTarget !== 'ability' && !overlayTarget.startsWith('move')) {
@@ -1981,7 +2019,7 @@
                 if ((overlayTarget === 'ability' || (overlayTarget && overlayTarget.startsWith('move'))) && item.isRecommended) {
                     starStr = '⭐';
                 }
-                
+
                 let iconHtml = '';
                 if (overlayTarget === 'item') {
                     const itemSprite = getItemSpriteUrl(name);
@@ -2003,18 +2041,18 @@
                         ${recBadge}
                     `;
                 } else {
-                card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${starStr}</span></div>`;
-                if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
-                
-                if (overlayTarget && overlayTarget.startsWith('move')) {
-                    const typeIcon = item.type ? `<img src="../assets/type-icons/${item.type.toLowerCase()}_type.png" style="height:14px; vertical-align:middle; margin-right:4px;" alt="${item.type}">` : '';
-                    const classIcon = item.damage_class ? `<span style="font-size:0.6rem; background:rgba(255,255,255,0.1); padding:2px 4px; border-radius:2px; vertical-align:middle;">${item.damage_class.toUpperCase()}</span>` : '';
-                    
-                    const pwr = item.power || '--';
-                    const acc = item.accuracy || '--';
-                    const pp = item.pp || '--';
-                    
-                    card.innerHTML += `
+                    card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${starStr}</span></div>`;
+                    if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
+
+                    if (overlayTarget && overlayTarget.startsWith('move')) {
+                        const typeIcon = item.type ? `<img src="../assets/type-icons/${item.type.toLowerCase()}_type.png" style="height:14px; vertical-align:middle; margin-right:4px;" alt="${item.type}">` : '';
+                        const classIcon = item.damage_class ? `<span style="font-size:0.6rem; background:rgba(255,255,255,0.1); padding:2px 4px; border-radius:2px; vertical-align:middle;">${item.damage_class.toUpperCase()}</span>` : '';
+
+                        const pwr = item.power || '--';
+                        const acc = item.accuracy || '--';
+                        const pp = item.pp || '--';
+
+                        card.innerHTML += `
                         <div style="margin-top:5px; display:flex; justify-content:center; gap:3px; align-items:center;">
                             ${typeIcon}
                             ${classIcon}
@@ -2023,13 +2061,13 @@
                             PWR: ${pwr} | ACC: ${acc} | PP: ${pp}
                         </div>
                     `;
-                } else if (item.description) {
-                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
-                }
+                    } else if (item.description) {
+                        card.innerHTML += `<div style="font-size:0.65rem; opacity:0.6;">${item.description}</div>`;
+                    }
 
-                if (overlayTarget && overlayTarget.startsWith('move') && (item.short_descripton || item.desc)) {
-                    card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_descripton || item.desc}</div>`;
-                }
+                    if (overlayTarget && overlayTarget.startsWith('move') && (item.short_descripton || item.desc)) {
+                        card.innerHTML += `<div style="font-size:0.65rem; opacity:0.5; margin-top:6px; line-height: 1.2;">${item.short_descripton || item.desc}</div>`;
+                    }
 
                 } // end else (non-species)
 
@@ -2045,16 +2083,16 @@
                         t.evs = JSON.parse(JSON.stringify(b.evs));
                         t.ivs = JSON.parse(JSON.stringify(b.ivs));
                         t.moves = [...b.moves];
-                        while(t.moves.length < 4) t.moves.push('');
+                        while (t.moves.length < 4) t.moves.push('');
                         if (b.tera) t.tera = b.tera;
-                        
+
                         overlay.style.display = 'none';
                         syncUI();
                     };
                 } else {
                     card.onclick = () => selectItem(name);
                 }
-                
+
                 resultsBox.appendChild(card);
             });
         }
@@ -2127,7 +2165,7 @@
             }
 
             img.dataset.fallbackState = 'final';
-            
+
             // If it's a base sprite that failed, update the dataset base to Smogon
             const folder = shiny ? 'xy-shiny' : 'xy';
             const smogonUrl = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
@@ -2220,7 +2258,7 @@
             if (!base || isNaN(base)) return '--';
             const lvl = parseInt(level) || 50;
             const ivVal = parseInt(iv || 31);
-            
+
             let evBonus;
             if (isChampionsMode) {
                 // In Champions EV Mode, EVs act as direct stat points (+ev points)
@@ -2238,7 +2276,7 @@
 
             let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + 5;
             if (isChampionsMode) val += parseInt(ev || 0);
-            
+
             const nature = natureMap[natureType] || {};
             if (nature.pos === statKey) val = Math.floor(val * 1.1);
             if (nature.neg === statKey) val = Math.floor(val * 0.9);
@@ -2492,22 +2530,22 @@
                 let val = parseInt(e.target.value || 0);
                 const maxStat = isChampionsMode ? 32 : 252;
                 const maxTotal = isChampionsMode ? 66 : 508;
-                
+
                 // Clamp individual stat
                 if (val < 0) val = 0;
                 if (val > maxStat) val = maxStat;
-                
+
                 // Clamp based on remaining EVs
                 const p = team[currentSlot];
                 let currentTotal = 0;
                 ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
                     if (k !== stat) currentTotal += p.evs[k] || 0;
                 });
-                
+
                 if (currentTotal + val > maxTotal) {
                     val = maxTotal - currentTotal;
                 }
-                
+
                 p.evs[stat] = val;
                 syncUI();
             };
@@ -2518,21 +2556,21 @@
 
         function getBuildRecommendation(p) {
             if (!allBuilds || !allBuilds.length || !p.species) return null;
-            
+
             const speciesBuilds = allBuilds.filter(b => b.pokemon.toLowerCase() === p.species.toLowerCase() || b.pokemon.toLowerCase() === getEffectivePokemonData(p, allPokemon)?.Name?.toLowerCase());
             if (speciesBuilds.length === 0) return null;
-            
+
             let bestBuild = null;
             let bestScore = -1;
-            
+
             speciesBuilds.forEach(b => {
                 try {
                     const parsed = parsePaste(b.build)[0];
                     if (!parsed) return;
-                    
+
                     let score = 0;
                     if (p.ability && parsed.ability === p.ability) score += 2;
-                    
+
                     const pMoves = p.moves.filter(m => m);
                     if (pMoves.length > 0) {
                         pMoves.forEach(m => {
@@ -2540,14 +2578,14 @@
                         });
                     }
                     if (p.item && parsed.item === p.item) score += 1;
-                    
+
                     if (score > bestScore) {
                         bestScore = score;
                         bestBuild = parsed;
                     }
-                } catch (e) {}
+                } catch (e) { }
             });
-            
+
             return bestScore >= 0 ? bestBuild : null;
         }
 
@@ -2577,8 +2615,8 @@
             if (customBuild) {
                 const chip = document.createElement('div');
                 chip.className = 'preset-chip recommended';
-                chip.textContent = '✨ Best Match (builds.json)';
-                chip.title = `Nature: ${customBuild.nature}\nEVs: ${Object.entries(customBuild.evs).filter(([k,v])=>v>0).map(([k,v])=>`${v} ${k.toUpperCase()}`).join(' / ')}`;
+                chip.textContent = '✨ Best Match';
+                chip.title = `Nature: ${customBuild.nature}\nEVs: ${Object.entries(customBuild.evs).filter(([k, v]) => v > 0).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(' / ')}`;
                 chip.onclick = (e) => {
                     e.stopPropagation();
                     p.evs = JSON.parse(JSON.stringify(customBuild.evs));
