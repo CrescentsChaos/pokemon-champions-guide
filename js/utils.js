@@ -40,17 +40,20 @@ function getPokemonAbilities(db) {
  * @param {string} statKey - Stat identifier ('hp', 'atk', etc.)
  * @returns {number} The calculated stat
  */
-function calculateStat(base, iv, ev, level, natureType, statKey) {
+function calculateStat(base, iv, ev, level, natureType, statKey, championsMode = false) {
     const lvl = parseInt(level) || 50;
-    const evBonus = Math.floor(parseInt(ev || 0) / 4);
     const ivVal = parseInt(iv || 31);
-    
+    const evBonus = championsMode ? 0 : Math.floor(parseInt(ev || 0) / 4);
+
     if (statKey === 'hp') {
         if (parseInt(base) === 1) return 1; // Shedinja
-        return Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + lvl + 10;
+        let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + lvl + 10;
+        if (championsMode) val += parseInt(ev || 0);
+        return val;
     }
-    
+
     let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + 5;
+    if (championsMode) val += parseInt(ev || 0);
     
     // Constant nature map to avoid dependency on global
     const natureMap = {

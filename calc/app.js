@@ -10,6 +10,72 @@ let selectedMoveIdx2 = 0;
 let importTargetId = 1;
 let topMetaNames = [];
 let _topPokemonsCache = null;
+let isChampionsMode = false;
+
+function toggleChampionsMode() {
+    isChampionsMode = !isChampionsMode;
+
+    [p1, p2].forEach(pk => {
+        if (!pk) return;
+        let total = 0;
+        const maxTotal = isChampionsMode ? 66 : 508;
+        const maxStat = isChampionsMode ? 32 : 252;
+
+        ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+            if (isChampionsMode) {
+                pk.evs[k] = Math.min(32, Math.floor((pk.evs[k] || 0) / 8));
+            } else {
+                pk.evs[k] = Math.min(252, (pk.evs[k] || 0) * 8);
+            }
+            total += pk.evs[k];
+        });
+
+        if (total > maxTotal) {
+            let excess = total - maxTotal;
+            ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+                if (excess > 0 && pk.evs[k] > 0) {
+                    const sub = Math.min(pk.evs[k], excess);
+                    pk.evs[k] -= sub;
+                    excess -= sub;
+                }
+            });
+        }
+        updateStatsUI(pk);
+    });
+
+    const btn = document.getElementById('champions-ev-toggle');
+    if (btn) {
+        btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('active', isChampionsMode);
+    }
+    recalculate();
+}
+
+function getEvLimits() {
+    return {
+        maxStat: isChampionsMode ? 32 : 252,
+        maxTotal: isChampionsMode ? 66 : 508
+    };
+}
+
+function clampPokemonEvs(pk) {
+    const { maxStat, maxTotal } = getEvLimits();
+    let total = 0;
+    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+        pk.evs[k] = Math.max(0, Math.min(maxStat, pk.evs[k] || 0));
+        total += pk.evs[k];
+    });
+    if (total > maxTotal) {
+        let excess = total - maxTotal;
+        ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+            if (excess > 0 && pk.evs[k] > 0) {
+                const sub = Math.min(pk.evs[k], excess);
+                pk.evs[k] -= sub;
+                excess -= sub;
+            }
+        });
+    }
+}
 
 function normalizeSpeciesKey(name) {
     return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -544,7 +610,12 @@ function populatePokemonUI(pk) {
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
         const mData = movesDB.find(m => m.name === move.name);
-        const isMulti = mData && (mData.name === 'Bullet Seed' || mData.name === 'Water Shuriken' || mData.name === 'Icicle Spear' || mData.name === 'Rock Blast' || mData.name === 'Pin Missile' || mData.name === 'Population Bomb' || mData.name === 'Dual Wingbeat' || mData.name === 'Surging Strikes' || mData.name === 'Bonemerang' || mData.name === 'Dragon Dart' || mData.name === 'Double Iron Bash');
+        const multiInfo = isMultiHitMove(move.name);
+        const hitOptions = multiInfo
+            ? (multiInfo.variable
+                ? Array.from({ length: multiInfo.max - multiInfo.min + 1 }, (_, n) => multiInfo.min + n)
+                : [multiInfo.min])
+            : [];
 
         return `
         <div class="move-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -557,9 +628,9 @@ function populatePokemonUI(pk) {
                     <span class="type-tag type-${mData.type.toLowerCase()}" style="font-size: 0.6rem; padding: 2px 6px;">${mData.type}</span>
                     <span style="font-size: 0.65rem; color: #888; font-weight: 600; margin-right: auto;">${mData.damage_class || mData.category || ''} ${mData.power ? '| ' + mData.power + ' BP' : ''} ${mData.accuracy ? '| ' + mData.accuracy + '%' : ''}</span>
                 ` : '<div style="margin-right: auto;"></div>'}
-                ${isMulti ? `
+                ${multiInfo ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
-                    ${[2, 3, 4, 5, 10].map(h => `<option value="${h}" ${move.hits == h ? 'selected' : ''}>${h} hits</option>`).join('')}
+                    ${hitOptions.map(h => `<option value="${h}" ${(move.hits || getDefaultHitCount(move.name, pk)) == h ? 'selected' : ''}>${h} hit${h > 1 ? 's' : ''}</option>`).join('')}
                 </select>` : ''}
                 <label class="crit-label">
                     <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> 
@@ -648,11 +719,14 @@ function toggleForme(id) {
 
 function updateMove(pId, idx, moveName) {
     const pk = pId === 1 ? p1 : p2;
+    const prevCrit = pk.moves[idx].crit;
     const mData = movesDB.find(x => x.name === moveName);
     if (mData) {
+        const hits = isMultiHitMove(mData.name) ? getDefaultHitCount(mData.name, pk) : undefined;
         pk.moves[idx] = {
             name: mData.name, basePower: parseInt(mData.power) || 0,
-            type: mData.type, category: mData.damage_class, crit: pk.moves[idx].crit
+            type: mData.type, category: mData.damage_class, crit: prevCrit,
+            ...(hits ? { hits } : {})
         };
     } else {
         pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
@@ -675,7 +749,7 @@ function updateStatsUI(pk) {
     // PRE-CALCULATE base totals so applyParadoxBoost can evaluate all stats accurately
     statsKeys.forEach(k => {
         const base = pk.baseStats[k] || 0;
-        pk.stats[k] = calculateStat(base, pk.ivs[k], pk.evs[k], pk.level, pk.nature, k);
+        pk.stats[k] = calculateStat(base, pk.ivs[k], pk.evs[k], pk.level, pk.nature, k, isChampionsMode);
     });
 
     const choiceItem = (pk.item || '').toLowerCase();
@@ -710,12 +784,15 @@ function updateStatsUI(pk) {
             : '';
         const choiceTitle = isChoiceBoosted ? ` title="×1.5 from ${pk.item}"` : '';
 
+        const evMax = isChampionsMode ? 32 : 252;
+        const evStep = isChampionsMode ? 1 : 1;
+
         return `
             <tr>
                 <td class="stat-label">${k.toUpperCase()}</td>
                 <td>${base}</td>
-                <td><input type="number" value="${iv}" onchange="updateStatVal(${pk.id}, '${k}', 'ivs', this.value)"></td>
-                <td><input type="number" value="${ev}" onchange="updateStatVal(${pk.id}, '${k}', 'evs', this.value)"></td>
+                <td><input type="number" value="${iv}" min="0" max="31" onchange="updateStatVal(${pk.id}, '${k}', 'ivs', this.value)"></td>
+                <td><input type="number" value="${ev}" min="0" max="${evMax}" step="${evStep}" onchange="updateStatVal(${pk.id}, '${k}', 'evs', this.value)"></td>
                 <td>
                     ${k === 'hp' ? '' : `
                     <select onchange="updateStatVal(${pk.id}, '${k}', 'boosts', this.value)" class="boost-select">
@@ -733,8 +810,17 @@ function updateStatsUI(pk) {
 function updateStatVal(id, k, type, val) {
     const pk = id === 1 ? p1 : p2;
     pk[type][k] = parseInt(val) || 0;
+    if (type === 'evs') clampPokemonEvs(pk);
     updateStatsUI(pk);
     recalculate();
+}
+
+function formatRollsDisplay(rolls) {
+    if (!rolls.length) return '(0)';
+    if (rolls.length <= 20) return `(${rolls.join(', ')})`;
+    const unique = [...new Set(rolls)].sort((a, b) => a - b);
+    if (unique.length <= 20) return `(${unique.join(', ')})`;
+    return `(${unique[0]}, ${unique[1]}, …, ${unique[unique.length - 2]}, ${unique[unique.length - 1]}) · ${rolls.length} combinations`;
 }
 
 function recalculate() {
@@ -745,21 +831,25 @@ function recalculate() {
 
     renderMoveResults(p1Results, p2Results);
 
-    const res = p1Results[selectedMoveIdx1] || p2Results[selectedMoveIdx2];
+    let res = null;
+    if (selectedMoveIdx1 >= 0) res = p1Results[selectedMoveIdx1];
+    if (!res && selectedMoveIdx2 >= 0) res = p2Results[selectedMoveIdx2];
+    if (!res) res = p1Results.find(Boolean) || p2Results.find(Boolean);
     const banner = document.getElementById('main-result');
     const subBanner = document.getElementById('sub-result');
 
     if (!res) {
         banner.innerText = "Select moves to see damage results";
-        subBanner.innerText = "Possible damage amounts: (0)";
+        subBanner.innerText = "Damage rolls: (0)";
         document.getElementById('ko-result').innerText = '';
         return;
     }
 
     const attacker = res.attackerId === 1 ? p1 : p2;
     const defender = res.attackerId === 1 ? p2 : p1;
-    banner.innerText = `${attacker.name} ${res.move} vs. ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
-    subBanner.innerText = `Damage rolls: (${res.rolls.join(', ')})`;
+    const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
+    banner.innerText = `${attacker.name} ${res.move}${hitLabel} vs. ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
+    subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
 
     // KO Probability
     const koResult = document.getElementById('ko-result');
@@ -945,7 +1035,8 @@ function importPokePaste(id, paste) {
                     if (mData) {
                         pk.moves[emptyIdx] = {
                             name: mData.name, basePower: parseInt(mData.power) || 0,
-                            type: mData.type, category: mData.damage_class, crit: false
+                            type: mData.type, category: mData.damage_class, crit: false,
+                            ...(isMultiHitMove(mData.name) ? { hits: getDefaultHitCount(mData.name, pk) } : {})
                         };
                     }
                 }
@@ -953,6 +1044,7 @@ function importPokePaste(id, paste) {
         });
 
         populatePokemonUI(pk);
+        clampPokemonEvs(pk);
         updateStatsUI(pk);
         recalculate();
         showToast("Import successful!");
@@ -985,6 +1077,7 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('active'), 3000);
 }
 
+window.toggleChampionsMode = toggleChampionsMode;
 window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 

@@ -24,6 +24,61 @@ const typeChart = {
     fairy: { fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 }
 };
 
+const MULTI_HIT_FIXED_2 = new Set([
+    'Double Kick', 'Bonemerang', 'Double Hit', 'Dual Chop', 'Gear Grind',
+    'Double Iron Bash', 'Dual Wingbeat', 'Dragon Darts'
+]);
+const MULTI_HIT_FIXED_3 = new Set(['Surging Strikes']);
+const MULTI_HIT_VARIABLE_25 = new Set([
+    'Double Slap', 'Comet Punch', 'Fury Attack', 'Pin Missile', 'Spike Cannon',
+    'Barrage', 'Fury Swipes', 'Bone Rush', 'Arm Thrust', 'Bullet Seed',
+    'Icicle Spear', 'Rock Blast', 'Tail Slap', 'Water Shuriken', 'Scale Shot'
+]);
+const MULTI_HIT_VARIABLE_110 = new Set(['Population Bomb']);
+
+function getMoveMultiHitInfo(moveName) {
+    if (!moveName || moveName === 'None') return null;
+    if (MULTI_HIT_FIXED_2.has(moveName)) return { min: 2, max: 2, variable: false };
+    if (MULTI_HIT_FIXED_3.has(moveName)) return { min: 3, max: 3, variable: false };
+    if (MULTI_HIT_VARIABLE_110.has(moveName)) return { min: 1, max: 10, variable: true };
+    if (MULTI_HIT_VARIABLE_25.has(moveName)) return { min: 2, max: 5, variable: true };
+    return null;
+}
+
+function isMultiHitMove(moveName) {
+    return getMoveMultiHitInfo(moveName) !== null;
+}
+
+function getDefaultHitCount(moveName, attacker) {
+    const info = getMoveMultiHitInfo(moveName);
+    if (!info) return 1;
+    if (attacker?.ability === 'Skill Link') return info.max;
+    if (info.variable) return Math.min(4, info.max);
+    return info.min;
+}
+
+function combineMultiHitRolls(singleHitRolls, hitCount) {
+    if (!hitCount || hitCount <= 1) return singleHitRolls.slice();
+    let totals = [0];
+    for (let h = 0; h < hitCount; h++) {
+        const next = [];
+        for (const total of totals) {
+            for (const roll of singleHitRolls) {
+                next.push(total + roll);
+            }
+        }
+        totals = next;
+    }
+    return totals.sort((a, b) => a - b);
+}
+
+function resolveHitCount(move, attacker) {
+    const info = getMoveMultiHitInfo(move.name);
+    if (!info) return 1;
+    if (move.hits && move.hits >= info.min && move.hits <= info.max) return move.hits;
+    return getDefaultHitCount(move.name, attacker);
+}
+
 const SPREAD_MOVES = [
     // Physical
     'Rock Slide', 'Earthquake', 'Bulldoze', 'Razor Leaf', 'Swift', 'Explosion', 'Self-Destruct',
@@ -463,16 +518,17 @@ function calculateDamage(attacker, defender, move, field) {
         rolls = rolls.map(r => r + Math.floor(r * 0.25));
     }
 
-    // Multi-hit logic
-    const hits = move.hits || 1;
-    if (hits > 1) {
-        rolls = rolls.map(r => r * hits);
+    // Multi-hit: each hit rolls independently; totals are summed
+    const hitCount = resolveHitCount(move, attacker);
+    if (hitCount > 1) {
+        rolls = combineMultiHitRolls(rolls, hitCount);
     }
 
     const defHp = defender.stats.hp;
     res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
-    res.maxPercent = (rolls[15] / defHp * 100).toFixed(1);
+    res.maxPercent = (rolls[rolls.length - 1] / defHp * 100).toFixed(1);
     res.rolls = rolls;
+    res.hitCount = hitCount;
     return res;
 }
 function getEffectiveSpeed(calcState, field) {
