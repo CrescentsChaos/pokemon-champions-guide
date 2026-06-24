@@ -10282,5 +10282,17 @@
     "generation": "Generation IX",
     "short_descripton": "The user attacks twice in a row. If there are 2 opposing Pokémon, each of them is attacked once.",
     "damage_class": "Physical"
+  },
+  {
+    "name": "Alluring Voice",
+    "id": 876,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 80,
+    "priority": 0,
+    "type": "Fairy",
+    "generation": "Generation IX",
+    "short_descripton": "Confuses the target if its stats were boosted during the turn this move is used.",
+    "damage_class": "Special"
   }
 ]

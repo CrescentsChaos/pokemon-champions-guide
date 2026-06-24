@@ -4410,5 +4410,39 @@
             "598"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "600",
+        "pokemon": "Eelektross",
+        "build": "Eelektross @ Eelektrossite  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 252 HP / 244 Atk / 12 Spe  \nAdamant Nature  \n- Thunder Punch  \n- Drain Punch  \n- Coil  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "601",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Kasib Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 88 Def / 164 SpD  \nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Life Dew  \n- Protect",
+        "synergy": [
+            "600"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "602",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Leftovers  \nAbility: Intimidate  \nEVs: 252 HP / 160 Def / 96 SpD  \nImpish Nature  \n- Helping Hand  \n- Flare Blitz  \n- Parting Shot  \n- Fake Out",
+        "synergy": [
+            "601"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "603",
+        "pokemon": "Gholdengo",
+        "build": "Gholdengo @ Focus Sash  \nAbility: Good as Gold  \nEVs: 4 HP / 252 SpA / 252 Spe  \nIVs: 0 Atk  \n- Protect  \n- Nasty Plot  \n- Shadow Ball  \n- Make It Rain",
+        "synergy": [
+            "602"
+        ],
+        "format": "Doubles"
     }
 ]
