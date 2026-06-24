@@ -1205,7 +1205,7 @@
     {
         "id": "173",
         "pokemon": "Garchomp",
-        "build": "Garchomp @ Choice Scarf\nLevel: 50\nAbility: Rough Skin\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Steel\nJolly Nature\n- Rock Slide\n- Earthquake\n- Dragon Claw\n- Protect",
+        "build": "Garchomp @ Choice Scarf\nLevel: 50\nAbility: Rough Skin\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Steel\nJolly Nature\n- Rock Slide\n- Earthquake\n- Dragon Claw\n- Poison Jab",
         "synergy": [],
         "format": "Doubles"
     },
@@ -4233,6 +4233,32 @@
             "576",
             "578",
             "579"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "581",
+        "pokemon": "Mawile",
+        "build": "Mawile @ Mawilite  \nAbility: Hyper Cutter  \nEVs: 252 HP / 252 Atk / 4 Def  \nAdamant Nature  \n- Play Rough  \n- Rock Slide  \n- Sucker Punch  \n- Swords Dance",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "582",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 120 HP / 113 Def / 160 SpA / 113 SpD / 4 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Twin Beam  \n- Thunderbolt  \n- Trick Room  \n- Protect",
+        "synergy": [
+            "581"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "583",
+        "pokemon": "Abomasnow",
+        "build": "Abomasnow @ Abomasite  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 4 Atk / 252 SpA  \nQuiet Nature  \n- Blizzard  \n- Energy Ball  \n- Earth Power  \n- Ice Shard",
+        "synergy": [
+            "581",
+            "582"
         ],
         "format": "Doubles"
     }
