@@ -348,9 +348,64 @@
             background: rgba(255,255,255,0.1);
             border-color: white;
         }
+
+        .target-header {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .target-sprite {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .target-name-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .editor-field label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+
+        .editor-field input,
+        .editor-field select {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            body.counter-page {
+                padding-top: 5.5rem;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="counter-page">
     <main class="container">
         <div class="section-title fade-in" style="margin-bottom: 3rem;">
             <h2>Counter Strategy Engine</h2>
@@ -448,7 +503,7 @@
 
                     <div style="margin-top: 1.5rem;">
                         <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">EVs</label>
-                        <div class="editor-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5rem;">
+                        <div class="editor-grid ev-editor-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5rem;">
                             <div class="editor-field"><label>HP</label><input type="number" class="target-ev" data-stat="hp" value="0"></div>
                             <div class="editor-field"><label>Atk</label><input type="number" class="target-ev" data-stat="atk" value="0"></div>
                             <div class="editor-field"><label>Def</label><input type="number" class="target-ev" data-stat="def" value="0"></div>

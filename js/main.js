@@ -1,3 +1,16 @@
+(function injectMobileStylesheet() {
+    const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
+    const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
+    const prefix = isSub ? '../' : '';
+    if (!document.getElementById('mobile-css')) {
+        const mobileLink = document.createElement('link');
+        mobileLink.id = 'mobile-css';
+        mobileLink.rel = 'stylesheet';
+        mobileLink.href = prefix + 'css/mobile.css';
+        document.head.appendChild(mobileLink);
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     // Determine path prefix (more robust for file:// URLs)
     const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];

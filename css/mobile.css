@@ -1,0 +1,517 @@
+/**
+ * Mobile-only overrides — all rules scoped to max-width media queries.
+ * Desktop layout is unchanged.
+ */
+
+/* ─── Global / shared ─── */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    header {
+        padding: 0.85rem 0 !important;
+    }
+
+    header.scrolled {
+        padding: 0.65rem 0 !important;
+    }
+
+    footer .container > div:first-child {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    footer .container > div:last-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    footer .container {
+        padding: 3rem 1rem !important;
+    }
+
+    section {
+        padding: 4rem 0 !important;
+    }
+
+    .section-title h2 {
+        font-size: 1.75rem !important;
+    }
+
+    .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 16px 16px 0 0 !important;
+        padding: 1.25rem !important;
+        max-height: 92vh;
+        overflow-y: auto;
+    }
+
+    .modal-overlay,
+    .modal.active {
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title h2 {
+        font-size: 1.45rem !important;
+    }
+}
+
+/* ─── Builds page ─── */
+@media (max-width: 768px) {
+    .teammates-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+
+    .teammates-toolbar > h3 {
+        font-size: 0.95rem !important;
+    }
+
+    .teammates-toolbar-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    .format-toggle-wrapper {
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        padding: 0.65rem !important;
+    }
+
+    .teammates-export-row {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .teammates-export-row .btn {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    #rcmd-team,
+    #shuffle-team {
+        width: 100%;
+    }
+
+    .build-card-stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .analysis-dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─── Calc page ─── */
+@media (max-width: 768px) {
+    body.calc-page main.container {
+        padding: 5.5rem 0.75rem 2.5rem !important;
+    }
+
+    .calc-panel {
+        padding: 1.15rem !important;
+    }
+
+    .calc-results-section {
+        margin-bottom: 1.5rem !important;
+        padding-bottom: 1.25rem !important;
+    }
+
+    #damage-banner {
+        padding: 1.25rem 1rem !important;
+    }
+
+    #main-result {
+        font-size: 1.15rem !important;
+    }
+
+    #sub-result {
+        font-size: 0.72rem !important;
+    }
+
+    .config-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .level-row {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .panel-header .search-input {
+        font-size: 0.9rem;
+        padding: 12px 14px;
+    }
+
+    .sprite-container {
+        height: 90px;
+        margin-bottom: 12px;
+    }
+
+    .sprite-container img {
+        max-height: 76px;
+    }
+
+    .stats-table {
+        min-width: 520px;
+    }
+
+    .panel-body {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .stats-table input[type="number"] {
+        width: 56px !important;
+        padding: 6px 2px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .stats-table th {
+        font-size: 0.62rem !important;
+    }
+
+    .meta-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .sides-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .side-controls h5 {
+        font-size: 0.65rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .side-controls .field-btn {
+        padding: 6px 10px;
+        font-size: 0.68rem;
+    }
+
+    .move-row .move-configs {
+        flex-wrap: wrap;
+    }
+
+    .build-paste-tooltip {
+        min-width: 0 !important;
+        max-width: calc(100vw - 1.5rem) !important;
+        white-space: pre-wrap;
+    }
+
+    .move-results-column h4 {
+        font-size: 0.68rem;
+    }
+
+    .result-move-box {
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body.calc-page main.container {
+        padding-left: 0.65rem !important;
+        padding-right: 0.65rem !important;
+    }
+
+    .field-btn {
+        padding: 7px 10px;
+        font-size: 0.72rem;
+    }
+}
+
+/* ─── Compare page ─── */
+@media (max-width: 768px) {
+    body.compare-page main.container {
+        padding-top: 5.5rem !important;
+        padding-bottom: 3rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    #compare-banner {
+        padding: 1.75rem 1rem !important;
+    }
+
+    #compare-banner h1 {
+        font-size: 1.65rem !important;
+    }
+
+    .compare-page .calc-panel {
+        padding: 1.15rem !important;
+    }
+
+    .compare-page .panel-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+    }
+
+    .compare-page .panel-header .import-btn {
+        width: 100%;
+        margin-top: 0 !important;
+    }
+
+    .compare-page .level-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+    }
+
+    .compare-ev-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .compare-ev-grid .middle-panel {
+        display: none;
+    }
+
+    .compare-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -0.25rem;
+        padding: 0 0.25rem;
+    }
+
+    .compare-table {
+        min-width: 300px;
+    }
+
+    .compare-table td,
+    .compare-table th {
+        padding: 10px 6px !important;
+        font-size: 0.78rem;
+    }
+
+    .compare-page .stats-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .compare-page .stats-table thead,
+    .compare-page .stats-table tbody {
+        min-width: 480px;
+    }
+
+    .compare-page .search-results {
+        width: 100% !important;
+    }
+
+    #import-modal[style*="flex"] {
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+
+    #import-modal .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 16px 16px 0 0 !important;
+        margin: 0;
+    }
+
+    #import-modal .modal-actions {
+        flex-direction: column;
+    }
+
+    #import-modal .modal-actions button {
+        width: 100%;
+    }
+}
+
+/* ─── Counter page ─── */
+@media (max-width: 768px) {
+    body.counter-page {
+        padding-top: 5.5rem;
+    }
+
+    .counter-container {
+        gap: 1.5rem !important;
+    }
+
+    .counter-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .results-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.65rem !important;
+    }
+
+    .results-header h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .target-main-info {
+        flex-direction: column !important;
+        text-align: center;
+    }
+
+    .target-type-tags {
+        justify-content: center;
+    }
+
+    .counter-header-premium {
+        flex-wrap: wrap;
+    }
+
+    .counter-score-badge {
+        position: static !important;
+        align-self: flex-start;
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .placeholder-text {
+        padding: 3rem 1.5rem !important;
+    }
+
+    .target-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .target-name-input {
+        width: 100%;
+    }
+
+    .editor-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .editor-field label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    .editor-field input,
+    .editor-field select {
+        width: 100%;
+        padding: 0.55rem;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    #target-moves-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ev-editor-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .manage-controls {
+        flex-direction: column;
+    }
+
+    .moves-preview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .counter-grid {
+        gap: 1rem !important;
+    }
+
+    .editor-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ev-editor-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─── Pokedex page ─── */
+@media (max-width: 768px) {
+    .pokedex-section {
+        padding-top: 6rem !important;
+    }
+
+    .pokedex-title {
+        font-size: 2rem !important;
+    }
+
+    .pokedex-section .search-input {
+        padding: 1rem 1.15rem !important;
+        font-size: 1rem !important;
+    }
+
+    .pokemon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+        gap: 1rem !important;
+    }
+
+    .pokedex-card {
+        padding: 1.25rem !important;
+    }
+
+    .pokemon-number {
+        font-size: 1.75rem !important;
+    }
+
+    .pokemon-img {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .pokemon-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+/* ─── Teambuilder page ─── */
+@media (max-width: 768px) {
+    .teambuilder-page main.container,
+    body:has(#builder-view) main.container {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .import-export-row > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }
+
+    .analysis-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+    }
+}
+
+/* ─── Home page (extra polish) ─── */
+@media (max-width: 768px) {
+    body.home-page main.container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}

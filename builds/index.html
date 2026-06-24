@@ -143,7 +143,7 @@
                     </p>
                 </div>
 
-                <div class="analysis-grid">
+                <div class="analysis-grid analysis-dashboard-grid">
                     <div style="display: flex; flex-direction: column; gap: 25px;">
                         <div class="analysis-card"
                             style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
@@ -194,9 +194,9 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <div class="teammates-toolbar" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
-                <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="teammates-toolbar-controls" style="display: flex; gap: 15px; align-items: center;">
                     <div class="format-toggle-wrapper"
                         style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
                         <div style="display: flex; gap: 2px;">
@@ -230,7 +230,7 @@
                     <button id="shuffle-team" onclick="shuffleTeammates()">
                         <span>SHUFFLE TEAM</span> 🎲
                     </button>
-                    <div style="display: flex; gap: 10px;">
+                    <div class="teammates-export-row" style="display: flex; gap: 10px;">
                         <button id="export-synergy-team" class="btn"
                             style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
                             FULL TEAM PASTE 📋</button>
@@ -820,7 +820,7 @@
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px; margin:4px 0; align-items: start;">
+                <div class="build-card-stats-grid" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px; margin:4px 0; align-items: start;">
                     <div class="moves-column">${movesHtml}</div>
                     <div class="stats-column" style="background:rgba(0,0,0,0.2); padding:6px; border-radius:10px;">${statsHtml}</div>
                 </div>

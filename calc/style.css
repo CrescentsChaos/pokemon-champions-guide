@@ -823,3 +823,17 @@ input:hover {
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    body.calc-page header .container {
+        padding: 0 1rem;
+    }
+
+    .middle-panel .field-section {
+        margin-bottom: 1.25rem;
+    }
+
+    .moves-section h4 {
+        font-size: 0.75rem;
+    }
+}
