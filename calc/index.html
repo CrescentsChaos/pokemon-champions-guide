@@ -20,23 +20,6 @@
     <div id="build-paste-tooltip" class="build-paste-tooltip"></div>
 
     <main class="container">
-        <div id="damage-banner" class="glass fade-in">
-            <div class="banner-content">
-                <div id="main-result">Select moves to see damage results</div>
-                <div id="sub-result">Possible damage amounts: (0)</div>
-                <div id="ko-result"></div>
-            </div>
-        </div>
-
-        <div class="move-results-container fade-in">
-            <div class="move-results-column" id="p1-move-results">
-                <!-- P1 Moves vs P2 -->
-            </div>
-            <div class="move-results-column" id="p2-move-results">
-                <!-- P2 Moves vs P1 -->
-            </div>
-        </div>
-
         <div class="calc-grid">
             <!-- Pokemon 1 (Attacker) -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
@@ -314,6 +297,25 @@
                 </div>
             </div>
         </div>
+
+        <section class="calc-results-section fade-in" aria-label="Damage results">
+            <div id="damage-banner" class="glass">
+                <div class="banner-content">
+                    <div id="main-result">Select moves to see damage results</div>
+                    <div id="sub-result">Possible damage amounts: (0)</div>
+                    <div id="ko-result"></div>
+                </div>
+            </div>
+
+            <div class="move-results-container">
+                <div class="move-results-column" id="p1-move-results">
+                    <!-- P1 Moves vs P2 -->
+                </div>
+                <div class="move-results-column" id="p2-move-results">
+                    <!-- P2 Moves vs P1 -->
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="import-modal" class="modal">
@@ -334,6 +336,7 @@
     <datalist id="items-list"></datalist>
 
     <script src="../js/utils.js"></script>
+    <script src="../js/damage-calc.js"></script>
     <script src="app.js"></script>
 </body>
 

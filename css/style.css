@@ -1551,3 +1551,130 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Team analysis type badges (shared by Builder + Builds) */
+.type-badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.analysis-type-badge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.analysis-type-badge:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.analysis-type-badge img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.type-score-bubble {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--primary-red);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 900;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 2;
+}
+
+.critical-weakness {
+    border-color: var(--primary-red) !important;
+    box-shadow: 0 0 15px rgba(255, 62, 62, 0.3), inset 0 0 10px rgba(255, 62, 62, 0.2) !important;
+}
+
+.critical-weakness img {
+    filter: drop-shadow(0 0 5px var(--primary-red)) !important;
+}
+
+.synergy-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.synergy-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.synergy-icon img {
+    width: 100%;
+    height: 100%;
+    max-width: 36px;
+    max-height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.text-glow {
+    text-shadow: 0 0 10px var(--glow-color);
+}
+
+.matchup-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+.matchup-chip.check {
+    color: #81c784;
+    border-color: rgba(76, 175, 80, 0.25);
+    background: rgba(76, 175, 80, 0.08);
+}
+
+.matchup-chip.threat {
+    color: #ffb74d;
+    border-color: rgba(255, 152, 0, 0.25);
+    background: rgba(255, 152, 0, 0.08);
+}
+
+.matchup-chip.gap {
+    color: #ef5350;
+    border-color: rgba(244, 67, 54, 0.25);
+    background: rgba(244, 67, 54, 0.08);
+}

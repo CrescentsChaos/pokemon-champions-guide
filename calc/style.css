@@ -23,7 +23,8 @@ body.calc-page {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 7rem 5% 5rem;
+    padding: 9rem 5% 5rem;
+    box-sizing: border-box;
 }
 
 /* --- Navigation & Header --- */
@@ -94,9 +95,16 @@ body.calc-page {
 }
 
 /* --- Damage Banner --- */
+.calc-results-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    clear: both;
+}
+
 #damage-banner {
-    padding: 3rem;
-    margin-bottom: 3rem;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
     text-align: center;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
     box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.02);
@@ -142,7 +150,8 @@ body.calc-page {
 }
 
 .calc-panel:hover {
-    transform: translateY(-5px);
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Side Themes */
@@ -389,7 +398,7 @@ input:hover {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
-    margin-bottom: 3rem;
+    margin-bottom: 0;
 }
 
 .move-results-column h4 {

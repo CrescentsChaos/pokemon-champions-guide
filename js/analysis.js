@@ -671,6 +671,11 @@ async function analyzeMetaThreats(activeMons, format = 'Singles') {
 
     const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
     const teamData = buildTeamMatchupData(activeMons);
+    const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
+    const hasDamageCalc = typeof buildCalcStateFromSlot === 'function'
+        && typeof findBestDamage === 'function'
+        && typeof getDefaultField === 'function';
+    const calcField = hasDamageCalc ? getDefaultField(format) : null;
     const threatResults = [];
 
     for (let rank = 0; rank < topList.length; rank++) {
@@ -749,15 +754,91 @@ async function analyzeMetaThreats(activeMons, format = 'Singles') {
             }
         });
 
-        // Determine threat level
+        // === DAMAGE CALC: Offensive checks & defensive pressure ===
+        let offensiveChecks = [];
+        let defensiveHits = [];
+        let bestTeamAnswer = null;
+        let worstThreatHit = null;
+
+        if (hasDamageCalc && threatParsed && movesDb.length > 0) {
+            const threatDefender = buildCalcStateFromSlot(threatParsed, 2, threatDbEffective, movesDb);
+            const threatAttacker = buildCalcStateFromSlot(threatParsed, 1, threatDbEffective, movesDb);
+
+            activeMons.forEach(mon => {
+                let monDb = null;
+                if (typeof getEffectivePokemonData !== 'undefined' && typeof allPokemon !== 'undefined') {
+                    monDb = getEffectivePokemonData(mon, allPokemon);
+                }
+                if (!monDb) return;
+
+                const teamAttacker = buildCalcStateFromSlot(mon, 1, monDb, movesDb);
+                const bestOffense = findBestDamage(teamAttacker, threatDefender, calcField);
+                if (bestOffense && parseFloat(bestOffense.maxPercent) > 0) {
+                    const entry = {
+                        species: mon.species,
+                        move: bestOffense.move,
+                        minPercent: bestOffense.minPercent,
+                        maxPercent: bestOffense.maxPercent,
+                        koLabel: bestOffense.koLabel
+                    };
+                    offensiveChecks.push(entry);
+                    if (!bestTeamAnswer || parseFloat(bestOffense.maxPercent) > parseFloat(bestTeamAnswer.maxPercent)) {
+                        bestTeamAnswer = entry;
+                    }
+                }
+
+                const teamDefender = buildCalcStateFromSlot(mon, 2, monDb, movesDb);
+                const bestDefense = findBestDamage(threatAttacker, teamDefender, calcField);
+                if (bestDefense && parseFloat(bestDefense.maxPercent) > 0) {
+                    const entry = {
+                        species: mon.species,
+                        move: bestDefense.move,
+                        minPercent: bestDefense.minPercent,
+                        maxPercent: bestDefense.maxPercent,
+                        koLabel: bestDefense.koLabel
+                    };
+                    defensiveHits.push(entry);
+                    if (!worstThreatHit || parseFloat(bestDefense.maxPercent) > parseFloat(worstThreatHit.maxPercent)) {
+                        worstThreatHit = entry;
+                    }
+                }
+            });
+        }
+
+        const strongAnswers = offensiveChecks.filter(c => typeof isStrongAnswer === 'function' && isStrongAnswer(c.koLabel));
+        const ohkoVictims = defensiveHits.filter(d => d.koLabel && (d.koLabel.includes('Guaranteed OHKO') || d.koLabel.startsWith('100')));
+        const typeOnlyChecks = teamData.filter(td => {
+            let canHit = false;
+            td.moveTypes.forEach(mt => {
+                if (getEffectiveness(mt, threatTypes) > 1) canHit = true;
+            });
+            return canHit;
+        }).map(td => td.species);
+
+        // Determine threat level (type chart + damage calc when available)
         const teamSize = activeMons.length;
         let dangerLevel = 'safe';
-        if (teamCanHitSE === 0 && threatCanHitSE > 0) dangerLevel = 'critical';
-        else if (teamCanHitSE === 0) dangerLevel = 'warning';
-        else if (threatCanHitSE >= Math.ceil(teamSize * 0.6) && teamCanHitSE <= 1) dangerLevel = 'critical';
-        else if (threatCanHitSE >= Math.ceil(teamSize * 0.5)) dangerLevel = 'warning';
-        else if (teamCanHitSE >= 2 && threatCanHitSE <= 1) dangerLevel = 'covered';
-        else dangerLevel = 'safe';
+        if (hasDamageCalc && offensiveChecks.length === 0 && (threatCanHitSE > 0 || defensiveHits.length > 0)) {
+            dangerLevel = 'critical';
+        } else if (teamCanHitSE === 0 && threatCanHitSE > 0) {
+            dangerLevel = 'critical';
+        } else if (hasDamageCalc && strongAnswers.length === 0 && offensiveChecks.length > 0) {
+            dangerLevel = 'warning';
+        } else if (hasDamageCalc && ohkoVictims.length >= 2) {
+            dangerLevel = 'critical';
+        } else if (hasDamageCalc && strongAnswers.length >= 1 && ohkoVictims.length === 0) {
+            dangerLevel = 'covered';
+        } else if (teamCanHitSE === 0) {
+            dangerLevel = 'warning';
+        } else if (threatCanHitSE >= Math.ceil(teamSize * 0.6) && teamCanHitSE <= 1) {
+            dangerLevel = 'critical';
+        } else if (threatCanHitSE >= Math.ceil(teamSize * 0.5)) {
+            dangerLevel = 'warning';
+        } else if (teamCanHitSE >= 2 && threatCanHitSE <= 1) {
+            dangerLevel = 'covered';
+        } else {
+            dangerLevel = 'safe';
+        }
 
         threatResults.push({
             name: threatName,
@@ -772,7 +853,14 @@ async function analyzeMetaThreats(activeMons, format = 'Singles') {
             threatMoves,
             item: latestBuild ? (threatParsed?.item || '') : '',
             ability: latestBuild ? (threatParsed?.ability || '') : (threatDb?.Ability?.[0] || ''),
-            buildId: latestBuild ? latestBuild.id : null
+            buildId: latestBuild ? latestBuild.id : null,
+            offensiveChecks,
+            defensiveHits,
+            strongAnswers,
+            typeOnlyChecks,
+            bestTeamAnswer,
+            worstThreatHit,
+            hasDamageCalc
         });
     }
 
@@ -800,22 +888,28 @@ function injectMetaThreatInsights(threatResults, format) {
             let html = '';
             critical.slice(0, 5).forEach(t => {
                 const buildNote = t.buildId ? ` (Build #${t.buildId})` : '';
+                const checkNames = t.offensiveChecks?.length
+                    ? t.offensiveChecks.map(c => c.species).join(', ')
+                    : 'none';
                 html += `
                     <div class="synergy-item" style="border-left: 3px solid #f44336; background:rgba(255,255,255,0.01); margin-bottom:8px;">
                         <div class="synergy-icon text-glow" style="--glow-color:#f44336">⚔️</div>
                         <div>
                             <div style="font-weight:900; color:#f44336; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Meta Gap: ${t.name} #${t.rank}</div>
-                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">No reliable SE coverage vs this ${format} staple${buildNote}. It threatens ${t.threatCanHitSE} of your team.</div>
+                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">No reliable calc answer vs this ${format} staple${buildNote}. Checks: ${checkNames}. It threatens ${t.threatCanHitSE} of your team by type.</div>
                         </div>
                     </div>`;
             });
             warnings.slice(0, 3).forEach(t => {
+                const answer = t.bestTeamAnswer
+                    ? `${t.bestTeamAnswer.species} (${t.bestTeamAnswer.move}, ${t.bestTeamAnswer.maxPercent}%)`
+                    : `${t.teamCanHitSE} type match(es)`;
                 html += `
                     <div class="synergy-item" style="border-left: 3px solid #FF9800; background:rgba(255,255,255,0.01); margin-bottom:8px;">
                         <div class="synergy-icon text-glow" style="--glow-color:#FF9800">⚔️</div>
                         <div>
                             <div style="font-weight:900; color:#FF9800; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Meta Caution: ${t.name} #${t.rank}</div>
-                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">Limited answers to this ranked threat. Only ${t.teamCanHitSE} member(s) hit it super effectively.</div>
+                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">Best answer: ${answer}. ${t.defensiveHits?.length || 0} teammate(s) take meaningful damage from its build.</div>
                         </div>
                     </div>`;
             });
@@ -834,8 +928,9 @@ function injectMetaThreatInsights(threatResults, format) {
     const critCount = threatResults.filter(t => t.dangerLevel === 'critical').length;
     const coveredCount = threatResults.filter(t => t.dangerLevel === 'covered').length;
     const topGaps = threatResults.filter(t => t.dangerLevel === 'critical').slice(0, 3).map(t => t.name);
+    const calcNote = threatResults.some(t => t.hasDamageCalc) ? ' using damage calc vs latest meta builds' : '';
 
-    let metaLine = `<strong>META MATCHUP:</strong> Compared against the top ${format} threats`;
+    let metaLine = `<strong>META MATCHUP:</strong> Compared against the top ${format} threats${calcNote}`;
     if (critCount > 0) {
         metaLine += ` — <span style="color:#ff453a">${critCount} critical gap${critCount > 1 ? 's' : ''}</span>`;
         if (topGaps.length) metaLine += ` (${topGaps.join(', ')})`;
@@ -876,7 +971,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
 
     let html = `
         <p style="font-size:0.65rem; color:rgba(255,255,255,0.35); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">
-            Ranked ${format} meta · builds use highest build ID per species
+            Ranked ${format} meta · builds use highest build ID · damage calc vs meta sets when available
         </p>
         <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
             <div style="display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:rgba(244,67,54,0.15); border:1px solid rgba(244,67,54,0.3);">
@@ -919,6 +1014,26 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
             ? `<span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.35);">Build #${threat.buildId}</span>`
             : '';
 
+        const renderCheckChip = (entry, kind) => {
+            const cls = kind === 'check' ? 'check' : 'threat';
+            const ko = entry.koLabel ? ` · ${entry.koLabel.replace('Guaranteed ', '')}` : '';
+            return `<span class="matchup-chip ${cls}" title="${entry.move}: ${entry.minPercent}%–${entry.maxPercent}%">${entry.species}: ${entry.move} (${entry.maxPercent}%)${ko}</span>`;
+        };
+
+        const checksHtml = threat.offensiveChecks?.length
+            ? threat.offensiveChecks.map(c => renderCheckChip(c, 'check')).join('')
+            : (threat.typeOnlyChecks?.length
+                ? threat.typeOnlyChecks.map(s => `<span class="matchup-chip gap">${s}: type only</span>`).join('')
+                : '<span class="matchup-chip gap">No coverage</span>');
+
+        const threatensHtml = threat.defensiveHits?.length
+            ? threat.defensiveHits.map(d => renderCheckChip(d, 'threat')).join('')
+            : '<span style="font-size:0.58rem; color:rgba(255,255,255,0.35);">Minimal offensive pressure</span>';
+
+        const calcSummary = threat.bestTeamAnswer
+            ? `<span style="font-size:0.58rem; color:#81c784;">Best: ${threat.bestTeamAnswer.species} ${threat.bestTeamAnswer.move} (${threat.bestTeamAnswer.maxPercent}%${threat.bestTeamAnswer.koLabel ? ', ' + threat.bestTeamAnswer.koLabel.replace('Guaranteed ', '') : ''})</span>`
+            : '';
+
         html += `
             <div class="threat-row" style="
                 display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
@@ -959,6 +1074,15 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                                     <div style="height:100%; width:${defPct}%; background:${defColor}; border-radius:2px; transition:width 0.5s ease;"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div style="margin-top:8px;">
+                            <div style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Your Checks</div>
+                            <div style="display:flex; gap:4px; flex-wrap:wrap;">${checksHtml}</div>
+                        </div>
+                        <div style="margin-top:8px;">
+                            <div style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Threatens Your Team</div>
+                            <div style="display:flex; gap:4px; flex-wrap:wrap;">${threatensHtml}</div>
+                            ${calcSummary ? `<div style="margin-top:6px;">${calcSummary}</div>` : ''}
                         </div>
                     </div>
                 </div>

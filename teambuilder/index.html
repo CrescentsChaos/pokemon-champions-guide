@@ -756,8 +756,8 @@
 
         .type-badge-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
 
@@ -806,14 +806,23 @@
         }
 
         .synergy-icon {
-            font-size: 1.5rem;
-            width: 40px;
-            height: 40px;
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .synergy-icon img {
+            width: 100%;
+            height: 100%;
+            max-width: 36px;
+            max-height: 36px;
+            object-fit: contain;
         }
 
         .coverage-meter {
@@ -972,18 +981,14 @@
                             <h3
                                 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
                                 Offensive Coverage</h3>
-                            <div class="type-badge-grid" id="offensive-coverage"
-                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
-                            </div>
+                            <div class="type-badge-grid" id="offensive-coverage"></div>
                         </div>
                         <div class="analysis-card"
                             style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
                             <h3
                                 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
                                 Defensive Weaknesses</h3>
-                            <div class="type-badge-grid" id="defensive-coverage"
-                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
-                            </div>
+                            <div class="type-badge-grid" id="defensive-coverage"></div>
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 25px;">
@@ -1241,6 +1246,7 @@
 
     <script src="../js/main.js"></script>
     <script src="../js/utils.js"></script>
+    <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js"></script>
 
     <script>
