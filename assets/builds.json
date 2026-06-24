@@ -4026,5 +4026,12 @@
             "556"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "559",
+        "pokemon": "Oranguru",
+        "build": "Oranguru @ Leftovers  \nAbility: Inner Focus  \nLevel: 50  \nTera Type: Normal  \nEVs: 252 HP / 252 Def / 4 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Psychic  \n- Instruct  \n- Encore  \n- Trick Room",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
