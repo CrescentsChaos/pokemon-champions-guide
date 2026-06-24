@@ -1526,10 +1526,9 @@
 
                     const dbBase = dbRef;
                     const dbMega = getEffectivePokemonData(Object.assign({}, p, { useBattleForme: true }), allPokemon) || dbBase;
-                    const isMegaActive = !!megaSprite && (dbMega !== dbBase);
-
                     const sprite = getSpriteUrl(p);
                     const megaSpriteUrl = getMegaSpriteUrl(p);
+                    const isMegaActive = !!megaSpriteUrl && (dbMega !== dbBase);
                     const itemSprite = getItemSpriteUrl(p.item);
                     const t1Base = (dbBase.Type_1 || 'Normal').toLowerCase();
                     const t2Base = (dbBase.Type_2 || '').toLowerCase();

@@ -475,6 +475,22 @@ function calculateDamage(attacker, defender, move, field) {
     res.rolls = rolls;
     return res;
 }
+function getEffectiveSpeed(calcState, field) {
+    if (!calcState || !calcState.stats) return 0;
+    let spe = calcState.stats.spe || 0;
+    const item = (calcState.item || '').toLowerCase();
+    if (item === 'choice scarf') spe = Math.floor(spe * 1.5);
+    if ((calcState.status || '').toLowerCase() === 'paralyzed') spe = Math.floor(spe * 0.5);
+    const side = calcState.id === 1 ? field.side1 : field.side2;
+    return applyParadoxBoost(calcState, spe, 'spe', field, side);
+}
+
+function compareSpeedTier(speedA, speedB) {
+    if (speedA > speedB) return 'faster';
+    if (speedA < speedB) return 'slower';
+    return 'tie';
+}
+
 function getDefaultField(format = 'Singles') {
     return {
         format,

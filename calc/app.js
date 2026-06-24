@@ -8,6 +8,7 @@ let p2 = null;
 let selectedMoveIdx1 = 0;
 let selectedMoveIdx2 = 0;
 let importTargetId = 1;
+let topMetaNames = [];
 
 let field = {
     format: 'Singles',
@@ -42,6 +43,7 @@ async function init() {
         movesDB = mvs;
         itemsDB = itms;
         buildsDB = blds;
+        window.allBuilds = buildsDB;
 
         window.p1 = setupPokemonState(1);
         window.p2 = setupPokemonState(2);
@@ -53,6 +55,7 @@ async function init() {
         updateStatsUI(p2);
         setupEventListeners();
         populateDropdowns();
+        await refreshTopMetaList();
 
         // Load defaults
         loadPokemon(1, 'Abomasnow');
@@ -73,6 +76,9 @@ function setupEventListeners() {
 
         const searchInput = document.getElementById(`${p}-search`);
         searchInput.addEventListener('input', (e) => handleSearch(p, e.target.value));
+        searchInput.addEventListener('focus', () => {
+            if (!searchInput.value || searchInput.value.length < 2) handleSearch(p, searchInput.value || '');
+        });
 
         searchInput.addEventListener('keydown', (e) => {
             const resultsDiv = document.getElementById(`${p}-search-results`);
@@ -268,18 +274,67 @@ function extractItemFromBuild(buildStr) {
     return match ? match[1].trim() : null;
 }
 
+async function refreshTopMetaList() {
+    if (typeof loadTopPokemonsForFormat === 'function') {
+        topMetaNames = await loadTopPokemonsForFormat(field.format);
+    }
+}
+
+function buildMetaSearchSection(format) {
+    if (!topMetaNames.length || typeof findLatestBuildForSpecies !== 'function') return '';
+
+    const fmt = (format || 'Singles').toLowerCase();
+    const fmtBadge = fmt === 'doubles' ? '#4a90e2' : '#e63946';
+    let html = `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Top ${format} Meta · Latest Builds</div>`;
+
+    topMetaNames.slice(0, 12).forEach(name => {
+        const latest = findLatestBuildForSpecies(name, format, buildsDB);
+        if (latest && latest.build) {
+            const role = inferBuildRole(latest.build);
+            const pasteEncoded = (latest.build || '').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+            html += `
+            <div class="search-item" data-build-id="${latest.id}" data-name="${name}" data-paste="${pasteEncoded}">
+                <span class="search-item-name">${name} <span style="color:#ffd76f; font-size:0.78rem; font-weight:600;">(#${topMetaNames.indexOf(name) + 1} · Build #${latest.id})</span></span>
+                <span class="search-item-types" style="background:${fmtBadge}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.65rem;">${role}</span>
+            </div>`;
+        } else {
+            html += `
+            <div class="search-item" data-name="${name}">
+                <span class="search-item-name">${name} <span style="color:#888; font-size:0.78rem;">(#${topMetaNames.indexOf(name) + 1})</span></span>
+                <span class="search-item-types" style="background:${fmtBadge}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.65rem;">${format}</span>
+            </div>`;
+        }
+    });
+    return html;
+}
+
 function handleSearch(p, query) {
     const resultsDiv = document.getElementById(`${p}-search-results`);
-    if (!query || query.length < 2) {
+    const format = field.format || 'Singles';
+    const q = (query || '').trim();
+
+    if (!q) {
+        const metaHtml = buildMetaSearchSection(format);
+        if (metaHtml) {
+            resultsDiv.innerHTML = metaHtml;
+            resultsDiv.classList.add('active');
+            return;
+        }
+    }
+
+    if (q.length < 2) {
         resultsDiv.classList.remove('active');
         return;
     }
 
     // Filter base pokemon matches
-    const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(query.toLowerCase())).slice(0, 10);
+    const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(q.toLowerCase())).slice(0, 10);
 
-    // All matching builds
-    const rawBuilds = buildsDB.filter(b => (b.pokemon || '').toLowerCase().includes(query.toLowerCase()));
+    // Matching builds for current format only
+    const rawBuilds = buildsDB.filter(b =>
+        (b.pokemon || '').toLowerCase().includes(q.toLowerCase()) &&
+        (b.format || 'Singles').toLowerCase() === format.toLowerCase()
+    );
 
     // Deduplicate build labels:
     // Key = pokemon + format. Within same key, if role clashes → use item name as label.
@@ -302,7 +357,32 @@ function handleSearch(p, query) {
     // Limit to 6 total build results
     const shownBuilds = labeledBuilds.slice(0, 6);
 
+    // Prioritize top-meta matches with latest builds
+    const metaMatches = topMetaNames.filter(n => n.toLowerCase().includes(q.toLowerCase()));
+    const fmtBadge = format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946';
+
     let html = '';
+    if (metaMatches.length > 0 && typeof findLatestBuildForSpecies === 'function') {
+        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Meta Matches · ${format}</div>`;
+        metaMatches.slice(0, 6).forEach(name => {
+            const latest = findLatestBuildForSpecies(name, format, buildsDB);
+            if (latest && latest.build) {
+                const role = inferBuildRole(latest.build);
+                const pasteEncoded = (latest.build || '').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+                html += `
+                <div class="search-item" data-build-id="${latest.id}" data-name="${name}" data-paste="${pasteEncoded}">
+                    <span class="search-item-name">${name} <span style="color:#ffd76f; font-size:0.78rem; font-weight:600;">(#${topMetaNames.indexOf(name) + 1} · Build #${latest.id})</span></span>
+                    <span class="search-item-types" style="background:${fmtBadge}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.65rem;">${role}</span>
+                </div>`;
+            } else {
+                html += `
+                <div class="search-item" data-name="${name}">
+                    <span class="search-item-name">${name} <span style="color:#888; font-size:0.78rem;">(#${topMetaNames.indexOf(name) + 1})</span></span>
+                    <span class="search-item-types">${format}</span>
+                </div>`;
+            }
+        });
+    }
 
     // Add DB results
     html += filteredDB.map(x => `
@@ -695,6 +775,7 @@ function selectMove(pId, idx) {
 
 function updateFieldState() {
     field.format = document.getElementById('f-doubles').classList.contains('active') ? 'Doubles' : 'Singles';
+    refreshTopMetaList();
     const activeWeather = document.querySelector('[data-weather].active');
     field.weather = activeWeather ? activeWeather.getAttribute('data-weather') : 'None';
     const activeTerrain = document.querySelector('[data-terrain].active');
