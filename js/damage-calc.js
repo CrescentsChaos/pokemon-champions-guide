@@ -59,17 +59,9 @@ function getDefaultHitCount(moveName, attacker) {
 
 function combineMultiHitRolls(singleHitRolls, hitCount) {
     if (!hitCount || hitCount <= 1) return singleHitRolls.slice();
-    let totals = [0];
-    for (let h = 0; h < hitCount; h++) {
-        const next = [];
-        for (const total of totals) {
-            for (const roll of singleHitRolls) {
-                next.push(total + roll);
-            }
-        }
-        totals = next;
-    }
-    return totals.sort((a, b) => a - b);
+    // To avoid O(16^N) combinatorial explosion, we approximate by multiplying single hit rolls.
+    // This maintains min/max bounds and prevents page hangs/crashes on high hit counts.
+    return singleHitRolls.map(roll => roll * hitCount);
 }
 
 function resolveHitCount(move, attacker) {

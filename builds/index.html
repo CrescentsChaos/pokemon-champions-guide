@@ -907,6 +907,9 @@
 
                 wrapper.appendChild(createTeamCard(p, dbRef, build));
                 grid.appendChild(wrapper);
+                
+                // Trigger fade-in animation for dynamically added elements
+                setTimeout(() => wrapper.classList.add('appear'), 10);
             });
 
             const sentinel = document.getElementById('load-more-sentinel');
