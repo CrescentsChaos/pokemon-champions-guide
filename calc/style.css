@@ -20,11 +20,29 @@ body.calc-page {
     min-height: 100vh;
 }
 
-.container {
+/* Scope layout padding to main content only — not the fixed header nav */
+body.calc-page header .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 9rem 5% 5rem;
+    padding: 0 2rem;
     box-sizing: border-box;
+}
+
+body.calc-page main.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 7rem 5% 5rem;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    body.calc-page header .container {
+        padding: 0 1rem;
+    }
+
+    body.calc-page main.container {
+        padding: 6.5rem 1rem 3rem;
+    }
 }
 
 /* --- Navigation & Header --- */

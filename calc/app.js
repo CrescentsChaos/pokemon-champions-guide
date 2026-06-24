@@ -9,6 +9,38 @@ let selectedMoveIdx1 = 0;
 let selectedMoveIdx2 = 0;
 let importTargetId = 1;
 let topMetaNames = [];
+let _topPokemonsCache = null;
+
+function normalizeSpeciesKey(name) {
+    return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function findLatestBuildForSpecies(speciesName, format, buildsArr) {
+    const key = normalizeSpeciesKey(speciesName);
+    const fmt = (format || 'Singles').toLowerCase();
+    const matches = (buildsArr || []).filter(b =>
+        normalizeSpeciesKey(b.pokemon) === key &&
+        (b.format || 'Singles').toLowerCase() === fmt
+    );
+    if (matches.length === 0) return null;
+    return matches.reduce((best, cur) => {
+        const bestId = parseInt(best.id, 10) || 0;
+        const curId = parseInt(cur.id, 10) || 0;
+        return curId > bestId ? cur : best;
+    }, matches[0]);
+}
+
+async function loadTopPokemonsForCalc(format) {
+    if (!_topPokemonsCache) {
+        try {
+            const resp = await fetch('../assets/top_pokemons.json?v=' + Date.now());
+            _topPokemonsCache = await resp.json();
+        } catch (e) {
+            _topPokemonsCache = {};
+        }
+    }
+    return _topPokemonsCache[format] || _topPokemonsCache['Singles'] || [];
+}
 
 let field = {
     format: 'Singles',
@@ -43,7 +75,6 @@ async function init() {
         movesDB = mvs;
         itemsDB = itms;
         buildsDB = blds;
-        window.allBuilds = buildsDB;
 
         window.p1 = setupPokemonState(1);
         window.p2 = setupPokemonState(2);
@@ -55,7 +86,11 @@ async function init() {
         updateStatsUI(p2);
         setupEventListeners();
         populateDropdowns();
-        await refreshTopMetaList();
+        try {
+            await refreshTopMetaList();
+        } catch (e) {
+            console.warn('Meta list unavailable', e);
+        }
 
         // Load defaults
         loadPokemon(1, 'Abomasnow');
@@ -275,13 +310,11 @@ function extractItemFromBuild(buildStr) {
 }
 
 async function refreshTopMetaList() {
-    if (typeof loadTopPokemonsForFormat === 'function') {
-        topMetaNames = await loadTopPokemonsForFormat(field.format);
-    }
+    topMetaNames = await loadTopPokemonsForCalc(field.format);
 }
 
 function buildMetaSearchSection(format) {
-    if (!topMetaNames.length || typeof findLatestBuildForSpecies !== 'function') return '';
+    if (!topMetaNames.length) return '';
 
     const fmt = (format || 'Singles').toLowerCase();
     const fmtBadge = fmt === 'doubles' ? '#4a90e2' : '#e63946';
@@ -362,7 +395,7 @@ function handleSearch(p, query) {
     const fmtBadge = format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946';
 
     let html = '';
-    if (metaMatches.length > 0 && typeof findLatestBuildForSpecies === 'function') {
+    if (metaMatches.length > 0) {
         html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Meta Matches · ${format}</div>`;
         metaMatches.slice(0, 6).forEach(name => {
             const latest = findLatestBuildForSpecies(name, format, buildsDB);
@@ -717,8 +750,9 @@ function recalculate() {
     const subBanner = document.getElementById('sub-result');
 
     if (!res) {
-        banner.innerText = "Select moves to see results";
-        subBanner.innerText = "(Select an attacker move)";
+        banner.innerText = "Select moves to see damage results";
+        subBanner.innerText = "Possible damage amounts: (0)";
+        document.getElementById('ko-result').innerText = '';
         return;
     }
 
