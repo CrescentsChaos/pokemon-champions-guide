@@ -69,6 +69,11 @@ h3 {
 }
 
 .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.fade-in.appear {
     animation: fadeIn 0.8s ease forwards;
 }
 

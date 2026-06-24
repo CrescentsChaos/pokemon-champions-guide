@@ -1,81 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokemon Champions Guide | Professional VGC & Competitive Resource</title>
-    <meta name="description" content="Master the art of competitive Pokemon battling. The ultimate guide for VGC and Smogon champions.">
+    <title>Pokemon Champions Guide | Competitive Team Building & Analysis</title>
+    <meta name="description"
+        content="Professional competitive Pokemon toolkit — team builder, damage calculator, meta builds, matchup counters, and build comparison for VGC and singles.">
     <link rel="icon" type="image/png" href="assets/champions-logo.png">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
-<body>
 
-    <section class="hero">
-        <img src="assets/hero_bg.png" alt="Pokemon Champion Arena" class="hero-image">
-        <div class="container hero-content">
-            <img src="assets/champions-logo.png" alt="Champions Guide Logo" class="feature-img fade-in" style="max-width: 300px; margin-bottom: 2rem; filter: drop-shadow(0 0 30px rgba(255, 62, 62, 0.4));">
-            <h1 class="fade-in" style="background: linear-gradient(180deg, #fff 0%, var(--primary-red) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">MASTER THE META</h1>
-            <p class="fade-in">The definitive resource for elite Pokemon trainers. Expert strategies, data-driven teambuilding, and the ultimate competitive library.</p>
-            <div class="fade-in">
-                <a href="builds/" class="btn">View Builds</a>
-                <a href="teambuilder/" class="btn" style="background: transparent; border: 2px solid var(--primary-red); margin-left: 1rem;">Go to Builder</a>
+<body class="home-page">
+
+    <section class="home-hero" aria-labelledby="hero-title">
+        <div class="home-hero__bg" aria-hidden="true">
+            <img src="assets/hero_bg.png" alt="">
+            <div class="home-hero__scrim"></div>
+        </div>
+
+        <div class="container home-hero__inner">
+            <div class="home-hero__copy fade-in">
+                <div class="home-hero__badge">
+                    <span class="home-hero__badge-dot"></span>
+                    Competitive Pokémon Platform
+                </div>
+                <h1 id="hero-title" class="home-hero__title">
+                    Build smarter.<br>Win with <em>data.</em>
+                </h1>
+                <p class="home-hero__lead">
+                    A unified toolkit for serious players — curated meta builds, precision damage calculation,
+                    team construction, and matchup analysis for singles and VGC formats.
+                </p>
+                <div class="home-hero__actions">
+                    <a href="builds/" class="home-btn home-btn--primary">Browse Meta Builds</a>
+                    <a href="teambuilder/" class="home-btn home-btn--ghost">Open Team Builder</a>
+                </div>
+                <ul class="home-hero__points">
+                    <li>Gen 9 mechanics &amp; field conditions</li>
+                    <li>Champions EV system support</li>
+                    <li>Singles &amp; doubles workflows</li>
+                </ul>
             </div>
+
+            <aside class="home-hero__panel fade-in" aria-label="Platform preview">
+                <p class="home-hero__panel-label">Meta intelligence</p>
+                <img src="assets/feature_meta.png" alt="Competitive meta analysis visualization">
+                <p class="home-hero__panel-copy">
+                    Track usage trends, compare spreads, and pressure-test teams against the current meta before you
+                    queue.
+                </p>
+            </aside>
         </div>
     </section>
 
-    <section id="features">
+    <section class="home-stats" aria-label="Platform statistics">
         <div class="container">
-            <div class="section-title fade-in">
-                <h2>CHAMPIONSHIP MODULES</h2>
-                <p style="color: var(--text-muted)">The professional toolkit for VGC and Smogon champions.</p>
-            </div>
-            
-            <div class="grid">
-                <div class="card glass fade-in" onclick="window.location.href='teambuilder/'" style="cursor: pointer;">
-                    <h3>Team Builder</h3>
-                    <p>Construct competitive squads with advanced coverage analysis and synergy detection.</p>
+            <div class="home-stats__grid fade-in">
+                <div class="home-stat">
+                    <span class="home-stat__value" id="stat-pokemon">—</span>
+                    <span class="home-stat__label">Pokémon indexed</span>
                 </div>
-                <div class="card glass fade-in" onclick="window.location.href='builds/'" style="cursor: pointer;">
-                    <h3>Builds Library</h3>
-                    <p>Access curated, tournament-ready sets from the highest ranks of the current meta.</p>
+                <div class="home-stat">
+                    <span class="home-stat__value" id="stat-moves">—</span>
+                    <span class="home-stat__label">Moves catalogued</span>
                 </div>
-                <div class="card glass fade-in" onclick="window.location.href='pokedex/'" style="cursor: pointer;">
-                    <h3>Elite Pokedex</h3>
-                    <p>High-performance database optimized for speed and precise competitive lookup.</p>
+                <div class="home-stat">
+                    <span class="home-stat__value" id="stat-builds">—</span>
+                    <span class="home-stat__label">Competitive builds</span>
                 </div>
-                <div class="card glass fade-in" onclick="window.location.href='calc/'" style="cursor: pointer;">
-                    <h3>Damage Calculator</h3>
-                    <p>Calculate precise damage scenarios with Gen 9 mechanics, items, and strategic field effects.</p>
-                </div>
-                <div class="card glass fade-in" onclick="window.location.href='compare/'" style="cursor: pointer;">
-                    <h3>Compare Builds</h3>
-                    <p>Import Pokepastes to compare stats, speed tiers, and strategies side-by-side.</p>
-                </div>
-                <div class="card glass fade-in" onclick="window.location.href='counter/'" style="cursor: pointer;">
-                    <h3>Counter Tool</h3>
-                    <p>Import a build to find effective counters and strategies from our library.</p>
+                <div class="home-stat">
+                    <span class="home-stat__value">6</span>
+                    <span class="home-stat__label">Integrated tools</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="meta">
-        <div class="container" style="display: flex; align-items: center; gap: 4rem;">
-            <div style="flex: 1" class="fade-in">
-                <h2 style="font-size: 3rem; margin-bottom: 2rem;">STATE OF THE ART<br><span style="color: var(--primary-red)">DOMINANCE</span></h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Our platform provides you with the most accurate move set recommendations and counterplay strategies, giving you the edge in every best-of-three series.</p>
-                <div class="mono" style="font-size: 0.9rem; border-left: 2px solid var(--primary-red); padding-left: 1rem;">
-                    > RUNNING_LATEST_META_ANALYSIS...<br>
-                    > UPDATING_USAGE_STATS...<br>
-                    > CALIBRATING_MOVE_EFFICIENCY...
-                </div>
+    <section class="home-section" id="tools" aria-labelledby="tools-title">
+        <div class="container">
+            <div class="home-section__head fade-in">
+                <span class="home-section__eyebrow">Toolkit</span>
+                <h2 id="tools-title">Everything you need in one place</h2>
+                <p>
+                    Each module is built for competitive workflows — fast lookups, accurate calculations, and
+                    tournament-ready outputs you can trust in prep and on stream.
+                </p>
             </div>
-            <div style="flex: 1" class="fade-in">
-                <img src="assets/feature_meta.png" alt="Meta Visualization" style="width: 100%; border-radius: 20px; box-shadow: var(--accent-glow);">
+
+            <div class="home-tools">
+                <a href="teambuilder/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">TB</span>
+                    <h3>Team Builder</h3>
+                    <p>Construct full rosters with EV validation, coverage checks, and Champions-format stat rules.</p>
+                    <span class="home-tool-card__link">Open builder →</span>
+                </a>
+                <a href="builds/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">BL</span>
+                    <h3>Builds Library</h3>
+                    <p>Browse curated singles and doubles sets from the current meta, ready to import or adapt.</p>
+                    <span class="home-tool-card__link">View builds →</span>
+                </a>
+                <a href="calc/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">DC</span>
+                    <h3>Damage Calculator</h3>
+                    <p>Model OHKO thresholds, multi-hit sequences, screens, weather, and item-boosted scenarios.</p>
+                    <span class="home-tool-card__link">Run calcs →</span>
+                </a>
+                <a href="pokedex/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">DX</span>
+                    <h3>Elite Pokédex</h3>
+                    <p>Search base stats, typings, and abilities with a database tuned for competitive reference.</p>
+                    <span class="home-tool-card__link">Search dex →</span>
+                </a>
+                <a href="compare/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">CP</span>
+                    <h3>Compare Builds</h3>
+                    <p>Import Pokepastes and compare stats, speed tiers, and move sets side by side.</p>
+                    <span class="home-tool-card__link">Compare sets →</span>
+                </a>
+                <a href="counter/" class="home-tool-card fade-in">
+                    <span class="home-tool-card__icon" aria-hidden="true">CT</span>
+                    <h3>Counter Tool</h3>
+                    <p>Identify answers and pressure points against imported threats using the build library.</p>
+                    <span class="home-tool-card__link">Find counters →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-section home-section--alt" aria-labelledby="platform-title">
+        <div class="container home-split">
+            <div class="fade-in">
+                <span class="home-section__eyebrow">Why Champions Guide</span>
+                <h2 id="platform-title">Built for preparation, not guesswork</h2>
+                <p class="home-section__lead">
+                    Whether you are tuning EV spreads for a regional or theorycrafting a new core for online ladder,
+                    the platform keeps your analysis consistent across every tool.
+                </p>
+                <ul class="home-feature-list">
+                    <li>
+                        <span class="home-feature-list__num">01</span>
+                        <div>
+                            <h4>Accurate battle math</h4>
+                            <p>Damage calculations account for Gen 9 mechanics, abilities, items, terrain, weather, and
+                                multi-hit move combinations.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="home-feature-list__num">02</span>
+                        <div>
+                            <h4>Format-aware workflows</h4>
+                            <p>Switch between singles and doubles contexts across builds, calcs, and team analysis
+                                without rebuilding from scratch.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="home-feature-list__num">03</span>
+                        <div>
+                            <h4>Champions EV rules</h4>
+                            <p>Optional 66-total / 32-per-stat EV mode with direct stat conversion for custom
+                                competitive formats.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="home-meta-panel fade-in">
+                <h3>Top singles meta · current patch</h3>
+                <div class="home-meta-tags" id="meta-tags-singles" aria-live="polite">
+                    <span class="home-meta-tag">Loading…</span>
+                </div>
+                <h3>Top doubles meta · current patch</h3>
+                <div class="home-meta-tags" id="meta-tags-doubles" aria-live="polite">
+                    <span class="home-meta-tag">Loading…</span>
+                </div>
+                <p class="home-meta-note">
+                    Meta rankings are sourced from the platform dataset and updated as new builds are added to the
+                    library.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-cta">
+        <div class="container">
+            <div class="home-cta__box fade-in">
+                <div>
+                    <h2>Ready to prep your next team?</h2>
+                    <p>Start from a proven build or draft a fresh roster — then validate every matchup before you hit
+                        battle.</p>
+                </div>
+                <div class="home-cta__actions">
+                    <a href="builds/" class="home-btn home-btn--primary">Explore Builds</a>
+                    <a href="calc/" class="home-btn home-btn--ghost">Damage Calculator</a>
+                </div>
             </div>
         </div>
     </section>
 
     <script src="js/main.js"></script>
+    <script>
+        (async function loadHomeData() {
+            const fmt = (n) => n.toLocaleString('en-US');
+
+            try {
+                const [pokemon, moves, builds, topMeta] = await Promise.all([
+                    fetch('assets/pokemon.json').then(r => r.json()),
+                    fetch('assets/moves.json').then(r => r.json()),
+                    fetch('assets/builds.json').then(r => r.json()),
+                    fetch('assets/top_pokemons.json').then(r => r.json())
+                ]);
+
+                document.getElementById('stat-pokemon').textContent = fmt(pokemon.length);
+                document.getElementById('stat-moves').textContent = fmt(moves.length);
+                document.getElementById('stat-builds').textContent = fmt(builds.length);
+
+                renderMetaTags('meta-tags-singles', topMeta.Singles || []);
+                renderMetaTags('meta-tags-doubles', topMeta.Doubles || []);
+            } catch (e) {
+                console.warn('Home data load failed', e);
+            }
+
+            function renderMetaTags(containerId, names) {
+                const el = document.getElementById(containerId);
+                if (!el || !names.length) return;
+                el.innerHTML = names.slice(0, 10).map((name, i) =>
+                    `<span class="home-meta-tag${i < 3 ? ' home-meta-tag--hot' : ''}">${name}</span>`
+                ).join('');
+            }
+        })();
+    </script>
 </body>
+
 </html>
