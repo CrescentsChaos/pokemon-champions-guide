@@ -898,7 +898,7 @@
                 const dbRef = getEffectivePokemonData(p, allPokemon);
 
                 const wrapper = document.createElement('div');
-                wrapper.className = `build-card-wrapper fade-in ${selectedBuildId === build.id ? 'selected' : ''}`;
+                wrapper.className = `build-card-wrapper ${selectedBuildId === build.id ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
@@ -907,9 +907,6 @@
 
                 wrapper.appendChild(createTeamCard(p, dbRef, build));
                 grid.appendChild(wrapper);
-                
-                // Trigger fade-in animation for dynamically added elements
-                setTimeout(() => wrapper.classList.add('appear'), 10);
             });
 
             const sentinel = document.getElementById('load-more-sentinel');
