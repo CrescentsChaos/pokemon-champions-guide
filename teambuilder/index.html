@@ -1595,7 +1595,7 @@
 
                     card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
                             <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
@@ -2050,7 +2050,7 @@
                     const typeIcon2 = t2 ? `<img src="../assets/type-icons/${t2}_type.png" style="height:12px; vertical-align:middle; margin-left:2px;" alt="${t2}">` : '';
                     const recBadge = item.eligible ? `<span style="font-size:0.55rem; background:rgba(255,51,51,0.3); color:var(--primary-red); border:1px solid rgba(255,51,51,0.4); border-radius:3px; padding:1px 5px; display:block; margin-top:3px;">RECOMMENDED TEAMMATE</span>` : '';
                     card.innerHTML = `
-                        <img src="${sprUrl}" onerror="this.style.display='none'" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto;">
+                        <img src="${sprUrl}" onerror="handleSpriteError(this, '${name.replace(/'/g, "\\'")}', false)" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto;">
                         <div style="font-weight:900; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : ''}">${idStr}${name} ${starStr}</div>
                         <div style="display:flex; justify-content:center; gap:2px; margin-top:2px;">${typeIcon1}${typeIcon2}</div>
                         ${recBadge}
@@ -2182,8 +2182,7 @@
             img.dataset.fallbackState = 'final';
 
             // If it's a base sprite that failed, update the dataset base to Smogon
-            const folder = shiny ? 'xy-shiny' : 'xy';
-            const smogonUrl = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+            const smogonUrl = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
             img.src = smogonUrl;
             if (img.classList.contains('mega-toggle') && img.dataset.currentSrc === 'base') {
                 img.dataset.base = smogonUrl;

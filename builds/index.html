@@ -1863,7 +1863,7 @@
                 });
 
                 // Create a base team consisting of the leader + all OTHER slots except the one being shuffled
-                const baseTeam = [];
+                const baseTeam = [{ build: currentMainBuild }];
                 currentRecommendedBuilds.forEach((item, idx) => {
                     if (idx !== slotIndex) {
                         baseTeam.push(item);
