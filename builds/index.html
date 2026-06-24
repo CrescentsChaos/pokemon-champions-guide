@@ -1621,7 +1621,7 @@
             const directSynergyIds = new Set(mainBuild.synergy || []);
             const priorityPool = new Set(directSynergyIds);
             const recursiveSynergyIds = new Set();
-            
+
             directSynergyIds.forEach(id => {
                 const synBuild = allBuilds.find(b => b.id === id);
                 if (synBuild && synBuild.synergy) {
@@ -1727,28 +1727,60 @@
                     let synergyBoost = 0;
                     let source = 'smart';
 
-                    // 1. Synergy with Leader
+                    // Get candidate's move types for offensive analysis
+                    const candMoveTypes = p.moves.map(m => {
+                        const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        return (movesMap[clean]?.type || '').toLowerCase();
+                    }).filter(t => t);
+                    const candSTAB = types; // STAB types for offensive pressure
+
+                    // ── 1. DEFENSIVE SYNERGY WITH LEADER (resist leader's weaknesses) ──
                     team[0].weaknesses.forEach(w => {
-                        types.forEach(t => {
-                            if (getEffectiveness(w, [t]) < 1) smartScore += 30;
-                        });
-                        abilities.forEach(a => {
-                            if (w === 'fire' && (a === 'flash fire' || a === 'well-baked body')) smartScore += 25;
-                            if (w === 'water' && (a === 'water absorb' || a === 'storm drain' || a === 'dry skin')) smartScore += 25;
-                            if (w === 'electric' && (a === 'volt absorb' || a === 'lightning rod' || a === 'motor drive')) smartScore += 25;
-                            if (w === 'grass' && (a === 'sap sipper')) smartScore += 25;
-                            if (w === 'ground' && (a === 'levitate')) smartScore += 25;
+                        const eff = getEffectiveness(w, types);
+                        if (eff === 0) smartScore += 50;       // immunity
+                        else if (eff <= 0.25) smartScore += 40; // double resist
+                        else if (eff < 1) smartScore += 28;     // resist
+                    });
+
+                    // Ability-based immunities (expanded list)
+                    const abilityImmunities = {
+                        'fire': ['flash fire', 'well-baked body'],
+                        'water': ['water absorb', 'storm drain', 'dry skin'],
+                        'electric': ['volt absorb', 'lightning rod', 'motor drive'],
+                        'grass': ['sap sipper'],
+                        'ground': ['levitate', 'eelevate'],
+                        'poison': ['immunity'],
+                        'psychic': ['dark aura'],
+                        'dragon': []
+                    };
+                    team[0].weaknesses.forEach(w => {
+                        const immuneAbilities = abilityImmunities[w] || [];
+                        if (abilities.some(a => immuneAbilities.includes(a))) smartScore += 35;
+                    });
+
+                    // ── 2. OFFENSIVE COVERAGE (can candidate hit threats to the team?) ──
+                    // Reward candidates whose moves hit types that the team is weak to
+                    const allTeamWeak = new Set(teamWeaknesses);
+                    candMoveTypes.forEach(mt => {
+                        if (allTeamWeak.has(mt)) smartScore += 8; // has moves matching team weakness types (can threaten those attackers)
+                    });
+                    // STAB offensive pressure against leader's weaknesses
+                    team[0].weaknesses.forEach(w => {
+                        // If candidate's STAB can hit the type that threatens the leader
+                        candSTAB.forEach(st => {
+                            if (getEffectiveness(st, [w]) > 1) smartScore += 15; // candidate's STAB is super effective vs the threatening type
                         });
                     });
 
-                    // 2. Cross-Synergy
+                    // ── 3. CROSS-SYNERGY (resist existing teammates' weaknesses) ──
                     if (team.length > 1) {
                         team.slice(1).forEach(m => {
                             m.weaknesses.forEach(w => {
-                                types.forEach(t => {
-                                    if (getEffectiveness(w, [t]) < 1) smartScore += 12;
-                                });
+                                const eff = getEffectiveness(w, types);
+                                if (eff === 0) smartScore += 18;
+                                else if (eff < 1) smartScore += 10;
                             });
+                            // Partner pair bonus
                             partnerPairs.forEach(pair => {
                                 const isMemberInPair = m.species === pair.a || m.species === pair.b;
                                 if (isMemberInPair && (s === pair.a || s === pair.b)) smartScore += 20;
@@ -1756,57 +1788,121 @@
                         });
                     }
 
-                    // 3. Dynamic Team Coverage
-                    teamWeaknesses.forEach(w => {
-                        types.forEach(t => {
-                            if (getEffectiveness(w, [t]) < 1) smartScore += 6;
-                        });
+                    // ── 4. TEAM COVERAGE GAPS (fill types the team can't hit) ──
+                    const teamMoveTypes = new Set();
+                    team.forEach(m => {
+                        if (m.moveTypes) m.moveTypes.forEach(mt => teamMoveTypes.add(mt));
+                    });
+                    candMoveTypes.forEach(mt => {
+                        if (!teamMoveTypes.has(mt)) smartScore += 12; // brings new offensive type coverage
                     });
 
-                    // 4. Entropy / Variety Logic
-                    const hitCount = rcmdHistory.get(b.id) || 0;
-                    smartScore -= (hitCount * 40);
+                    // ── 5. SHARED WEAKNESS PENALTY (don't stack same weaknesses) ──
+                    const weaknessFreq = {};
+                    teamWeaknesses.forEach(w => { weaknessFreq[w] = (weaknessFreq[w] || 0) + 1; });
+                    weaknesses.forEach(w => {
+                        const existing = weaknessFreq[w] || 0;
+                        if (existing >= 3) smartScore -= 50;      // critical: 4+ mons weak to same type
+                        else if (existing >= 2) smartScore -= 30;  // bad: 3 mons weak to same type
+                        else if (existing >= 1) smartScore -= 12;  // mild: 2 mons weak to same type
+                    });
 
-                    // 5. Type Overlap Penalty
+                    // ── 6. TYPE OVERLAP PENALTY ──
                     types.forEach(t => {
                         const count = teamTypes.filter(tt => tt === t).length;
-                        if (count === 1) smartScore -= 30;
-                        if (count >= 2) smartScore -= 80;
+                        if (count === 1) smartScore -= 25;
+                        if (count >= 2) smartScore -= 65;
                     });
 
-                    // 6. Role Diversity
+                    // ── 7. ROLE COMPOSITION BALANCE ──
+                    const keyRoles = ['Speed Control', 'Pivot', 'Hazard Setter', 'Hazard Control', 'Weather Setter', 'Terrain Setter', 'Redirection', 'Screener', 'Cleric/Healer'];
+                    const offensiveRoles = ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper', 'Revenge Killer'];
+                    const defensiveRoles = ['Physical Wall', 'Special Wall', 'Damage Mitigation'];
+
+                    // Reward filling missing key roles
+                    roles.forEach(r => {
+                        if (keyRoles.includes(r) && !teamRoles.includes(r)) smartScore += 20;
+                    });
+
+                    // Penalize stacking 3+ of same role
                     roles.forEach(r => {
                         const count = teamRoles.filter(tr => tr === r).length;
-                        if (count >= 1) smartScore -= 15;
+                        if (count >= 2) smartScore -= 25;
+                        else if (count >= 1) smartScore -= 8;
                     });
 
-                    // 7. Hardcoded synergy for leader specifically
+                    // Balance offense vs defense (reward if underrepresented)
+                    const teamOffCount = teamRoles.filter(r => offensiveRoles.includes(r)).length;
+                    const teamDefCount = teamRoles.filter(r => defensiveRoles.includes(r)).length;
+                    const candIsOffensive = roles.some(r => offensiveRoles.includes(r));
+                    const candIsDefensive = roles.some(r => defensiveRoles.includes(r));
+                    if (candIsOffensive && teamOffCount < teamDefCount) smartScore += 15;
+                    if (candIsDefensive && teamDefCount < teamOffCount) smartScore += 15;
+
+                    // ── 8. SPEED TIER DIVERSITY ──
+                    const candDb = db;
+                    const candSpeed = candDb?.Speed || 0;
+                    const speedTier = candSpeed >= 100 ? 'fast' : (candSpeed >= 60 ? 'mid' : 'slow');
+                    const teamSpeedTiers = team.map(m => {
+                        const mDb = getEffectivePokemonData({ species: m.species, item: '' }, allPokemon) || {};
+                        const spd = mDb?.Speed || 0;
+                        return spd >= 100 ? 'fast' : (spd >= 60 ? 'mid' : 'slow');
+                    });
+                    const tierCount = teamSpeedTiers.filter(t => t === speedTier).length;
+                    if (tierCount === 0) smartScore += 15;        // new speed tier
+                    else if (tierCount >= 2) smartScore -= 10;     // too many in same tier
+
+                    // ── 9. WEATHER/TERRAIN ENGINE COMPLETION ──
+                    const teamHasWeatherSetter = teamRoles.includes('Weather Setter');
+                    const teamHasWeatherAbuser = teamRoles.includes('Weather Abuser');
+                    const teamHasTerrainSetter = teamRoles.includes('Terrain Setter');
+                    const teamHasTerrainAbuser = teamRoles.includes('Terrain Abuser');
+                    if (teamHasWeatherSetter && !teamHasWeatherAbuser && roles.includes('Weather Abuser')) smartScore += 30;
+                    if (!teamHasWeatherSetter && teamHasWeatherAbuser && roles.includes('Weather Setter')) smartScore += 30;
+                    if (teamHasTerrainSetter && !teamHasTerrainAbuser && roles.includes('Terrain Abuser')) smartScore += 25;
+                    if (!teamHasTerrainSetter && teamHasTerrainAbuser && roles.includes('Terrain Setter')) smartScore += 25;
+
+                    // ── 10. PARTNER PAIRS (leader-specific) ──
                     partnerPairs.forEach(pair => {
                         const isMainInPair = mainSpeciesClean === pair.a || mainSpeciesClean === pair.b;
                         if (isMainInPair && (s === pair.a || s === pair.b)) smartScore += 50;
                     });
 
-                    // 8. Special Cores
+                    // ── 11. SPECIAL TYPE CORES ──
                     const allCurrentTypes = new Set([...teamTypes, ...types]);
                     if (allCurrentTypes.has('fire') && allCurrentTypes.has('water') && allCurrentTypes.has('grass')) smartScore += 20;
                     if (allCurrentTypes.has('steel') && allCurrentTypes.has('fairy') && allCurrentTypes.has('dragon')) smartScore += 20;
+                    if (allCurrentTypes.has('dark') && allCurrentTypes.has('fairy') && allCurrentTypes.has('fighting')) smartScore += 12;
+                    if (allCurrentTypes.has('water') && allCurrentTypes.has('ground') && allCurrentTypes.has('grass')) smartScore += 12;
+                    if (allCurrentTypes.has('fire') && allCurrentTypes.has('steel')) smartScore += 8;
+                    if (allCurrentTypes.has('ghost') && allCurrentTypes.has('normal')) smartScore += 10;
 
-                    // 9. Predefined Synergy (Recursive Priority)
+                    // ── 12. PRIORITY MOVE DIVERSITY ──
+                    const priorityMoves = ['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap'];
+                    const candCleanMoves = p.moves.map(m => m.toLowerCase().replace(/[^a-z0-9]/g, ''));
+                    const teamHasPriority = team.some(m => m.moves && m.moves.some(mv => priorityMoves.includes(mv)));
+                    if (!teamHasPriority && candCleanMoves.some(m => priorityMoves.includes(m))) smartScore += 18;
+
+                    // ── 13. ENTROPY / VARIETY (avoid repeating same recommendations) ──
+                    const hitCount = rcmdHistory.get(b.id) || 0;
+                    smartScore -= (hitCount * 40);
+
+                    // ── 14. PREDEFINED SYNERGY (Recursive Priority) ──
                     if (directSynergyIds.has(b.id)) {
-                        synergyBoost = 10000; // Absolute priority
+                        synergyBoost = 10000;
                         source = 'direct';
                     } else if (priorityPool.has(b.id)) {
-                        synergyBoost = 5000; // High priority for recursive
+                        synergyBoost = 5000;
                         source = 'recursive';
                     }
 
-                    let totalScore = smartScore + synergyBoost + (Math.random() * 25);
+                    let totalScore = smartScore + synergyBoost + (Math.random() * 20);
 
                     if (totalScore > bestTotalScore) {
                         bestTotalScore = totalScore;
                         bestSmartScore = smartScore;
                         bestSource = source;
-                        bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega };
+                        bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega, moveTypes: candMoveTypes, moves: candCleanMoves };
                     }
                 }
 
