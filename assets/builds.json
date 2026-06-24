@@ -4367,5 +4367,48 @@
             "590"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "595",
+        "pokemon": "Raging Bolt",
+        "build": "Raging Bolt @ Leftovers\nAbility: Protosynthesis\nTera Type: Fairy\nEVs: 196 hp / 92 def / 124 spa / 4 spd / 92 spe\nIVs: 20 atk\nModest Nature\n- Protect\n- Calm Mind\n- Dragon Pulse\n- Thunderclap",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "596",
+        "pokemon": "Rillaboom",
+        "build": "Rillaboom @ Assault Vest\nAbility: Grassy Surge\nShiny: Yes\nTera Type: Fire\nEVs: 252 hp / 116 atk / 4 def / 60 spd / 76 spe\nIVs: 2 spa\nAdamant Nature\n- Wood Hammer\n- Grassy Glide\n- U-turn\n- Fake Out",
+        "synergy": [
+            "595"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "597",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Sitrus Berry\nAbility: Intimidate\nShiny: Yes\nTera Type: Ghost\nEVs: 236 hp / 156 def / 116 spd\nIVs: 0 spa\nRelaxed Nature\n- Parting Shot\n- Knock Off\n- Will-O-Wisp\n- Fake Out",
+        "synergy": [
+            "596"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "598",
+        "pokemon": "Ogerpon-Hearthflame",
+        "build": "Ogerpon-Hearthflame @ Hearthflame Mask\nAbility: Mold Breaker\nTera Type: Fire\nEVs: 36 hp / 220 atk / 252 spe\nIVs: 20 spa\nJolly Nature\n- Spiky Shield\n- Wood Hammer\n- Ivy Cudgel\n- Stomping Tantrum",
+        "synergy": [
+            "597"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "599",
+        "pokemon": "Urshifu-Rapid-Strike",
+        "build": "Urshifu-Rapid-Strike @ Focus Sash\nAbility: Unseen Fist\nTera Type: Water\nEVs: 4 hp / 252 atk / 252 spe\nIVs: 3 spa\nAdamant Nature\n- Protect\n- Close Combat\n- Surging Strikes\n- Aqua Jet",
+        "synergy": [
+            "598"
+        ],
+        "format": "Doubles"
     }
 ]
