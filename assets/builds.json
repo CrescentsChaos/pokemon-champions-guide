@@ -4033,5 +4033,158 @@
         "build": "Oranguru @ Leftovers  \nAbility: Inner Focus  \nLevel: 50  \nTera Type: Normal  \nEVs: 252 HP / 252 Def / 4 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Psychic  \n- Instruct  \n- Encore  \n- Trick Room",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "560",
+        "pokemon": "Hydrapple",
+        "build": "Hydrapple @ Quick Claw  \nAbility: Regenerator  \nEVs: 252 HP / 4 Def / 252 SpA  \nQuiet Nature  \nIVs: 0 Atk  \n- Fickle Beam  \n- Giga Drain  \n- Pollen Puff  \n- Earth Power",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "561",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 240 HP / 168 Def / 100 SpD  \nBold Nature  \nIVs: 0 Atk  \n- Trick Room  \n- Psychic  \n- Helping Hand  \n- Dazzling Gleam",
+        "synergy": [
+            "560"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "562",
+        "pokemon": "Sableye",
+        "build": "Sableye @ Light Clay  \nAbility: Prankster  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 96 Def / 160 SpD  \nSassy Nature  \nIVs: 0 Atk  \n- Light Screen  \n- Reflect  \n- Rain Dance  \n- Encore",
+        "synergy": [
+            "524",
+            "464"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "563",
+        "pokemon": "Swampert",
+        "build": "Swampert @ Swampertite  \nAbility: Torrent  \nLevel: 50  \nTera Type: Water  \nEVs: 4 HP / 240 Atk / 12 SpD / 252 Spe  \nJolly Nature  \n- Wave Crash  \n- Protect  \n- Ice Punch  \n- Earthquake",
+        "synergy": [
+            "562",
+            "524",
+            "464"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "564",
+        "pokemon": "Metagross",
+        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 118 HP / 192 Atk / 200 Spe  \nJolly Nature  \n- Psychic Fangs  \n- Iron Head  \n- Body Press  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "565",
+        "pokemon": "Sylveon",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nLevel: 50  \nTera Type: Fairy  \nEVs: 252 HP / 252 SpA / 4 SpD  \nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Detect  \n- Yawn  \n- Psychic",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "566",
+        "pokemon": "Blaziken",
+        "build": "Blaziken @ Blazikenite  \nAbility: Speed Boost  \nLevel: 50  \nTera Type: Fire  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Swords Dance  \n- Protect  \n- Flare Blitz  \n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "567",
+        "pokemon": "Sceptile",
+        "build": "Sceptile @ Sceptilite  \nAbility: Overgrow  \nLevel: 50  \nTera Type: Grass  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Grass Knot  \n- Dragon Dance  \n- Earth Power  \n- Detect",
+        "synergy": [
+            "532",
+            "535"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "568",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Sitrus Berry  \nAbility: Adaptability  \nLevel: 50  \nTera Type: Water  \nEVs: 4 HP / 144 Atk / 252 Def / 104 Spe  \nAdamant Nature  \n- Wave Crash  \n- Last Respects  \n- Aqua Jet  \n- Protect",
+        "synergy": [
+            "535"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "569",
+        "pokemon": "Rotom-Heat",
+        "build": "Rotom-Heat @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Volt Switch  \n- Overheat  \n- Discharge",
+        "synergy": [
+            "568",
+            "535"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "570",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Life Orb  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Dragon Claw  \n- Earthquake  \n- Rock Slide  \n- Protect",
+        "synergy": [
+            "569",
+            "568",
+            "535"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "571",
+        "pokemon": "Toxapex",
+        "build": "Toxapex @ Leftovers  \nAbility: Regenerator  \nEVs: 252 HP / 144 Def / 112 SpD  \nBold Nature  \nIVs: 0 Atk  \n- Infestation  \n- Toxic  \n- Baneful Bunker  \n- Wide Guard",
+        "synergy": [
+            "250"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "572",
+        "pokemon": "Metagross",
+        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 240 HP / 252 Atk / 2 Def / 16 Spe  \n- Iron Head  \n- Hammer Arm  \n- Bullet Punch  \n- Protect",
+        "synergy": [
+            "571",
+            "250"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "573",
+        "pokemon": "Grimmsnarl",
+        "build": "Grimmsnarl @ Roseli Berry  \nAbility: Prankster  \nLevel: 50  \nTera Type: Dark  \nEVs: 248 HP / 172 Def / 88 SpD  \nSassy Nature  \n- Fake Out  \n- Foul Play  \n- Reflect  \n- Parting Shot",
+        "synergy": [
+            "571",
+            "250",
+            "572"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "574",
+        "pokemon": "Hydreigon",
+        "build": "Hydreigon @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Dark  \nEVs: 56 HP / 200 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Dark Pulse  \n- Draco Meteor  \n- Snarl",
+        "synergy": [
+            "571",
+            "250",
+            "572",
+            "573"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "575",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Sitrus Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 248 HP / 112 Atk / 22 Def / 14 SpD / 112 Spe  \nAdamant Nature  \n- Earthquake  \n- Dragon Claw  \n- Rock Slide  \n- Protect",
+        "synergy": [
+            "571",
+            "250",
+            "572",
+            "573",
+            "574"
+        ],
+        "format": "Doubles"
     }
 ]
