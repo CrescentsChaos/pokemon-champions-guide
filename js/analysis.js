@@ -201,6 +201,9 @@ function sharedAnalyzeTeam(activeMons, format = 'Singles') {
     });
 
     renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, format);
+
+    // Trigger meta threat analysis asynchronously
+    analyzeMetaThreats(activeMons, format);
 }
 
 const SYNERGY_RULES = [
@@ -286,6 +289,15 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
     const moveBox = document.getElementById('move-diversity');
 
     if (!offBox || !defBox || !roleBox || !synergyBox || !moveBox) return;
+
+    const metaBox = document.getElementById('meta-threat-insights');
+    if (metaBox) metaBox.innerHTML = '';
+
+    const strategyTextEl = document.getElementById('strategy-overview-text');
+    if (strategyTextEl) {
+        const metaPara = strategyTextEl.querySelector('[data-meta-threat-summary]');
+        if (metaPara) metaPara.remove();
+    }
 
     offBox.innerHTML = '';
     defBox.innerHTML = '';
@@ -488,4 +500,458 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
             strategyCard.style.display = 'none';
         }
     }
+}
+
+// =============================================
+// META THREAT MATCHUP ANALYSIS
+// =============================================
+
+// Cache for top_pokemons.json so we only fetch once
+let _topPokemonsCache = null;
+let _metaThreatRequestId = 0;
+
+function normalizeSpeciesKey(name) {
+    return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+async function loadTopPokemonsForFormat(format) {
+    if (!_topPokemonsCache) {
+        try {
+            const resp = await fetch('../assets/top_pokemons.json?v=' + Date.now());
+            _topPokemonsCache = await resp.json();
+        } catch (e) {
+            _topPokemonsCache = {};
+        }
+    }
+    return _topPokemonsCache[format] || _topPokemonsCache['Singles'] || [];
+}
+
+function findLatestBuildForSpecies(speciesName, format, buildsArr) {
+    const key = normalizeSpeciesKey(speciesName);
+    const fmt = (format || 'Singles').toLowerCase();
+    const matches = buildsArr.filter(b =>
+        normalizeSpeciesKey(b.pokemon) === key &&
+        (b.format || 'Singles').toLowerCase() === fmt
+    );
+    if (matches.length === 0) return null;
+    return matches.reduce((best, cur) => {
+        const bestId = parseInt(best.id, 10) || 0;
+        const curId = parseInt(cur.id, 10) || 0;
+        return curId > bestId ? cur : best;
+    }, matches[0]);
+}
+
+function resolveMoveType(moveName) {
+    const clean = (moveName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!clean) return null;
+    if (typeof movesMap !== 'undefined' && movesMap[clean]) return movesMap[clean].type;
+    if (typeof allMoves !== 'undefined') {
+        const moveRef = allMoves.find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === clean);
+        return moveRef ? moveRef.type : null;
+    }
+    return null;
+}
+
+function buildTeamMatchupData(activeMons) {
+    return activeMons.map(p => {
+        let db = null;
+        if (typeof getEffectivePokemonData !== 'undefined' && typeof allPokemon !== 'undefined') {
+            db = getEffectivePokemonData(p, allPokemon);
+        }
+        const pTypes = [db?.Type_1, db?.Type_2].filter(x => x);
+        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m)).filter(t => t);
+        return { species: p.species, types: pTypes, moveTypes, db };
+    });
+}
+
+/**
+ * Parse a Showdown paste string into a simplified Pokemon object.
+ * Self-contained so analysis.js doesn't depend on page-specific parsePaste.
+ */
+function parseAnalysisBuild(text) {
+    const lines = text.trim().split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const slot = {
+        species: '', item: '', ability: '', level: 50, shiny: false,
+        tera: 'Normal', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+        ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+        nature: 'Serious', moves: [], nickname: '', gender: ''
+    };
+    if (lines.length === 0) return slot;
+
+    const head = lines[0];
+    const itemSplit = head.split('@');
+    if (itemSplit[1]) slot.item = itemSplit[1].trim();
+    const speciesPart = itemSplit[0].trim();
+    slot.species = speciesPart.includes('(') ? speciesPart.split('(')[1].split(')')[0].trim() : speciesPart;
+
+    lines.slice(1).forEach(l => {
+        const line = l.trim();
+        if (line.match(/^Ability\s*:/i)) slot.ability = line.split(':')[1].trim();
+        else if (line.match(/^Level\s*:/i)) slot.level = parseInt(line.split(':')[1].trim());
+        else if (line.match(/^Tera Type\s*:/i)) slot.tera = line.split(':')[1].trim();
+        else if (line.match(/^EVs\s*:/i)) {
+            line.split(':')[1].split('/').forEach(p => {
+                const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                if (match) {
+                    let key = match[2].toLowerCase();
+                    if (key === 'hp') key = 'hp';
+                    else if (key === 'atk') key = 'atk';
+                    else if (key === 'def') key = 'def';
+                    else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                    else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                    else if (key === 'spe' || key === 'speed') key = 'spe';
+                    if (slot.evs[key] !== undefined) slot.evs[key] = parseInt(match[1]);
+                }
+            });
+        } else if (line.match(/^IVs\s*:/i)) {
+            line.split(':')[1].split('/').forEach(p => {
+                const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                if (match) {
+                    let key = match[2].toLowerCase();
+                    if (key === 'hp') key = 'hp';
+                    else if (key === 'atk') key = 'atk';
+                    else if (key === 'def') key = 'def';
+                    else if (key === 'spa' || key === 'spatk' || key === 'satk') key = 'spa';
+                    else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
+                    else if (key === 'spe' || key === 'speed') key = 'spe';
+                    if (slot.ivs[key] !== undefined) slot.ivs[key] = parseInt(match[1]);
+                }
+            });
+        } else if (line.toLowerCase().endsWith('nature')) {
+            slot.nature = line.substring(0, line.length - 6).trim();
+        } else if (line.startsWith('-')) {
+            slot.moves.push(line.substring(1).trim());
+        }
+    });
+    while (slot.moves.length < 4) slot.moves.push('');
+    return slot;
+}
+
+/**
+ * Main meta threat analysis function.
+ * Dynamically loads top_pokemons.json, finds the latest build for each threat,
+ * and renders matchup analysis against the player's team.
+ */
+async function analyzeMetaThreats(activeMons, format = 'Singles') {
+    const threatBox = document.getElementById('threat-matchup');
+    const requestId = ++_metaThreatRequestId;
+
+    if (!threatBox) return;
+
+    if (!activeMons || activeMons.length === 0) {
+        threatBox.innerHTML = '<p style="opacity:0.3; text-align:center; padding: 20px;">Add Pokemon to see meta threat analysis.</p>';
+        injectMetaThreatInsights([], format);
+        return;
+    }
+
+    threatBox.innerHTML = '<p style="opacity:0.4; text-align:center; padding: 20px;">Loading meta threat analysis…</p>';
+
+    const topList = await loadTopPokemonsForFormat(format);
+    if (requestId !== _metaThreatRequestId) return;
+
+    if (topList.length === 0) {
+        threatBox.innerHTML = '<p style="opacity:0.3; text-align:center; padding: 20px;">No meta threats data available for this format.</p>';
+        injectMetaThreatInsights([], format);
+        return;
+    }
+
+    const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
+    const teamData = buildTeamMatchupData(activeMons);
+    const threatResults = [];
+
+    for (let rank = 0; rank < topList.length; rank++) {
+        const threatName = topList[rank];
+        const threatNameClean = normalizeSpeciesKey(threatName);
+
+        const isOnTeam = activeMons.some(p => normalizeSpeciesKey(p.species) === threatNameClean);
+        if (isOnTeam) continue;
+
+        const latestBuild = findLatestBuildForSpecies(threatName, format, buildsArr);
+
+        let threatDb = null;
+        if (typeof allPokemon !== 'undefined') {
+            threatDb = allPokemon.find(x => normalizeSpeciesKey(x.Name) === threatNameClean);
+        }
+
+        if (!threatDb) continue;
+
+        let threatParsed = latestBuild ? parseAnalysisBuild(latestBuild.build) : null;
+        let threatDbEffective = threatDb;
+        if (threatParsed && typeof getEffectivePokemonData !== 'undefined') {
+            threatDbEffective = getEffectivePokemonData(threatParsed, allPokemon) || threatDb;
+        }
+
+        const threatTypes = [threatDbEffective.Type_1, threatDbEffective.Type_2].filter(x => x);
+
+        let threatMoveTypes = [];
+        let threatMoves = [];
+        if (latestBuild && threatParsed) {
+            threatMoves = threatParsed.moves.filter(m => m);
+            threatMoveTypes = threatMoves.map(m => resolveMoveType(m)).filter(t => t);
+        }
+
+        // === OFFENSIVE: Can team hit this threat super-effectively? ===
+        let teamCanHitSE = 0; // count of team members who can hit it SE
+        let bestSEMult = 1;
+        teamData.forEach(td => {
+            let canHit = false;
+            td.moveTypes.forEach(mt => {
+                const eff = getEffectiveness(mt, threatTypes);
+                if (eff > 1) { canHit = true; bestSEMult = Math.max(bestSEMult, eff); }
+            });
+            if (canHit) teamCanHitSE++;
+        });
+
+        // === DEFENSIVE: Can threat hit team members super-effectively? ===
+        let threatCanHitSE = 0; // count of team members the threat hits SE
+        let worstSEMult = 1;
+        teamData.forEach(td => {
+            let isHit = false;
+            // Check by threat's move types (from build)
+            threatMoveTypes.forEach(mt => {
+                const eff = getEffectiveness(mt, td.types);
+                if (eff > 1) { isHit = true; worstSEMult = Math.max(worstSEMult, eff); }
+            });
+            // Also check STAB types if no build moves data
+            if (threatMoveTypes.length === 0) {
+                threatTypes.forEach(tt => {
+                    const eff = getEffectiveness(tt, td.types);
+                    if (eff > 1) { isHit = true; worstSEMult = Math.max(worstSEMult, eff); }
+                });
+            }
+            if (isHit) threatCanHitSE++;
+        });
+
+        // === IMMUNITIES: Can anyone wall this threat? ===
+        let hasImmunity = false;
+        teamData.forEach(td => {
+            threatMoveTypes.forEach(mt => {
+                if (getEffectiveness(mt, td.types) === 0) hasImmunity = true;
+            });
+            if (threatMoveTypes.length === 0) {
+                threatTypes.forEach(tt => {
+                    if (getEffectiveness(tt, td.types) === 0) hasImmunity = true;
+                });
+            }
+        });
+
+        // Determine threat level
+        const teamSize = activeMons.length;
+        let dangerLevel = 'safe';
+        if (teamCanHitSE === 0 && threatCanHitSE > 0) dangerLevel = 'critical';
+        else if (teamCanHitSE === 0) dangerLevel = 'warning';
+        else if (threatCanHitSE >= Math.ceil(teamSize * 0.6) && teamCanHitSE <= 1) dangerLevel = 'critical';
+        else if (threatCanHitSE >= Math.ceil(teamSize * 0.5)) dangerLevel = 'warning';
+        else if (teamCanHitSE >= 2 && threatCanHitSE <= 1) dangerLevel = 'covered';
+        else dangerLevel = 'safe';
+
+        threatResults.push({
+            name: threatName,
+            rank: rank + 1,
+            types: threatTypes,
+            teamCanHitSE,
+            threatCanHitSE,
+            bestSEMult,
+            worstSEMult,
+            hasImmunity,
+            dangerLevel,
+            threatMoves,
+            item: latestBuild ? (threatParsed?.item || '') : '',
+            ability: latestBuild ? (threatParsed?.ability || '') : (threatDb?.Ability?.[0] || ''),
+            buildId: latestBuild ? latestBuild.id : null
+        });
+    }
+
+    if (requestId !== _metaThreatRequestId) return;
+
+    const dangerOrder = { critical: 0, warning: 1, safe: 2, covered: 3 };
+    threatResults.sort((a, b) => dangerOrder[a.dangerLevel] - dangerOrder[b.dangerLevel] || a.rank - b.rank);
+
+    renderThreatMatchup(threatBox, threatResults, activeMons.length, format);
+    injectMetaThreatInsights(threatResults, format);
+}
+
+/**
+ * Inject top-meta threat warnings into synergy insights and strategy overview.
+ */
+function injectMetaThreatInsights(threatResults, format) {
+    const metaBox = document.getElementById('meta-threat-insights');
+    if (metaBox) {
+        const critical = threatResults.filter(t => t.dangerLevel === 'critical');
+        const warnings = threatResults.filter(t => t.dangerLevel === 'warning');
+
+        if (critical.length === 0 && warnings.length === 0) {
+            metaBox.innerHTML = '';
+        } else {
+            let html = '';
+            critical.slice(0, 5).forEach(t => {
+                const buildNote = t.buildId ? ` (Build #${t.buildId})` : '';
+                html += `
+                    <div class="synergy-item" style="border-left: 3px solid #f44336; background:rgba(255,255,255,0.01); margin-bottom:8px;">
+                        <div class="synergy-icon text-glow" style="--glow-color:#f44336">⚔️</div>
+                        <div>
+                            <div style="font-weight:900; color:#f44336; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Meta Gap: ${t.name} #${t.rank}</div>
+                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">No reliable SE coverage vs this ${format} staple${buildNote}. It threatens ${t.threatCanHitSE} of your team.</div>
+                        </div>
+                    </div>`;
+            });
+            warnings.slice(0, 3).forEach(t => {
+                html += `
+                    <div class="synergy-item" style="border-left: 3px solid #FF9800; background:rgba(255,255,255,0.01); margin-bottom:8px;">
+                        <div class="synergy-icon text-glow" style="--glow-color:#FF9800">⚔️</div>
+                        <div>
+                            <div style="font-weight:900; color:#FF9800; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Meta Caution: ${t.name} #${t.rank}</div>
+                            <div style="font-size:0.65rem; opacity:0.6; line-height:1.4;">Limited answers to this ranked threat. Only ${t.teamCanHitSE} member(s) hit it super effectively.</div>
+                        </div>
+                    </div>`;
+            });
+            metaBox.innerHTML = html;
+        }
+    }
+
+    const strategyText = document.getElementById('strategy-overview-text');
+    if (!strategyText) return;
+
+    const metaPara = strategyText.querySelector('[data-meta-threat-summary]');
+    if (metaPara) metaPara.remove();
+
+    if (threatResults.length === 0) return;
+
+    const critCount = threatResults.filter(t => t.dangerLevel === 'critical').length;
+    const coveredCount = threatResults.filter(t => t.dangerLevel === 'covered').length;
+    const topGaps = threatResults.filter(t => t.dangerLevel === 'critical').slice(0, 3).map(t => t.name);
+
+    let metaLine = `<strong>META MATCHUP:</strong> Compared against the top ${format} threats`;
+    if (critCount > 0) {
+        metaLine += ` — <span style="color:#ff453a">${critCount} critical gap${critCount > 1 ? 's' : ''}</span>`;
+        if (topGaps.length) metaLine += ` (${topGaps.join(', ')})`;
+        metaLine += '. Consider adding checks or coverage moves.';
+    } else if (coveredCount >= Math.ceil(threatResults.length * 0.5)) {
+        metaLine += ` — solid coverage with ${coveredCount} threats well answered.`;
+    } else {
+        metaLine += ' — no critical gaps, but some ranked threats need careful positioning.';
+    }
+
+    const p = document.createElement('p');
+    p.setAttribute('data-meta-threat-summary', 'true');
+    p.style.marginBottom = '12px';
+    p.innerHTML = metaLine;
+    strategyText.appendChild(p);
+}
+
+/**
+ * Render the threat matchup results into the container.
+ */
+function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
+    if (threats.length === 0) {
+        container.innerHTML = '<p style="opacity:0.3; text-align:center; padding: 20px;">All meta threats are on your team or no data available.</p>';
+        return;
+    }
+
+    const dangerStyles = {
+        critical: { bg: 'rgba(244, 67, 54, 0.12)', border: '#f44336', label: 'CRITICAL', labelBg: '#f44336' },
+        warning:  { bg: 'rgba(255, 152, 0, 0.08)', border: '#FF9800', label: 'CAUTION', labelBg: '#FF9800' },
+        safe:     { bg: 'rgba(255, 255, 255, 0.02)', border: 'rgba(255,255,255,0.08)', label: 'NEUTRAL', labelBg: 'rgba(255,255,255,0.15)' },
+        covered:  { bg: 'rgba(76, 175, 80, 0.08)', border: '#4CAF50', label: 'COVERED', labelBg: '#4CAF50' }
+    };
+
+    // Summary stats
+    const critCount = threats.filter(t => t.dangerLevel === 'critical').length;
+    const warnCount = threats.filter(t => t.dangerLevel === 'warning').length;
+    const coveredCount = threats.filter(t => t.dangerLevel === 'covered').length;
+
+    let html = `
+        <p style="font-size:0.65rem; color:rgba(255,255,255,0.35); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">
+            Ranked ${format} meta · builds use highest build ID per species
+        </p>
+        <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+            <div style="display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:rgba(244,67,54,0.15); border:1px solid rgba(244,67,54,0.3);">
+                <span style="font-size:0.7rem; font-weight:900; color:#f44336;">CRITICAL</span>
+                <span style="font-size:0.9rem; font-weight:900; color:#f44336;">${critCount}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:rgba(255,152,0,0.1); border:1px solid rgba(255,152,0,0.3);">
+                <span style="font-size:0.7rem; font-weight:900; color:#FF9800;">CAUTION</span>
+                <span style="font-size:0.9rem; font-weight:900; color:#FF9800;">${warnCount}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:rgba(76,175,80,0.1); border:1px solid rgba(76,175,80,0.3);">
+                <span style="font-size:0.7rem; font-weight:900; color:#4CAF50;">COVERED</span>
+                <span style="font-size:0.9rem; font-weight:900; color:#4CAF50;">${coveredCount}</span>
+            </div>
+        </div>
+    `;
+
+    threats.forEach(threat => {
+        const style = dangerStyles[threat.dangerLevel];
+        const spriteClean = threat.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+        const spriteUrl = `https://play.pokemonshowdown.com/sprites/ani/${spriteClean}.gif`;
+
+        // Offensive bar (how many on team can hit it)
+        const offPct = Math.min(100, (threat.teamCanHitSE / teamSize) * 100);
+        const offColor = offPct >= 50 ? '#4CAF50' : offPct > 0 ? '#FF9800' : '#f44336';
+
+        // Defensive bar (how many on team it can hit)
+        const defPct = Math.min(100, (threat.threatCanHitSE / teamSize) * 100);
+        const defColor = defPct <= 20 ? '#4CAF50' : defPct < 50 ? '#FF9800' : '#f44336';
+
+        const typeImgs = threat.types.map(t =>
+            `<img src="../assets/type-icons/${t.toLowerCase()}_type.png" alt="${t}" style="height:16px; border-radius:3px; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));">`
+        ).join('');
+
+        const movesStr = threat.threatMoves.length > 0
+            ? threat.threatMoves.slice(0, 4).map(m => `<span style="font-size:0.6rem; color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.05); padding:1px 5px; border-radius:3px; white-space:nowrap;">${m}</span>`).join(' ')
+            : '<span style="font-size:0.6rem; color:rgba(255,255,255,0.25);">No build data — using STAB types</span>';
+
+        const buildBadge = threat.buildId
+            ? `<span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.35);">Build #${threat.buildId}</span>`
+            : '';
+
+        html += `
+            <div class="threat-row" style="
+                display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
+                padding: 12px 14px; margin-bottom: 6px; border-radius: 12px;
+                background: ${style.bg}; border: 1px solid ${style.border};
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            " onmouseover="this.style.transform='translateX(4px)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.3)'"
+               onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='none'">
+                <div style="display:flex; gap:10px; align-items:center; min-width:0;">
+                    <img src="${spriteUrl}" alt="${threat.name}"
+                         style="width:40px; height:40px; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); flex-shrink:0;"
+                         onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/${spriteClean}.png'; this.onerror=null;">
+                    <div style="min-width:0; flex:1;">
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <span style="font-weight:900; font-size:0.8rem; color:white; white-space:nowrap;">${threat.name}</span>
+                            <span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.3); letter-spacing:1px;">#${threat.rank}</span>
+                            ${buildBadge}
+                            ${typeImgs}
+                            <span style="font-size:0.55rem; font-weight:900; padding:2px 6px; border-radius:4px; background:${style.labelBg}; color:white; letter-spacing:0.5px;">${style.label}</span>
+                        </div>
+                        <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:4px;">${movesStr}</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                                    <span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase;">Your Coverage</span>
+                                    <span style="font-size:0.6rem; font-weight:900; color:${offColor};">${threat.teamCanHitSE}/${teamSize}</span>
+                                </div>
+                                <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                    <div style="height:100%; width:${offPct}%; background:${offColor}; border-radius:2px; transition:width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                                    <span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase;">Threat Level</span>
+                                    <span style="font-size:0.6rem; font-weight:900; color:${defColor};">${threat.threatCanHitSE}/${teamSize}</span>
+                                </div>
+                                <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                    <div style="height:100%; width:${defPct}%; background:${defColor}; border-radius:2px; transition:width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ${threat.hasImmunity ? '<div style="font-size:0.6rem; font-weight:900; color:#4CAF50; text-align:right; white-space:nowrap;">🛡️ IMMUNE</div>' : ''}
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
 }

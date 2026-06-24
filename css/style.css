@@ -1539,3 +1539,15 @@ footer {
 .shuffle-slot-btn:active {
     transform: scale(0.95);
 }
+
+/* Added for responsive analysis grids */
+.analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+@media (max-width: 900px) {
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+}

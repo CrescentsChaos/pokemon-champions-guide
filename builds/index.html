@@ -143,7 +143,7 @@
                     </p>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                <div class="analysis-grid">
                     <div style="display: flex; flex-direction: column; gap: 25px;">
                         <div class="analysis-card"
                             style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
@@ -177,12 +177,20 @@
                             <h3
                                 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
                                 Synergy Insights</h3>
+                            <div id="meta-threat-insights"></div>
                             <div id="synergy-insights"></div>
                             <div id="move-diversity"
                                 style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                        ⚔️ Meta Threat Matchup</h3>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team stacks up against the top-ranked meta threats for this format.</p>
+                    <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
                 </div>
             </div>
 
@@ -280,7 +288,6 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
-        let topPokemonList = [];
         let selectedBuildId = null;
         let displayedCount = 12;
         const batchSize = 12;
@@ -370,18 +377,16 @@
 
         async function loadData() {
             try {
-                const [pResp, bResp, mResp, iResp, tResp] = await Promise.all([
+                const [pResp, bResp, mResp, iResp] = await Promise.all([
                     fetch('../assets/pokemon.json'),
                     fetch('../assets/builds.json'),
                     fetch('../assets/moves.json'),
-                    fetch('../assets/items.json'),
-                    fetch('../assets/top_pokemon.json').catch(() => ({ json: () => [] }))
+                    fetch('../assets/items.json')
                 ]);
                 allPokemon = await pResp.json();
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
-                try { topPokemonList = await tResp.json(); } catch (e) { topPokemonList = []; }
 
                 // Create high-speed lookup maps
                 allPokemon.forEach(p => {
@@ -691,7 +696,9 @@
                 const buildInfo = isRawBuild ? b : b.build;
                 return parsePaste(buildInfo.build);
             });
-            const format = document.getElementById('format-filter') ? document.getElementById('format-filter').value : 'Singles';
+            const format = (typeof recommendationFormat !== 'undefined' && currentMainBuild)
+                ? recommendationFormat
+                : (document.getElementById('format-filter') ? document.getElementById('format-filter').value : 'Singles');
             sharedAnalyzeTeam(activeMons, format);
         }
 

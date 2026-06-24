@@ -941,68 +941,78 @@
 
             <!-- Team Analysis Section -->
             <div id="analysis-view" style="display: none; margin-top: 20px;">
-                <h2 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 5px;">STRATEGIC INSIGHTS</h2>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom: 5px;">
+                    <h2 style="font-weight: 900; letter-spacing: -1px; margin: 0;">STRATEGIC INSIGHTS</h2>
+                    <div class="format-toggle-wrapper"
+                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
+                        <button id="analysis-toggle-singles" class="toggle-btn active"
+                            onclick="setTeamAnalysisFormat('Singles')">SINGLES</button>
+                        <button id="analysis-toggle-doubles" class="toggle-btn"
+                            onclick="setTeamAnalysisFormat('Doubles')">DOUBLES</button>
+                    </div>
+                </div>
                 <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of
                     your team's coverage, roles, and synergy.</p>
 
                 <!-- Strategy Overview AI Report -->
+                <!-- Strategy Overview AI Report -->
                 <div class="analysis-card" id="strategy-overview-card"
                     style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
-                    <h3
-                        style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.2rem;">🧠</span> Strategy Overview
+                    <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">🧠</span> Strategy <span style="color:var(--primary-red)">Overview</span>
                     </h3>
                     <p id="strategy-overview-text"
-                        style="font-size: 0.85rem; color: #ddd; line-height: 1.6; margin-top: 15px;"></p>
+                        style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;"></p>
                 </div>
 
                 <div class="analysis-grid">
-                    <!-- Left: Coverage & Synergy -->
                     <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card">
-                            <h3
-                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-red);">
-                                Offensive Coverage</h3>
-                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">How many Pokemon can hit each
-                                type super effectively.</p>
-                            <div class="type-badge-grid" id="offensive-coverage"></div>
-                        </div>
-
-                        <div class="analysis-card">
-                            <h3
-                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #2196F3;">
-                                Defensive Weaknesses</h3>
-                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Cumulative team weaknesses to
-                                each attacking type.</p>
-                            <div class="type-badge-grid" id="defensive-coverage"></div>
-                        </div>
-
-                        <div class="analysis-card">
-                            <h3
-                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #4CAF50;">
-                                Team Synergy</h3>
-                            <div id="synergy-insights" style="margin-top: 20px;"></div>
-                        </div>
-                    </div>
-
-                    <!-- Right: Roles & Archetypes -->
-                    <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card">
-                            <h3
-                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #FF9800;">
-                                Pokemon Roles</h3>
-                            <div id="pokemon-roles"
-                                style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;"></div>
-                        </div>
-
                         <div class="analysis-card"
-                            style="background: linear-gradient(135deg, rgba(255, 51, 51, 0.1), rgba(0, 0, 0, 0.4)); border-color: rgba(255, 51, 51, 0.2);">
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
                             <h3
-                                style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">
-                                Move Diversity</h3>
-                            <div id="move-diversity" style="margin-top: 20px;"></div>
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
+                                Offensive Coverage</h3>
+                            <div class="type-badge-grid" id="offensive-coverage"
+                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                            </div>
+                        </div>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
+                                Defensive Weaknesses</h3>
+                            <div class="type-badge-grid" id="defensive-coverage"
+                                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                            </div>
                         </div>
                     </div>
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
+                                Synergy Role Map</h3>
+                            <div id="pokemon-roles" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                        </div>
+                        <div class="analysis-card"
+                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h3
+                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
+                                Synergy Insights</h3>
+                            <div id="meta-threat-insights"></div>
+                            <div id="synergy-insights"></div>
+                            <div id="move-diversity"
+                                style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                        ⚔️ Meta Threat Matchup</h3>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team stacks up against the top-ranked meta threats.</p>
+                    <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
                 </div>
             </div>
 
@@ -1285,6 +1295,22 @@
             syncUI();
         }
 
+        let teamAnalysisFormat = 'Singles';
+
+        function setTeamAnalysisFormat(format) {
+            teamAnalysisFormat = format;
+            document.querySelectorAll('#analysis-toggle-singles, #analysis-toggle-doubles').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`analysis-toggle-${format.toLowerCase()}`);
+            if (activeBtn) activeBtn.classList.add('active');
+            if (currentSlot === -2) {
+                sharedAnalyzeTeam(team.filter(p => p.species), teamAnalysisFormat);
+            }
+        }
+
+        function runTeamAnalysis() {
+            sharedAnalyzeTeam(team.filter(p => p.species), teamAnalysisFormat);
+        }
+
         let team = Array(6).fill(null).map(() => ({
             species: '', item: '', ability: '', level: 50, shiny: false,
             tera: '', nickname: '', gender: '-', nature: 'Serious',
@@ -1470,7 +1496,7 @@
                 document.getElementById('builder-view').style.display = 'none';
                 document.getElementById('team-view').style.display = 'none';
                 document.getElementById('analysis-view').style.display = 'block';
-                sharedAnalyzeTeam(team.filter(p => p.species));
+                runTeamAnalysis();
             } else {
                 document.getElementById('builder-view').style.display = 'grid';
                 document.getElementById('team-view').style.display = 'none';
@@ -1506,11 +1532,17 @@
                         return n === speciesSearch;
                     }) || {};
 
+                    const dbBase = dbRef;
+                    const dbMega = getEffectivePokemonData(Object.assign({}, p, { useBattleForme: true }), allPokemon) || dbBase;
+                    const isMegaActive = !!megaSprite && (dbMega !== dbBase);
+
                     const sprite = getSpriteUrl(p);
-                    const megaSprite = getMegaSpriteUrl(p);
+                    const megaSpriteUrl = getMegaSpriteUrl(p);
                     const itemSprite = getItemSpriteUrl(p.item);
-                    const t1 = (dbRef.Type_1 || 'Normal').toLowerCase();
-                    const t2 = (dbRef.Type_2 || '').toLowerCase();
+                    const t1Base = (dbBase.Type_1 || 'Normal').toLowerCase();
+                    const t2Base = (dbBase.Type_2 || '').toLowerCase();
+                    const t1Mega = (dbMega.Type_1 || 'Normal').toLowerCase();
+                    const t2Mega = (dbMega.Type_2 || '').toLowerCase();
 
                     const card = document.createElement('div');
                     card.style.cssText = `
@@ -1533,8 +1565,10 @@
                     const statOrder = ['#4caf50', '#f44336', '#ff9800', '#9c27b0', '#ffeb3b', '#00bcd4'];
 
                     let statsHtml = statsArr.map((s, idx) => {
-                        const base = parseInt(dbRef[keys[s]]) || 0;
-                        const val = calculateStat(base, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                        const baseStat = parseInt(dbBase[keys[s]]) || 0;
+                        const megaStat = parseInt(dbMega[keys[s]]) || 0;
+                        const valBase = calculateStat(baseStat, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                        const valMega = calculateStat(megaStat, p.ivs[s], p.evs[s], p.level, p.nature, s);
                         const isPos = natureMap[p.nature].pos === s;
                         const isNeg = natureMap[p.nature].neg === s;
                         const color = isPos ? '#00ffcc' : (isNeg ? '#ff4d4d' : '#ddd');
@@ -1543,9 +1577,9 @@
                         <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; margin-bottom:4px; height:18px;">
                             <span style="width:30px; color:rgba(255,255,255,0.4); font-weight:900; font-family:monospace;">${statLabels[idx]}</span>
                             <div style="flex:1; height:6px; background:rgba(0,0,0,0.4); border-radius:3px; overflow:hidden;">
-                                <div style="height:100%; width:${Math.min(100, (val / 250) * 100)}%; background:${statOrder[idx]}; border-radius:3px; box-shadow: 0 0 12px ${statOrder[idx]}aa;"></div>
+                                <div class="${isMegaActive ? 'mega-data-fill' : ''}" ${isMegaActive ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valMega / 250) * 100)}%"` : ''} style="height:100%; width:${Math.min(100, (valBase / 250) * 100)}%; background:${statOrder[idx]}; border-radius:3px; box-shadow: 0 0 12px ${statOrder[idx]}aa; transition: width 0.3s;"></div>
                             </div>
-                            <span style="width:40px; text-align:right; font-weight:900; color:${color}; font-size:0.9rem; letter-spacing:-0.5px;">${val}</span>
+                            <span ${isMegaActive ? `data-base-val="${valBase}" data-mega-val="${valMega}"` : ''} style="width:40px; text-align:right; font-weight:900; color:${color}; font-size:0.9rem; letter-spacing:-0.5px;">${valBase}</span>
                         </div>
                     `;
                     }).join('');
@@ -1571,7 +1605,7 @@
                     card.innerHTML = `
                     <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                            <img src="${sprite}" ${megaSprite ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSprite}" data-current-src="base"` : ''} style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
+                            <img src="${sprite}" ${megaSpriteUrl ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSpriteUrl}" data-current-src="base"` : ''} style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
@@ -1583,8 +1617,8 @@
                             </div>
                             <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
                                 <div style="display:flex; gap:4px;">
-                                    <img src="../assets/type-icons/${t1}_type.png" alt="${t1}" class="type-icon" style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-                                    ${t2 ? `<img src="../assets/type-icons/${t2}_type.png" alt="${t2}" class="type-icon" style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : ''}
+                                    <img src="../assets/type-icons/${t1Base}_type.png" alt="${t1Base}" class="type-icon ${isMegaActive ? 'mega-toggle-type1' : ''}" ${isMegaActive ? `data-base-type="${t1Base}" data-mega-type="${t1Mega}"` : ''} style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                                    <img src="../assets/type-icons/${(t2Base || 'normal')}_type.png" alt="${t2Base || ''}" class="type-icon ${isMegaActive ? 'mega-toggle-type2' : ''}" ${isMegaActive ? `data-base-type="${t2Base || ''}" data-mega-type="${t2Mega || ''}"` : ''} style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); display: ${t2Base ? 'inline-block' : 'none'};">
                                 </div>
                                 <span style="font-size:0.7rem; color:rgba(255,255,255,0.4); font-weight:900; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
                             </div>
@@ -1609,7 +1643,7 @@
                             ` : ''}
                             <span style="font-size:0.8rem; color:${natureMap[p.nature].color}; font-weight:900; text-transform:uppercase; text-shadow: 0 0 10px ${natureMap[p.nature].color}44;">${p.nature}</span>
                         </div>
-                        <span style="font-size:0.75rem; color:rgba(255,255,255,0.6); font-weight:800; text-transform:uppercase;">${p.ability || 'No Ability'}</span>
+                        <span class="${isMegaActive ? 'mega-ability-text' : ''}" ${isMegaActive ? `data-base-ability="${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}" data-mega-ability="${((dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : p.ability) || 'No Ability'}"` : ''} style="font-size:0.75rem; color:rgba(255,255,255,0.6); font-weight:800; text-transform:uppercase;">${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}</span>
                     </div>
                 `;
                     grid.appendChild(card);
@@ -2221,18 +2255,39 @@
                 img.dataset.currentSrc = megaToggleState;
             });
 
-            // Swap Ability in Main Editor
+            // Swap Ability in Main Editor and Team Preview
             const abilityIn = document.getElementById('ability-input');
             if (abilityIn && abilityIn.dataset.megaVal) {
                 abilityIn.value = megaToggleState === 'mega' ? abilityIn.dataset.megaVal : abilityIn.dataset.baseVal;
                 abilityIn.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'white';
             }
+            document.querySelectorAll('.mega-ability-text').forEach(el => {
+                el.innerText = (megaToggleState === 'mega' ? el.dataset.megaAbility : el.dataset.baseAbility).toUpperCase();
+                el.style.color = megaToggleState === 'mega' ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.6)';
+            });
 
-            // Swap Stats in Main Editor
+            // Swap Stats in Main Editor and Team Preview
             document.querySelectorAll('[data-mega-val]').forEach(el => {
                 const val = megaToggleState === 'mega' ? el.dataset.megaVal : el.dataset.baseVal;
                 if (el.tagName === 'INPUT') el.value = val;
                 else el.textContent = val;
+            });
+
+            // Swap Stat Bars in Team Preview
+            document.querySelectorAll('.mega-data-fill').forEach(el => {
+                el.style.width = megaToggleState === 'mega' ? el.dataset.megaWidth : el.dataset.baseWidth;
+            });
+
+            // Swap Types in Team Preview
+            document.querySelectorAll('.mega-toggle-type1, .mega-toggle-type2').forEach(el => {
+                const type = megaToggleState === 'mega' ? el.dataset.megaType : el.dataset.baseType;
+                if (!type) {
+                    el.style.display = 'none';
+                } else {
+                    el.style.display = 'inline-block';
+                    el.src = `../assets/type-icons/${type.toLowerCase()}_type.png`;
+                    el.alt = type;
+                }
             });
         }, 3000);
 
