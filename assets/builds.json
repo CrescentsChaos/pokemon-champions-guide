@@ -4186,5 +4186,54 @@
             "574"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "576",
+        "pokemon": "Metagross",
+        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 144 HP / 120 Atk / 96 Def / 4 SpD / 144 Spe  \nAdamant Nature  \n- Iron Head  \n- Thunder Punch  \n- Psychic Fangs  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "577",
+        "pokemon": "Ninetales-Alola",
+        "build": "Ninetales-Alola @ Never-Melt Ice  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Encore  \n- Protect",
+        "synergy": [
+            "576"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "578",
+        "pokemon": "Floette-Eternal",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nEVs: 208 HP / 48 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
+        "synergy": [
+            "577",
+            "576"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "579",
+        "pokemon": "Ceruledge",
+        "build": "Ceruledge @ Sitrus Berry  \nAbility: Flash Fire  \nLevel: 50  \nTera Type: Fire  \nEVs: 144 HP / 120 Atk / 52 Def / 192 Spe  \nAdamant Nature  \n- Bitter Blade  \n- Bulk Up  \n- Shadow Sneak  \n- Protect",
+        "synergy": [
+            "577",
+            "576",
+            "578"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "580",
+        "pokemon": "Talonflame",
+        "build": "Talonflame @ Sharp Beak  \nAbility: Gale Wings  \nEVs: 4 HP / 252 Def / 252 Spe  \nAdamant Nature  \n- Tailwind  \n- Dual Wingbeat  \n- Flare Blitz  \n- Protect",
+        "synergy": [
+            "577",
+            "576",
+            "578",
+            "579"
+        ],
+        "format": "Doubles"
     }
 ]
