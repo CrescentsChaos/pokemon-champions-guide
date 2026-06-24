@@ -4240,7 +4240,10 @@
         "id": "581",
         "pokemon": "Mawile",
         "build": "Mawile @ Mawilite  \nAbility: Hyper Cutter  \nEVs: 252 HP / 252 Atk / 4 Def  \nAdamant Nature  \n- Play Rough  \n- Rock Slide  \n- Sucker Punch  \n- Swords Dance",
-        "synergy": [],
+        "synergy": [
+            "582",
+            "583"
+        ],
         "format": "Doubles"
     },
     {
@@ -4248,7 +4251,8 @@
         "pokemon": "Farigiraf",
         "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 120 HP / 113 Def / 160 SpA / 113 SpD / 4 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Twin Beam  \n- Thunderbolt  \n- Trick Room  \n- Protect",
         "synergy": [
-            "581"
+            "581",
+            "583"
         ],
         "format": "Doubles"
     },
@@ -4259,6 +4263,30 @@
         "synergy": [
             "581",
             "582"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "584",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Life Orb  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 252 Atk / 4 Def  \nBrave Nature  \n- Flare Blitz  \n- Throat Chop  \n- Fake Out  \n- Close Combat",
+        "synergy": [
+            "581",
+            "582",
+            "583",
+            "585"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "585",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Charcoal  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 4 Def / 252 SpA  \nQuiet Nature  \nIVs: 0 Atk  \n- Eruption  \n- Heat Wave  \n- Weather Ball  \n- Helping Hand",
+        "synergy": [
+            "581",
+            "582",
+            "583",
+            "584"
         ],
         "format": "Doubles"
     }
