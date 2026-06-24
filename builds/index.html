@@ -335,7 +335,7 @@
             'Trick Room Setter', 'Speed Control', 'Pivot',
             'Screener', 'Hazard Setter', 'Hazard Control', 'Setup Sweeper',
             'Disruptor', 'Cleric/Healer', 'Phazer/Hazer', 'Weather Setter',
-            'Terrain Setter', 'Restricted Legendary', 'Generalist', 'Damage Mitigation', "Priority Denial", "Damage Amplification",
+            'Terrain Setter', 'Generalist', 'Damage Mitigation', "Priority Denial", "Damage Amplification",
             'Weather Abuser', 'Terrain Abuser', 'Trick Room Abuser'
         ];
 
@@ -361,7 +361,6 @@
             'Phazer/Hazer': 'Forces opponents to switch out (Roar) or resets their stat boosts (Haze) to prevent sweeps.',
             'Weather Setter': 'Changes the weather (Rain, Sun, Sand, Snow) via an ability or move to benefit the team.',
             'Terrain Setter': 'Changes the terrain (Electric, Grassy, Misty, Psychic) to provide various battlefield bonuses.',
-            'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
             'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.',
             'Damage Mitigation': 'Uses moves like Parting Shot, Memento, or abilities like Intimidate to reduce incoming damage to the team.',
             'Priority Denial': 'Uses abilities like Armor Tail, Queenly Majesty and Psychic Surge to prevent opponents from using priority moves.',
@@ -612,7 +611,6 @@
                 if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
                 if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball', 'hydro steam', 'solar beam', 'solar blade', 'electro shot'])) allRoles.add('Weather Abuser');
                 if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage', 'grassy glide']) || ['psychic seed', 'electric seed', 'grassy seed', 'misty seed'].includes(item)) allRoles.add('Terrain Abuser');
-                if (bst >= 670) allRoles.add('Restricted Legendary');
             });
 
             const result = Array.from(allRoles);
@@ -1623,6 +1621,17 @@
             const directSynergyIds = new Set(mainBuild.synergy || []);
             const priorityPool = new Set(directSynergyIds);
             const recursiveSynergyIds = new Set();
+            
+            directSynergyIds.forEach(id => {
+                const synBuild = allBuilds.find(b => b.id === id);
+                if (synBuild && synBuild.synergy) {
+                    synBuild.synergy.forEach(synId => {
+                        if (synId !== mainBuild.id) {
+                            priorityPool.add(synId);
+                        }
+                    });
+                }
+            });
 
             if (baseTeam && baseTeam.length > 0) {
                 baseTeam.forEach(member => {
