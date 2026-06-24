@@ -268,7 +268,7 @@
                 </div>
             </div>
 
-            <div id="builds-grid" class="fade-in" style="margin-bottom: 2rem;">
+            <div id="builds-grid" style="margin-bottom: 2rem;">
                 <!-- Builds will be injected here as high-fidelity cards -->
             </div>
 
@@ -693,7 +693,7 @@
 
         function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
-            card.className = 'pokemon-card-premium fade-in';
+            card.className = 'pokemon-card-premium';
 
             const permForm = getPermanentForm(p);
             const dbEffective = getEffectivePokemonData(p, allPokemon);
@@ -845,7 +845,7 @@
 
         function createEmptyCard() {
             const el = document.createElement('div');
-            el.className = 'empty-slot-premium fade-in';
+            el.className = 'empty-slot-premium';
             el.innerHTML = `
                 <div style="font-size:3rem; opacity:0.2;">+</div>
                 <div style="font-weight:900; font-size:0.7rem; letter-spacing:2px; opacity:0.3;">EMPTY SLOT</div>
