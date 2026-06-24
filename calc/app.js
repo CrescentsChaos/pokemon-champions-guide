@@ -556,9 +556,46 @@ function populatePokemonUI(pk) {
 
     updateHPBar(pk.id, pk.hpPercent);
 
+    let recAbilities = [];
+    let recMoves = [];
     const pkData = pokemonDB.find(x => x.Name === pk.name);
+    
+    if (pkData && buildsDB) {
+        const speciesBuilds = buildsDB.filter(b => 
+            (b.pokemon || '').toLowerCase() === pk.name.toLowerCase() &&
+            (b.format || 'Singles').toLowerCase() === (field.format || 'Singles').toLowerCase()
+        );
+        
+        const abilityFreq = new Map();
+        const moveFreq = new Map();
+        
+        speciesBuilds.forEach(b => {
+            if (!b.build) return;
+            const lines = b.build.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            lines.forEach(line => {
+                if (line.match(/^Ability\s*:/i)) {
+                    const ab = line.split(':')[1].trim();
+                    abilityFreq.set(ab, (abilityFreq.get(ab) || 0) + 1);
+                } else if (line.startsWith('-')) {
+                    const mv = line.substring(1).trim();
+                    moveFreq.set(mv, (moveFreq.get(mv) || 0) + 1);
+                }
+            });
+        });
+        
+        recAbilities = Array.from(abilityFreq.entries()).sort((a,b) => b[1] - a[1]).map(x => x[0]);
+        recMoves = Array.from(moveFreq.entries()).sort((a,b) => b[1] - a[1]).map(x => x[0]);
+    }
+
     if (pkData) {
-        const abilities = getPokemonAbilities(pkData);
+        let abilities = getPokemonAbilities(pkData);
+        abilities.sort((a, b) => {
+            const rankA = recAbilities.indexOf(a) !== -1 ? recAbilities.indexOf(a) : Infinity;
+            const rankB = recAbilities.indexOf(b) !== -1 ? recAbilities.indexOf(b) : Infinity;
+            return rankA - rankB;
+        });
+        // We do not prepend ⭐ to ability values to prevent breaking the input datalist value matching,
+        // but they are now sorted by priority.
         document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
     }
 
@@ -606,6 +643,17 @@ function populatePokemonUI(pk) {
         }
     }
 
+    const eligibleMoves = (pkData && pkData.Moves && pkData.Moves.length > 0) ? pkData.Moves : movesDB.map(m => m.name);
+    let sortedMoves = [...eligibleMoves];
+    sortedMoves.sort((a, b) => {
+        const idxA = recMoves.findIndex(m => m.toLowerCase() === a.toLowerCase());
+        const idxB = recMoves.findIndex(m => m.toLowerCase() === b.toLowerCase());
+        const rankA = idxA !== -1 ? idxA : Infinity;
+        const rankB = idxB !== -1 ? idxB : Infinity;
+        if (rankA !== rankB) return rankA - rankB;
+        return a.localeCompare(b);
+    });
+
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
@@ -621,7 +669,12 @@ function populatePokemonUI(pk) {
         <div class="move-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)" style="width: 100%; margin-bottom: 6px;">
                 <option value="None">None</option>
-                ${movesDB.map(m => `<option value="${m.name}" ${move.name === m.name ? 'selected' : ''}>${m.name}</option>`).join('')}
+                ${sortedMoves.map(mName => {
+                    const mDB = movesDB.find(x => x.name === mName) || {name: mName};
+                    const isRec = recMoves.find(m => m.toLowerCase() === mName.toLowerCase());
+                    const label = (isRec ? '⭐ ' : '') + mDB.name;
+                    return `<option value="${mDB.name}" ${move.name === mDB.name ? 'selected' : ''}>${label}</option>`;
+                }).join('')}
             </select>
             <div class="move-configs" style="display: flex; align-items: center; gap: 8px;">
                 ${mData && mData.name !== 'None' ? `

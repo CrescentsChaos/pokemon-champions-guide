@@ -10258,5 +10258,29 @@
     "generation": "Generation IX",
     "short_descripton": "Restores 1/4 of the max HP of the user and its allies.",
     "damage_class": "Status"
+  },
+  {
+    "name": "Twin Beam",
+    "id": 874,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 40,
+    "priority": 0,
+    "type": "Psychic",
+    "generation": "Generation IX",
+    "short_descripton": "The user shoots mystical beams from its eyes to inflict damage. The target is hit twice in a row.",
+    "damage_class": "Special"
+  },
+  {
+    "name": "Dragon Darts",
+    "id": 875,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 50,
+    "priority": 0,
+    "type": "Dragon",
+    "generation": "Generation IX",
+    "short_descripton": "The user attacks twice in a row. If there are 2 opposing Pokémon, each of them is attacked once.",
+    "damage_class": "Physical"
   }
 ]
