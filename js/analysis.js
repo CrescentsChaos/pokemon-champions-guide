@@ -145,10 +145,32 @@ function detectRole(p, dbList) {
     return result.length > 0 ? result : ['Generalist'];
 }
 
+function clearAnalysisUI(message = 'Add Pokemon to see analysis.') {
+    const placeholder = `<p style="grid-column:1/-1; opacity:0.3; text-align:center;">${message}</p>`;
+    const offBox = document.getElementById('offensive-coverage');
+    const defBox = document.getElementById('defensive-coverage');
+    const roleBox = document.getElementById('pokemon-roles');
+    const synergyBox = document.getElementById('synergy-insights');
+    const moveBox = document.getElementById('move-diversity');
+    const metaBox = document.getElementById('meta-threat-insights');
+    const threatBox = document.getElementById('threat-matchup');
+    const strategyCard = document.getElementById('strategy-overview-card');
+    const strategyText = document.getElementById('strategy-overview-text');
+
+    if (offBox) offBox.innerHTML = placeholder;
+    if (defBox) defBox.innerHTML = placeholder;
+    if (roleBox) roleBox.innerHTML = '';
+    if (synergyBox) synergyBox.innerHTML = '';
+    if (moveBox) moveBox.innerHTML = '';
+    if (metaBox) metaBox.innerHTML = '';
+    if (threatBox) threatBox.innerHTML = `<p style="opacity:0.3; text-align:center; padding:20px;">${message}</p>`;
+    if (strategyCard) strategyCard.style.display = 'none';
+    if (strategyText) strategyText.innerHTML = '';
+}
+
 function sharedAnalyzeTeam(activeMons, format = 'Singles') {
     if (!activeMons || activeMons.length === 0) {
-        const offBox = document.getElementById('offensive-coverage');
-        if(offBox) offBox.innerHTML = '<p style="grid-column:1/-1; opacity:0.3; text-align:center;">Add Pokemon to see analysis.</p>';
+        clearAnalysisUI();
         return;
     }
 
@@ -170,15 +192,7 @@ function sharedAnalyzeTeam(activeMons, format = 'Singles') {
         const pTypes = [dbEffective?.Type_1, dbEffective?.Type_2].filter(x => x);
 
         // Offensive Coverage
-        const moveTypes = p.moves.map(m => {
-            const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (typeof movesMap !== 'undefined' && movesMap[clean]) return movesMap[clean].type;
-            if (typeof allMoves !== 'undefined') {
-                const moveRef = allMoves.find(x => x.name.toLowerCase().replace(/[^a-z0-9]/g, '') === clean);
-                return moveRef ? moveRef.type : null;
-            }
-            return null;
-        }).filter(t => t);
+        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m)).filter(t => t);
 
         types.forEach(defType => {
             if (moveTypes.some(mt => getEffectiveness(mt, [defType]) > 1)) {
@@ -954,4 +968,47 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
     });
 
     container.innerHTML = html;
+}
+
+// =============================================
+// PAGE ENTRY POINTS (teambuilder + builds)
+// =============================================
+
+let _teamAnalysisFormat = 'Singles';
+let _builderTeamGetter = null;
+
+function registerTeamBuilderSource(getTeamFn) {
+    _builderTeamGetter = getTeamFn;
+}
+
+function updateAnalysisFormatToggle(format, singlesBtnId, doublesBtnId) {
+    const singlesBtn = document.getElementById(singlesBtnId);
+    const doublesBtn = document.getElementById(doublesBtnId);
+    if (singlesBtn) singlesBtn.classList.toggle('active', format === 'Singles');
+    if (doublesBtn) doublesBtn.classList.toggle('active', format === 'Doubles');
+}
+
+function setTeamAnalysisFormat(format) {
+    _teamAnalysisFormat = format;
+    updateAnalysisFormatToggle(format, 'analysis-toggle-singles', 'analysis-toggle-doubles');
+    const view = document.getElementById('analysis-view');
+    if (view && view.style.display !== 'none' && _builderTeamGetter) {
+        runTeamBuilderAnalysis(_builderTeamGetter());
+    }
+}
+
+function runTeamBuilderAnalysis(team) {
+    const activeMons = (team || []).filter(p => p && p.species);
+    sharedAnalyzeTeam(activeMons, _teamAnalysisFormat);
+}
+
+function buildsToActiveMons(buildEntries) {
+    return (buildEntries || [])
+        .filter(b => b && typeof b.build === 'string' && b.build.trim())
+        .map(b => parseAnalysisBuild(b.build))
+        .filter(p => p.species);
+}
+
+function analyzeLibraryTeam(mainBuild, synergyBuilds, format = 'Singles') {
+    sharedAnalyzeTeam(buildsToActiveMons([mainBuild, ...(synergyBuilds || [])]), format);
 }

@@ -1295,22 +1295,6 @@
             syncUI();
         }
 
-        let teamAnalysisFormat = 'Singles';
-
-        function setTeamAnalysisFormat(format) {
-            teamAnalysisFormat = format;
-            document.querySelectorAll('#analysis-toggle-singles, #analysis-toggle-doubles').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`analysis-toggle-${format.toLowerCase()}`);
-            if (activeBtn) activeBtn.classList.add('active');
-            if (currentSlot === -2) {
-                sharedAnalyzeTeam(team.filter(p => p.species), teamAnalysisFormat);
-            }
-        }
-
-        function runTeamAnalysis() {
-            sharedAnalyzeTeam(team.filter(p => p.species), teamAnalysisFormat);
-        }
-
         let team = Array(6).fill(null).map(() => ({
             species: '', item: '', ability: '', level: 50, shiny: false,
             tera: '', nickname: '', gender: '-', nature: 'Serious',
@@ -1318,6 +1302,8 @@
             ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
             moves: ['', '', '', '']
         }));
+
+        registerTeamBuilderSource(() => team);
 
 
 
@@ -1496,7 +1482,7 @@
                 document.getElementById('builder-view').style.display = 'none';
                 document.getElementById('team-view').style.display = 'none';
                 document.getElementById('analysis-view').style.display = 'block';
-                runTeamAnalysis();
+                runTeamBuilderAnalysis(team);
             } else {
                 document.getElementById('builder-view').style.display = 'grid';
                 document.getElementById('team-view').style.display = 'none';
