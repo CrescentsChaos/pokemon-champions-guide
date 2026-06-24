@@ -4144,7 +4144,7 @@
     {
         "id": "572",
         "pokemon": "Metagross",
-        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 240 HP / 252 Atk / 2 Def / 16 Spe  \n- Iron Head  \n- Hammer Arm  \n- Bullet Punch  \n- Protect",
+        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 240 HP / 252 Atk / 2 Def / 16 Spe  \nAdamant Nature  \n- Iron Head  \n- Hammer Arm  \n- Bullet Punch  \n- Protect",
         "synergy": [
             "571",
             "250"
@@ -4287,6 +4287,31 @@
             "582",
             "583",
             "584"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "586",
+        "pokemon": "Swampert",
+        "build": "Swampert @ Swampertite  \nAbility: Torrent  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Wave Crash  \n- Earthquake  \n- High Horsepower  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "587",
+        "pokemon": "Grimmsnarl",
+        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nEVs: 252 HP / 4 Def / 252 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Foul Play  \n- Parting Shot  \n- Light Screen  \n- Reflect",
+        "synergy": [
+            "545"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "588",
+        "pokemon": "Ninetales",
+        "build": "Ninetales @ Choice Scarf  \nAbility: Drought  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Overheat  \n- Heat Wave  \n- Fake Tears  \n- Weather Ball",
+        "synergy": [
+            "557"
         ],
         "format": "Doubles"
     }
