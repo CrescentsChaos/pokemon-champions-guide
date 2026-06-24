@@ -4314,5 +4314,58 @@
             "557"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "589",
+        "pokemon": "Tornadus",
+        "build": "Tornadus @ Covert Cloak\nAbility: Prankster\nTera Type: Dark\nEVs: 4 hp / 70 def / 180 spa / 4 spd / 252 spe\nTimid Nature\n- Protect\n- Icy Wind\n- Tailwind\n- Bleakwind Storm",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "590",
+        "pokemon": "Urshifu-Rapid-Strike",
+        "build": "Urshifu-Rapid-Strike @ Choice Scarf\nAbility: Unseen Fist\nTera Type: Grass\nEVs: 28 hp / 206 atk / 4 def / 68 spd / 204 spe\nAdamant Nature\n- Surging Strikes\n- Aqua Jet\n- Close Combat\n- U-turn",
+        "synergy": [
+            "589"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "591",
+        "pokemon": "Entei",
+        "build": "Entei @ Choice Band\nAbility: Inner Focus\nTera Type: Normal\nEVs: 20 hp / 252 atk / 238 spe\nJolly Nature\n- Extreme Speed\n- Roar\n- Stomping Tantrum\n- Sacred Fire",
+        "synergy": [
+            "590",
+            "589"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "592",
+        "pokemon": "Rillaboom",
+        "build": "Rillaboom @ Assault Vest\nAbility: Grassy Surge\nTera Type: Rock\nEVs: 222 hp / 156 atk / 44 def / 76 spd / 12 spe\nAdamant Nature\n- Grassy Glide\n- Fake Out\n- Stomping Tantrum\n- Wood Hammer",
+        "synergy": [
+            "590",
+            "589",
+            "591"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "593",
+        "pokemon": "Regidrago",
+        "build": "Regidrago @ Dragon Fang\nAbility: Dragon's Maw\nTera Type: Steel\nEVs: 12 hp / 70 def / 252 spa / 28 spd / 148 spe\nModest Nature\n- Protect\n- Earth Power\n- Dragon Pulse\n- Dragon Energy",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "594",
+        "pokemon": "Gholdengo",
+        "build": "Gholdengo @ Life Orb\nAbility: Good as Gold\nTera Type: Fairy\nEVs: 132 hp / 70 def / 180 spa / 20 spd / 108 spe\nModest Nature\n- Protect\n- Nasty Plot\n- Shadow Ball\n- Make It Rain",
+        "synergy": [
+            "590"
+        ],
+        "format": "Doubles"
     }
 ]
