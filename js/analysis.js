@@ -1229,8 +1229,22 @@ function runTeamBuilderAnalysis(team) {
     sharedAnalyzeTeam(activeMons, _teamAnalysisFormat);
 }
 
+function normalizeLibraryBuild(entry) {
+    if (!entry) return null;
+    // Scored synergy slot from builds page: { build: { id, pokemon, build: "paste..." }, score }
+    if (entry.build && typeof entry.build === 'object' && typeof entry.build.build === 'string') {
+        return entry.build;
+    }
+    // Raw build record from allBuilds: { id, pokemon, build: "paste..." }
+    if (typeof entry.build === 'string') {
+        return entry;
+    }
+    return null;
+}
+
 function buildsToActiveMons(buildEntries) {
     return (buildEntries || [])
+        .map(normalizeLibraryBuild)
         .filter(b => b && typeof b.build === 'string' && b.build.trim())
         .map(b => parseAnalysisBuild(b.build))
         .filter(p => p.species);
