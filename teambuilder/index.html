@@ -1293,33 +1293,7 @@
             moves: ['', '', '', '']
         }));
 
-        const roleDescriptions = {
-            'Physical Sweeper': 'Uses high Attack and Speed to knock out multiple opponents with direct physical damage.',
-            'Special Sweeper': 'Uses high Special Attack and Speed to knock out multiple opponents with direct special damage.',
-            'Wallbreaker': 'Possesses extremely high offensive stats meant to break through even the sturdiest defensive Pokemon.',
-            'Revenge Killer': 'A fast Pokemon (often with a Choice Scarf) that enters after a teammate faints to finish off weakened foes.',
-            'Physical Wall': 'High HP and Defense investment used to stop physical attackers in their tracks.',
-            'Special Wall': 'High HP and Special Defense investment used to absorb special attacks.',
-            'Fake Out Pressure': 'Uses the move Fake Out to flinch an opponent on the first turn, disrupting their strategy.',
-            'Redirection': 'Uses moves like Follow Me or Rage Powder to force opponents to attack them instead of their partner.',
-            'Damage Mitigation': 'Uses moves like Parting Shot, Memento, or abilities like Intimidate to reduce incoming damage to the team.',
-            'Trick Room Setter': 'Uses Trick Room to reverse the turn order, allowing slow Pokemon to move first for 5 turns.',
-            'Speed Control': 'Uses moves like Tailwind, Icy Wind, or Electroweb to manipulate the Speed of Pokemon on the field.',
-            'Pivot': 'Uses moves like U-turn, Volt Switch, or Parting Shot to switch out while dealing damage or debuffing.',
-            'Screener': 'Sets up Reflect, Light Screen, or Aurora Veil to halve the damage taken by the team.',
-            'Hazard Setter': 'Sets up entry hazards like Stealth Rock or Spikes that damage opponents when they switch in.',
-            'Hazard Control': 'Removes entry hazards from the field using moves like Rapid Spin or Defog.',
-            'Setup Sweeper': 'Uses boosting moves like Swords Dance or Calm Mind to become an unstoppable offensive threat.',
-            'Disruptor': 'Uses status moves like Spore, Thunder Wave, or Will-O-Wisp to cripple the opposing team.',
-            'Cleric/Healer': 'Uses moves like Wish, Heal Bell, or Pollen Puff to restore HP or cure status for teammates.',
-            'Phazer/Hazer': 'Forces opponents to switch out (Roar) or resets their stat boosts (Haze) to prevent sweeps.',
-            'Weather Setter': 'Changes the weather (Rain, Sun, Sand, Snow) via an ability or move to benefit the team.',
-            'Terrain Setter': 'Changes the terrain (Electric, Grassy, Misty, Psychic) to provide various battlefield bonuses.',
-            'Restricted Legendary': 'A highly powerful Pokemon with naturally high stats, often restricted to one or two per team.',
-            'Generalist': 'A versatile Pokemon with balanced stats that can adapt to multiple situations.',
-            "Weather Abuser": "A Pokemon that benefits greatly from a specific weather condition.",
-            "Terrain Abuser": "A Pokemon that benefits greatly from a specific terrain."
-        };
+
 
         const natureMap = {
             'Adamant': { pos: 'atk', neg: 'spa', color: '#f44336' },
@@ -1544,7 +1518,7 @@
                     display: flex; flex-direction: column; gap: 6px;
                     background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.6));
                     border: 1px solid rgba(255,255,255,0.08);
-                    position: relative; overflow: hidden; backdrop-filter: blur(15px);
+                    position: relative; overflow: visible; backdrop-filter: blur(15px);
                     box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px ${typeColors[t1]}22;
                     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 `;
@@ -2752,7 +2726,7 @@
                 const pTemp = parsePaste(item.paste)[0];
 
                 card.innerHTML = `
-                    <img src="${getSpriteUrl(pTemp)}" style="width: 80px; height: 80px; object-fit: contain;">
+                    <img src="${getSpriteUrl(pTemp)}" onerror="handleSpriteError(this, '${pTemp.species}', false)" style="width: 80px; height: 80px; object-fit: contain;">
                     <div style="font-weight: 800;">${item.pokemon.toUpperCase()}</div>
                     <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4);">${item.timestamp}</div>
                     <div style="display: flex; gap: 5px; width: 100%; margin-top: 10px;">
@@ -2985,48 +2959,6 @@
 
 
         // --- ANALYSIS LOGIC ---
-        const TYPE_CHART = {
-            'Normal': { 'Rock': 0.5, 'Ghost': 0, 'Steel': 0.5 },
-            'Fire': { 'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 2, 'Bug': 2, 'Rock': 0.5, 'Dragon': 0.5, 'Steel': 2 },
-            'Water': { 'Fire': 2, 'Water': 0.5, 'Grass': 0.5, 'Ground': 2, 'Rock': 2, 'Dragon': 0.5 },
-            'Electric': { 'Water': 2, 'Electric': 0.5, 'Grass': 0.5, 'Ground': 0, 'Flying': 2, 'Dragon': 0.5 },
-            'Grass': { 'Fire': 0.5, 'Water': 2, 'Grass': 0.5, 'Poison': 0.5, 'Ground': 2, 'Flying': 0.5, 'Bug': 0.5, 'Rock': 2, 'Dragon': 0.5, 'Steel': 0.5 },
-            'Ice': { 'Fire': 0.5, 'Water': 0.5, 'Grass': 2, 'Ice': 0.5, 'Ground': 2, 'Flying': 2, 'Dragon': 2, 'Steel': 0.5 },
-            'Fighting': { 'Normal': 2, 'Ice': 2, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 0.5, 'Bug': 0.5, 'Rock': 2, 'Ghost': 0, 'Dark': 2, 'Steel': 2, 'Fairy': 0.5 },
-            'Poison': { 'Grass': 2, 'Poison': 0.5, 'Ground': 0.5, 'Rock': 0.5, 'Ghost': 0.5, 'Steel': 0, 'Fairy': 2 },
-            'Ground': { 'Fire': 2, 'Electric': 2, 'Grass': 0.5, 'Poison': 2, 'Flying': 0, 'Bug': 0.5, 'Rock': 2, 'Steel': 2 },
-            'Flying': { 'Electric': 0.5, 'Grass': 2, 'Fighting': 2, 'Bug': 2, 'Rock': 0.5, 'Steel': 0.5 },
-            'Psychic': { 'Fighting': 2, 'Poison': 2, 'Psychic': 0.5, 'Dark': 0, 'Steel': 0.5 },
-            'Bug': { 'Fire': 0.5, 'Grass': 2, 'Fighting': 0.5, 'Poison': 0.5, 'Flying': 0.5, 'Psychic': 2, 'Ghost': 0.5, 'Dark': 2, 'Steel': 0.5, 'Fairy': 0.5 },
-            'Rock': { 'Fire': 2, 'Ice': 2, 'Fighting': 0.5, 'Ground': 0.5, 'Flying': 2, 'Bug': 2, 'Steel': 0.5 },
-            'Ghost': { 'Normal': 0, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5 },
-            'Dragon': { 'Dragon': 2, 'Steel': 0.5, 'Fairy': 0 },
-            'Dark': { 'Fighting': 0.5, 'Psychic': 2, 'Ghost': 2, 'Dark': 0.5, 'Fairy': 0.5 },
-            'Steel': { 'Fire': 0.5, 'Water': 0.5, 'Electric': 0.5, 'Ice': 2, 'Rock': 2, 'Steel': 0.5, 'Fairy': 2 },
-            'Fairy': { 'Fire': 0.5, 'Fighting': 2, 'Poison': 0.5, 'Dragon': 2, 'Dark': 2, 'Steel': 0.5 }
-        };
-
-        const typeColors = {
-            normal: '#A8A77A', fire: '#EE8130', water: '#6390F0', electric: '#F7D02C',
-            grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
-            ground: '#E2BF65', flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
-            rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC', steel: '#B7B7CE',
-            fairy: '#D685AD', dark: '#705746'
-        };
-
-        function getEffectiveness(attackType, defenseTypes) {
-            let mult = 1;
-            defenseTypes.forEach(t => {
-                if (!t) return;
-                const chart = TYPE_CHART[capitalize(attackType)];
-                if (chart && chart[capitalize(t)] !== undefined) {
-                    mult *= chart[capitalize(t)];
-                }
-            });
-            return mult;
-        }
-
-        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
 
         function analyzeTeam() {
             const activeMons = team.filter(p => p.species);
@@ -3075,65 +3007,7 @@
             renderAnalysis(offensive, defensive, roles, activeMons);
         }
 
-        function detectRole(p, dbList) {
-            const allRoles = new Set();
-            const dbs = Array.isArray(dbList) ? dbList : [dbList];
 
-            dbs.forEach(db => {
-                if (!db || !db.Name) return;
-                const stats = {};
-                const keys = { hp: 'HP', atk: 'Attack', def: 'Defense', spa: 'Sp.Atk', spd: 'Sp.Def', spe: 'Speed' };
-                Object.entries(keys).forEach(([k, dk]) => {
-                    const base = parseInt(db[dk]) || 0;
-                    stats[k] = calculateStat(base, p.ivs[k], p.evs[k], p.level, p.nature, k);
-                });
-
-                const moves = p.moves.map(m => m.toLowerCase());
-                const hasMove = (list) => list.some(m => moves.includes(m));
-                const ability = (p.ability || '').toLowerCase();
-                const item = (p.item || '').toLowerCase();
-                const megaAbility = (p.megaAbility || '').toLowerCase(); // If we store it
-
-                // Use effective ability for this specific form
-                const dbAbilities = getPokemonAbilities(db);
-                const activeAbility = (db.Name.includes('-Mega') ? p.megaAbility : p.ability) || dbAbilities[0] || 'None';
-                const ab = activeAbility.toLowerCase();
-
-                const bst = parseInt(db.Total_Stats) || 0;
-
-                // Apply ability stat multipliers for role calculation
-                if (ab === 'huge power' || ab === 'pure power') stats.atk *= 2;
-                if (stats.atk > 150 && stats.spe > 130) allRoles.add('Physical Sweeper');
-                if (stats.spa > 150 && stats.spe > 130) allRoles.add('Special Sweeper');
-                if (stats.atk > 180 || stats.spa > 180) allRoles.add('Wallbreaker');
-                if (item === 'choice scarf') allRoles.add('Revenge Killer');
-                if (stats.hp > 180 && stats.def > 130) allRoles.add('Physical Wall');
-                if (stats.hp > 180 && stats.spd > 130) allRoles.add('Special Wall');
-                if (hasMove(['fake out'])) allRoles.add('Fake Out Pressure');
-                if (hasMove(['helping hand', 'decorate', "coaching"]) || ['commander', 'sword of ruin', "beads of ruin", "vessel of ruin"].includes(ab)) allRoles.add('Damage Amplification');
-                if (['armor tail', 'queenly majesty', 'psychic surge'].includes(ab)) allRoles.add('Priority Denial');
-                if (hasMove(['follow me', 'rage powder', 'ally switch'])) allRoles.add('Redirection');
-                if (hasMove(['parting shot', 'memento', 'light screen', 'reflect', 'aurora veil', 'snarl', 'breaking swipe', 'struggle bug']) || ['intimidate', 'vessel of ruin'].includes(ab)) allRoles.add('Damage Mitigation');
-                if (hasMove(['trick room'])) allRoles.add('Trick Room Setter');
-                if (hasMove(['tailwind', 'icy wind', 'electroweb', 'string shot'])) allRoles.add('Speed Control');
-                if (hasMove(['u-turn', 'volt switch', 'parting shot', 'flip turn', "teleport"])) allRoles.add('Pivot');
-                if (hasMove(['reflect', 'light screen', 'aurora veil', 'safeguard'])) allRoles.add('Screener');
-                if (hasMove(['stealth rock', 'spikes', 'toxic spikes', 'sticky web', 'ceaseless edge', 'stone axe']) || ['toxic debris'].includes(ab)) allRoles.add('Hazard Setter');
-                if (hasMove(['rapid spin', 'defog', 'mortal spin', 'court change'])) allRoles.add('Hazard Control');
-                if (hasMove(['swords dance', 'calm mind', 'nasty plot', 'dragon dance', 'quiver dance', 'bulk up', 'iron defense'])) allRoles.add('Setup Sweeper');
-                if (hasMove(['will-o-wisp', 'thunder wave', 'spore', 'toxic', 'yawn', 'sleep powder'])) allRoles.add('Disruptor');
-                if (hasMove(['wish', 'heal bell', 'aromatherapy', 'life dew', 'pollen puff'])) allRoles.add('Cleric/Healer');
-                if (hasMove(['roar', 'whirlwind', 'dragon tail', 'circle throw', 'haze', 'clear smog'])) allRoles.add('Phazer/Hazer');
-                if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sunny day', 'rain dance', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
-                if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
-                if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball'])) allRoles.add('Weather Abuser');
-                if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage'])) allRoles.add('Terrain Abuser');
-                if (bst >= 670) allRoles.add('Restricted Legendary');
-            });
-
-            const result = Array.from(allRoles);
-            return result.length > 0 ? result : ['Generalist'];
-        }
 
         function renderAnalysis(off, def, roles, activeMons) {
             const offBox = document.getElementById('offensive-coverage');
