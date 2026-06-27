@@ -4444,5 +4444,125 @@
             "602"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "604",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nEVs: 252 HP / 252 SpA / 4 SpD  \nQuiet Nature  \nIVs: 0 Atk  \n- Psychic Noise  \n- Trick Room  \n- Grass Knot  \n- Sunny Day",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "605",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Focus Sash  \nAbility: Unnerve  \nEVs: 248 HP / 8 Atk / 252 Spe  \nJolly Nature  \n- Rock Slide  \n- Tailwind  \n- Sunny Day  \n- Wide Guard",
+        "synergy": [
+            "604"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "606",
+        "pokemon": "Gyarados",
+        "build": "Gyarados @ Leftovers  \nAbility: Intimidate  \nEVs: 252 HP / 252 Def / 4 SpD  \nAdamant Nature  \n- Waterfall  \n- Ice Fang  \n- Power Whip  \n- Thunder Wave",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "607",
+        "pokemon": "Sylveon",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 88 HP / 252 Def / 168 SpA  \nModest Nature  \n- Hyper Voice  \n- Moonblast  \n- Quick Attack  \n- Detect",
+        "synergy": [
+            "606"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "608",
+        "pokemon": "Blaziken",
+        "build": "Blaziken @ Blazikenite  \nAbility: Speed Boost  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Flare Blitz  \n- Rock Slide  \n- Close Combat  \n- Detect",
+        "synergy": [
+            "607"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "609",
+        "pokemon": "Pyroar",
+        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nEVs: 40 Def / 252 SpA / 216 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Overheat  \n- Yawn  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "610",
+        "pokemon": "Mamoswine",
+        "build": "Mamoswine @ Focus Sash  \nAbility: Oblivious  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- High Horsepower  \n- Rock Slide  \n- Ice Shard  \n- Protect",
+        "synergy": [
+            "609"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "611",
+        "pokemon": "Venusaur",
+        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Energy Ball  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
+        "synergy": [
+            "610"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "612",
+        "pokemon": "Scrafty",
+        "build": "Scrafty @ Scraftinite  \nAbility: Intimidate  \nEVs: 252 HP / 252 Atk / 4 Def  \nAdamant Nature  \n- Knock Off  \n- Drain Punch  \n- Fake Out  \n- Ice Punch",
+        "synergy": [
+            "611"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "613",
+        "pokemon": "Steelix",
+        "build": "Steelix @ Steelixite  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 48 Atk / 210 SpD  \nBrave Nature  \n- Protect  \n- Heavy Slam  \n- High Horsepower  \n- Wide Guard",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "614",
+        "pokemon": "Sinistcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 252 HP / 96 Def / 160 SpD  \nIVs: 0 Atk  \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
+        "synergy": [
+            "613"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "615",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Tyranitarite  \nAbility: Sand Stream  \nLevel: 50  \nTera Type: Rock  \nEVs: 252 HP / 56 Atk / 200 Spe  \nAdamant Nature  \n- Protect  \n- Rock Slide  \n- Knock Off  \n- Dragon Dance",
+        "synergy": [
+            "614"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "616",
+        "pokemon": "Talonflame",
+        "build": "Talonflame @ Sharp Beak  \nAbility: Flame Body  \nEVs: 132 HP / 160 Atk / 216 Spe  \nJolly Nature  \n- Protect  \n- Brave Bird  \n- Flare Blitz  \n- Swords Dance",
+        "synergy": [
+            "615",
+            "521",
+            "Rotom-Wash @ Leftovers"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "617",
+        "pokemon": "Rotom-Wash",
+        "build": "Rotom-Wash @ Leftovers  \nAbility: Levitate  \nEVs: 252 HP / 72 Def / 184 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Will-O-Wisp  \n- Hydro Pump  \n- Light Screen",
+        "synergy": [
+            "614"
+        ],
+        "format": "Doubles"
     }
 ]
