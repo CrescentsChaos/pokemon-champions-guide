@@ -4650,5 +4650,56 @@
             "626"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "628",
+        "pokemon": "Vileplume",
+        "build": "Vileplume @ Focus Sash  \nAbility: Chlorophyll  \nEVs: 4 HP / 252 SpA / 252 Spe  \nIVs: 0 Atk  \n- Sludge Bomb  \n- Sleep Powder  \n- After You  \n- Leaf Storm",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "629",
+        "pokemon": "Scrafty",
+        "build": "Scrafty @ Scraftinite  \nAbility: Intimidate  \nEVs: 252 HP / 252 Atk / 4 SpD  \nBrave Nature  \n- Close Combat  \n- Knock Off  \n- Iron Head  \n- Fake Out",
+        "synergy": [
+            "628"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "630",
+        "pokemon": "Staraptor",
+        "build": "Staraptor @ Choice Scarf  \nAbility: Intimidate  \nEVs: 252 HP / 4 Atk / 252 Spe  \nJolly Nature  \n- Brave Bird  \n- U-turn  \n- Close Combat  \n- Final Gambit",
+        "synergy": [
+            "629",
+            "628"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "631",
+        "pokemon": "Barbaracle",
+        "build": "Barbaracle @ Barbaracite  \nAbility: Sniper  \nEVs: 72 HP / 252 Atk / 32 Def / 32 SpD / 120 Spe  \nAdamant Nature  \n- Shell Smash  \n- Rock Slide  \n- Close Combat  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "632",
+        "pokemon": "Zoroark-Hisui",
+        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 4 HP / 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Bitter Malice  \n- Hyper Voice  \n- Icy Wind  \n- Flamethrower",
+        "synergy": [
+            "631"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "633",
+        "pokemon": "Weavile",
+        "build": "Weavile @ Focus Sash  \nAbility: Pickpocket  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Triple Axel  \n- Protect  \n- Fake Out  \n- Knock Off",
+        "synergy": [
+            "632"
+        ],
+        "format": "Doubles"
     }
 ]
