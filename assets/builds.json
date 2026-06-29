@@ -4747,5 +4747,14 @@
             "637"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "639",
+        "pokemon": "Ceruledge",
+        "build": "Ceruledge @ Charcoal  \nAbility: Flash Fire  \nLevel: 50  \nTera Type: Fire  \nEVs: 244 HP / 196 Def / 64 Spe  \nAdamant Nature  \n- Bitter Blade  \n- Bulk Up  \n- Shadow Sneak  \n- Protect",
+        "synergy": [
+            "638"
+        ],
+        "format": "Doubles"
     }
 ]
