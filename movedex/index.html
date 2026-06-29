@@ -151,8 +151,8 @@
                     <option value="learners">Learners</option>
                 </select>
                 <select id="sort-dir" class="pokedex-select" style="min-width: 160px;">
+                    <option value="asc" selected>Low → High</option>
                     <option value="desc">High → Low</option>
-                    <option value="asc">Low → High</option>
                 </select>
             </div>
 
@@ -181,6 +181,8 @@
                 allMoves = await movesRes.json();
                 allPokemon = await pokeRes.json();
                 buildLearnerLists();
+                sortSelect.value = 'name';
+                sortDir.value = 'asc';
                 applyFiltersAndSort();
             } catch (err) {
                 console.error('Failed to load Move Dex data:', err);
@@ -200,14 +202,41 @@
             return (value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
         }
 
+        function normalizeSpriteName(name) {
+            let clean = (name || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            if (clean === 'giratina-altered') clean = 'giratina-origin';
+            if (clean === 'mimikyu-disguised') clean = 'mimikyu';
+            if (clean.includes('noctowl')) clean = 'noctowl';
+            return clean;
+        }
+
         function getSpriteUrl(name, shiny = false) {
-            const clean = (name || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/'/g, '').replace(/:/g, '').replace(/%/g, '');
+            const clean = normalizeSpriteName(name);
             const base = shiny ? 'ani-shiny' : 'ani';
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
         }
 
         function handleSpriteError(img, name, shiny = false) {
             if (img.dataset.fallbackState === 'final') return;
+            const clean = normalizeSpriteName(name);
+
+            if (!img.dataset.fallbackState) {
+                img.dataset.fallbackState = 'alt-showdown';
+                img.onerror = null;
+                let altClean = clean;
+                if (altClean.includes('-paldea-')) altClean = altClean.replace('-paldea-', '-');
+                else if (altClean.includes('-')) altClean = altClean.replace(/-/g, '');
+                img.src = `https://play.pokemonshowdown.com/sprites/ani/${altClean}.gif`;
+                return;
+            }
+
+            if (img.dataset.fallbackState === 'alt-showdown') {
+                img.dataset.fallbackState = 'smogon';
+                img.onerror = null;
+                img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
+                return;
+            }
+
             img.dataset.fallbackState = 'final';
             img.onerror = null;
             img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';

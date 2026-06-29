@@ -362,6 +362,162 @@ section {
 }
 
 /* Pokedex specific */
+.pokedex-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+.pokedex-section .search-input,
+.pokedex-section .pokedex-select {
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    padding: 0.95rem 1rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    min-width: 220px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+.pokedex-section .search-input {
+    flex: 1 1 280px;
+    max-width: 480px;
+}
+.pokedex-section .pokedex-select {
+    min-width: 180px;
+}
+.pokedex-section .search-input:focus,
+.pokedex-section .pokedex-select:focus {
+    outline: none;
+    border-color: rgba(255, 62, 62, 0.8);
+    background: rgba(255, 255, 255, 0.12);
+}
+.dex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.dex-card {
+    background: rgba(12, 12, 18, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 24px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.dex-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 62, 62, 0.25);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.22);
+}
+.dex-card-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: white;
+}
+.dex-card-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, max-content));
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.92rem;
+}
+.dex-card-description {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+.dex-sprite-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+.dex-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.82rem;
+}
+.dex-sprite-cell {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dex-sprite-cell img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+.dex-card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dex-card-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+.pokedex-section .page-links a {
+    min-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.25rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.pokedex-section .page-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 62, 62, 0.4);
+    transform: translateY(-1px);
+}
+.pokedex-section .page-links {
+    justify-content: center;
+}
+.pokedex-select {
+    color: white;
+}
+.pokedex-section .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.dex-empty-state {
+    padding: 2rem;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.75);
+    text-align: center;
+}
+
 .pokemon-card {
     display: flex;
     flex-direction: column;
