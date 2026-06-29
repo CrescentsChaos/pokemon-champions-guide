@@ -4701,5 +4701,51 @@
             "632"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "634",
+        "pokemon": "Ampharos",
+        "build": "Ampharos @ Ampharosite  \nAbility: Static  \nEVs: 252 HP / 240 SpA / 16 SpD  \nQuiet Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Dragon Pulse  \n- Cotton Guard  \n- Protect",
+        "synergy": [
+            "161",
+            "561",
+            "134",
+            "256"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "635",
+        "pokemon": "Serperior",
+        "build": "Serperior @ Sitrus Berry  \nAbility: Contrary  \nEVs: 252 HP / 40 Def / 8 SpD / 208 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Leaf Storm  \n- Light Screen  \n- Reflect  \n- Glare",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "636",
+        "pokemon": "Milotic",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 244 HP / 244 Def / 12 SpA / 8 Spe  \nSassy Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Hypnosis  \n- Life Dew  \n- Coil",
+        "synergy": [
+            "635"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "637",
+        "pokemon": "Kommo-o",
+        "build": "Kommo-o @ Dragon Fang  \nAbility: Bulletproof  \nEVs: 22 Atk / 236 SpA / 252 Spe  \nNaive Nature  \n- Clanging Scales  \n- Clangorous Soul  \n- Drain Punch  \n- Protect",
+        "synergy": [
+            "636"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "638",
+        "pokemon": "Wyrdeer",
+        "build": "Wyrdeer @ Colbur Berry  \nAbility: Intimidate  \nEVs: 232 HP / 54 Def / 168 SpD / 56 Spe  \nAdamant Nature  \n- Psyshield Bash  \n- Gravity  \n- Hypnosis  \n- Trick Room",
+        "synergy": [
+            "637"
+        ],
+        "format": "Doubles"
     }
 ]
