@@ -4564,5 +4564,91 @@
             "614"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "618",
+        "pokemon": "Delphox",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 4 Def / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Heat Wave  \n- Nasty Plot  \n- Psybeam",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "619",
+        "pokemon": "Tsareena",
+        "build": "Tsareena @ Focus Sash  \nAbility: Queenly Majesty  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Knock Off  \n- Trop Kick  \n- Triple Axel  \n- Low Kick",
+        "synergy": [
+            "618"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "620",
+        "pokemon": "Ninetales-Alola",
+        "build": "Ninetales-Alola @ Light Clay  \nAbility: Snow Warning  \nEVs: 160 Def / 56 SpA / 40 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Fake Tears  \n- Moonblast  \n- Blizzard  \n- Aurora Veil",
+        "synergy": [
+            "619"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "621",
+        "pokemon": "Gliscor",
+        "build": "Gliscor @ Sitrus Berry  \nAbility: Hyper Cutter  \nEVs: 4 HP / 252 Atk / 152 Def / 100 SpD  \nAdamant Nature  \n- Acrobatics  \n- Tailwind  \n- Rock Slide  \n- Earthquake",
+        "synergy": [
+            "620"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "622",
+        "pokemon": "Heliolisk",
+        "build": "Heliolisk @ Expert Belt  \nAbility: Dry Skin  \nEVs: 4 HP / 252 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Grass Knot  \n- Ally Switch  \n- Thunderbolt  \n- Hyper Beam",
+        "synergy": [
+            "621"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "623",
+        "pokemon": "Tinkaton",
+        "build": "Tinkaton @ Occa Berry  \nAbility: Mold Breaker  \nEVs: 252 Atk / 136 Def / 88 SpD / 32 Spe  \nAdamant Nature  \n- Fake Out  \n- Skill Swap  \n- Ice Hammer  \n- Gigaton Hammer",
+        "synergy": [
+            "622"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "624",
+        "pokemon": "Feraligatr",
+        "build": "Feraligatr @ Life Orb  \nAbility: Sheer Force  \nEVs: 244 HP / 120 Atk / 8 Def / 88 SpD / 48 Spe  \nAdamant Nature  \n- Liquidation  \n- Rock Slide  \n- Aqua Jet  \n- Ice Punch",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "625",
+        "pokemon": "Vileplume",
+        "build": "Vileplume @ Big Root  \nAbility: Effect Spore  \nEVs: 244 HP / 200 Def / 64 SpD  \nRelaxed Nature  \nIVs: 0 Atk  \n- Sludge Bomb  \n- Giga Drain  \n- Strength Sap  \n- Leech Seed",
+        "synergy": [
+            "624"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "626",
+        "pokemon": "Florges",
+        "build": "Florges @ Choice Scarf  \nAbility: Flower Veil  \nEVs: 176 HP / 80 SpA / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Energy Ball  \n- Trick",
+        "synergy": [
+            "625"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "627",
+        "pokemon": "Houndoom",
+        "build": "Houndoom @ Focus Sash  \nAbility: Flash Fire  \nEVs: 4 HP / 252 SpA / 252 Spe  \nHasty Nature  \n- Sucker Punch  \n- Heat Wave  \n- Protect  \n- Snarl",
+        "synergy": [
+            "626"
+        ],
+        "format": "Doubles"
     }
 ]
