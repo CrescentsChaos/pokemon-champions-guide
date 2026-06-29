@@ -209,9 +209,11 @@
 
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
-                { label: 'ATK', val: pokemon.Attack, class: 'atk', max: 190 },
-                { label: 'DEF', val: pokemon.Defense, class: 'def', max: 230 },
-                { label: 'SPE', val: pokemon.Speed, class: 'spe', max: 200 }
+                { label: 'ATK', val: pokemon.Attack, class: 'atk', max: 255 },
+                { label: 'DEF', val: pokemon.Defense, class: 'def', max: 255 },
+                { label: 'SPA', val: pokemon['Sp.Atk'], class: 'spa', max: 255 },
+                { label: 'SPD', val: pokemon['Sp.Def'], class: 'spd', max: 255 },
+                { label: 'SPE', val: pokemon.Speed, class: 'spe', max: 255 }
             ];
 
             const statHtml = stats.map(s => `
@@ -275,11 +277,11 @@
 
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
-                { label: 'Attack', val: pokemon.Attack, class: 'atk', max: 190 },
-                { label: 'Defense', val: pokemon.Defense, class: 'def', max: 230 },
-                { label: 'Sp. Atk', val: pokemon['Sp.Atk'], class: 'spa', max: 194 },
-                { label: 'Sp. Def', val: pokemon['Sp.Def'], class: 'spd', max: 230 },
-                { label: 'Speed', val: pokemon.Speed, class: 'spe', max: 200 }
+                { label: 'Attack', val: pokemon.Attack, class: 'atk', max: 255 },
+                { label: 'Defense', val: pokemon.Defense, class: 'def', max: 255 },
+                { label: 'Sp. Atk', val: pokemon['Sp.Atk'], class: 'spa', max: 255 },
+                { label: 'Sp. Def', val: pokemon['Sp.Def'], class: 'spd', max: 255 },
+                { label: 'Speed', val: pokemon.Speed, class: 'spe', max: 255 }
             ];
 
             const detailedStatsHtml = stats.map(s => `

@@ -10330,5 +10330,53 @@
     "generation": "Generation IX",
     "short_descripton": "Removes the Bound and Leech Seeded statuses from the user and removes the Sticky Web, Stealth Rock, Spikes, and Toxic Spikes statuses from the user's side. Poisons targets.",
     "damage_class": "Physical"
+  },
+  {
+    "name": "Chilling Water",
+    "id": 880,
+    "accuracy": 100,
+    "pp": 20,
+    "power": 50,
+    "priority": 0,
+    "type": "Water",
+    "generation": "Generation IX",
+    "short_descripton": "Lowers the target's Attack stat.",
+    "damage_class": "Special"
+  },
+  {
+    "name": "Trailblaze",
+    "id": 881,
+    "accuracy": 100,
+    "pp": 20,
+    "power": 50,
+    "priority": 0,
+    "type": "Grass",
+    "generation": "Generation IX",
+    "short_descripton": "Increases the user's Speed stat.",
+    "damage_class": "Physical"
+  },
+  {
+    "name": "Raging Bull",
+    "id": 882,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 90,
+    "priority": 0,
+    "type": "Normal",
+    "generation": "Generation IX",
+    "short_descripton": "Removes the Light Screen, Reflect, and Aurora Veil statuses on the target's side. This move's type depends on the user's form.",
+    "damage_class": "Physical"
+  },
+  {
+    "name": "Upper Hand",
+    "id": 883,
+    "accuracy": 100,
+    "pp": 15,
+    "power": 65,
+    "priority": 3,
+    "type": "Fighting",
+    "generation": "Generation IX",
+    "short_descripton": "Makes the target flinch. This move fails if the target isn't about to use a priority move.",
+    "damage_class": "Physical"
   }
 ]
