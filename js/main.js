@@ -1,5 +1,5 @@
 (function injectMobileStylesheet() {
-    const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
+    const subDirs = ['/guides/', '/pokedex/', '/abilitydex/', '/movedex/', '/itemdex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
     const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
     if (!document.getElementById('mobile-css')) {
@@ -13,7 +13,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Determine path prefix (more robust for file:// URLs)
-    const subDirs = ['/guides/', '/pokedex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
+    const subDirs = ['/guides/', '/pokedex/', '/abilitydex/', '/movedex/', '/itemdex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
     // Check if the current pathname contains any of the subdirectories preceded by a slash
     const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
