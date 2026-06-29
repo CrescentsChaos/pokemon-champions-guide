@@ -14,8 +14,8 @@
         }
 
         .dex-card {
-            background: rgba(5, 12, 25, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 1.5rem;
             display: flex;
@@ -167,17 +167,21 @@
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
-        function getSpriteUrl(name) {
-            const clean = (name || '').toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/\./g, '')
-                .replace(/'/g, '')
-                .replace(/:/g, '')
-                .replace(/%/g, '');
-            return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        function escapeHtmlAttr(value) {
+            return (value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        function handleSpriteError(img) {
+        function escapeJsString(value) {
+            return (value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function getSpriteUrl(name, shiny = false) {
+            const clean = (name || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/'/g, '').replace(/:/g, '').replace(/%/g, '');
+            const base = shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
+        }
+
+        function handleSpriteError(img, name, shiny = false) {
             if (img.dataset.fallbackState === 'final') return;
             img.dataset.fallbackState = 'final';
             img.onerror = null;
@@ -232,11 +236,16 @@
             const card = document.createElement('div');
             card.className = 'dex-card';
             const learners = ability.learners || [];
-            const learnerSprites = learners.slice(0, 18).map(p => `
-                <div class="dex-sprite-cell" title="${p.Name}">
-                    <img src="${getSpriteUrl(p.Name)}" alt="${p.Name}" onerror="handleSpriteError(this)">
+            const learnerSprites = learners.slice(0, 18).map(p => {
+                const rawName = p.Name || p.name || 'Unknown';
+                const safeName = escapeHtmlAttr(rawName);
+                const jsName = escapeJsString(rawName);
+                return `
+                <div class="dex-sprite-cell" title="${safeName}">
+                    <img src="${getSpriteUrl(rawName)}" alt="${safeName}" onerror="handleSpriteError(this, '${jsName}')">
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             card.innerHTML = `
                 <div class="dex-card-title">${ability.name || ability.Name}</div>

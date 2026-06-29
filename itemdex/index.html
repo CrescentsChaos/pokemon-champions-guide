@@ -14,8 +14,8 @@
         }
 
         .dex-card {
-            background: rgba(5, 12, 25, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 1.5rem;
             display: flex;
@@ -94,6 +94,23 @@
             padding: 6px 12px;
             color: white;
             font-size: 0.82rem;
+        }
+
+        .dex-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dex-card-icon img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
         }
 
         .dex-empty-state {
@@ -183,21 +200,42 @@
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
-        function getSpriteUrl(name) {
-            const clean = (name || '').toLowerCase()
-                .replace(/ /g, '-')
-                .replace(/\./g, '')
-                .replace(/'/g, '')
-                .replace(/:/g, '')
-                .replace(/%/g, '');
-            return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        function escapeHtmlAttr(value) {
+            return (value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        function handleSpriteError(img) {
+        function escapeJsString(value) {
+            return (value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function getSpriteUrl(name, shiny = false) {
+            const clean = (name || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/'/g, '').replace(/:/g, '').replace(/%/g, '');
+            const base = shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
+        }
+
+        function getItemSpriteUrl(item) {
+            if (!item || item.toLowerCase() === 'none') return '';
+            const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+        }
+
+        function handleSpriteError(img, name, shiny = false) {
             if (img.dataset.fallbackState === 'final') return;
             img.dataset.fallbackState = 'final';
             img.onerror = null;
             img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+        }
+
+        function handleItemError(img, item) {
+            if (img.dataset.fallback === 'true' || !item) {
+                img.style.display = 'none';
+                return;
+            }
+            img.dataset.fallback = 'true';
+            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
+            img.style.display = 'block';
         }
 
         function buildUsageMaps() {
@@ -229,19 +267,22 @@
             filteredItems = allItems.map(item => {
                 const name = item.name || item.Name || 'Unknown';
                 const key = normalizeKey(name);
+                const users = Array.from(usageMap[key] || []).sort();
+                const buildUsers = Array.from(buildMap[key] || []).sort();
+                const combinedUsers = Array.from(new Set([...users, ...buildUsers])).sort();
                 return {
                     item,
                     name,
                     category: item.category || item.Category || 'Unknown',
-                    users: Array.from(usageMap[key] || []).sort(),
-                    buildUsers: Array.from(buildMap[key] || []).sort()
+                    users: combinedUsers,
+                    buildCount: buildUsers.length
                 };
             }).filter(entry => {
                 if (!query) return true;
                 const text = [entry.name, entry.category, entry.item.description, entry.item.effect]
                     .filter(Boolean)
                     .join(' ').toLowerCase();
-                return text.includes(query) || entry.users.join(' ').toLowerCase().includes(query) || entry.buildUsers.join(' ').toLowerCase().includes(query);
+                return text.includes(query) || entry.users.join(' ').toLowerCase().includes(query);
             });
 
             filteredItems.sort((a, b) => {
@@ -259,8 +300,8 @@
                         bv = b.users.length;
                         break;
                     case 'builds':
-                        av = a.buildUsers.length;
-                        bv = b.buildUsers.length;
+                        av = a.buildCount || 0;
+                        bv = b.buildCount || 0;
                         break;
                     default:
                         av = a.name.toLowerCase();
@@ -289,33 +330,35 @@
             const card = document.createElement('div');
             card.className = 'dex-card';
             const users = entry.users;
-            const builds = entry.buildUsers;
-            const spriteHtml = users.slice(0, 18).map(name => `
-                <div class="dex-sprite-cell" title="${name}">
-                    <img src="${getSpriteUrl(name)}" alt="${name}" onerror="handleSpriteError(this)">
+            const rawName = entry.name || 'Unknown';
+            const safeName = escapeHtmlAttr(rawName);
+            const jsName = escapeJsString(rawName);
+            const spriteHtml = users.slice(0, 18).map(name => {
+                const rawPokemon = name || 'Unknown';
+                const safePokemon = escapeHtmlAttr(rawPokemon);
+                const jsPokemon = escapeJsString(rawPokemon);
+                return `
+                <div class="dex-sprite-cell" title="${safePokemon}">
+                    <img src="${getSpriteUrl(rawPokemon)}" alt="${safePokemon}" onerror="handleSpriteError(this, '${jsPokemon}')">
                 </div>
-            `).join('');
-
-            const buildBadges = builds.slice(0, 18).map(name => `<span class="dex-pokemon-badge" title="${name}">${name}</span>`).join('');
-
+            `;
+            }).join('');
+            const itemSpriteUrl = getItemSpriteUrl(rawName);
             card.innerHTML = `
-                <div class="dex-card-title">${entry.name}</div>
+                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                    <div class="dex-card-icon"><img src="${itemSpriteUrl}" alt="${safeName}" onerror="handleItemError(this, '${jsName}')"></div>
+                    <div class="dex-card-title">${safeName}</div>
+                </div>
                 <div class="dex-card-meta">
                     <div><strong>Category</strong><br>${entry.category}</div>
-                    <div><strong>Pokémon</strong><br>${users.length}</div>
-                    <div><strong>Builds</strong><br>${builds.length}</div>
+                    <div><strong>Used by</strong><br>${users.length}</div>
+                    <div><strong>Builds</strong><br>${entry.buildCount || 0}</div>
                 </div>
                 <p class="dex-card-description">${entry.item.description || entry.item.effect || 'No description available.'}</p>
                 <div>
-                    <div style="color: rgba(255,255,255,0.78); margin-bottom: 0.65rem; font-size: 0.92rem;"><strong>Used by Pokémon</strong></div>
-                    <div class="dex-sprite-row">${spriteHtml}${users.length > 18 ? `<span class="dex-pill" style="background: rgba(255,255,255,0.08);">+${users.length - 18}</span>` : ''}</div>
+                    <div style="color: rgba(255,255,255,0.78); margin-bottom: 0.65rem; font-size: 0.92rem;"><strong>Pokémon using this item</strong></div>
+                    <div class="dex-sprite-row">${spriteHtml}${users.length > 18 ? `<span class="dex-pill">+${users.length - 18}</span>` : ''}</div>
                 </div>
-                ${builds.length ? `
-                    <div>
-                        <div style="color: rgba(255,255,255,0.78); margin: 0.75rem 0 0.65rem; font-size: 0.92rem;"><strong>Featured in builds</strong></div>
-                        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">${buildBadges}${builds.length > 18 ? `<span class="dex-pill" style="background: rgba(255,255,255,0.08);">+${builds.length - 18}</span>` : ''}</div>
-                    </div>
-                ` : ''}
             `;
             return card;
         }
