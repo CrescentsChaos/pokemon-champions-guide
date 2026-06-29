@@ -1185,6 +1185,11 @@
                 { a: 'incineroar', b: 'rillaboom' }
             ];
 
+            // Build a fast lookup for inChampions items
+            const championsItemSet = new Set(
+                allItems.filter(i => i.inChampions === true).map(i => (i.name || i.Name || '').toLowerCase().replace(/[^a-z0-9]/g, ''))
+            );
+
             let candidates = allBuilds.filter(b => (b.format || 'Singles').toLowerCase() === (format || 'Singles').toLowerCase());
             if (excludeMegas) {
                 candidates = candidates.filter(b => !isMega(b.pokemon, parsePaste(b.build).item));
@@ -1198,6 +1203,21 @@
                 if (excludedIds && excludedIds.includes(b.id)) return false;
                 return true;
             });
+
+            // Filter to Champions-available Pokémon and items only
+            const champCandidates = candidates.filter(b => {
+                const pkData = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === b.pokemon.toLowerCase().replace(/[^a-z0-9]/g, ''));
+                if (!pkData || !pkData.inChampions) return false;
+                const parsedItem = (parsePaste(b.build).item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (parsedItem && !championsItemSet.has(parsedItem)) return false;
+                return true;
+            });
+
+            // Use Champions pool if available, fall back to full pool
+            if (champCandidates.length >= 3) {
+                candidates = champCandidates;
+            }
+
             candidates.sort(() => Math.random() - 0.5);
 
             for (let i = 0; i < count; i++) {

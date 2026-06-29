@@ -1,7 +1,8 @@
 [
     {
         "name": "Ability Shield",
-        "description": "An item to be held by a Pokémon. This cute and rather unique-looking shield protects the holder from having its Ability changed by others."
+        "description": "An item to be held by a Pokémon. This cute and rather unique-looking shield protects the holder from having its Ability changed by others.",
+        "inChampions": false
     },
     {
         "name": "Absorb Bulb",
@@ -41,7 +42,8 @@
     },
     {
         "name": "Big Root",
-        "description": "An item to be held by a Pokémon. This root boosts the amount of HP the holder restores to itself when it uses HP-stealing moves."
+        "description": "An item to be held by a Pokémon. This root boosts the amount of HP the holder restores to itself when it uses HP-stealing moves.",
+        "inChampions": true
     },
     {
         "name": "Binding Band",
@@ -49,11 +51,13 @@
     },
     {
         "name": "Black Belt",
-        "description": "An item to be held by a Pokémon. This belt helps with focus and boosts the power of the holder's Fighting-type moves."
+        "description": "An item to be held by a Pokémon. This belt helps with focus and boosts the power of the holder's Fighting-type moves.",
+        "inChampions": true
     },
     {
         "name": "Black Glasses",
-        "description": "An item to be held by a Pokémon. It's a pair of shady- looking glasses that boost the power of the holder's Dark-type moves."
+        "description": "An item to be held by a Pokémon. It's a pair of shady- looking glasses that boost the power of the holder's Dark-type moves.",
+        "inChampions": true
     },
     {
         "name": "Black Sludge",
@@ -77,7 +81,8 @@
     },
     {
         "name": "Bright Powder",
-        "description": "An item to be held by a Pokémon. This glittery powder casts a tricky glare that lowers the accuracy of opposing Pokémon's moves."
+        "description": "An item to be held by a Pokémon. This glittery powder casts a tricky glare that lowers the accuracy of opposing Pokémon's moves.",
+        "inChampions": true
     },
     {
         "name": "Bug Gem",
@@ -101,7 +106,8 @@
     },
     {
         "name": "Charcoal",
-        "description": "An item to be held by a Pokémon. It's a combustible fuel that boosts the power of the holder's Fire-type moves."
+        "description": "An item to be held by a Pokémon. It's a combustible fuel that boosts the power of the holder's Fire-type moves.",
+        "inChampions": true
     },
     {
         "name": "Chill Drive",
@@ -113,7 +119,8 @@
     },
     {
         "name": "Choice Scarf",
-        "description": "An item to be held by a Pokémon. This curious scarf boosts the holder's Speed stat but only allows the use of a single move."
+        "description": "An item to be held by a Pokémon. This curious scarf boosts the holder's Speed stat but only allows the use of a single move.",
+        "inChampions": true
     },
     {
         "name": "Choice Specs",
@@ -137,7 +144,8 @@
     },
     {
         "name": "Damp Rock",
-        "description": "An item to be held by a Pokémon. When the holder changes the weather to rain, the rain will persist for longer than usual."
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to rain, the rain will persist for longer than usual.",
+        "inChampions": true
     },
     {
         "name": "Dark Gem",
@@ -177,7 +185,8 @@
     },
     {
         "name": "Dragon Fang",
-        "description": "An item to be held by a Pokémon. This hard, sharp fang boosts the power of the holder's Dragon-type moves."
+        "description": "An item to be held by a Pokémon. This hard, sharp fang boosts the power of the holder's Dragon-type moves.",
+        "inChampions": true
     },
     {
         "name": "Dragon Gem",
@@ -249,7 +258,8 @@
     },
     {
         "name": "Expert Belt",
-        "description": "An item to be held by a Pokémon. It's a well-worn belt that slightly boosts the power of the holder's supereffective moves."
+        "description": "An item to be held by a Pokémon. It's a well-worn belt that slightly boosts the power of the holder's supereffective moves.",
+        "inChampions": true
     },
     {
         "name": "Fairium Z",
@@ -262,6 +272,11 @@
     {
         "name": "Fairy Memory",
         "description": "A memory disc that contains Fairy-type data. It changes the type of the holder if held by a certain species of Pokémon."
+    },
+    {
+        "name": "Fairy Feather",
+        "description": "An item to be held by a Pokémon. This downy feather of pure white is imbued with the essence of fairies and will boost the power of a Fairy-type move.",
+        "inChampions": true
     },
     {
         "name": "Fighting Gem",
@@ -321,11 +336,13 @@
     },
     {
         "name": "Focus Band",
-        "description": "An item to be held by a Pokémon. When the holder is hit with a move that should knock it out, it may be able to endure with 1 HP."
+        "description": "An item to be held by a Pokémon. When the holder is hit with a move that should knock it out, it may be able to endure with 1 HP.",
+        "inChampions": true
     },
     {
         "name": "Focus Sash",
-        "description": "An item to be held by a Pokémon. If the holder has full HP and it is hit with a move that should knock it out, it will endure with 1 HP—but only once."
+        "description": "An item to be held by a Pokémon. If the holder has full HP and it is hit with a move that should knock it out, it will endure with 1 HP—but only once.",
+        "inChampions": true
     },
     {
         "name": "Full Incense",
@@ -389,7 +406,8 @@
     },
     {
         "name": "Hard Stone",
-        "description": "An item to be held by a Pokémon. It's a durable stone that boosts the power of the holder's Rock-type moves."
+        "description": "An item to be held by a Pokémon. It's a durable stone that boosts the power of the holder's Rock-type moves.",
+        "inChampions": true
     },
     {
         "name": "Hearthflame Mask",
@@ -397,7 +415,8 @@
     },
     {
         "name": "Heat Rock",
-        "description": "An item to be held by a Pokémon. When the holder changes the weather to harsh sunlight, the sunlight will persist for longer than usual."
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to harsh sunlight, the sunlight will persist for longer than usual.",
+        "inChampions": true
     },
     {
         "name": "Heavy-Duty Boots",
@@ -421,7 +440,8 @@
     },
     {
         "name": "Icy Rock",
-        "description": "An item to be held by a Pokémon. When the holder changes the weather to snow, the snow will persist for longer than usual."
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to snow, the snow will persist for longer than usual.",
+        "inChampions": true
     },
     {
         "name": "Incinium Z",
@@ -433,7 +453,8 @@
     },
     {
         "name": "Iron Ball",
-        "description": "An item to be held by a Pokémon. It lowers the holder's Speed stat and makes the holder vulnerable to Ground- type moves even if it is a Flying type or is levitating."
+        "description": "An item to be held by a Pokémon. It lowers the holder's Speed stat and makes the holder vulnerable to Ground- type moves even if it is a Flying type or is levitating.",
+        "inChampions": true
     },
     {
         "name": "Iron Plate",
@@ -441,7 +462,8 @@
     },
     {
         "name": "King's Rock",
-        "description": "An item to be held by a Pokémon. It may cause the target to flinch whenever the holder successfully inflicts damage on them with an attack."
+        "description": "An item to be held by a Pokémon. It may cause the target to flinch whenever the holder successfully inflicts damage on them with an attack.",
+        "inChampions": true
     },
     {
         "name": "Kommonium Z",
@@ -461,19 +483,23 @@
     },
     {
         "name": "Leftovers",
-        "description": "An item to be held by a Pokémon. It slowly but steadily restores the holder's HP."
+        "description": "An item to be held by a Pokémon. It slowly but steadily restores the holder's HP.",
+        "inChampions": true
     },
     {
         "name": "Life Orb",
-        "description": "An item to be held by a Pokémon. It boosts the power of the holder's moves, but the holder also loses a small amount of HP upon landing an attack."
+        "description": "An item to be held by a Pokémon. It boosts the power of the holder's moves, but the holder also loses a small amount of HP upon landing an attack.",
+        "inChampions": true
     },
     {
         "name": "Light Ball",
-        "description": "An item to be held by Pikachu. It's a mysterious orb that boosts Pikachu's Attack and Sp. Atk stats."
+        "description": "An item to be held by Pikachu. It's a mysterious orb that boosts Pikachu's Attack and Sp. Atk stats.",
+        "inChampions": true
     },
     {
         "name": "Light Clay",
-        "description": "An item to be held by a Pokémon. When the holder uses protective moves like Light Screen or Reflect, their effects will last longer than usual."
+        "description": "An item to be held by a Pokémon. When the holder uses protective moves like Light Screen or Reflect, their effects will last longer than usual.",
+        "inChampions": true
     },
     {
         "name": "Loaded Dice",
@@ -525,7 +551,8 @@
     },
     {
         "name": "Magnet",
-        "description": "An item to be held by a Pokémon. It's a powerful magnet that boosts the power of the holder's Electric-type moves."
+        "description": "An item to be held by a Pokémon. It's a powerful magnet that boosts the power of the holder's Electric-type moves.",
+        "inChampions": true
     },
     {
         "name": "Marshadium Z",
@@ -537,11 +564,13 @@
     },
     {
         "name": "Mental Herb",
-        "description": "An item to be held by a Pokémon. The holder will be able to shake off move-binding effects to move freely— but only once."
+        "description": "An item to be held by a Pokémon. The holder will be able to shake off move-binding effects to move freely— but only once.",
+        "inChampions": true
     },
     {
         "name": "Metal Coat",
-        "description": "An item to be held by a Pokémon. It boosts the power of the holder's Steel-type moves."
+        "description": "An item to be held by a Pokémon. It boosts the power of the holder's Steel-type moves.",
+        "inChampions": true
     },
     {
         "name": "Metal Powder",
@@ -549,7 +578,8 @@
     },
     {
         "name": "Metronome",
-        "description": "An item to be held by a Pokémon. It boosts the power of a move that's used repeatedly. Once the chain is broken, the move's power returns to normal."
+        "description": "An item to be held by a Pokémon. It boosts the power of a move that's used repeatedly. Once the chain is broken, the move's power returns to normal.",
+        "inChampions": true
     },
     {
         "name": "Mewnium Z",
@@ -565,7 +595,8 @@
     },
     {
         "name": "Miracle Seed",
-        "description": "An item to be held by a Pokémon. It's a seed imbued with life force that boosts the power of the holder's Grass-type moves."
+        "description": "An item to be held by a Pokémon. It's a seed imbued with life force that boosts the power of the holder's Grass-type moves.",
+        "inChampions": true
     },
     {
         "name": "Mirror Herb",
@@ -577,15 +608,18 @@
     },
     {
         "name": "Muscle Band",
-        "description": "An item to be held by a Pokémon. This headband exudes strength, slightly boosting the power of the holder's physical moves."
+        "description": "An item to be held by a Pokémon. This headband exudes strength, slightly boosting the power of the holder's physical moves.",
+        "inChampions": true
     },
     {
         "name": "Mystic Water",
-        "description": "An item to be held by a Pokémon. This teardrop-shaped gem boosts the power of the holder's Water-type moves."
+        "description": "An item to be held by a Pokémon. This teardrop-shaped gem boosts the power of the holder's Water-type moves.",
+        "inChampions": true
     },
     {
         "name": "Never-Melt Ice",
-        "description": "An item to be held by a Pokémon. It's a heat-repelling piece of ice that boosts the power of the holder's Ice- type moves."
+        "description": "An item to be held by a Pokémon. It's a heat-repelling piece of ice that boosts the power of the holder's Ice- type moves.",
+        "inChampions": true
     },
     {
         "name": "Normal Gem",
@@ -621,7 +655,8 @@
     },
     {
         "name": "Poison Barb",
-        "description": "An item to be held by a Pokémon. This small poisonous barb boosts the power of the holder's Poison-type moves."
+        "description": "An item to be held by a Pokémon. This small poisonous barb boosts the power of the holder's Poison-type moves.",
+        "inChampions": true
     },
     {
         "name": "Poison Gem",
@@ -705,7 +740,8 @@
     },
     {
         "name": "Quick Claw",
-        "description": "An item to be held by a Pokémon. This light, sharp claw lets the holder move first occasionally."
+        "description": "An item to be held by a Pokémon. This light, sharp claw lets the holder move first occasionally.",
+        "inChampions": true
     },
     {
         "name": "Quick Powder",
@@ -785,7 +821,8 @@
     },
     {
         "name": "Scope Lens",
-        "description": "An item to be held by a Pokémon. It's a lens for scoping out weak points. It boosts the holder's critical-hit ratio."
+        "description": "An item to be held by a Pokémon. It's a lens for scoping out weak points. It boosts the holder's critical-hit ratio.",
+        "inChampions": true
     },
     {
         "name": "Sea Incense",
@@ -793,15 +830,18 @@
     },
     {
         "name": "Sharp Beak",
-        "description": "An item to be held by a Pokémon. It's a long, sharp beak that boosts the power of the holder's Flying-type moves."
+        "description": "An item to be held by a Pokémon. It's a long, sharp beak that boosts the power of the holder's Flying-type moves.",
+        "inChampions": true
     },
     {
         "name": "Shed Shell",
-        "description": "An item to be held by a Pokémon. Hard and sturdy, this discarded carapace enables the holder to switch out of battle without fail."
+        "description": "An item to be held by a Pokémon. Hard and sturdy, this discarded carapace enables the holder to switch out of battle without fail.",
+        "inChampions": true
     },
     {
         "name": "Shell Bell",
-        "description": "An item to be held by a Pokémon. The holder restores a little HP to itself every time it inflicts damage with an attack."
+        "description": "An item to be held by a Pokémon. The holder restores a little HP to itself every time it inflicts damage with an attack.",
+        "inChampions": true
     },
     {
         "name": "Shock Drive",
@@ -809,11 +849,13 @@
     },
     {
         "name": "Silk Scarf",
-        "description": "An item to be held by a Pokémon. It's a sumptuous scarf that boosts the power of the holder's Normal-type moves."
+        "description": "An item to be held by a Pokémon. It's a sumptuous scarf that boosts the power of the holder's Normal-type moves.",
+        "inChampions": true
     },
     {
         "name": "Silver Powder",
-        "description": "An item to be held by a Pokémon. It's a shiny silver powder that boosts the power of the holder's Bug-type moves."
+        "description": "An item to be held by a Pokémon. It's a shiny silver powder that boosts the power of the holder's Bug-type moves.",
+        "inChampions": true
     },
     {
         "name": "Sky Plate",
@@ -825,7 +867,8 @@
     },
     {
         "name": "Smooth Rock",
-        "description": "An item to be held by a Pokémon. When the holder changes the weather to a sandstorm, the storm will persist for longer than usual."
+        "description": "An item to be held by a Pokémon. When the holder changes the weather to a sandstorm, the storm will persist for longer than usual.",
+        "inChampions": true
     },
     {
         "name": "Snorlium Z",
@@ -837,7 +880,8 @@
     },
     {
         "name": "Soft Sand",
-        "description": "An item to be held by a Pokémon. This loose, silky sand boosts the power of the holder's Ground-type moves."
+        "description": "An item to be held by a Pokémon. This loose, silky sand boosts the power of the holder's Ground-type moves.",
+        "inChampions": true
     },
     {
         "name": "Solganium Z",
@@ -853,7 +897,8 @@
     },
     {
         "name": "Spell Tag",
-        "description": "An item to be held by a Pokémon. It's a sinister, eerie tag that boosts the power of the holder's Ghost-type moves."
+        "description": "An item to be held by a Pokémon. It's a sinister, eerie tag that boosts the power of the holder's Ghost-type moves.",
+        "inChampions": true
     },
     {
         "name": "Splash Plate",
@@ -917,7 +962,8 @@
     },
     {
         "name": "Twisted Spoon",
-        "description": "An item to be held by a Pokémon. This spoon is imbued with telekinetic energy and boosts the power of the holder's Psychic-type moves."
+        "description": "An item to be held by a Pokémon. This spoon is imbued with telekinetic energy and boosts the power of the holder's Psychic-type moves.",
+        "inChampions": true
     },
     {
         "name": "Ultranecrozium Z",
@@ -953,15 +999,18 @@
     },
     {
         "name": "White Herb",
-        "description": "An item to be held by a Pokémon. It will restore any lowered stat in battle—but only once."
+        "description": "An item to be held by a Pokémon. It will restore any lowered stat in battle—but only once.",
+        "inChampions": true
     },
     {
         "name": "Wide Lens",
-        "description": "An item to be held by a Pokémon. It's a magnifying lens that slightly boosts the accuracy of the holder's moves."
+        "description": "An item to be held by a Pokémon. It's a magnifying lens that slightly boosts the accuracy of the holder's moves.",
+        "inChampions": true
     },
     {
         "name": "Wise Glasses",
-        "description": "An item to be held by a Pokémon. This thick pair of glasses slightly boosts the power of the holder's special moves."
+        "description": "An item to be held by a Pokémon. This thick pair of glasses slightly boosts the power of the holder's special moves.",
+        "inChampions": true
     },
     {
         "name": "Yellow Scarf",
@@ -973,7 +1022,8 @@
     },
     {
         "name": "Zoom Lens",
-        "description": "An item to be held by a Pokémon. When the holder acts after its target, its move will be more accurate than usual."
+        "description": "An item to be held by a Pokémon. When the holder acts after its target, its move will be more accurate than usual.",
+        "inChampions": true
     },
     {
         "name": "Aguav Berry",
@@ -985,11 +1035,13 @@
     },
     {
         "name": "Aspear Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to thaw itself after being frozen."
+        "description": "If a Pokémon holds one of these Berries, it will be able to thaw itself after being frozen.",
+        "inChampions": true
     },
     {
         "name": "Babiri Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Steel-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Steel-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Belue Berry",
@@ -1001,31 +1053,38 @@
     },
     {
         "name": "Charti Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Rock-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Rock-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Cheri Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to free itself from paralysis."
+        "description": "If a Pokémon holds one of these Berries, it will be able to free itself from paralysis.",
+        "inChampions": true
     },
     {
         "name": "Chesto Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to shake off its drowsiness."
+        "description": "If a Pokémon holds one of these Berries, it will be able to shake off its drowsiness.",
+        "inChampions": true
     },
     {
         "name": "Chilan Berry",
-        "description": "If a Pokémon holding this Berry is hit with a Normal-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a Normal-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Chople Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Fighting-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fighting-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Coba Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Flying-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Flying-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Colbur Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Dark-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Dark-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Cornn Berry",
@@ -1069,7 +1128,8 @@
     },
     {
         "name": "Haban Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Dragon-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Dragon-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Hondew Berry",
@@ -1089,11 +1149,13 @@
     },
     {
         "name": "Kasib Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Ghost-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ghost-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Kebia Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Poison-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Poison-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Kee Berry",
@@ -1109,7 +1171,8 @@
     },
     {
         "name": "Leppa Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 PP to a move."
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 PP to a move.",
+        "inChampions": true
     },
     {
         "name": "Liechi Berry",
@@ -1117,7 +1180,8 @@
     },
     {
         "name": "Lum Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of any status condition it may have."
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of any status condition it may have.",
+        "inChampions": true
     },
     {
         "name": "Mago Berry",
@@ -1145,11 +1209,13 @@
     },
     {
         "name": "Occa Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Fire-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fire-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Oran Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 HP to itself."
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore 10 HP to itself.",
+        "inChampions": true
     },
     {
         "name": "Pamtre Berry",
@@ -1157,19 +1223,23 @@
     },
     {
         "name": "Passho Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Water-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Water-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Payapa Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Psychic-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Psychic-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Pecha Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to lift the effects of being poisoned from itself."
+        "description": "If a Pokémon holds one of these Berries, it will be able to lift the effects of being poisoned from itself.",
+        "inChampions": true
     },
     {
         "name": "Persim Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of confusion."
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of confusion.",
+        "inChampions": true
     },
     {
         "name": "Petaya Berry",
@@ -1193,7 +1263,8 @@
     },
     {
         "name": "Rawst Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of a burn."
+        "description": "If a Pokémon holds one of these Berries, it will be able to cure itself of a burn.",
+        "inChampions": true
     },
     {
         "name": "Razz Berry",
@@ -1201,11 +1272,13 @@
     },
     {
         "name": "Rindo Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Grass-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Grass-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Roseli Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Fairy-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Fairy-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Rowap Berry",
@@ -1217,7 +1290,8 @@
     },
     {
         "name": "Shuca Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Ground-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ground-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Silver Nanab Berry",
@@ -1233,7 +1307,8 @@
     },
     {
         "name": "Sitrus Berry",
-        "description": "If a Pokémon holds one of these Berries, it will be able to restore a small amount of HP to itself."
+        "description": "If a Pokémon holds one of these Berries, it will be able to restore a small amount of HP to itself.",
+        "inChampions": true
     },
     {
         "name": "Spelon Berry",
@@ -1249,11 +1324,13 @@
     },
     {
         "name": "Tanga Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Bug-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Bug-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Wacan Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Electric-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Electric-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Watmel Berry",
@@ -1269,35 +1346,43 @@
     },
     {
         "name": "Yache Berry",
-        "description": "If a Pokémon holding this Berry is hit with a supereffective Ice-type move, the power of that move will be weakened."
+        "description": "If a Pokémon holding this Berry is hit with a supereffective Ice-type move, the power of that move will be weakened.",
+        "inChampions": true
     },
     {
         "name": "Gengarite",
-        "description": "Enables the Mega Evolution of Mega Gengar."
+        "description": "Enables the Mega Evolution of Mega Gengar.",
+        "inChampions": true
     },
     {
         "name": "Gardevoirite",
-        "description": "Enables the Mega Evolution of Mega Gardevoir."
+        "description": "Enables the Mega Evolution of Mega Gardevoir.",
+        "inChampions": true
     },
     {
         "name": "Ampharosite",
-        "description": "Enables the Mega Evolution of Mega Ampharos."
+        "description": "Enables the Mega Evolution of Mega Ampharos.",
+        "inChampions": true
     },
     {
         "name": "Venusaurite",
-        "description": "Enables the Mega Evolution of Mega Venusaur."
+        "description": "Enables the Mega Evolution of Mega Venusaur.",
+        "inChampions": true
     },
     {
         "name": "Charizardite X",
-        "description": "Enables the Mega Evolution of Mega Charizard X."
+        "description": "Enables the Mega Evolution of Mega Charizard X.",
+        "inChampions": true
     },
     {
         "name": "Charizardite Y",
-        "description": "Enables the Mega Evolution of Mega Charizard Y."
+        "description": "Enables the Mega Evolution of Mega Charizard Y.",
+        "inChampions": true
     },
     {
         "name": "Blastoisinite",
-        "description": "Enables the Mega Evolution of Mega Blastoise."
+        "description": "Enables the Mega Evolution of Mega Blastoise.",
+        "inChampions": true
     },
     {
         "name": "Mewtwonite X",
@@ -1309,83 +1394,103 @@
     },
     {
         "name": "Blazikenite",
-        "description": "Enables the Mega Evolution of Mega Blaziken."
+        "description": "Enables the Mega Evolution of Mega Blaziken.",
+        "inChampions": true
     },
     {
         "name": "Medichamite",
-        "description": "Enables the Mega Evolution of Mega Medicham."
+        "description": "Enables the Mega Evolution of Mega Medicham.",
+        "inChampions": true
     },
     {
         "name": "Houndoominite",
-        "description": "Enables the Mega Evolution of Mega Houndoom."
+        "description": "Enables the Mega Evolution of Mega Houndoom.",
+        "inChampions": true
     },
     {
         "name": "Heracronite",
-        "description": "Enables the Mega Evolution of Mega Heracross."
+        "description": "Enables the Mega Evolution of Mega Heracross.",
+        "inChampions": true
     },
     {
         "name": "Aggronite",
-        "description": "Enables the Mega Evolution of Mega Aggron."
+        "description": "Enables the Mega Evolution of Mega Aggron.",
+        "inChampions": true
     },
     {
         "name": "Banettite",
-        "description": "Enables the Mega Evolution of Mega Banette."
+        "description": "Enables the Mega Evolution of Mega Banette.",
+        "inChampions": true
     },
     {
         "name": "Sablenite",
-        "description": "Enables the Mega Evolution of Mega Sableye."
+        "description": "Enables the Mega Evolution of Mega Sableye.",
+        "inChampions": true
     },
     {
         "name": "Tyranitarite",
-        "description": "Enables the Mega Evolution of Mega Tyranitar."
+        "description": "Enables the Mega Evolution of Mega Tyranitar.",
+        "inChampions": true
     },
     {
         "name": "Abomasite",
-        "description": "Enables the Mega Evolution of Mega Abomasnow."
+        "description": "Enables the Mega Evolution of Mega Abomasnow.",
+        "inChampions": true
     },
     {
         "name": "Scizorite",
-        "description": "Enables the Mega Evolution of Mega Scizor."
+        "description": "Enables the Mega Evolution of Mega Scizor.",
+        "inChampions": true
     },
     {
         "name": "Pinsirite",
-        "description": "Enables the Mega Evolution of Mega Pinsir."
+        "description": "Enables the Mega Evolution of Mega Pinsir.",
+        "inChampions": true
     },
     {
         "name": "Aerodactylite",
-        "description": "Enables the Mega Evolution of Mega Aerodactyl."
+        "description": "Enables the Mega Evolution of Mega Aerodactyl.",
+        "inChampions": true
     },
     {
         "name": "Lucarionite",
-        "description": "Enables the Mega Evolution of Mega Lucario."
+        "description": "Enables the Mega Evolution of Mega Lucario.",
+        "inChampions": true
     },
     {
         "name": "Kangaskhanite",
-        "description": "Enables the Mega Evolution of Mega Kangaskhan."
+        "description": "Enables the Mega Evolution of Mega Kangaskhan.",
+        "inChampions": true
     },
     {
         "name": "Gyaradosite",
-        "description": "Enables the Mega Evolution of Mega Gyarados."
+        "description": "Enables the Mega Evolution of Mega Gyarados.",
+        "inChampions": true
     },
     {
         "name": "Absolite",
-        "description": "Enables the Mega Evolution of Mega Absol."
+        "description": "Enables the Mega Evolution of Mega Absol.",
+        "inChampions": true
     },
     {
         "name": "Manectite",
-        "description": "Enables the Mega Evolution of Mega Manectric."
+        "description": "Enables the Mega Evolution of Mega Manectric.",
+        "inChampions": true
     },
     {
         "name": "Mawilite",
-        "description": "Enables the Mega Evolution of Mega Mawile."
+        "description": "Enables the Mega Evolution of Mega Mawile.",
+        "inChampions": true
     },
     {
         "name": "Beedrillite",
-        "description": "Enables the Mega Evolution of Mega Beedrill."
+        "description": "Enables the Mega Evolution of Mega Beedrill.",
+        "inChampions": true
     },
     {
         "name": "Garchompite",
-        "description": "Enables the Mega Evolution of Mega Garchomp."
+        "description": "Enables the Mega Evolution of Mega Garchomp.",
+        "inChampions": true
     },
     {
         "name": "Latiasite",
@@ -1397,47 +1502,58 @@
     },
     {
         "name": "Swampertite",
-        "description": "Enables the Mega Evolution of Mega Swampert."
+        "description": "Enables the Mega Evolution of Mega Swampert.",
+        "inChampions": true
     },
     {
         "name": "Sceptilite",
-        "description": "Enables the Mega Evolution of Mega Sceptile."
+        "description": "Enables the Mega Evolution of Mega Sceptile.",
+        "inChampions": true
     },
     {
         "name": "Altarianite",
-        "description": "Enables the Mega Evolution of Mega Altaria."
+        "description": "Enables the Mega Evolution of Mega Altaria.",
+        "inChampions": true
     },
     {
         "name": "Galladite",
-        "description": "Enables the Mega Evolution of Mega Gallade."
+        "description": "Enables the Mega Evolution of Mega Gallade.",
+        "inChampions": true
     },
     {
         "name": "Audinite",
-        "description": "Enables the Mega Evolution of Mega Audino."
+        "description": "Enables the Mega Evolution of Mega Audino.",
+        "inChampions": true
     },
     {
         "name": "Metagrossite",
-        "description": "Enables the Mega Evolution of Mega Metagross."
+        "description": "Enables the Mega Evolution of Mega Metagross.",
+        "inChampions": true
     },
     {
         "name": "Sharpedonite",
-        "description": "Enables the Mega Evolution of Mega Sharpedo."
+        "description": "Enables the Mega Evolution of Mega Sharpedo.",
+        "inChampions": true
     },
     {
         "name": "Slowbronite",
-        "description": "Enables the Mega Evolution of Mega Slowbro."
+        "description": "Enables the Mega Evolution of Mega Slowbro.",
+        "inChampions": true
     },
     {
         "name": "Steelixite",
-        "description": "Enables the Mega Evolution of Mega Steelix."
+        "description": "Enables the Mega Evolution of Mega Steelix.",
+        "inChampions": true
     },
     {
         "name": "Glalitite",
-        "description": "Enables the Mega Evolution of Mega Glalie."
+        "description": "Enables the Mega Evolution of Mega Glalie.",
+        "inChampions": true
     },
     {
         "name": "Pidgeotite",
-        "description": "Enables the Mega Evolution of Mega Pidgeot."
+        "description": "Enables the Mega Evolution of Mega Pidgeot.",
+        "inChampions": true
     },
     {
         "name": "Diancite",
@@ -1445,11 +1561,13 @@
     },
     {
         "name": "Cameruptite",
-        "description": "Enables the Mega Evolution of Mega Camerupt."
+        "description": "Enables the Mega Evolution of Mega Camerupt.",
+        "inChampions": true
     },
     {
         "name": "Lopunnite",
-        "description": "Enables the Mega Evolution of Mega Lopunny."
+        "description": "Enables the Mega Evolution of Mega Lopunny.",
+        "inChampions": true
     },
     {
         "name": "Salamancite",
@@ -1457,35 +1575,43 @@
     },
     {
         "name": "Clefablite",
-        "description": "Enables the Mega Evolution of Mega Clefable."
+        "description": "Enables the Mega Evolution of Mega Clefable.",
+        "inChampions": true
     },
     {
         "name": "Victreebelite",
-        "description": "Enables the Mega Evolution of Mega Victreebel."
+        "description": "Enables the Mega Evolution of Mega Victreebel.",
+        "inChampions": true
     },
     {
         "name": "Starmite",
-        "description": "Enables the Mega Evolution of Mega Starmie."
+        "description": "Enables the Mega Evolution of Mega Starmie.",
+        "inChampions": true
     },
     {
         "name": "Dragoninite",
-        "description": "Enables the Mega Evolution of Mega Dragonite."
+        "description": "Enables the Mega Evolution of Mega Dragonite.",
+        "inChampions": true
     },
     {
         "name": "Meganiumite",
-        "description": "Enables the Mega Evolution of Mega Meganium."
+        "description": "Enables the Mega Evolution of Mega Meganium.",
+        "inChampions": true
     },
     {
         "name": "Feraligite",
-        "description": "Enables the Mega Evolution of Mega Feraligatr."
+        "description": "Enables the Mega Evolution of Mega Feraligatr.",
+        "inChampions": true
     },
     {
         "name": "Skarmorite",
-        "description": "Enables the Mega Evolution of Mega Skarmory."
+        "description": "Enables the Mega Evolution of Mega Skarmory.",
+        "inChampions": true
     },
     {
         "name": "Froslassite",
-        "description": "Enables the Mega Evolution of Mega Froslass."
+        "description": "Enables the Mega Evolution of Mega Froslass.",
+        "inChampions": true
     },
     {
         "name": "Heatranite",
@@ -1497,63 +1623,78 @@
     },
     {
         "name": "Emboarite",
-        "description": "Enables the Mega Evolution of Mega Emboar."
+        "description": "Enables the Mega Evolution of Mega Emboar.",
+        "inChampions": true
     },
     {
         "name": "Excadrite",
-        "description": "Enables the Mega Evolution of Mega Excadrill."
+        "description": "Enables the Mega Evolution of Mega Excadrill.",
+        "inChampions": true
     },
     {
         "name": "Scolipite",
-        "description": "Enables the Mega Evolution of Mega Scolipede."
+        "description": "Enables the Mega Evolution of Mega Scolipede.",
+        "inChampions": true
     },
     {
         "name": "Scraftinite",
-        "description": "Enables the Mega Evolution of Mega Scrafty."
+        "description": "Enables the Mega Evolution of Mega Scrafty.",
+        "inChampions": true
     },
     {
         "name": "Eelektrossite",
-        "description": "Enables the Mega Evolution of Mega Eelektross."
+        "description": "Enables the Mega Evolution of Mega Eelektross.",
+        "inChampions": true
     },
     {
         "name": "Chandelurite",
-        "description": "Enables the Mega Evolution of Mega Chandelure."
+        "description": "Enables the Mega Evolution of Mega Chandelure.",
+        "inChampions": true
     },
     {
         "name": "Chesnaughtite",
-        "description": "Enables the Mega Evolution of Mega Chesnaught."
+        "description": "Enables the Mega Evolution of Mega Chesnaught.",
+        "inChampions": true
     },
     {
         "name": "Delphoxite",
-        "description": "Enables the Mega Evolution of Mega Delphox."
+        "description": "Enables the Mega Evolution of Mega Delphox.",
+        "inChampions": true
     },
     {
         "name": "Greninjite",
-        "description": "Enables the Mega Evolution of Mega Greninja."
+        "description": "Enables the Mega Evolution of Mega Greninja.",
+        "inChampions": true
     },
     {
         "name": "Pyroarite",
-        "description": "Enables the Mega Evolution of Mega Pyroar."
+        "description": "Enables the Mega Evolution of Mega Pyroar.",
+        "inChampions": true
     },
     {
         "name": "Floettite",
-        "description": "Enables the Mega Evolution of Mega Eternal Floette."
+        "description": "Enables the Mega Evolution of Mega Eternal Floette.",
+        "inChampions": true
     },
     {
         "name": "Malamarite",
-        "description": "Enables the Mega Evolution of Mega Malamar."
+        "description": "Enables the Mega Evolution of Mega Malamar.",
+        "inChampions": true
     },
     {
         "name": "Barbaracite",
-        "description": "Enables the Mega Evolution of Mega Barbaracle."
+        "description": "Enables the Mega Evolution of Mega Barbaracle.",
+        "inChampions": true
     },
     {
         "name": "Dragalgite",
-        "description": "Enables the Mega Evolution of Mega Dragalge."
+        "description": "Enables the Mega Evolution of Mega Dragalge.",
+        "inChampions": true
     },
     {
         "name": "Hawluchanite",
-        "description": "Enables the Mega Evolution of Mega Hawlucha."
+        "description": "Enables the Mega Evolution of Mega Hawlucha.",
+        "inChampions": true
     },
     {
         "name": "Zygardite",
@@ -1561,7 +1702,8 @@
     },
     {
         "name": "Drampanite",
-        "description": "Enables the Mega Evolution of Mega Diancie."
+        "description": "Enables the Mega Evolution of Mega Diancie.",
+        "inChampions": true
     },
     {
         "name": "Zeraorite",
@@ -1569,19 +1711,23 @@
     },
     {
         "name": "Falinksite",
-        "description": "Enables the Mega Evolution of Mega Falinks."
+        "description": "Enables the Mega Evolution of Mega Falinks.",
+        "inChampions": true
     },
     {
         "name": "Raichunite X",
-        "description": "Enables the Mega Evolution of Mega Raichu X."
+        "description": "Enables the Mega Evolution of Mega Raichu X.",
+        "inChampions": true
     },
     {
         "name": "Raichunite Y",
-        "description": "Enables the Mega Evolution of Mega Raichu Y."
+        "description": "Enables the Mega Evolution of Mega Raichu Y.",
+        "inChampions": true
     },
     {
         "name": "Chimechite",
-        "description": "Enables the Mega Evolution of Mega Chimecho."
+        "description": "Enables the Mega Evolution of Mega Chimecho.",
+        "inChampions": true
     },
     {
         "name": "Absolite Z",
@@ -1589,7 +1735,8 @@
     },
     {
         "name": "Staraptite",
-        "description": "Enables the Mega Evolution of Mega Staraptor."
+        "description": "Enables the Mega Evolution of Mega Staraptor.",
+        "inChampions": true
     },
     {
         "name": "Garchompite Z",
@@ -1601,15 +1748,18 @@
     },
     {
         "name": "Golurkite",
-        "description": "Enables the Mega Evolution of Mega Golurk."
+        "description": "Enables the Mega Evolution of Mega Golurk.",
+        "inChampions": true
     },
     {
         "name": "Meowsticite",
-        "description": "Enables the Mega Evolution of Mega Meowstic."
+        "description": "Enables the Mega Evolution of Mega Meowstic.",
+        "inChampions": true
     },
     {
         "name": "Crabominite",
-        "description": "Enables the Mega Evolution of Mega Crabominable."
+        "description": "Enables the Mega Evolution of Mega Crabominable.",
+        "inChampions": true
     },
     {
         "name": "Golisopite",
@@ -1621,11 +1771,8 @@
     },
     {
         "name": "Scovillainite",
-        "description": "Enables the Mega Evolution of Mega Scovillain."
-    },
-    {
-        "name": "Chimechite",
-        "description": "Enables the Mega Evolution of Mega Chimecho."
+        "description": "Enables the Mega Evolution of Mega Scovillain.",
+        "inChampions": true
     },
     {
         "name": "Baxcalibrite",
@@ -1637,6 +1784,7 @@
     },
     {
         "name": "Glimmoranite",
-        "description": "Enables the Mega Evolution of Mega Glimmora."
+        "description": "Enables the Mega Evolution of Mega Glimmora.",
+        "inChampions": true
     }
 ]

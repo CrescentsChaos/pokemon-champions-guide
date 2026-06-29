@@ -1715,7 +1715,13 @@
                     const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const recCount = recommendedTeammates.get(tKey) || 0;
                     const isRec = recCount > 0;
-                    return { ...pk, eligible: isRec, rank: isRec ? -recCount : Infinity };
+                    const isInChampions = pk.inChampions === true;
+                    // Priority: recommended teammate > inChampions > everything else
+                    let rank = Infinity;
+                    if (isRec && isInChampions) rank = -recCount - 10000;
+                    else if (isRec) rank = -recCount;
+                    else if (isInChampions) rank = 0;
+                    return { ...pk, eligible: isRec, inChampions: isInChampions, rank };
                 });
             } else if (overlayTarget === 'item') {
                 const p = team[currentSlot];
@@ -1773,13 +1779,20 @@
                 }).map(item => {
                     const iKey = (item.name || item.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const freq = itemFreq.get(iKey) || 0;
+                    const isInChampions = item.inChampions === true;
 
                     const rIdx1 = recommendedItems.indexOf(item.name);
                     const rIdx2 = recommendedItems.indexOf(item.Name);
                     const rIdx = rIdx1 !== -1 ? rIdx1 : (rIdx2 !== -1 ? rIdx2 : -1);
 
                     const isRecommended = freq > 0 || rIdx !== -1;
-                    const rank = freq > 0 ? -freq : (rIdx !== -1 ? rIdx : Infinity);
+                    // Priority: build-recommended > inChampions > everything else
+                    let rank;
+                    if (freq > 0 && isInChampions) rank = -freq - 10000;
+                    else if (freq > 0) rank = -freq;
+                    else if (isInChampions && rIdx !== -1) rank = rIdx - 5000;
+                    else if (isInChampions) rank = 5000;
+                    else rank = rIdx !== -1 ? rIdx + 10000 : Infinity;
 
                     let desc = item.description || '';
                     if (freq > 0) {
@@ -1791,6 +1804,7 @@
                     return {
                         ...item,
                         eligible: isRecommended,
+                        inChampions: isInChampions,
                         rank: rank,
                         description: desc
                     };
@@ -2049,14 +2063,17 @@
                     const typeIcon1 = t1 ? `<img src="../assets/type-icons/${t1}_type.png" style="height:12px; vertical-align:middle;" alt="${t1}">` : '';
                     const typeIcon2 = t2 ? `<img src="../assets/type-icons/${t2}_type.png" style="height:12px; vertical-align:middle; margin-left:2px;" alt="${t2}">` : '';
                     const recBadge = item.eligible ? `<span style="font-size:0.55rem; background:rgba(255,51,51,0.3); color:var(--primary-red); border:1px solid rgba(255,51,51,0.4); border-radius:3px; padding:1px 5px; display:block; margin-top:3px;">RECOMMENDED TEAMMATE</span>` : '';
+                    const champBadge = item.inChampions ? `<span style="font-size:0.5rem; background:rgba(255,200,0,0.2); color:#ffd700; border:1px solid rgba(255,200,0,0.4); border-radius:3px; padding:1px 5px; display:block; margin-top:2px; letter-spacing:0.5px;">🏆 IN CHAMPIONS</span>` : '';
                     card.innerHTML = `
                         <img src="${sprUrl}" onerror="handleSpriteError(this, '${name.replace(/'/g, "\\'")}', false)" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto;">
-                        <div style="font-weight:900; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : ''}">${idStr}${name} ${starStr}</div>
+                        <div style="font-weight:900; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : (item.inChampions ? 'color:#ffd700;' : '')}">${idStr}${name} ${starStr}</div>
                         <div style="display:flex; justify-content:center; gap:2px; margin-top:2px;">${typeIcon1}${typeIcon2}</div>
                         ${recBadge}
+                        ${champBadge}
                     `;
                 } else {
-                    card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; ${item.eligible ? 'color: var(--primary-red);' : ''}">${iconHtml}<span>${idStr}${name} ${starStr}</span></div>`;
+                    const champLabel = (overlayTarget === 'item' && item.inChampions) ? `<span style="font-size:0.5rem; background:rgba(255,200,0,0.15); color:#ffd700; border:1px solid rgba(255,200,0,0.35); border-radius:3px; padding:1px 5px; margin-left:5px; vertical-align:middle; letter-spacing:0.5px;">🏆 IN CHAMPIONS</span>` : '';
+                    card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px; ${item.eligible ? 'color: var(--primary-red);' : (overlayTarget === 'item' && item.inChampions ? 'color:#ffd700;' : '')}">${iconHtml}<span>${idStr}${name} ${starStr}</span>${champLabel}</div>`;
                     if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
 
                     if (overlayTarget && overlayTarget.startsWith('move')) {
