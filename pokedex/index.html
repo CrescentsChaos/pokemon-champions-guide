@@ -204,6 +204,9 @@
                     <option value="asc">Low → High</option>
                 </select>
 
+                <button id="movedex-btn" class="pokedex-select" style="margin-left:8px; padding:0.5rem 0.9rem;">Move Dex</button>
+                <button id="abilitydex-btn" class="pokedex-select" style="margin-left:6px; padding:0.5rem 0.9rem;">Ability Dex</button>
+
                 <div class="controls-divider"></div>
 
                 <span class="filter-label">Filter</span>
@@ -240,6 +243,8 @@
         let allPokemon = [];
         let filteredPokemon = [];
         let allMoves = [];
+        let allAbilities = [];
+        let abilitiesMap = {};
         const ITEMS_PER_PAGE = 24;
         let currentPage = 0;
         let isLoading = false;
@@ -254,15 +259,18 @@
 
         async function initPokedex() {
             try {
-                // Load Pokemon and Moves in parallel
+                // Load Pokemon, Moves and Abilities in parallel
                 const cb = '?v=' + Date.now();
-                const [pokeRes, movesRes] = await Promise.all([
+                const [pokeRes, movesRes, abilitiesRes] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb),
-                    fetch('../assets/moves.json' + cb)
+                    fetch('../assets/moves.json' + cb),
+                    fetch('../assets/abilities.json' + cb)
                 ]);
 
                 allPokemon = await pokeRes.json();
                 allMoves = await movesRes.json();
+                allAbilities = await abilitiesRes.json();
+                allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
 
                 filteredPokemon = [...allPokemon];
                 loadMore();
@@ -346,17 +354,31 @@
                 </div>
             `).join('');
 
+            const abilities = Array.isArray(pokemon.Ability) ? pokemon.Ability : (pokemon.Ability ? [pokemon.Ability] : []);
+            const primaryAbility = abilities[0] || '—';
+            const movesCount = (Array.isArray(pokemon.Moves) ? pokemon.Moves.length : 0) || 0;
+            const championsBadge = pokemon.inChampions === true ? `<span class="special-badge" style="background: linear-gradient(90deg,#ffb4b4,#ffd6b4); color:#300; font-weight:900;">CHAMP</span>` : '';
+
             card.innerHTML = `
                 <span class="pokemon-number">#${String(pokemon.id).padStart(4, '0')}</span>
                 <img src="${getSpriteUrl(pokemon.Name)}" alt="${pokemon.Name}" class="pokemon-img" 
                      onerror="handleSpriteError(this, '${pokemon.Name}')">
-                <h3 style="color: white; font-size: 1.4rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif;">${pokemon.Name}</h3>
-                <div class="type-container">
+                <h3 style="color: white; font-size: 1.4rem; margin-bottom: 0.3rem; font-family: 'Inter', sans-serif;">${pokemon.Name} ${championsBadge}</h3>
+                <div class="type-container" style="margin-bottom:6px;">
                     <img src="../assets/type-icons/${pokemon.Type_1.toLowerCase()}_type.png" class="type-icon" alt="${pokemon.Type_1}">
                     ${pokemon.Type_2 ? `<img src="../assets/type-icons/${pokemon.Type_2.toLowerCase()}_type.png" class="type-icon" alt="${pokemon.Type_2}">` : ''}
                 </div>
+                <div style="display:flex; gap:8px; align-items:center; justify-content:center; margin-bottom:8px;">
+                    <span class="special-badge" style="background: rgba(255,255,255,0.04); color: white;">BST: ${pokemon.Total_Stats || '—'}</span>
+                    <span class="special-badge" style="background: rgba(255,255,255,0.03); color: white;">Ability: ${primaryAbility}</span>
+                    <span class="special-badge" style="background: rgba(255,255,255,0.03); color: white;">Moves: ${movesCount}</span>
+                </div>
                 <div class="stat-container">
                     ${statHtml}
+                </div>
+                <div style="display:flex; gap:10px; justify-content:space-between; align-items:center; margin-top:10px; font-size:0.85rem; color:rgba(255,255,255,0.6);">
+                    <div>Gen: ${pokemon.Generation || '—'}</div>
+                    <div>${pokemon['Height(m)'] || '—'}m • ${pokemon['Weight{kg}'] || '—'}kg</div>
                 </div>
             `;
             return card;
@@ -404,7 +426,11 @@
             `;
             }).join('') : '<p>No moves found.</p>';
 
-            const abilitiesHtml = pokemon.Ability && pokemon.Ability.length > 0 ? pokemon.Ability.map(a => `<span class="special-badge" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">${a}</span>`).join('') : '';
+            const abilitiesHtml = pokemon.Ability && pokemon.Ability.length > 0 ? pokemon.Ability.map(a => {
+                const key = (a||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+                const desc = abilitiesMap[key] ? abilitiesMap[key].description : '';
+                return `<span class="special-badge" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;" title="${desc}">${a}</span>`;
+            }).join('') : '';
 
             const stats = [
                 { label: 'HP', val: pokemon.HP, class: 'hp', max: 255 },
@@ -605,6 +631,30 @@
         document.getElementById('ability-filter').addEventListener('input', applyFiltersAndSort);
         document.getElementById('move-filter').addEventListener('input', applyFiltersAndSort);
         document.getElementById('champions-only-filter').addEventListener('change', applyFiltersAndSort);
+
+        // Dex overlay for moves and abilities
+        const dexOverlay = document.createElement('div');
+        dexOverlay.id = 'dex-overlay';
+        dexOverlay.className = 'modal-overlay';
+        dexOverlay.style.display = 'none';
+        dexOverlay.innerHTML = `<div class="modal-content"><button class="close-modal" id="close-dex">&times;</button><div id="dex-body" style="max-height:70vh; overflow:auto; padding:1rem;"></div></div>`;
+        document.body.appendChild(dexOverlay);
+        document.getElementById('close-dex').onclick = () => { dexOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; };
+
+        function openMoveDex() {
+            const list = allMoves.map(m => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${m.name}</strong> <span style="color:rgba(255,255,255,0.6);">${m.type || ''} • PWR:${m.power != null ? m.power : '--'} • ACC:${m.accuracy != null ? m.accuracy : '--'}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.9rem;">${getMoveDescription(m)}</div></div>`).join('');
+            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Move Dex</h3>${list}`;
+            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+        }
+
+        function openAbilityDex() {
+            const list = allAbilities.map(a => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${a.name}</strong><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.95rem;">${a.description || 'No description available.'}</div></div>`).join('');
+            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Ability Dex</h3>${list}`;
+            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+        }
+
+        document.getElementById('movedex-btn').addEventListener('click', openMoveDex);
+        document.getElementById('abilitydex-btn').addEventListener('click', openAbilityDex);
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {

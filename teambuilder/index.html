@@ -1263,6 +1263,8 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
+        let allAbilities = [];
+        let abilitiesMap = {};
         let allBuilds = [];
         let pokemon_database = []; // Alias for user request
         let moves_database = [];   // Alias for user request
@@ -1383,6 +1385,12 @@
                 moves_database = m;
                 allItems = i;
                 m.forEach(mv => { const key = (mv.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''); movesMap[key] = mv; });
+                // load abilities
+                try {
+                    const aResp = await fetch('../assets/abilities.json' + cb).then(r => r.json());
+                    allAbilities = aResp;
+                    allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
+                } catch (e) { console.warn('Failed to load abilities.json', e); }
 
                 Object.keys(natureMap).forEach(n => {
                     const opt = document.createElement('option');
@@ -1874,7 +1882,7 @@
                             eligible: true,
                             isRecommended: isRec,
                             rank: isRec ? -freq : Infinity,
-                            description: isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : '✅ Eligible Ability'
+                            description: abilitiesMap[searchKey] ? abilitiesMap[searchKey].description : (isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : '✅ Eligible Ability')
                         };
                     });
                 } else {
@@ -1891,7 +1899,7 @@
                             eligible: isRec,
                             isRecommended: isRec,
                             rank: isRec ? -freq : Infinity,
-                            description: isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : 'Ability'
+                            description: abilitiesMap[searchKey] ? abilitiesMap[searchKey].description : (isRec ? `✨ Recommended Ability (${freq} build${freq > 1 ? 's' : ''})` : 'Ability')
                         };
                     });
                 }
@@ -2424,6 +2432,11 @@
                 abilityIn.value = p.ability || baseAbility;
                 abilityIn.style.color = 'white';
             }
+            // ability tooltip/description
+            try {
+                const abilityKey = (abilityIn.value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                abilityIn.title = abilitiesMap[abilityKey] ? abilitiesMap[abilityKey].description : '';
+            } catch (e) {}
 
             document.getElementById('tera-input').value = p.tera || '';
 

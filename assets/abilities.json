@@ -1,0 +1,17 @@
+[
+  {"name": "Intimidate", "description": "Lowers the opponent's Attack upon entering battle."},
+  {"name": "Levitate", "description": "Gives full immunity to Ground-type moves and Spikes."},
+  {"name": "Overgrow", "description": "Boosts Grass-type moves when HP is low."},
+  {"name": "Blaze", "description": "Boosts Fire-type moves when HP is low."},
+  {"name": "Torrent", "description": "Boosts Water-type moves when HP is low."},
+  {"name": "Swift Swim", "description": "Doubles Speed in rain."},
+  {"name": "Huge Power", "description": "Doubles the holder's Attack stat."},
+  {"name": "Sturdy", "description": "Prevents being OHKO'd when at full HP and negates one-hit KOs."},
+  {"name": "Prankster", "description": "Gives priority to status moves."},
+  {"name": "Pressure", "description": "Doubles PP usage of opponent's moves."},
+  {"name": "Moxie", "description": "Raises Attack after knocking out an opponent."},
+  {"name": "Protean", "description": "Changes the user's type to the move it uses."},
+  {"name": "Adaptability", "description": "Increases STAB bonus from 1.5x to 2x."},
+  {"name": "Natural Cure", "description": "Heals status conditions upon switching out."},
+  {"name": "Magic Guard", "description": "Only damage taken from attacks (blocks status/entry hazards)."}
+]

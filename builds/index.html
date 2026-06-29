@@ -310,6 +310,7 @@
                         <option value="desc">High → Low</option>
                         <option value="asc">Low → High</option>
                     </select>
+                    <button id="champions-only-btn" class="secondary-btn" style="max-width: 220px; white-space: nowrap;">SHOW CHAMPIONS ELIGIBLE</button>
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
                         <input type="checkbox" id="champions-eligible-filter" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
                         <span style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS ELIGIBLE ONLY</span>
@@ -338,6 +339,8 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
+        let allAbilities = [];
+        let abilitiesMap = {};
         let selectedBuildId = null;
         let displayedCount = 12;
         const batchSize = 12;
@@ -437,6 +440,13 @@
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
+
+                // load abilities
+                try {
+                    const aResp = await fetch('../assets/abilities.json').then(r => r.json());
+                    allAbilities = aResp;
+                    allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
+                } catch (e) { console.warn('Failed to load abilities.json', e); }
 
                 // Create high-speed lookup maps
                 allPokemon.forEach(p => {
@@ -869,6 +879,11 @@
             const megaUrl = getMegaSpriteUrl(p);
             const format = rawBuild.format || 'SINGLES';
 
+            // Prepare ability tooltip safely
+            const abilityNameForCard = ((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN'));
+            const abilityKeyForCard = (abilityNameForCard || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const abilityDescForCard = (abilitiesMap[abilityKeyForCard] && abilitiesMap[abilityKeyForCard].description) ? abilitiesMap[abilityKeyForCard].description.replace(/"/g, '&quot;') : '';
+
             card.innerHTML = `
                 <div class="card-header">
                     <div class="card-sprite-area">
@@ -906,13 +921,14 @@
 
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
-                        <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
-                        ABILITY: <span class="${isMegaActive ? 'mega-ability-text' : ''}" 
-                                       ${isMegaActive ? `data-base-ability="${(dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')}" data-mega-ability="${(dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : (p.ability || 'UNKNOWN')}"` : ''} 
-                                       style="color: rgba(255, 255, 255, 0.8)">
-                            ${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')).toUpperCase()}
-                        </span>
-                    </div>
+                            <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
+                            ABILITY: <span class="${isMegaActive ? 'mega-ability-text' : ''}" 
+                                           title="${abilityDescForCard}" 
+                                           ${isMegaActive ? `data-base-ability="${(dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : (p.ability || 'UNKNOWN')}" data-mega-ability="${(dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : (p.ability || 'UNKNOWN')}"` : ''} 
+                                           style="color: rgba(255, 255, 255, 0.8)">
+                                ${abilityNameForCard.toUpperCase()}
+                            </span>
+                        </div>
                     <div style="display: flex; gap: 4px;">
                         <button class="btn" style="padding: 4px 8px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY PASTE</button>
                         <button class="btn" style="padding: 4px 8px; font-size: 0.55rem; background: #4a90e2;" onclick="event.stopPropagation(); copyChampPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">CHAMP PASTE</button>
@@ -1737,6 +1753,17 @@
         document.getElementById('champions-eligible-filter').addEventListener('change', () => renderBuilds());
         document.getElementById('build-sort-select').addEventListener('change', () => renderBuilds());
         document.getElementById('build-sort-dir').addEventListener('change', () => renderBuilds());
+        const champsBtn = document.getElementById('champions-only-btn');
+        if (champsBtn) {
+            champsBtn.addEventListener('click', () => {
+                const cb = document.getElementById('champions-eligible-filter');
+                if (!cb) return;
+                cb.checked = !cb.checked;
+                champsBtn.textContent = cb.checked ? 'SHOW ALL BUILDS' : 'SHOW CHAMPIONS ELIGIBLE';
+                if (cb.checked) champsBtn.style.background = 'var(--primary-red)'; else champsBtn.style.background = 'rgba(255,255,255,0.05)';
+                renderBuilds();
+            });
+        }
         let megaToggleState = 'base';
         setInterval(() => {
             megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
