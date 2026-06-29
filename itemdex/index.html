@@ -177,6 +177,7 @@
         const sortDir = document.getElementById('sort-dir');
 
         async function initDex() {
+            grid.innerHTML = '<div class="dex-empty-state">Loading Item Dex data...</div>';
             try {
                 const cb = '?v=' + Date.now();
                 const [itemsRes, pokeRes, buildsRes] = await Promise.all([
@@ -398,5 +399,6 @@
 
         initDex();
     </script>
+    <script src="../js/main.js"></script>
 </body>
 </html>
