@@ -209,6 +209,10 @@
                 <span class="filter-label">Filter</span>
                 <input type="text" id="ability-filter" class="pokedex-text-filter" placeholder="Ability (e.g. Intimidate)">
                 <input type="text" id="move-filter" class="pokedex-text-filter" placeholder="Move (e.g. Earthquake)">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; padding-left:0.25rem;">
+                    <input type="checkbox" id="champions-only-filter" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                    <span style="font-size:0.75rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS ONLY</span>
+                </label>
             </div>
 
             <div id="pokedex-grid" class="pokemon-grid">
@@ -358,6 +362,11 @@
             return card;
         }
 
+        function getMoveDescription(moveData) {
+            if (!moveData) return 'No description available.';
+            return moveData.short_descripton || moveData.short_description || moveData.effect || moveData.flavor_text || moveData.desc || 'No description available.';
+        }
+
         function showPokemonDetails(pokemon) {
             let movesToShow = [];
             if (pokemon.Moves && pokemon.Moves.length > 0) {
@@ -373,7 +382,7 @@
             }
 
             const movesHtml = movesToShow.length > 0 ? movesToShow.map(m => {
-                const desc = m.short_descripton || m.short_description || m.desc || 'No description available.';
+                const desc = getMoveDescription(m);
                 const dmgClass = (m.damage_class || 'Status').toLowerCase();
                 const dmgLabel = dmgClass.charAt(0).toUpperCase() + dmgClass.slice(1);
                 return `
@@ -531,6 +540,7 @@
             const sortDir = document.getElementById('sort-dir').value;
             const abilityQuery = document.getElementById('ability-filter').value.toLowerCase().trim();
             const moveQuery = document.getElementById('move-filter').value.toLowerCase().trim();
+            const championsOnly = document.getElementById('champions-only-filter').checked;
 
             filteredPokemon = allPokemon.filter(p => {
                 // Text search
@@ -557,6 +567,8 @@
                     const hasMove = moves.some(m => m.toLowerCase().includes(moveQuery));
                     if (!hasMove) return false;
                 }
+
+                if (championsOnly && p.inChampions !== true) return false;
 
                 return true;
             });
@@ -592,6 +604,7 @@
         document.getElementById('sort-dir').addEventListener('change', applyFiltersAndSort);
         document.getElementById('ability-filter').addEventListener('input', applyFiltersAndSort);
         document.getElementById('move-filter').addEventListener('input', applyFiltersAndSort);
+        document.getElementById('champions-only-filter').addEventListener('change', applyFiltersAndSort);
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {

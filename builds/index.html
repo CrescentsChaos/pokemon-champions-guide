@@ -296,6 +296,24 @@
                     </select>
                     <input type="text" id="ability-filter" class="filter-text-input" placeholder="Filter by Ability...">
                     <input type="text" id="move-filter" class="filter-text-input" placeholder="Filter by Move...">
+                    <select id="build-sort-select" class="filter-select" style="max-width:160px;">
+                        <option value="pokemon">Sort: Pokemon</option>
+                        <option value="total">Total BST</option>
+                        <option value="hp">HP</option>
+                        <option value="atk">Attack</option>
+                        <option value="def">Defense</option>
+                        <option value="spa">Sp. Atk</option>
+                        <option value="spd">Sp. Def</option>
+                        <option value="spe">Speed</option>
+                    </select>
+                    <select id="build-sort-dir" class="filter-select" style="max-width:120px;">
+                        <option value="desc">High → Low</option>
+                        <option value="asc">Low → High</option>
+                    </select>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
+                        <input type="checkbox" id="champions-eligible-filter" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                        <span style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS ELIGIBLE ONLY</span>
+                    </label>
                 </div>
             </div>
 
@@ -497,6 +515,10 @@
             return [db.Ability];
         }
 
+        function normalizeString(value) {
+            return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
         function getPermanentForm(p) {
             if (!p || !p.item) return null;
             const item = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -544,6 +566,32 @@
                 }
             }
             return dbRef;
+        }
+
+        function isChampionsEligibleBuild(build) {
+            try {
+                const parsed = typeof build === 'string' ? parsePaste(build) : parsePaste(build.build || '');
+                const baseDbRef = getBasePokemonData(parsed, allPokemon);
+                const effectiveDbRef = getEffectivePokemonData(parsed, allPokemon);
+                const candidateDbRefs = [effectiveDbRef, baseDbRef].filter(Boolean);
+                const pokemonData = candidateDbRefs.find(db => db.Moves && db.Moves.length) || effectiveDbRef || baseDbRef;
+
+                if (!pokemonData) return false;
+                if (!candidateDbRefs.some(db => db.inChampions === true)) return false;
+
+                const itemName = (parsed.item || '').trim();
+                if (itemName && itemName.toLowerCase() !== 'none') {
+                    const itemData = allItems.find(i => normalizeString(i.name || i.Name) === normalizeString(itemName));
+                    if (!itemData || itemData.inChampions !== true) return false;
+                }
+
+                const allowedMoves = new Set(candidateDbRefs.flatMap(db => (db.Moves || []).map(move => normalizeString(move))));
+                const buildMoves = (parsed.moves || []).filter(Boolean).map(move => normalizeString(move));
+                return buildMoves.every(move => allowedMoves.has(move));
+            } catch (err) {
+                console.warn('Champions eligibility check failed', err);
+                return false;
+            }
         }
 
         function getBST(species, item = null) {
@@ -899,6 +947,7 @@
             const formatFilter = document.getElementById('format-filter').value.toLowerCase();
             const abilityFilter = (document.getElementById('ability-filter').value || '').toLowerCase().trim();
             const moveFilter = (document.getElementById('move-filter').value || '').toLowerCase().trim();
+            const championsEligibleOnly = document.getElementById('champions-eligible-filter').checked;
 
             let count = 0;
             const filtered = allBuilds.filter(build => {
@@ -921,9 +970,39 @@
                 if (formatFilter && format !== formatFilter) return false;
                 if (abilityFilter && !ability.includes(abilityFilter)) return false;
                 if (moveFilter && !moves.some(m => m.includes(moveFilter))) return false;
+                if (championsEligibleOnly && !isChampionsEligibleBuild(build)) return false;
 
                 return true;
             });
+
+            // Apply stat-based sorting (by selected Pokemon stat or name)
+            try {
+                const sortKey = document.getElementById('build-sort-select') ? document.getElementById('build-sort-select').value : 'pokemon';
+                const sortDir = document.getElementById('build-sort-dir') ? document.getElementById('build-sort-dir').value : 'desc';
+                const keyFuncs = {
+                    pokemon: (b, p) => ((p && (p.Name || p.species)) || b.pokemon || '').toString().toLowerCase(),
+                    total: (b, p, db) => parseInt(db?.Total_Stats) || 0,
+                    hp: (b, p, db) => parseInt(db?.HP) || 0,
+                    atk: (b, p, db) => parseInt(db?.Attack) || 0,
+                    def: (b, p, db) => parseInt(db?.Defense) || 0,
+                    spa: (b, p, db) => parseInt(db?.['Sp.Atk']) || 0,
+                    spd: (b, p, db) => parseInt(db?.['Sp.Def']) || 0,
+                    spe: (b, p, db) => parseInt(db?.Speed) || 0
+                };
+
+                filtered.sort((a, b) => {
+                    try {
+                        const pa = parsePaste(a.build)[0] || {};
+                        const pb = parsePaste(b.build)[0] || {};
+                        const da = getEffectivePokemonData(pa, allPokemon) || getBasePokemonData(pa, allPokemon) || {};
+                        const db = getEffectivePokemonData(pb, allPokemon) || getBasePokemonData(pb, allPokemon) || {};
+                        const av = keyFuncs[sortKey](a, pa, da);
+                        const bv = keyFuncs[sortKey](b, pb, db);
+                        if (typeof av === 'string') return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+                        return sortDir === 'asc' ? av - bv : bv - av;
+                    } catch (e) { return 0; }
+                });
+            } catch (e) { /* ignore sorting errors */ }
 
             // If appending, only render the next slice
             const toRender = append ? filtered.slice(displayedCount - batchSize, displayedCount) : filtered.slice(0, displayedCount);
@@ -1653,6 +1732,11 @@
         document.getElementById('type-filter').addEventListener('change', () => renderBuilds());
         document.getElementById('role-filter').addEventListener('change', () => renderBuilds());
         document.getElementById('format-filter').addEventListener('change', () => renderBuilds());
+        document.getElementById('ability-filter').addEventListener('input', () => renderBuilds());
+        document.getElementById('move-filter').addEventListener('input', () => renderBuilds());
+        document.getElementById('champions-eligible-filter').addEventListener('change', () => renderBuilds());
+        document.getElementById('build-sort-select').addEventListener('change', () => renderBuilds());
+        document.getElementById('build-sort-dir').addEventListener('change', () => renderBuilds());
         let megaToggleState = 'base';
         setInterval(() => {
             megaToggleState = megaToggleState === 'base' ? 'mega' : 'base';
