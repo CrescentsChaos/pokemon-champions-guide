@@ -139,6 +139,62 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
+        .dex-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .dex-item-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 22px;
+            padding: 1.35rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.14);
+        }
+
+        .dex-item-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .dex-item-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+        }
+
+        .dex-item-meta {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .dex-pokemon-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.85rem;
+        }
+
+        .dex-pokemon-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .dex-modal-content {
+            max-width: 1020px;
+            width: 100%;
+        }
+
         .pokemon-number {
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
@@ -239,6 +295,16 @@
         </div>
     </div>
 
+    <!-- Dex Overlay -->
+    <div id="dex-overlay" class="modal-overlay">
+        <div class="modal-content dex-modal-content">
+            <button class="close-modal" id="close-dex">&times;</button>
+            <div id="dex-body" style="max-height:70vh; overflow:auto; padding:1rem;">
+                <!-- Dex content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
     <script src="../js/main.js"></script>
     <script>
         let allPokemon = [];
@@ -247,6 +313,9 @@
         let allAbilities = [];
         let abilitiesMap = {};
         let allItems = [];
+        let allBuilds = [];
+        let itemUsageMap = {};
+        let itemBuildsMap = {};
         const ITEMS_PER_PAGE = 24;
         let currentPage = 0;
         let isLoading = false;
@@ -258,29 +327,63 @@
         const modal = document.getElementById('pokemon-modal');
         const modalBody = document.getElementById('modal-body');
         const closeModal = document.getElementById('close-modal');
+        const dexOverlay = document.getElementById('dex-overlay');
+        const dexBody = document.getElementById('dex-body');
+        const closeDex = document.getElementById('close-dex');
 
         async function initPokedex() {
             try {
                 // Load Pokemon, Moves and Abilities in parallel
                 const cb = '?v=' + Date.now();
-                const [pokeRes, movesRes, abilitiesRes, itemsRes] = await Promise.all([
+                const [pokeRes, movesRes, abilitiesRes, itemsRes, buildsRes] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb),
                     fetch('../assets/moves.json' + cb),
                     fetch('../assets/abilities.json' + cb),
-                    fetch('../assets/items.json' + cb)
+                    fetch('../assets/items.json' + cb),
+                    fetch('../assets/builds.json' + cb)
                 ]);
 
                 allPokemon = await pokeRes.json();
                 allMoves = await movesRes.json();
                 allAbilities = await abilitiesRes.json();
                 allItems = await itemsRes.json();
+                allBuilds = await buildsRes.json();
                 allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
+                buildItemUsageMaps();
 
                 filteredPokemon = [...allPokemon];
                 loadMore();
             } catch (err) {
                 console.error('Failed to load Pokedex data:', err);
             }
+        }
+
+        function normalizeItemKey(name) {
+            return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function buildItemUsageMaps() {
+            itemUsageMap = {};
+            itemBuildsMap = {};
+
+            allPokemon.forEach(p => {
+                const pokemonItems = Array.isArray(p.Items) ? p.Items : (p.Items ? [p.Items] : []);
+                pokemonItems.forEach(itemName => {
+                    const key = normalizeItemKey(itemName);
+                    if (!itemUsageMap[key]) itemUsageMap[key] = new Set();
+                    itemUsageMap[key].add(p.Name);
+                });
+            });
+
+            allBuilds.forEach(build => {
+                const firstLine = (build.build || '').split('\n')[0] || '';
+                const match = firstLine.match(/@\s*(.+)$/);
+                if (!match) return;
+                const itemName = match[1].trim();
+                const key = normalizeItemKey(itemName);
+                if (!itemBuildsMap[key]) itemBuildsMap[key] = new Set();
+                itemBuildsMap[key].add(build.pokemon || build.pokemon_name || 'Unknown');
+            });
         }
 
         function handleSpriteError(img, name) {
@@ -636,37 +739,48 @@
         document.getElementById('move-filter').addEventListener('input', applyFiltersAndSort);
         document.getElementById('champions-only-filter').addEventListener('change', applyFiltersAndSort);
 
-        // Dex overlay for moves and abilities
-        const dexOverlay = document.createElement('div');
-        dexOverlay.id = 'dex-overlay';
-        dexOverlay.className = 'modal-overlay';
-        dexOverlay.style.display = 'none';
-        dexOverlay.innerHTML = `<div class="modal-content"><button class="close-modal" id="close-dex">&times;</button><div id="dex-body" style="max-height:70vh; overflow:auto; padding:1rem;"></div></div>`;
-        document.body.appendChild(dexOverlay);
-        document.getElementById('close-dex').onclick = () => { dexOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; };
+        closeDex.onclick = () => { dexOverlay.classList.remove('active'); document.body.style.overflow = 'auto'; };
+        dexOverlay.onclick = (e) => { if (e.target === dexOverlay) closeDex.onclick(); };
 
         function openMoveDex() {
             const list = allMoves.map(m => {
                 const key = (m.name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-                // find learners
                 const learners = allPokemon.filter(p => Array.isArray(p.Moves) && p.Moves.some(pm => (pm||'').toLowerCase().replace(/[^a-z0-9]/g,'') === key)).map(p => p.Name);
-                const learnersHtml = learners.length > 0 ? `<div style="margin-top:6px; color:rgba(255,255,255,0.75); font-size:0.9rem;">Learned by: ${learners.slice(0,30).join(', ')}${learners.length>30?', ...':''}</div>` : '';
-                return `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${m.name}</strong> <span style="color:rgba(255,255,255,0.6);">${m.type || ''} • PWR:${m.power != null ? m.power : '--'} • ACC:${m.accuracy != null ? m.accuracy : '--'}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.9rem;">${getMoveDescription(m)}</div>${learnersHtml}</div>`;
+                const learnersHtml = learners.length > 0 ? `<div class="dex-item-meta" style="margin-top:10px;">Learned by ${learners.length} Pokémon</div><div class="dex-pokemon-list">${learners.slice(0,28).map(name => `<span class="dex-pokemon-badge">${name}</span>`).join('')}</div>` : '<div class="dex-item-meta" style="margin-top:10px;">No known users.</div>';
+                return `<div class="dex-item-card"><div class="dex-item-header"><div><h4>${m.name}</h4><div class="dex-item-meta">${m.type || 'Unknown'} • PWR: ${m.power != null ? m.power : '--'} • ACC: ${m.accuracy != null ? m.accuracy : '--'}</div></div></div><div class="dex-item-meta" style="margin-top:0.75rem;">${getMoveDescription(m)}</div>${learnersHtml}</div>`;
             }).join('');
-            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Move Dex</h3>${list}`;
-            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+            dexBody.innerHTML = `<h3 style="margin-top:0;">Move Dex</h3><div class="dex-list">${list}</div>`;
+            dexOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
         }
 
         function openAbilityDex() {
-            const list = allAbilities.map(a => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${a.name}</strong><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.95rem;">${a.description || 'No description available.'}</div></div>`).join('');
-            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Ability Dex</h3>${list}`;
-            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+            const list = allAbilities.map(a => {
+                const key = (a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+                const users = allPokemon.filter(p => {
+                    const abilities = Array.isArray(p.Ability) ? p.Ability : (p.Ability ? [p.Ability] : []);
+                    return abilities.some(ab => (ab||'').toLowerCase().replace(/[^a-z0-9]/g,'') === key);
+                }).map(p => p.Name);
+                const usersHtml = users.length > 0 ? `<div class="dex-pokemon-list">${users.slice(0,30).map(name => `<span class="dex-pokemon-badge">${name}</span>`).join('')}</div>` : '<div class="dex-item-meta" style="margin-top:10px;">No Pokémon currently listed for this ability.</div>';
+                return `<div class="dex-item-card"><div class="dex-item-header"><div><h4>${a.name}</h4><div class="dex-item-meta">${a.description || 'No description available.'}</div></div><div class="dex-item-meta">${users.length} Pokémon</div></div>${usersHtml}</div>`;
+            }).join('');
+            dexBody.innerHTML = `<h3 style="margin-top:0;">Ability Dex</h3><div class="dex-list">${list}</div>`;
+            dexOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
         }
 
         function openItemDex() {
-            const list = allItems.map(it => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${it.name || it.Name}</strong> <span style="color:rgba(255,255,255,0.6);">${it.category || ''}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.95rem;">${it.description || it.effect || 'No description available.'}</div></div>`).join('');
-            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Item Dex</h3>${list}`;
-            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+            const list = allItems.map(it => {
+                const name = it.name || it.Name || 'Unknown Item';
+                const details = it.description || it.effect || 'No description available.';
+                const category = it.category || it.Category || '';
+                const key = normalizeItemKey(name);
+                const users = Array.from(itemUsageMap[key] || []);
+                const buildUsers = Array.from(itemBuildsMap[key] || []);
+                const usersHtml = users.length > 0 ? `<div class="dex-item-meta" style="margin-top:10px;">Used by ${users.length} Pokémon in the dataset</div><div class="dex-pokemon-list">${users.slice(0,28).map(p => `<span class="dex-pokemon-badge">${p}</span>`).join('')}</div>` : '<div class="dex-item-meta" style="margin-top:10px;">No Pokémon listed for this item in the dataset.</div>';
+                const buildHtml = buildUsers.length > 0 ? `<div class="dex-item-meta" style="margin-top:10px;">Featured in ${buildUsers.length} builds</div><div class="dex-pokemon-list">${buildUsers.slice(0,28).map(p => `<span class="dex-pokemon-badge">${p}</span>`).join('')}</div>` : '';
+                return `<div class="dex-item-card"><div class="dex-item-header"><div><h4>${name}</h4><div class="dex-item-meta">${category}</div></div></div><div class="dex-item-meta" style="margin-top:0.75rem;">${details}</div>${usersHtml}${buildHtml}</div>`;
+            }).join('');
+            dexBody.innerHTML = `<h3 style="margin-top:0;">Item Dex</h3><div class="dex-list">${list}</div>`;
+            dexOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
         }
 
         document.getElementById('movedex-btn').addEventListener('click', openMoveDex);
