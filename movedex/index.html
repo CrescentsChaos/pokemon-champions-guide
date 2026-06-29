@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Dex</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .dex-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .dex-card {
+            background: rgba(5, 12, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .dex-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .dex-card-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .dex-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .dex-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px;
+            object-fit: contain;
+        }
+
+        .dex-card-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
+            gap: 0.65rem;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .dex-card-description {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.75;
+            font-size: 0.95rem;
+        }
+
+        .dex-sprite-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .dex-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+        }
+
+        .dex-sprite-cell {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dex-sprite-cell img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .dex-empty-state {
+            padding: 2rem;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.65);
+            text-align: center;
+        }
+
+        .page-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="pokedex-section" style="padding-top: 8rem; min-height: 100vh;">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2 class="pokedex-title" style="font-size: 4rem;">MOVE <span style="color: var(--primary-red)">DEX</span></h2>
+                <p>Browse every move with full details, type icons, and learner sprites.</p>
+            </div>
+
+            <div class="page-links fade-in">
+                <a href="../pokedex/" class="pokedex-select">Pokedex</a>
+                <a href="../abilitydex/" class="pokedex-select">Ability Dex</a>
+                <a href="../itemdex/" class="pokedex-select">Item Dex</a>
+            </div>
+
+            <div class="pokedex-controls fade-in" style="gap:0.75rem; flex-wrap:wrap;">
+                <input type="text" id="dex-search" class="search-input" placeholder="Search moves, types, or effects...">
+                <select id="sort-select" class="pokedex-select" style="min-width: 200px;">
+                    <option value="name">Name</option>
+                    <option value="type">Type</option>
+                    <option value="power">Power</option>
+                    <option value="accuracy">Accuracy</option>
+                    <option value="pp">PP</option>
+                    <option value="learners">Learners</option>
+                </select>
+                <select id="sort-dir" class="pokedex-select" style="min-width: 160px;">
+                    <option value="desc">High → Low</option>
+                    <option value="asc">Low → High</option>
+                </select>
+            </div>
+
+            <div id="dex-grid" class="dex-grid"></div>
+        </div>
+    </section>
+
+    <script>
+        let allMoves = [];
+        let allPokemon = [];
+        let filteredMoves = [];
+
+        const grid = document.getElementById('dex-grid');
+        const searchInput = document.getElementById('dex-search');
+        const sortSelect = document.getElementById('sort-select');
+        const sortDir = document.getElementById('sort-dir');
+
+        async function initDex() {
+            try {
+                const cb = '?v=' + Date.now();
+                const [movesRes, pokeRes] = await Promise.all([
+                    fetch('../assets/moves.json' + cb),
+                    fetch('../assets/pokemon.json' + cb)
+                ]);
+
+                allMoves = await movesRes.json();
+                allPokemon = await pokeRes.json();
+                buildLearnerLists();
+                applyFiltersAndSort();
+            } catch (err) {
+                console.error('Failed to load Move Dex data:', err);
+                grid.innerHTML = '<div class="dex-empty-state">Unable to load Move Dex data.</div>';
+            }
+        }
+
+        function normalizeKey(value) {
+            return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function getSpriteUrl(name) {
+            const clean = (name || '').toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/\./g, '')
+                .replace(/'/g, '')
+                .replace(/:/g, '')
+                .replace(/%/g, '');
+            return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+        }
+
+        function handleSpriteError(img, name) {
+            if (img.dataset.fallbackState === 'final') return;
+            img.dataset.fallbackState = 'final';
+            img.onerror = null;
+            img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+        }
+
+        function buildLearnerLists() {
+            allMoves.forEach(move => {
+                const moveKey = normalizeKey(move.name);
+                move.learners = allPokemon.filter(p => Array.isArray(p.Moves) && p.Moves.some(pm => normalizeKey(pm) === moveKey));
+            });
+        }
+
+        function getMoveDescription(move) {
+            return move.short_descripton || move.short_description || move.effect || move.desc || 'No description available.';
+        }
+
+        function applyFiltersAndSort() {
+            const query = searchInput.value.toLowerCase().trim();
+            filteredMoves = allMoves.filter(move => {
+                if (!query) return true;
+                const text = [move.name, move.type, move.category, move.short_descripton, move.short_description, move.effect]
+                    .filter(Boolean)
+                    .join(' ').toLowerCase();
+                return text.includes(query);
+            });
+
+            filteredMoves.sort((a, b) => {
+                const mode = sortSelect.value;
+                const dir = sortDir.value === 'asc' ? 1 : -1;
+                const av = normalizeSortValue(a, mode);
+                const bv = normalizeSortValue(b, mode);
+                if (typeof av === 'string' && typeof bv === 'string') {
+                    return av.localeCompare(bv) * dir;
+                }
+                return (av - bv) * dir;
+            });
+
+            renderDex();
+        }
+
+        function normalizeSortValue(item, mode) {
+            switch (mode) {
+                case 'type': return (item.type || '').toLowerCase();
+                case 'power': return item.power != null ? Number(item.power) : -1;
+                case 'accuracy': return item.accuracy != null ? Number(item.accuracy) : -1;
+                case 'pp': return item.pp != null ? Number(item.pp) : -1;
+                case 'learners': return Array.isArray(item.learners) ? item.learners.length : 0;
+                default: return (item.name || '').toLowerCase();
+            }
+        }
+
+        function renderDex() {
+            if (!filteredMoves.length) {
+                grid.innerHTML = '<div class="dex-empty-state">No moves matched your search.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            filteredMoves.forEach(move => fragment.appendChild(createMoveCard(move)));
+            grid.appendChild(fragment);
+        }
+
+        function createMoveCard(move) {
+            const card = document.createElement('div');
+            card.className = 'dex-card';
+            const learners = move.learners || [];
+            const learnerSprites = learners.slice(0, 18).map(name => `
+                <div class="dex-sprite-cell" title="${name}">
+                    <img src="${getSpriteUrl(name)}" alt="${name}" onerror="handleSpriteError(this, '${name}')">
+                </div>
+            `).join('');
+            card.innerHTML = `
+                <div class="dex-card-header">
+                    <div class="dex-card-title">
+                        <span>${move.name}</span>
+                    </div>
+                    <img src="../assets/type-icons/${(move.type || 'Normal').toLowerCase()}_type.png" alt="${move.type || 'Normal'}" class="dex-type-icon">
+                </div>
+                <div class="dex-card-meta">
+                    <div><strong>Type</strong><br>${move.type || 'Normal'}</div>
+                    <div><strong>Class</strong><br>${move.damage_class || move.category || 'Status'}</div>
+                    <div><strong>Power</strong><br>${move.power != null ? move.power : '--'}</div>
+                    <div><strong>Accuracy</strong><br>${move.accuracy != null ? move.accuracy : '--'}</div>
+                    <div><strong>PP</strong><br>${move.pp != null ? move.pp : '--'}</div>
+                    <div><strong>Learners</strong><br>${learners.length}</div>
+                </div>
+                <p class="dex-card-description">${getMoveDescription(move)}</p>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; color: rgba(255,255,255,0.72); font-size:0.9rem;">
+                    <span>${move.generation || ''}</span>
+                    <span>${learners.length} Pokémon learn this move</span>
+                </div>
+                <div class="dex-sprite-row">${learnerSprites}${learners.length > 18 ? `<span class="dex-pill" style="background: rgba(255,255,255,0.08);">+${learners.length - 18}</span>` : ''}</div>
+            `;
+            return card;
+        }
+
+        searchInput.addEventListener('input', applyFiltersAndSort);
+        sortSelect.addEventListener('change', applyFiltersAndSort);
+        sortDir.addEventListener('change', applyFiltersAndSort);
+
+        initDex();
+    </script>
+</body>
+</html>
