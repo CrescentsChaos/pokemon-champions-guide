@@ -10,7 +10,7 @@
     <style>
         .search-container {
             width: 100%;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
         }
 
         .search-input {
@@ -29,6 +29,85 @@
         .search-input:focus {
             border-color: var(--primary-red);
             box-shadow: var(--accent-glow);
+        }
+
+        .pokedex-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            align-items: center;
+        }
+
+        .pokedex-select {
+            padding: 0.65rem 1.1rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff66' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            padding-right: 2.2rem;
+        }
+
+        .pokedex-select:hover, .pokedex-select:focus {
+            border-color: var(--primary-red);
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .pokedex-select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .filter-label {
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            align-self: center;
+            white-space: nowrap;
+        }
+
+        .controls-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        .pokedex-text-filter {
+            padding: 0.65rem 1.1rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            min-width: 180px;
+        }
+
+        .pokedex-text-filter::placeholder {
+            color: rgba(255,255,255,0.3);
+            font-weight: 400;
+        }
+
+        .pokedex-text-filter:focus {
+            border-color: var(--primary-red);
+            background-color: rgba(255,255,255,0.1);
         }
 
         .pokemon-grid {
@@ -77,6 +156,18 @@
             margin-bottom: 1.5rem;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
         }
+
+        .move-damage-badge {
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 5px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .dmg-physical { background: rgba(238,129,48,0.2); color: #EE8130; border: 1px solid rgba(238,129,48,0.3); }
+        .dmg-special  { background: rgba(99,144,240,0.2); color: #6390F0; border: 1px solid rgba(99,144,240,0.3); }
+        .dmg-status   { background: rgba(200,200,200,0.1); color: #aaa;    border: 1px solid rgba(200,200,200,0.2); }
     </style>
 </head>
 
@@ -93,6 +184,31 @@
             <div class="search-container fade-in">
                 <input type="text" id="pokedex-search" class="search-input"
                     placeholder="Search by name, type, or generation...">
+            </div>
+
+            <div class="pokedex-controls fade-in">
+                <span class="filter-label">Sort</span>
+                <select id="sort-select" class="pokedex-select">
+                    <option value="id">Dex #</option>
+                    <option value="name">Name</option>
+                    <option value="total">Total BST</option>
+                    <option value="hp">HP</option>
+                    <option value="atk">Attack</option>
+                    <option value="def">Defense</option>
+                    <option value="spa">Sp. Atk</option>
+                    <option value="spd">Sp. Def</option>
+                    <option value="spe">Speed</option>
+                </select>
+                <select id="sort-dir" class="pokedex-select">
+                    <option value="desc">High → Low</option>
+                    <option value="asc">Low → High</option>
+                </select>
+
+                <div class="controls-divider"></div>
+
+                <span class="filter-label">Filter</span>
+                <input type="text" id="ability-filter" class="pokedex-text-filter" placeholder="Ability (e.g. Intimidate)">
+                <input type="text" id="move-filter" class="pokedex-text-filter" placeholder="Move (e.g. Earthquake)">
             </div>
 
             <div id="pokedex-grid" class="pokemon-grid">
@@ -256,22 +372,28 @@
                 ).slice(0, 10);
             }
 
-            const movesHtml = movesToShow.length > 0 ? movesToShow.map(m => `
+            const movesHtml = movesToShow.length > 0 ? movesToShow.map(m => {
+                const desc = m.short_descripton || m.short_description || m.desc || 'No description available.';
+                const dmgClass = (m.damage_class || 'Status').toLowerCase();
+                const dmgLabel = dmgClass.charAt(0).toUpperCase() + dmgClass.slice(1);
+                return `
                 <div class="move-card">
                     <div class="move-header">
                         <div class="move-name-wrap">
                             <span class="move-name">${m.name}</span>
                             <span class="move-type-badge type-${m.type ? m.type.toLowerCase() : 'normal'}">${m.type || 'Normal'}</span>
+                            <span class="move-damage-badge dmg-${dmgClass}">${dmgLabel}</span>
                         </div>
                         <div class="move-stats">
-                            <span class="move-stat-item">PWR: <b>${m.power || '--'}</b></span>
-                            <span class="move-stat-item">ACC: <b>${m.accuracy || '--'}</b></span>
+                            <span class="move-stat-item">PWR: <b>${m.power != null ? m.power : '--'}</b></span>
+                            <span class="move-stat-item">ACC: <b>${m.accuracy != null ? m.accuracy : '--'}</b></span>
                             <span class="move-stat-item">PP: <b>${m.pp || '--'}</b></span>
                         </div>
                     </div>
-                    <p class="move-description">${m.short_description || m.desc || 'No description available.'}</p>
+                    <p class="move-description">${desc}</p>
                 </div>
-            `).join('') : '<p>No moves found.</p>';
+            `;
+            }).join('') : '<p>No moves found.</p>';
 
             const abilitiesHtml = pokemon.Ability && pokemon.Ability.length > 0 ? pokemon.Ability.map(a => `<span class="special-badge" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">${a}</span>`).join('') : '';
 
@@ -403,19 +525,73 @@
             isLoading = false;
         }
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            filteredPokemon = allPokemon.filter(p =>
-                p.Name.toLowerCase().includes(query) ||
-                String(p.id).includes(query) ||
-                p.Type_1.toLowerCase().includes(query) ||
-                (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
-                (p.Generation && String(p.Generation).toLowerCase().includes(query))
-            );
+        function applyFiltersAndSort() {
+            const query = searchInput.value.toLowerCase().trim();
+            const sortKey = document.getElementById('sort-select').value;
+            const sortDir = document.getElementById('sort-dir').value;
+            const abilityQuery = document.getElementById('ability-filter').value.toLowerCase().trim();
+            const moveQuery = document.getElementById('move-filter').value.toLowerCase().trim();
+
+            filteredPokemon = allPokemon.filter(p => {
+                // Text search
+                if (query) {
+                    const matches =
+                        p.Name.toLowerCase().includes(query) ||
+                        String(p.id).includes(query) ||
+                        p.Type_1.toLowerCase().includes(query) ||
+                        (p.Type_2 && p.Type_2.toLowerCase().includes(query)) ||
+                        (p.Generation && String(p.Generation).toLowerCase().includes(query));
+                    if (!matches) return false;
+                }
+
+                // Ability filter
+                if (abilityQuery) {
+                    const abilities = Array.isArray(p.Ability) ? p.Ability : (p.Ability ? [p.Ability] : []);
+                    const hasAbility = abilities.some(a => a.toLowerCase().includes(abilityQuery));
+                    if (!hasAbility) return false;
+                }
+
+                // Move filter
+                if (moveQuery) {
+                    const moves = Array.isArray(p.Moves) ? p.Moves : [];
+                    const hasMove = moves.some(m => m.toLowerCase().includes(moveQuery));
+                    if (!hasMove) return false;
+                }
+
+                return true;
+            });
+
+            // Sorting
+            const statKeyMap = {
+                id: p => p.id,
+                name: p => p.Name,
+                total: p => p.Total_Stats || 0,
+                hp: p => p.HP || 0,
+                atk: p => p.Attack || 0,
+                def: p => p.Defense || 0,
+                spa: p => p['Sp.Atk'] || 0,
+                spd: p => p['Sp.Def'] || 0,
+                spe: p => p.Speed || 0
+            };
+            const getValue = statKeyMap[sortKey] || (p => p.id);
+
+            filteredPokemon.sort((a, b) => {
+                const av = getValue(a);
+                const bv = getValue(b);
+                if (typeof av === 'string') return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+                return sortDir === 'asc' ? av - bv : bv - av;
+            });
+
             grid.innerHTML = '';
             currentPage = 0;
             loadMore();
-        });
+        }
+
+        searchInput.addEventListener('input', applyFiltersAndSort);
+        document.getElementById('sort-select').addEventListener('change', applyFiltersAndSort);
+        document.getElementById('sort-dir').addEventListener('change', applyFiltersAndSort);
+        document.getElementById('ability-filter').addEventListener('input', applyFiltersAndSort);
+        document.getElementById('move-filter').addEventListener('input', applyFiltersAndSort);
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {

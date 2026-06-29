@@ -106,6 +106,31 @@
         .text-glow {
             text-shadow: 0 0 10px var(--glow-color);
         }
+
+        .filter-text-input {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            min-width: 170px;
+            flex: 1 1 170px;
+        }
+
+        .filter-text-input::placeholder {
+            color: rgba(255,255,255,0.3);
+            font-weight: 400;
+        }
+
+        .filter-text-input:focus {
+            border-color: #e63946;
+            background: rgba(255,255,255,0.08);
+        }
     </style>
 </head>
 
@@ -269,6 +294,8 @@
                         <option value="Singles">Singles</option>
                         <option value="Doubles">Doubles</option>
                     </select>
+                    <input type="text" id="ability-filter" class="filter-text-input" placeholder="Filter by Ability...">
+                    <input type="text" id="move-filter" class="filter-text-input" placeholder="Filter by Move...">
                 </div>
             </div>
 
@@ -870,6 +897,8 @@
             const typeFilter = document.getElementById('type-filter').value.toLowerCase();
             const roleFilter = document.getElementById('role-filter').value;
             const formatFilter = document.getElementById('format-filter').value.toLowerCase();
+            const abilityFilter = (document.getElementById('ability-filter').value || '').toLowerCase().trim();
+            const moveFilter = (document.getElementById('move-filter').value || '').toLowerCase().trim();
 
             let count = 0;
             const filtered = allBuilds.filter(build => {
@@ -890,6 +919,8 @@
                 const buildRoles = detectRole(p, dbRef);
                 if (roleFilter && !buildRoles.includes(roleFilter)) return false;
                 if (formatFilter && format !== formatFilter) return false;
+                if (abilityFilter && !ability.includes(abilityFilter)) return false;
+                if (moveFilter && !moves.some(m => m.includes(moveFilter))) return false;
 
                 return true;
             });
