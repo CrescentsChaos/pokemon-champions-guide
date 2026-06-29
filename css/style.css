@@ -372,27 +372,34 @@ section {
 .pokedex-section .search-input,
 .pokedex-section .pokedex-select {
     appearance: none;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.06);
+    -webkit-appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.14);
     color: #fff;
     padding: 0.95rem 1rem;
     border-radius: 14px;
     font-size: 0.95rem;
     min-width: 220px;
-    transition: border-color 0.2s ease, background 0.2s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 .pokedex-section .search-input {
     flex: 1 1 280px;
     max-width: 480px;
 }
-.pokedex-section .pokedex-select {
+.pokedex-section select.pokedex-select {
     min-width: 180px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffffcc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.2rem;
+    cursor: pointer;
 }
 .pokedex-section .search-input:focus,
-.pokedex-section .pokedex-select:focus {
+.pokedex-section select.pokedex-select:focus {
     outline: none;
-    border-color: rgba(255, 62, 62, 0.8);
-    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 62, 62, 0.9);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
 }
 .dex-grid {
     display: grid;
