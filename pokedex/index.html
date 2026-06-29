@@ -206,6 +206,7 @@
 
                 <button id="movedex-btn" class="pokedex-select" style="margin-left:8px; padding:0.5rem 0.9rem;">Move Dex</button>
                 <button id="abilitydex-btn" class="pokedex-select" style="margin-left:6px; padding:0.5rem 0.9rem;">Ability Dex</button>
+                <button id="itemdex-btn" class="pokedex-select" style="margin-left:6px; padding:0.5rem 0.9rem;">Item Dex</button>
 
                 <div class="controls-divider"></div>
 
@@ -245,6 +246,7 @@
         let allMoves = [];
         let allAbilities = [];
         let abilitiesMap = {};
+        let allItems = [];
         const ITEMS_PER_PAGE = 24;
         let currentPage = 0;
         let isLoading = false;
@@ -261,15 +263,17 @@
             try {
                 // Load Pokemon, Moves and Abilities in parallel
                 const cb = '?v=' + Date.now();
-                const [pokeRes, movesRes, abilitiesRes] = await Promise.all([
+                const [pokeRes, movesRes, abilitiesRes, itemsRes] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb),
                     fetch('../assets/moves.json' + cb),
-                    fetch('../assets/abilities.json' + cb)
+                    fetch('../assets/abilities.json' + cb),
+                    fetch('../assets/items.json' + cb)
                 ]);
 
                 allPokemon = await pokeRes.json();
                 allMoves = await movesRes.json();
                 allAbilities = await abilitiesRes.json();
+                allItems = await itemsRes.json();
                 allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
 
                 filteredPokemon = [...allPokemon];
@@ -642,7 +646,13 @@
         document.getElementById('close-dex').onclick = () => { dexOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; };
 
         function openMoveDex() {
-            const list = allMoves.map(m => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${m.name}</strong> <span style="color:rgba(255,255,255,0.6);">${m.type || ''} • PWR:${m.power != null ? m.power : '--'} • ACC:${m.accuracy != null ? m.accuracy : '--'}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.9rem;">${getMoveDescription(m)}</div></div>`).join('');
+            const list = allMoves.map(m => {
+                const key = (m.name||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+                // find learners
+                const learners = allPokemon.filter(p => Array.isArray(p.Moves) && p.Moves.some(pm => (pm||'').toLowerCase().replace(/[^a-z0-9]/g,'') === key)).map(p => p.Name);
+                const learnersHtml = learners.length > 0 ? `<div style="margin-top:6px; color:rgba(255,255,255,0.75); font-size:0.9rem;">Learned by: ${learners.slice(0,30).join(', ')}${learners.length>30?', ...':''}</div>` : '';
+                return `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${m.name}</strong> <span style="color:rgba(255,255,255,0.6);">${m.type || ''} • PWR:${m.power != null ? m.power : '--'} • ACC:${m.accuracy != null ? m.accuracy : '--'}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.9rem;">${getMoveDescription(m)}</div>${learnersHtml}</div>`;
+            }).join('');
             document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Move Dex</h3>${list}`;
             dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
         }
@@ -653,8 +663,17 @@
             dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
         }
 
+        function openItemDex() {
+            const list = allItems.map(it => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);"><strong>${it.name || it.Name}</strong> <span style="color:rgba(255,255,255,0.6);">${it.category || ''}</span><div style="margin-top:6px; color:rgba(255,255,255,0.8); font-size:0.95rem;">${it.description || it.effect || 'No description available.'}</div></div>`).join('');
+            document.getElementById('dex-body').innerHTML = `<h3 style="margin-top:0;">Item Dex</h3>${list}`;
+            dexOverlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+        }
+
         document.getElementById('movedex-btn').addEventListener('click', openMoveDex);
         document.getElementById('abilitydex-btn').addEventListener('click', openAbilityDex);
+        // add item dex button handler if present
+        const itemDexBtn = document.getElementById('itemdex-btn');
+        if (itemDexBtn) itemDexBtn.addEventListener('click', openItemDex);
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
