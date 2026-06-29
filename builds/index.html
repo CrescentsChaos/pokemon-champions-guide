@@ -11,7 +11,7 @@
     <!-- Preload critical datasets -->
     <link rel="preload" href="../assets/builds.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
-
+    <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .type-badge-grid {
@@ -186,15 +186,19 @@
                     </div>
                 </div>
 
-                <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
-                    <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                <div class="analysis-card"
+                    style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                    <h3
+                        style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
                         ⚔️ Meta Threat Matchup</h3>
-                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team stacks up against the top-ranked meta threats for this format.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team
+                        stacks up against the top-ranked meta threats for this format.</p>
                     <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
                 </div>
             </div>
 
-            <div class="teammates-toolbar" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <div class="teammates-toolbar"
+                style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
                 <div class="teammates-toolbar-controls" style="display: flex; gap: 15px; align-items: center;">
                     <div class="format-toggle-wrapper"
