@@ -4756,5 +4756,12 @@
             "638"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "640",
+        "pokemon": "Gyarados",
+        "build": "Gyarados @ Gyaradosite  \nAbility: Intimidate  \nEVs: 148 HP / 120 Atk / 240 Spe  \nAdamant Nature  \n- Waterfall  \n- Lash Out  \n- Dragon Dance  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
