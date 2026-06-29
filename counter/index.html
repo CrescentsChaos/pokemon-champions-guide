@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Counter Tool | Pokemon Champions Guide</title>
+    <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <style>
         :root {
@@ -14,7 +16,7 @@
         body {
             padding-top: 100px;
             background: radial-gradient(circle at top right, rgba(255, 62, 62, 0.05), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.02), #0a0a0c 100%);
+                radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.02), #0a0a0c 100%);
         }
 
         .counter-container {
@@ -47,7 +49,7 @@
         .import-area {
             width: 100%;
             height: 12rem;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 1.2rem;
@@ -73,7 +75,8 @@
             padding: 1.5rem;
             backdrop-filter: blur(15px);
             position: relative;
-            display: none; /* Shown after import */
+            display: none;
+            /* Shown after import */
             animation: fadeIn 0.4s ease;
         }
 
@@ -108,7 +111,7 @@
             width: 100px;
             height: 100px;
             object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
         }
 
         .target-details h3 {
@@ -135,7 +138,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             padding: 1rem;
             border-radius: 12px;
             margin-bottom: 1.5rem;
@@ -156,7 +159,7 @@
 
         .stat-bar-mini {
             height: 4px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 2px;
             overflow: hidden;
         }
@@ -180,7 +183,7 @@
         }
 
         .move-tag-mini {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             padding: 8px;
             border-radius: 8px;
@@ -191,7 +194,7 @@
 
         /* Editor Overrides */
         .target-editor-toggle {
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px dashed var(--glass-border);
             padding: 1.5rem;
             border-radius: 16px;
@@ -201,7 +204,7 @@
         }
 
         .target-editor-toggle:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-style: solid;
             border-color: var(--primary-red);
         }
@@ -221,7 +224,7 @@
         }
 
         .counter-card-premium {
-            background: linear-gradient(160deg, rgba(255,255,255,0.03), rgba(0,0,0,0.4));
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.4));
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
@@ -233,7 +236,7 @@
         .counter-card-premium:hover {
             transform: translateY(-5px);
             border-color: rgba(255, 62, 62, 0.4);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         }
 
         .counter-header-premium {
@@ -268,10 +271,10 @@
         }
 
         .rationale-list-premium {
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             padding: 1rem;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .rationale-item-premium {
@@ -282,7 +285,9 @@
             align-items: flex-start;
         }
 
-        .rationale-item-premium:last-child { margin-bottom: 0; }
+        .rationale-item-premium:last-child {
+            margin-bottom: 0;
+        }
 
         .rationale-icon {
             color: var(--primary-red);
@@ -292,7 +297,7 @@
 
         .build-btn-premium {
             width: 100%;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             color: var(--text-muted);
             padding: 10px;
@@ -314,7 +319,7 @@
 
         .build-raw-premium {
             display: none;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             padding: 1rem;
             border-radius: 10px;
             margin-top: 10px;
@@ -322,7 +327,7 @@
             font-size: 0.7rem;
             color: #ccc;
             white-space: pre-wrap;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .manage-controls {
@@ -332,7 +337,7 @@
         }
 
         .secondary-btn {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             color: white;
             padding: 0.8rem;
@@ -345,7 +350,7 @@
         }
 
         .secondary-btn:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-color: white;
         }
 
@@ -405,6 +410,7 @@
         }
     </style>
 </head>
+
 <body class="counter-page">
     <main class="container">
         <div class="section-title fade-in" style="margin-bottom: 3rem;">
@@ -415,18 +421,23 @@
         <div class="counter-container">
             <!-- Left Column: Build Management -->
             <div class="builder-column">
-                
+
                 <!-- Import State -->
                 <div id="import-view" class="import-box fade-in">
                     <div class="glass" style="padding: 1.8rem; position: relative; overflow: hidden;">
-                        <div style="position: absolute; top:0; right:0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,62,62,0.1) 0%, transparent 70%); z-index: 0;"></div>
-                        <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; position: relative; z-index: 1;">Import Championship Build</h3>
-                        <textarea id="paste-input" class="import-area" placeholder="Paste PokePaste or raw build export here..."></textarea>
-                        
+                        <div
+                            style="position: absolute; top:0; right:0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,62,62,0.1) 0%, transparent 70%); z-index: 0;">
+                        </div>
+                        <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; position: relative; z-index: 1;">Import
+                            Championship Build</h3>
+                        <textarea id="paste-input" class="import-area"
+                            placeholder="Paste PokePaste or raw build export here..."></textarea>
+
                         <div style="display: flex; gap: 10px; position: relative; z-index: 1;">
                             <button id="analyze-btn" class="btn analyze-btn" style="flex: 2; margin-top: 0;">
                                 <span>ANALYZE BUILD</span>
-                                <div class="loader" id="analyze-loader" style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
+                                <div class="loader" id="analyze-loader"
+                                    style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
                             </button>
                             <button id="show-editor-btn" class="secondary-btn" title="Manual Entry">
                                 ⌨️
@@ -438,13 +449,14 @@
                 <!-- Preview State (Builder Style Card) -->
                 <div id="target-preview" class="target-preview-card">
                     <div class="target-badge">TARGET BUILD</div>
-                    
+
                     <div class="target-main-info">
                         <img id="preview-sprite" src="" class="target-sprite-large" alt="">
                         <div class="target-details">
                             <h3 id="preview-species">POKEMON</h3>
                             <div id="preview-types" class="target-type-tags"></div>
-                            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;" id="preview-item">Item: None</div>
+                            <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;"
+                                id="preview-item">Item: None</div>
                         </div>
                     </div>
 
@@ -465,7 +477,8 @@
                 <!-- Manual Editor Modal/Overlay (Initially Hidden) -->
                 <div id="editor-view" class="glass target-editor" style="display: none; margin-top: 1rem;">
                     <div class="target-header">
-                        <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" alt="Target" class="target-sprite" id="target-sprite">
+                        <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" alt="Target"
+                            class="target-sprite" id="target-sprite">
                         <div style="flex: 1; position: relative;">
                             <input type="text" id="target-name" class="target-name-input" placeholder="POKEMON NAME">
                             <div id="search-results" class="search-results"></div>
@@ -492,7 +505,8 @@
                     </div>
 
                     <div style="margin-top: 1.5rem;">
-                        <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Moves</label>
+                        <label
+                            style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Moves</label>
                         <div class="editor-grid" style="margin-top: 0.5rem;" id="target-moves-container">
                             <input type="text" class="target-move" placeholder="Move 1">
                             <input type="text" class="target-move" placeholder="Move 2">
@@ -502,14 +516,22 @@
                     </div>
 
                     <div style="margin-top: 1.5rem;">
-                        <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">EVs</label>
-                        <div class="editor-grid ev-editor-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5rem;">
-                            <div class="editor-field"><label>HP</label><input type="number" class="target-ev" data-stat="hp" value="0"></div>
-                            <div class="editor-field"><label>Atk</label><input type="number" class="target-ev" data-stat="atk" value="0"></div>
-                            <div class="editor-field"><label>Def</label><input type="number" class="target-ev" data-stat="def" value="0"></div>
-                            <div class="editor-field"><label>SpA</label><input type="number" class="target-ev" data-stat="spa" value="0"></div>
-                            <div class="editor-field"><label>SpD</label><input type="number" class="target-ev" data-stat="spd" value="0"></div>
-                            <div class="editor-field"><label>Spe</label><input type="number" class="target-ev" data-stat="spe" value="0"></div>
+                        <label
+                            style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">EVs</label>
+                        <div class="editor-grid ev-editor-grid"
+                            style="grid-template-columns: repeat(3, 1fr); margin-top: 0.5rem;">
+                            <div class="editor-field"><label>HP</label><input type="number" class="target-ev"
+                                    data-stat="hp" value="0"></div>
+                            <div class="editor-field"><label>Atk</label><input type="number" class="target-ev"
+                                    data-stat="atk" value="0"></div>
+                            <div class="editor-field"><label>Def</label><input type="number" class="target-ev"
+                                    data-stat="def" value="0"></div>
+                            <div class="editor-field"><label>SpA</label><input type="number" class="target-ev"
+                                    data-stat="spa" value="0"></div>
+                            <div class="editor-field"><label>SpD</label><input type="number" class="target-ev"
+                                    data-stat="spd" value="0"></div>
+                            <div class="editor-field"><label>Spe</label><input type="number" class="target-ev"
+                                    data-stat="spe" value="0"></div>
                         </div>
                     </div>
 
@@ -530,7 +552,8 @@
                 </div>
 
                 <div id="counter-results" class="counter-grid">
-                    <div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;">
+                    <div class="placeholder-text"
+                        style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;">
                         <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>
                         Import a build on the left to begin strategic analysis.
                     </div>
@@ -640,7 +663,7 @@
                 pokemonDB = pkmn; movesDB = mvs; buildsDB = blds;
                 populateNatures();
                 setupEventListeners();
-                
+
                 // Set initial state
                 showImportView();
             } catch (e) { console.error("Load fail", e); }
@@ -653,7 +676,7 @@
 
         function setupEventListeners() {
             document.getElementById('analyze-btn').addEventListener('click', analyze);
-            document.getElementById('paste-input').addEventListener('input', (e) => { 
+            document.getElementById('paste-input').addEventListener('input', (e) => {
                 if (e.target.value.trim().length > 10) {
                     parsePaste(e.target.value);
                 }
@@ -689,8 +712,8 @@
                 if (item) { loadPokemon(item.dataset.name); searchResults.style.display = 'none'; }
             });
 
-            document.querySelectorAll('#editor-view input, #editor-view select').forEach(el => { 
-                el.addEventListener('change', updateTargetFromUI); 
+            document.querySelectorAll('#editor-view input, #editor-view select').forEach(el => {
+                el.addEventListener('change', updateTargetFromUI);
             });
         }
 
@@ -719,19 +742,19 @@
             const data = pokemonDB.find(p => (p.Name || p.name) === targetBuild.name);
             document.getElementById('preview-species').innerText = targetBuild.name.toUpperCase();
             document.getElementById('preview-item').innerText = `Item: ${targetBuild.item || 'None'}`;
-            
+
             const clean = targetBuild.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             document.getElementById('preview-sprite').src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
 
             const typeContainer = document.getElementById('preview-types');
-            typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t => 
+            typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t =>
                 `<img src="../assets/type-icons/${t.toLowerCase()}_type.png" class="type-icon" alt="${t}">`
             ).join('');
 
             // Stats
             const statsContainer = document.getElementById('preview-stats');
             const statLabels = { hp: 'HP', atk: 'ATK', def: 'DEF', spa: 'SPA', spd: 'SPD', spe: 'SPE' };
-            
+
             // Calculate actual stats for display
             if (data) {
                 const stats = {
@@ -826,11 +849,11 @@
             targetBuild.level = parseInt(document.getElementById('target-level').value) || 50;
             targetBuild.moves = Array.from(document.querySelectorAll('.target-move')).map(i => i.value.trim()).filter(v => v !== '');
             document.querySelectorAll('.target-ev').forEach(el => { targetBuild.evs[el.dataset.stat] = parseInt(el.value) || 0; });
-            
+
             const effTargetData = getEffectivePokemonData(targetBuild.name, targetBuild.item);
-            if (effTargetData) { 
-                targetBuild.types = [effTargetData.Type_1, effTargetData.Type_2 || 'None']; 
-                updateSprite(effTargetData.Name || effTargetData.name); 
+            if (effTargetData) {
+                targetBuild.types = [effTargetData.Type_1, effTargetData.Type_2 || 'None'];
+                updateSprite(effTargetData.Name || effTargetData.name);
             }
         }
 
@@ -847,12 +870,12 @@
             const loader = document.getElementById('analyze-loader');
             const resultsContainer = document.getElementById('counter-results');
             if (!targetBuild.name) return;
-            
-            btn.disabled = true; loader.style.display = 'block'; 
+
+            btn.disabled = true; loader.style.display = 'block';
             resultsContainer.style.opacity = '0.4';
 
             await new Promise(r => setTimeout(r, 400));
-            
+
             const targetData = getEffectivePokemonData(targetBuild.name, targetBuild.item);
             if (!targetData) {
                 btn.disabled = false; loader.style.display = 'none';
@@ -871,20 +894,20 @@
             const counters = [];
             buildsDB.forEach(build => {
                 if (build.pokemon === targetBuild.name) return;
-                
+
                 // Parse the candidate build to get its item
                 const cBuildParsed = parseCandidateBuild(build.build, { Type_1: 'Normal' }); // Placeholder data, fixed below
-                
+
                 // Get effective data for candidate (Mega/Form check)
                 const candidateData = getEffectivePokemonData(build.pokemon, cBuildParsed.item);
                 if (!candidateData) return;
 
                 // Re-parse with correct types if form changed
                 cBuildParsed.types = [candidateData.Type_1, candidateData.Type_2 || 'None'];
-                
+
                 const cStats = calculateCandidateStats(cBuildParsed, candidateData);
                 let score = 0, points = [], dead = false, maxTook = 0;
-                
+
                 const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
                 targetMoves.forEach(m => {
                     const moveType = m.type.toLowerCase();
@@ -897,14 +920,14 @@
                         if (eff !== undefined) typeMult *= eff;
                     });
                     const stab = [targetData.Type_1, targetData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                    const estDmg = ( ( ( (2 * 50 / 5 + 2) * (m.power || 40) * targetAtk / candidateDef ) / 50 ) + 2 ) * stab * typeMult;
+                    const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * targetAtk / candidateDef) / 50) + 2) * stab * typeMult;
                     const tookPercent = (estDmg / cStats.hp) * 100;
                     if (tookPercent > maxTook) maxTook = tookPercent;
                 });
                 if (maxTook >= 100) dead = true;
                 if (maxTook < 50) { score += 40; points.push(`Takes max ${Math.round(maxTook)}% from moves.`); }
                 else if (maxTook < 85) { score += 20; points.push(`Can tank hits (${Math.round(maxTook)}% max).`); }
-                
+
                 let bestDealt = 0;
                 const candidateMoves = cBuildParsed.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
                 candidateMoves.forEach(m => {
@@ -918,23 +941,23 @@
                         if (eff !== undefined) typeMult *= eff;
                     });
                     const stab = [candidateData.Type_1, candidateData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                    const estDmg = ( ( ( (2 * 50 / 5 + 2) * (m.power || 40) * candAtk / targetDef ) / 50 ) + 2 ) * stab * typeMult;
+                    const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * candAtk / targetDef) / 50) + 2) * stab * typeMult;
                     const dealtPercent = (estDmg / targetStats.hp) * 100;
                     if (dealtPercent > bestDealt) bestDealt = dealtPercent;
                 });
 
                 if (bestDealt >= 100) { score += 45; points.push(`Guaranteed OHKO (${Math.round(bestDealt)}%).`); }
                 else if (bestDealt >= 50) { score += 25; points.push(`Solid 2HKO pressure (${Math.round(bestDealt)}%).`); }
-                
+
                 if (cStats.spe > targetStats.spe) { score += 15; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
-                
+
                 if (score > 35 && !dead) counters.push({ ...build, pokemon: candidateData.Name || candidateData.name, score: Math.min(100, Math.round(score)), points });
             });
 
             counters.sort((a, b) => b.score - a.score);
             loader.style.display = 'none'; btn.disabled = false;
             resultsContainer.style.opacity = '1';
-            
+
             showPreviewView();
             renderResults(counters.slice(0, 15));
         }
@@ -968,23 +991,23 @@
                 spd: getStat(parseInt(pData['Sp.Def']), 31, build.evs.spd, 50, build.nature, 'spd'),
                 spe: getStat(parseInt(pData.Speed), 31, build.evs.spe, 50, build.nature, 'spe'),
             };
-            
+
             // Competitive Item Modifiers
             if (build.item === 'Choice Scarf') stats.spe = Math.floor(stats.spe * 1.5);
             if (build.item === 'Choice Band') stats.atk = Math.floor(stats.atk * 1.5);
             if (build.item === 'Choice Specs') stats.spa = Math.floor(stats.spa * 1.5);
             if (build.item === 'Assault Vest') stats.spd = Math.floor(stats.spd * 1.5);
-            
+
             return stats;
         }
 
         function renderResults(counters) {
             const container = document.getElementById('counter-results');
             document.getElementById('results-count').innerText = `${counters.length} RESULTS FOUND`;
-            
-            if (counters.length === 0) { 
-                container.innerHTML = '<div class="placeholder-text">No strong counters found for this specific build.</div>'; 
-                return; 
+
+            if (counters.length === 0) {
+                container.innerHTML = '<div class="placeholder-text">No strong counters found for this specific build.</div>';
+                return;
             }
 
             container.innerHTML = counters.map((c, i) => {
@@ -1026,4 +1049,5 @@
         init();
     </script>
 </body>
+
 </html>

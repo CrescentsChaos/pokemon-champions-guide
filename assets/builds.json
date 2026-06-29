@@ -4763,5 +4763,19 @@
         "build": "Gyarados @ Gyaradosite  \nAbility: Intimidate  \nEVs: 148 HP / 120 Atk / 240 Spe  \nAdamant Nature  \n- Waterfall  \n- Lash Out  \n- Dragon Dance  \n- Protect",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "641",
+        "pokemon": "Kleavor",
+        "build": "Kleavor @ Focus Sash  \nAbility: Sharpness  \nTera Type: Ghost  \nEVs: 252 Atk / 4 Def / 252 Spe  \nJolly Nature  \n- Stone Axe  \n- X-Scissor  \n- Swords Dance  \n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
+    },
+    {
+        "id": "642",
+        "pokemon": "Kleavor",
+        "build": "Kleavor @ Choice Scarf\nAbility: Sharpness\nEVs: 252 Atk / 4 Def / 252 Spe\nTera Type: Fighting\nJolly Nature\n- Stone Axe\n- U-turn\n- X-Scissor\n- Close Combat",
+        "synergy": [],
+        "format": "Singles"
     }
 ]

@@ -11,7 +11,7 @@
     <!-- Preload critical data to improve LCP/Performance -->
     <link rel="preload" href="../assets/pokemon.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="../assets/moves.json" as="fetch" crossorigin="anonymous">
-
+    <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
@@ -950,7 +950,8 @@
 
             <!-- Team Analysis Section -->
             <div id="analysis-view" style="display: none; margin-top: 20px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom: 5px;">
+                <div
+                    style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom: 5px;">
                     <h2 style="font-weight: 900; letter-spacing: -1px; margin: 0;">STRATEGIC INSIGHTS</h2>
                     <div class="format-toggle-wrapper"
                         style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
@@ -967,11 +968,14 @@
                 <!-- Strategy Overview AI Report -->
                 <div class="analysis-card" id="strategy-overview-card"
                     style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
-                    <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.2rem;">🧠</span> Strategy <span style="color:var(--primary-red)">Overview</span>
+                    <h3
+                        style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">🧠</span> Strategy <span
+                            style="color:var(--primary-red)">Overview</span>
                     </h3>
                     <p id="strategy-overview-text"
-                        style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;"></p>
+                        style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;">
+                    </p>
                 </div>
 
                 <div class="analysis-grid">
@@ -1013,10 +1017,13 @@
                     </div>
                 </div>
 
-                <div class="analysis-card" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
-                    <h3 style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                <div class="analysis-card"
+                    style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                    <h3
+                        style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
                         ⚔️ Meta Threat Matchup</h3>
-                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team stacks up against the top-ranked meta threats.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team
+                        stacks up against the top-ranked meta threats.</p>
                     <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
                 </div>
             </div>
