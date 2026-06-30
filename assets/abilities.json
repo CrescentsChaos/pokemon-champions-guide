@@ -212,96 +212,96 @@
     "description": "The Pokémon changes the weather to nullify Water-type attacks."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Disguise",
+    "description": "Once per battle, the shroud that covers the Pokémon can protect it from an attack."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Download",
+    "description": "The Pokémon compares an opposing Pokémon's Defense and Sp. Def stats before raising its own Attack or Sp. Atk stat—whichever will be more effective."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Dragonize",
+    "description": "The Pokémon's Normal-type moves become Dragon-type moves and their power is boosted by 20%."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Dragon’s Maw",
+    "description": "Powers up Dragon-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Drizzle",
+    "description": "The Pokémon makes it rain when it enters a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Drought",
+    "description": "Turns the sunlight harsh when the Pokémon enters a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Dry Skin",
+    "description": "Restores the Pokémon's HP in rain or when it is hit by Water-type moves. Reduces HP in harsh sunlight, and increases the damage received from Fire-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Early Bird",
+    "description": "The Pokémon awakens from sleep twice as fast as other Pokémon."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Earth Eater",
+    "description": "If hit by a Ground-type move, the Pokémon has its HP restored instead of taking damage."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Eelevate",
+    "description": "The Pokémon floats off the ground, making it immune to Ground-type moves, as well as the Spikes, Toxic Spikes, and Sticky Web statuses. When the Pokémon knocks out a target with an attack, its highest stat is boosted by 1 stage."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Effect Spore",
+    "description": "Contact with the Pokémon may inflict poison, sleep, or paralysis on the attacker."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Electric Surge",
+    "description": "Turns the ground into Electric Terrain when the Pokémon enters a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Electromorphosis",
+    "description": "The Pokémon becomes charged when it takes damage, boosting the power of the next Electric-type move the Pokémon uses."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Embody Aspect",
+    "description": "The Pokémon's heart fills with memories, causing the Mask to shine and one of the Pokémon's stats to be boosted."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Emergency Exit",
+    "description": "The Pokémon, sensing danger, switches out when its HP becomes half or less."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Fairy Aura",
+    "description": "Powers up every Pokémon in play's Fairy-type moves by 33%"
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Filter",
+    "description": "Reduces the power of supereffective attacks that hit the Pokémon."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Fire Mane",
+    "description": "Boosts the power of the Pokémon's Fire-type moves by 50%."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Flame Body",
+    "description": "Contact with the Pokémon may burn the attacker."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Flare Boost",
+    "description": "Powers up special moves when the Pokémon is burned."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Flash Fire",
+    "description": "If hit by a Fire-type move, the Pokémon absorbs the flames and uses them to power up its own Fire-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Flower Gift",
+    "description": "Boosts the Attack and Sp. Def stats of itself and allies in harsh sunlight."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Flower Veil",
+    "description": "Ally Grass-type Pokémon are protected from status conditions and the lowering of their stats."
   },
   {
     "name": "",
