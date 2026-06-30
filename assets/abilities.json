@@ -304,176 +304,176 @@
     "description": "Ally Grass-type Pokémon are protected from status conditions and the lowering of their stats."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Fluffy",
+    "description": "Halves the damage taken from moves that make direct contact, but doubles that of Fire-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Forecast",
+    "description": "The Pokémon transforms with the weather to change its type to Water, Fire, or Ice."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Forewarn",
+    "description": "When it enters a battle, the Pokémon can tell one of the moves an opposing Pokémon has."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Friend Guard",
+    "description": "Reduces damage dealt to allies."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Frisk",
+    "description": "When it enters a battle, the Pokémon can check an opposing Pokémon's held item."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Full Metal Body",
+    "description": "Prevents other Pokémon’s moves or Abilities from lowering the Pokémon’s stats."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Fur Coat",
+    "description": "Halves the damage from physical moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Gale Wings",
+    "description": "Gives priority to the Pokémon's Flying-type moves while its HP is full."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Galvanize",
+    "description": "Normal-type moves become Electric-type moves. The power of those moves is boosted a little."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Gluttony",
+    "description": "If the Pokémon is holding a Berry to be eaten when its HP is low, it will instead eat the Berry when its HP drops to half or less."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Good as Gold",
+    "description": "A body of pure, solid gold gives the Pokémon full immunity to other Pokémon's status moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Gooey",
+    "description": "Contact with the Pokémon lowers the attacker's Speed stat."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Gorilla Tactics",
+    "description": "Boosts the Pokémon’s Attack stat but only allows the use of the first selected move."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Grass Pelt",
+    "description": "Boosts the Pokémon's Defense stat on Grassy Terrain."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Grassy Surge",
+    "description": "Turns the ground into Grassy Terrain when the Pokémon enters a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Grim Neigh",
+    "description": "When the Pokémon knocks out a target, it utters a terrifying neigh, which boosts its Sp. Atk stat."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Guard Dog",
+    "description": "Boosts the Pokémon’s Attack stat if intimidated. Moves and items that would force the Pokémon to switch out also fail to work."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Gulp Missile",
+    "description": "When the Pokémon uses Surf or Dive, it will come back with prey. When it takes damage, it will spit out the prey to attack."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Guts",
+    "description": "It's so gutsy that having a status condition boosts the Pokémon's Attack stat."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hadron Engine",
+    "description": "Turns the ground into Electric Terrain when the Pokémon enters a battle. The futuristic engine within the Pokémon also boosts its Sp. Atk stat on Electric Terrain."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Harvest",
+    "description": "May create another Berry after one is used."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Healer",
+    "description": "Sometimes cures the status conditions of the Pokémon's allies."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Heatproof",
+    "description": "The Pokémon's heatproof body halves the damage taken from Fire-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Heavy Metal",
+    "description": "Doubles the Pokémon's weight."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Honey Gather",
+    "description": "The Pokémon may gather Honey after a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hospitality",
+    "description": "When the Pokémon enters a battle, it showers its ally with hospitality, restoring a small amount of the ally's HP"
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Huge Power",
+    "description": "The Pokémon's Attack stat is doubled while it has this ability."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hunger Switch",
+    "description": "The Pokémon changes its form, alternating between its Full Belly Mode and Hangry Mode after the end of every turn."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hustle",
+    "description": "Boosts the Pokémon's Attack stat but lowers its accuracy."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hydration",
+    "description": "Cures the Pokémon's status conditions in rain."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Hyper Cutter",
+    "description": "The Pokémon's prized, mighty pincers prevent other Pokémon from lowering its Attack stat."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Ice Body",
+    "description": "The Pokémon gradually regains HP in snow."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Ice Face",
+    "description": "The Pokémon's ice head can take a physical attack as a substitute, but the attack also changes the Pokémon's appearance. The ice will be restored when it snows."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Ice Scales",
+    "description": "The Pokémon is protected by ice scales, which halve the damage taken from special moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Illuminate",
+    "description": "By illuminating its surroundings, the Pokémon prevents its accuracy from being lowered."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Illusion",
+    "description": "The Pokémon fools opponents by entering battle disguised as the last Pokémon in its Trainer's party."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Immunity",
+    "description": "The Pokémon's immune system prevents it from being poisoned."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Imposter",
+    "description": "The Pokémon transforms itself into the Pokémon it's facing."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Infiltrator",
+    "description": "The protections and stat boosts caused by the moves Substitute, Reflect, Light Screen and Safeguard by the opponent are ignored."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Innards Out",
+    "description": "Damages the attacker landing the finishing hit by the amount equal to its last HP."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Inner Focus",
+    "description": "The Pokémon's intense focus prevents it from flinching or being affected by Intimidate."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Insomnia",
+    "description": "The Pokémon's insomnia prevents it from falling asleep."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Intimidate",
+    "description": "When the Pokémon enters a battle, it intimidates opposing Pokémon and makes them cower, lowering their Attack stats."
   },
   {
     "name": "",
