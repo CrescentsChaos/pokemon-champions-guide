@@ -1,17 +1,810 @@
 [
-  {"name": "Intimidate", "description": "Lowers the opponent's Attack upon entering battle."},
-  {"name": "Levitate", "description": "Gives full immunity to Ground-type moves and Spikes."},
-  {"name": "Overgrow", "description": "Boosts Grass-type moves when HP is low."},
-  {"name": "Blaze", "description": "Boosts Fire-type moves when HP is low."},
-  {"name": "Torrent", "description": "Boosts Water-type moves when HP is low."},
-  {"name": "Swift Swim", "description": "Doubles Speed in rain."},
-  {"name": "Huge Power", "description": "Doubles the holder's Attack stat."},
-  {"name": "Sturdy", "description": "Prevents being OHKO'd when at full HP and negates one-hit KOs."},
-  {"name": "Prankster", "description": "Gives priority to status moves."},
-  {"name": "Pressure", "description": "Doubles PP usage of opponent's moves."},
-  {"name": "Moxie", "description": "Raises Attack after knocking out an opponent."},
-  {"name": "Protean", "description": "Changes the user's type to the move it uses."},
-  {"name": "Adaptability", "description": "Increases STAB bonus from 1.5x to 2x."},
-  {"name": "Natural Cure", "description": "Heals status conditions upon switching out."},
-  {"name": "Magic Guard", "description": "Only damage taken from attacks (blocks status/entry hazards)."}
+  {
+    "name": "Adaptability",
+    "description": "Increases the Same Type Attack Bonus (STAB) from 1.5x to 2x."
+  },
+  {
+    "name": "Aerilate",
+    "description": "Normal-type moves become Flying-type moves. The power of those moves is boosted a little."
+  },
+  {
+    "name": "Aftermath",
+    "description": "Damages the attacker if it knocks out the Pokémon with a move that makes direct contact."
+  },
+  {
+    "name": "Air Lock",
+    "description": "Eliminates the effects of weather."
+  },
+  {
+    "name": "Analytic",
+    "description": "Boosts the power of the Pokémon's move if it is the last to act that turn."
+  },
+  {
+    "name": "Anger Point",
+    "description": "The Pokémon is angered when it takes a critical hit, and that maxes its Attack stat."
+  },
+  {
+    "name": "Anger Shell",
+    "description": "When an attack causes its HP to drop to half or less, the Pokémon gets angry. This lowers its Defense and Sp. Def stats but boosts its Attack, Sp. Atk, and Speed stats."
+  },
+  {
+    "name": "Anticipation",
+    "description": "The Pokémon can sense an opposing Pokémon's dangerous moves."
+  },
+  {
+    "name": "Arena Trap",
+    "description": "Prevents opposing Pokémon from fleeing from battle."
+  },
+  {
+    "name": "Armor Tail",
+    "description": "The mysterious tail covering the Pokémon's head makes opponents unable to use priority moves against the Pokémon or its allies."
+  },
+  {
+    "name": "Aroma Veil",
+    "description": "Protects the Pokémon and its allies from effects that prevent the use of moves."
+  },
+  {
+    "name": "As One (Glastrier)",
+    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Glastrier's Chilling Neigh Ability."
+  },
+  {
+    "name": "As One (Spectrier)",
+    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Spectrier's Grim Neigh Ability."
+  },
+  {
+    "name": "Asset Gab",
+    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Spectrier's Grim Neigh Ability."
+  },
+  {
+    "name": "Aura Break",
+    "description": "The effects of “Aura” Abilities are reversed to lower the power of affected moves."
+  },
+  {
+    "name": "Bad Dreams",
+    "description": "Damages opposing Pokémon that are asleep."
+  },
+  {
+    "name": "Ball Fetch",
+    "description": "If the Pokémon is not holding an item, it will fetch the Poké Ball from the first failed throw of the battle."
+  },
+  {
+    "name": "Battery",
+    "description": "Powers up ally Pokémon's special moves."
+  },
+  {
+    "name": "Battle Armor",
+    "description": "Hard armor protects the Pokémon from critical hits."
+  },
+  {
+    "name": "Battle Bond",
+    "description": "When the Pokémon knocks out a target, its bond with its Trainer is strengthened, and its Attack, Sp. Atk, and Speed stats are boosted."
+  },
+  {
+    "name": "Beads of Ruin",
+    "description": "The power of the Pokémon's ruinous beads lowers the Sp. Def stats of all Pokémon except itself."
+  },
+  {
+    "name": "Beast Boost",
+    "description": "The Pokémon boosts its most proficient stat each time it knocks out a Pokémon."
+  },
+  {
+    "name": "Berserk",
+    "description": "Boosts the Pokémon's Sp. Atk stat when it takes a  hit that causes its HP to become half or less."
+  },
+  {
+    "name": "Big Pecks",
+    "description": "Prevents the Pokémon from having its Defense stat lowered."
+  },
+  {
+    "name": "Blaze",
+    "description": "Powers up Fire-type moves when the Pokémon's HP is low."
+  },
+  {
+    "name": "Bulletproof",
+    "description": "Protects the Pokémon from some ball and bomb moves."
+  },
+  {
+    "name": "Cheek Pouch",
+    "description": "The Pokémon's HP is restored when it eats any Berry, in addition to the Berry's usual effect."
+  },
+  {
+    "name": "Chilling Neigh",
+    "description": "When the Pokémon knocks out a target, it utters a chilling neigh, which boosts its Attack stat."
+  },
+  {
+    "name": "Chlorophyll",
+    "description": "Boosts the Pokémon's Speed stat in harsh sunlight."
+  },
+  {
+    "name": "Clear Body",
+    "description": "Prevents other Pokémon's moves or Abilities from lowering the Pokémon's stats."
+  },
+  {
+    "name": "Cloud Nine",
+    "description": "Eliminates the effects of weather."
+  },
+  {
+    "name": "Color Change",
+    "description": "The Pokémon’s type becomes the type of the move used on it."
+  },
+  {
+    "name": "Comatose",
+    "description": "The Pokémon is always drowsing and will never wake up. It can attack while in its sleeping state."
+  },
+  {
+    "name": "Commander",
+    "description": "When the Pokémon enters a battle, it goes inside the mouth of an ally Dondozo if one is on the field. The Pokémon then issues commands from there."
+  },
+  {
+    "name": "Competitive",
+    "description": "Boosts the Pokémon's Sp. Atk stat sharply when its stats are lowered by an opposing Pokémon."
+  },
+  {
+    "name": "Compound Eyes",
+    "description": "The Pokémon's compound eyes boost its accuracy."
+  },
+  {
+    "name": "Contrary",
+    "description": "Reverses any stat changes affecting the Pokémon so that attempts to boost its stats instead lower them—and attempts to lower its stats will boost them."
+  },
+  {
+    "name": "Corrosion",
+    "description": "The Pokémon can poison the target even if it's a Steel or Poison type."
+  },
+  {
+    "name": "Costar",
+    "description": "When the Pokémon enters a battle, it copies an ally's stat changes."
+  },
+  {
+    "name": "Cotton Down",
+    "description": "When the Pokémon is hit by an attack, it scatters cotton fluff around and lowers the Speed stat of all Pokémon except itself."
+  },
+  {
+    "name": "Cud Chew",
+    "description": "When the Pokémon eats a Berry, it will regurgitate that Berry at the end of the next turn and eat it one more time."
+  },
+  {
+    "name": "Curious Medicine",
+    "description": "When the Pokémon enters a battle, it scatters medicine from its shell, which removes all stat changes from allies."
+  },
+  {
+    "name": "Cursed Body",
+    "description": "May disable a move that has dealt damage to the Pokémon."
+  },
+  {
+    "name": "Cute Charm",
+    "description": "The Pokémon may infatuate attackers that make direct contact with it."
+  },
+  {
+    "name": "Damp",
+    "description": "The Pokémon dampens its surroundings, preventing all Pokémon from using explosive moves such as Self-Destruct."
+  },
+  {
+    "name": "Dancer",
+    "description": "Whenever a dance move is used in battle, the Pokémon will copy the user to immediately perform that dance move itself."
+  },
+  {
+    "name": "Dark Aura",
+    "description": "Powers up each Pokémon’s Dark-type moves."
+  },
+  {
+    "name": "Dauntless Shield",
+    "description": "Boosts the Pokémon’s Defense stat the first time the Pokémon enters a battle."
+  },
+  {
+    "name": "Dazzling",
+    "description": "The Pokémon dazzles its opponents, making them unable to use priority moves against the Pokémon or its allies."
+  },
+  {
+    "name": "Defeatist",
+    "description": "Halves the Pokémon’s Attack and Sp. Atk stats when its HP becomes half or less."
+  },
+  {
+    "name": "Defiant",
+    "description": "If the Pokémon has any stat lowered by an opposing Pokémon, its Attack stat will be boosted sharply."
+  },
+  {
+    "name": "Delta Stream",
+    "description": "The Pokémon changes the weather to eliminate all of the Flying type’s weaknesses."
+  },
+  {
+    "name": "Desolate Land",
+    "description": "The Pokémon changes the weather to nullify Water-type attacks."
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  }
 ]
