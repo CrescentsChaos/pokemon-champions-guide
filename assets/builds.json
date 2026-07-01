@@ -4813,5 +4813,44 @@
         "build": "Palafin @ Leftovers  \nAbility: Zero to Hero  \nEVs: 252 HP / 252 Atk / 4 Spe  \nAdamant Nature  \n- Jet Punch  \n- Bulk Up  \n- Wave Crash  \n- Protect",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "647",
+        "pokemon": "Glimmora",
+        "build": "Glimmora @ Focus Sash  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "648",
+        "pokemon": "Corviknight",
+        "build": "Corviknight @ Leftovers  \nAbility: Mirror Armor  \nEVs: 216 HP / 76 Atk / 40 SpD / 176 Spe  \nCareful Nature  \n- Bulk Up  \n- Brave Bird  \n- Body Press  \n- Roost",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "649",
+        "pokemon": "Espathra",
+        "build": "Espathra @ Sitrus Berry  \nAbility: Speed Boost  \nEVs: 252 HP / 72 Def / 152 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Lumina Crash  \n- Calm Mind  \n- Baton Pass",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "650",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 184 HP / 76 Def / 240 SpA / 8 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Muddy Water  \n- Weather Ball  \n- Ice Beam",
+        "synergy": [
+            "649"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "651",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Dragoninite  \nAbility: Multiscale  \nEVs: 72 HP / 252 SpA / 184 Spe  \nTimid Nature  \n- Dragon Pulse  \n- Hurricane  \n- Protect  \n- Extreme Speed",
+        "synergy": [
+            "650"
+        ],
+        "format": "Doubles"
     }
 ]
