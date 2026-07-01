@@ -4797,5 +4797,14 @@
             "643"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "645",
+        "pokemon": "Liepard",
+        "build": "Liepard @ Focus Sash  \nAbility: Prankster  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Knock Off  \n- Yawn  \n- Encore  \n- Fake Out",
+        "synergy": [
+            "644"
+        ],
+        "format": "Doubles"
     }
 ]
