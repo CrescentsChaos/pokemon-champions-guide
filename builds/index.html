@@ -542,8 +542,6 @@
             // Form-altering items
             if (item === 'rustedsword' && species === 'zacian') return 'zaciancrowned';
             if (item === 'rustedshield' && species === 'zamazenta') return 'zamazentacrowned';
-            if (item === 'redorb' && species === 'groudon') return 'groudonprimal';
-            if (item === 'blueorb' && species === 'kyogre') return 'kyogreprimal';
             if (item === 'wellspringmask') return (species === 'ogerpon' ? 'ogerponwellspring' : null);
             if (item === 'hearthflamemask') return (species === 'ogerpon' ? 'ogerponhearthflame' : null);
             if (item === 'cornerstonemask') return (species === 'ogerpon' ? 'ogerponcornerstone' : null);
@@ -606,11 +604,13 @@
                 }
 
                 // Priority 2: Mega Evolutions
-                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || (it.endsWith('dorb')) || (it.endsWith('eorb'))) && it !== 'eviolite' && it !== 'meteorite') {
                     let suffix = '-Mega';
                     if (it.endsWith('itex')) suffix = '-Mega-X';
                     else if (it.endsWith('itey')) suffix = '-Mega-Y';
                     else if (it.endsWith('itez')) suffix = '-Mega-Z';
+                    else if (it.endsWith('dorb')) suffix = '-Primal';
+                    else if (it.endsWith('eorb')) suffix = '-Primal';
 
                     const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
                     const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);
@@ -669,6 +669,7 @@
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
                 else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
+                else if (img.src.includes('primal') || img.src.includes('primal')) suffix = 'primal';
 
                 // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
