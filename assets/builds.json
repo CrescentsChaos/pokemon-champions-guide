@@ -4877,5 +4877,21 @@
             "652"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "655",
+        "pokemon": "Vivillon",
+        "build": "Vivillon @ Choice Scarf  \nAbility: Compound Eyes  \nEVs: 192 Def / 40 SpA / 24 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Sleep Powder  \n- Hurricane  \n- Rage Powder  \n- Tailwind",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "656",
+        "pokemon": "Maushold",
+        "build": "Maushold @ Chople Berry  \nAbility: Friend Guard  \nEVs: 252 HP / 160 Def / 96 SpD  \nImpish Nature  \n- Follow Me  \n- Super Fang  \n- Feint  \n- Protect",
+        "synergy": [
+            "655"
+        ],
+        "format": "Doubles"
     }
 ]
