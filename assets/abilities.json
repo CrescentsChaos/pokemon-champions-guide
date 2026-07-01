@@ -928,80 +928,80 @@
     "description": "Maximizes the number of times multistrike moves hit."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Slow Start",
+    "description": "For five turns, the Pokémon's Attack and Speed stats are halved."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Slush Rush",
+    "description": "Boosts the Pokémon's Speed stat in snow."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Sniper",
+    "description": "If the Pokémon's attack lands a critical hit, the attack is powered up even further."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Snow Cloak",
+    "description": "Boosts the Pokémon's evasiveness in snow."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Snow Warning",
+    "description": "Snowstorm blows when the Pokémon enters battle. As of X & Y, this lasts 5 turns."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Solar Power",
+    "description": "In harsh sunlight, the Pokémon's Sp. Atk stat is boosted, but its HP decreases every turn."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Solid Rock",
+    "description": "Reduces the power of supereffective attacks that hit the Pokémon."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Soul-Heart",
+    "description": "Boosts the Pokémon's Sp. Atk stat every time another Pokémon faints."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Soundproof",
+    "description": "Soundproofing gives the Pokémon full immunity to all sound-based moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Speed Boost",
+    "description": "The Pokémon's Speed stat is boosted every turn."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Spicy Spray",
+    "description": "When the Pokémon takes damage from a move, it burns the attacker."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Stakeout",
+    "description": "Doubles the damage dealt to a target that has just switched into battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Stall",
+    "description": "The Pokémon is always the last to use its moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Stalwart",
+    "description": "Ignores the effects of opposing Pokémon's Abilities and moves that draw in moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Stamina",
+    "description": "Boosts the Defense stat when the Pokémon is hit by an attack."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Stance Change",
+    "description": "The Pokémon changes its form to Blade Forme when it uses an attack move and changes to Shield Forme when it uses King’s Shield."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Static",
+    "description": "The Pokémon is charged with static electricity and may paralyze attackers that make direct contact with it."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Steadfast",
+    "description": "The Pokémon's determination boosts its Speed stat every time it flinches."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Steam Engine",
+    "description": "Boosts the Speed stat drastically when the Pokémon is hit by a Fire- or Water-type move."
   },
   {
     "name": "",
