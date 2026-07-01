@@ -4763,5 +4763,39 @@
         "build": "Gyarados @ Gyaradosite  \nAbility: Intimidate  \nEVs: 148 HP / 120 Atk / 240 Spe  \nAdamant Nature  \n- Waterfall  \n- Lash Out  \n- Dragon Dance  \n- Protect",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "641",
+        "pokemon": "Decidueye-Hisui",
+        "build": "Decidueye-Hisui @ Scope Lens  \nAbility: Scrappy  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Leaf Blade  \n- Triple Arrows  \n- Sucker Punch  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "642",
+        "pokemon": "Zoroark-Hisui",
+        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Flamethrower  \n- Icy Wind  \n- Psychic",
+        "synergy": [
+            "641"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "643",
+        "pokemon": "Aurorus",
+        "build": "Aurorus @ Sitrus Berry  \nAbility: Snow Warning  \nEVs: 64 Def / 252 SpA / 144 SpD / 48 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Blizzard  \n- Ancient Power  \n- Freeze-Dry",
+        "synergy": [
+            "642"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "644",
+        "pokemon": "Scizor",
+        "build": "Scizor @ Scizorite  \nAbility: Technician  \nEVs: 208 HP / 252 Atk / 48 SpD  \nAdamant Nature  \n- Bullet Punch  \n- Swords Dance  \n- Bug Bite  \n- Protect",
+        "synergy": [
+            "643"
+        ],
+        "format": "Doubles"
     }
 ]

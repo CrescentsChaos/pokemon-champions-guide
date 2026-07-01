@@ -580,116 +580,352 @@
     "description": "Changes the Pokémon’s type depending on the terrain."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Mind’s Eye",
+    "description": "The Pokémon ignores changes to opponents' evasiveness, its accuracy can't be lowered, and it can hit Ghost types with Normal-type and Fighting-type moves."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Minus",
+    "description": "Boosts the Sp. Atk stat of the Pokémon if an ally with the Plus or Minus Ability is also in battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Mirror Armor",
+    "description": "Bounces back only the stat-lowering effects that the Pokémon receives."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Misty Surge",
+    "description": "Turns the ground into Misty Terrain when the Pokémon enters a battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Mold Breaker",
+    "description": "The Pokémon's moves are not affected by foe’s abilities during battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Moody",
+    "description": "Every turn, one of the Pokémon's stats will be boosted sharply but another stat will be lowered."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Motor Drive",
+    "description": "The Pokémon takes no damage when hit by Electric-type moves. Instead, its Speed stat is boosted."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Moxie",
+    "description": "When the Pokémon knocks out a target, it shows moxie, which boosts its Attack stat."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Multiscale",
+    "description": "Reduces damage afflicted to the Pokémon by 50% if at maximum HP."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Multitype",
+    "description": "Changes the Pokémon's type to match the plate it holds."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Mummy",
+    "description": "Contact with the Pokémon changes the attacker’s Ability to Mummy."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Mycelium Might",
+    "description": "The Pokémon will always act more slowly when using status moves, but these moves will be unimpeded by the Ability of the target."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Natural Cure",
+    "description": "The Pokémon's status conditions are cured when it switches out."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Neuroforce",
+    "description": "Powers up moves that are super effective."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Neutralizing Gas",
+    "description": "While the Pokémon is in the battle, the effects of all other Pokémon's Abilities will be nullified or will not be triggered."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "No Guard",
+    "description": "The accuracy of all moves known by this Pokémon and all Pokémon targeting this Pokémon raises to 100%"
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Normalize",
+    "description": "All the Pokémon’s moves become Normal type. The power of those moves is boosted a little."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Oblivious",
+    "description": "The Pokémon is oblivious, keeping it from being infatuated, falling for taunts, or being affected by Intimidate."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Opportunist",
+    "description": "If an opponent's stat is boosted, the Pokémon seizes the opportunity to boost the same stat for itself."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Orichalcum Pulse",
+    "description": "Turns the sunlight harsh when the Pokémon enters a battle. The ancient pulse thrumming through the Pokémon also boosts its Attack stat in harsh sunlight."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Overcoat",
+    "description": "The Pokémon takes no damage from sandstorms. It is also protected from the effects of powders and spores."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Overgrow",
+    "description": "Powers up Grass-type moves when the Pokémon's HP is low."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Own Tempo",
+    "description": "The Pokémon sticks to its own tempo, preventing it from becoming confused or being affected by Intimidate."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Parental Bond",
+    "description": "Parent and child each attacks."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Pastel Veil",
+    "description": "Protects the Pokémon and its ally Pokémon from being poisoned."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Perish Body",
+    "description": "When hit by a move that makes direct contact, the Pokémon and the attacker will faint after three turns unless they switch out of battle."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Pickpocket",
+    "description": "The Pokémon steals the held item from attackers that made direct contact with it."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Pickup",
+    "description": "The Pokémon may pick up an item another Pokémon used during a battle. It may pick up items outside of battle, too."
+  },
+  {
+    "name": "Piercing Drill",
+    "description": "When the Pokémon uses contact moves, it can hit even targets that are protecting themselves, dealing 1/4 of the damage that the move would otherwise deal. Everything aside from the target's protective effects is still triggered."
+  },
+  {
+    "name": "Pixilate",
+    "description": "Normal-type moves become Fairy-type moves. The power of those moves is boosted a little."
+  },
+  {
+    "name": "Plus",
+    "description": "Boosts the Sp. Atk stat of the Pokémon if an ally with the Plus or Minus Ability is also in battle."
+  },
+  {
+    "name": "Poison Heal",
+    "description": "If poisoned, the Pokémon has its HP restored instead of taking damage."
+  },
+  {
+    "name": "Poison Point",
+    "description": "Contact with the Pokémon may poison the attacker."
+  },
+  {
+    "name": "Poison Puppeteer",
+    "description": "Pokémon poisoned by Pecharunt's moves will also become confused."
+  },
+  {
+    "name": "Poison Touch",
+    "description": "May poison a target when the Pokémon makes contact."
+  },
+  {
+    "name": "Power Construct",
+    "description": "Other Cells gather to aid when its HP becomes half or less. Then the Pokémon changes its form to Complete Forme."
+  },
+  {
+    "name": "Power Spot",
+    "description": "Just being next to the Pokémon powers up moves."
+  },
+  {
+    "name": "Power of Alchemy",
+    "description": "The Pokémon copies the Ability of a defeated ally."
+  },
+  {
+    "name": "Prankster",
+    "description": "Gives priority to the Pokémon's status moves."
+  },
+  {
+    "name": "Pressure",
+    "description": "When the Pokémon is hit by a move, its PP is reduced by 2 instead of 1."
+  },
+  {
+    "name": "Primordial Sea",
+    "description": "The Pokémon changes the weather to nullify Fire-type attacks."
+  },
+  {
+    "name": "Prism Armor",
+    "description": "Reduces the power of supereffective attacks taken."
+  },
+  {
+    "name": "Propeller Tail",
+    "description": "Ignores the effects of opposing Pokémon's Abilities and moves that draw in moves."
+  },
+  {
+    "name": "Protean",
+    "description": "Before the Pokémon uses a move, it becomes a pure Pokémon of that type. This only works once per switch in."
+  },
+  {
+    "name": "Protosynthesis",
+    "description": "Boosts the Pokémon's most proficient stat in harsh sunlight or if the Pokémon is holding Booster Energy."
+  },
+  {
+    "name": "Psychic Surge",
+    "description": "Turns the ground into Psychic Terrain when the Pokémon enters a battle."
+  },
+  {
+    "name": "Punk Rock",
+    "description": "Boosts the power of sound-based moves. The Pokémon also takes half the damage from these kinds of moves."
+  },
+  {
+    "name": "Pure Power",
+    "description": "Using its pure power, the Pokémon doubles its Attack stat."
+  },
+  {
+    "name": "Purifying Salt",
+    "description": "The Pokémon's pure salt protects it from status conditions and halves the damage taken from Ghost-type moves."
+  },
+  {
+    "name": "Quark Drive",
+    "description": "Boosts the Pokémon's most proficient stat on Electric Terrain or if the Pokémon is holding Booster Energy."
+  },
+  {
+    "name": "Queenly Majesty",
+    "description": "Opponents are unable to use priority moves against the Pokémon or its allies."
+  },
+  {
+    "name": "Quick Draw",
+    "description": "Enables the Pokémon to move first occasionally."
+  },
+  {
+    "name": "Quick Feet",
+    "description": "Boosts the Speed stat if the Pokémon has a status condition."
+  },
+  {
+    "name": "RKS System",
+    "description": "Changes the Pokémon’s type to match the memory disc it holds."
+  },
+  {
+    "name": "Rain Dish",
+    "description": "The Pokémon gradually regains HP in rain."
+  },
+  {
+    "name": "Rattled",
+    "description": "The Pokémon gets scared when hit by a Dark-, Ghost-, or Bug-type attack or if intimidated, which boosts its Speed stat."
+  },
+  {
+    "name": "Receiver",
+    "description": "The Pokémon copies the Ability of a defeated ally."
+  },
+  {
+    "name": "Reckless",
+    "description": "Powers up moves that have recoil damage."
+  },
+  {
+    "name": "Refrigerate",
+    "description": "Normal-type moves become Ice-type moves. The power of those moves is boosted a little."
+  },
+  {
+    "name": "Regenerator",
+    "description": "The Pokémon has a little of its HP restored when withdrawn from battle."
+  },
+  {
+    "name": "Ripen",
+    "description": "Ripens Berries and doubles their effect."
+  },
+  {
+    "name": "Rivalry",
+    "description": "The Pokémon's competitive spirit makes it deal more damage to Pokémon of the same gender, but less damage to Pokémon of the opposite gender."
+  },
+  {
+    "name": "Rock Head",
+    "description": "Protects the Pokémon from recoil damage."
+  },
+  {
+    "name": "Rocky Payload",
+    "description": "Powers up Rock-type moves."
+  },
+  {
+    "name": "Rough Skin",
+    "description": "The Pokémon's rough skin damages attackers that make direct contact with it."
+  },
+  {
+    "name": "Run Away",
+    "description": "Enables a sure getaway from wild Pokémon."
+  },
+  {
+    "name": "Sand Force",
+    "description": "Boosts the power of Rock-, Ground-, and Steel-type moves in a sandstorm."
+  },
+  {
+    "name": "Sand Rush",
+    "description": "Boosts the Pokémon's Speed stat in a sandstorm."
+  },
+  {
+    "name": "Sand Spit",
+    "description": "The Pokémon creates a sandstorm when it's hit by an attack."
+  },
+  {
+    "name": "Sand Stream",
+    "description": "The Pokémon summons a sandstorm when it enters a battle."
+  },
+  {
+    "name": "Sand Veil",
+    "description": "Boosts the Pokémon's evasiveness in a sandstorm."
+  },
+  {
+    "name": "Sap Sipper",
+    "description": "The Pokémon takes no damage when hit by Grass-type moves. Instead, its Attack stat is boosted."
+  },
+  {
+    "name": "Schooling",
+    "description": "When it has a lot of HP, the Pokémon forms a powerful school. It stops schooling when its HP is low."
+  },
+  {
+    "name": "Scrappy",
+    "description": "The Pokémon can hit Ghost-type Pokémon with Normal- and Fighting-type moves. It is also unaffected by Intimidate."
+  },
+  {
+    "name": "Screen Cleaner",
+    "description": "When the Pokémon enters a battle, the effects of Light Screen, Reflect, and Aurora Veil are nullified for both opposing and ally Pokémon."
+  },
+  {
+    "name": "Seed Sower",
+    "description": "Turns the ground into Grassy Terrain when the Pokémon is hit by an attack."
+  },
+  {
+    "name": "Serene Grace",
+    "description": "Raises the likelihood of additional effects occurring when the Pokémon uses its moves."
+  },
+  {
+    "name": "Shadow Shield",
+    "description": "Reduces the amount of damage the Pokémon takes while its HP is full."
+  },
+  {
+    "name": "Shadow Tag",
+    "description": "The Pokémon steps on the opposing Pokémon's shadows to prevent them from fleeing or switching out."
+  },
+  {
+    "name": "Sharpness",
+    "description": "Powers up slicing moves."
+  },
+  {
+    "name": "Shed Skin",
+    "description": "The Pokémon may cure its own status conditions by shedding its skin."
+  },
+  {
+    "name": "Sheer Force",
+    "description": "Removes any additional effects from the Pokémon's moves, but increases the moves' power."
+  },
+  {
+    "name": "Shell Armor",
+    "description": "A hard shell protects the Pokémon from critical hits."
+  },
+  {
+    "name": "Shield Dust",
+    "description": "Protective dust shields the Pokémon from the additional effects of moves."
+  },
+  {
+    "name": "Shields Down",
+    "description": "When its HP drops to half or less, the Pokémon's shell breaks and it becomes aggressive."
+  },
+  {
+    "name": "Simple",
+    "description": "Doubles the effects of the Pokémon's stat changes."
+  },
+  {
+    "name": "Skill Link",
+    "description": "Maximizes the number of times multistrike moves hit."
   },
   {
     "name": "",
