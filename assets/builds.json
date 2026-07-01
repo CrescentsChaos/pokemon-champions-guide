@@ -4852,5 +4852,30 @@
             "650"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "652",
+        "pokemon": "Tyranitar",
+        "build": "Tyranitar @ Tyranitarite  \nAbility: Sand Stream  \nLevel: 50  \nTera Type: Rock  \nEVs: 176 HP / 128 Atk / 36 Def / 168 Spe  \nAdamant Nature  \n- Protect  \n- Rock Slide  \n- Knock Off  \n- Low Kick",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "653",
+        "pokemon": "Excadrill",
+        "build": "Excadrill @ Focus Sash  \nAbility: Sand Rush  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Earthquake  \n- Iron Head  \n- Rock Slide  \n- Protect",
+        "synergy": [
+            "652"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "654",
+        "pokemon": "Mimikyu",
+        "build": "Mimikyu @ Spell Tag  \nAbility: Disguise  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Shadow Claw  \n- Shadow Sneak  \n- Play Rough  \n- Protect",
+        "synergy": [
+            "652"
+        ],
+        "format": "Doubles"
     }
 ]
