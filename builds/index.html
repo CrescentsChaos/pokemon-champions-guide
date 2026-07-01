@@ -109,8 +109,8 @@
 
         .filter-text-input {
             padding: 10px 16px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             color: white;
             font-size: 0.85rem;
@@ -123,13 +123,13 @@
         }
 
         .filter-text-input::placeholder {
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
             font-weight: 400;
         }
 
         .filter-text-input:focus {
             border-color: #e63946;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
         }
     </style>
 </head>
@@ -310,10 +310,15 @@
                         <option value="desc">High → Low</option>
                         <option value="asc">Low → High</option>
                     </select>
-                    <button id="champions-only-btn" class="secondary-btn" style="max-width: 220px; white-space: nowrap;">SHOW CHAMPIONS ELIGIBLE</button>
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
-                        <input type="checkbox" id="champions-eligible-filter" style="accent-color: var(--primary-red); width: 14px; height: 14px;">
-                        <span style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS ELIGIBLE ONLY</span>
+                    <button id="champions-only-btn" class="secondary-btn"
+                        style="max-width: 220px; white-space: nowrap;">SHOW CHAMPIONS ELIGIBLE</button>
+                    <label
+                        style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
+                        <input type="checkbox" id="champions-eligible-filter"
+                            style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                        <span
+                            style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS
+                            ELIGIBLE ONLY</span>
                     </label>
                 </div>
             </div>
@@ -445,7 +450,7 @@
                 try {
                     const aResp = await fetch('../assets/abilities.json').then(r => r.json());
                     allAbilities = aResp;
-                    allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
+                    allAbilities.forEach(a => { abilitiesMap[(a.name || a.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '')] = a; });
                 } catch (e) { console.warn('Failed to load abilities.json', e); }
 
                 // Create high-speed lookup maps
@@ -537,6 +542,8 @@
             // Form-altering items
             if (item === 'rustedsword' && species === 'zacian') return 'zaciancrowned';
             if (item === 'rustedshield' && species === 'zamazenta') return 'zamazentacrowned';
+            if (item === 'redorb' && species === 'groudon') return 'groudonprimal';
+            if (item === 'blueorb' && species === 'kyogre') return 'kyogreprimal';
             if (item === 'wellspringmask') return (species === 'ogerpon' ? 'ogerponwellspring' : null);
             if (item === 'hearthflamemask') return (species === 'ogerpon' ? 'ogerponhearthflame' : null);
             if (item === 'cornerstonemask') return (species === 'ogerpon' ? 'ogerponcornerstone' : null);

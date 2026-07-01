@@ -17580,6 +17580,35 @@
     "Total_Stats": 670
   },
   {
+    "id": 382,
+    "Name": "Kyogre-Primal",
+    "Height(m)": 4.5,
+    "Weight{kg}": 352,
+    "HP": 100,
+    "Attack": 150,
+    "Defense": 90,
+    "Sp.Atk": 180,
+    "Sp.Def": 160,
+    "Speed": 90,
+    "Type_1": "Water",
+    "Type_2": "Fire",
+    "Is_Legendary": 1,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Undiscovered",
+    "Egg_Group_2": "",
+    "Generation": "Gen 7",
+    "Capture_Rate": 3,
+    "Base_Happiness": 0,
+    "Is_Baby": 0,
+    "Egg_Cycles": 120,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 770,
+    "Ability": [
+      "Primordial Sea"
+    ]
+  },
+  {
     "id": 383,
     "Name": "Groudon",
     "Height(m)": 3.5,
@@ -17604,6 +17633,35 @@
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 670
+  },
+  {
+    "id": 383,
+    "Name": "Groudon-Primal",
+    "Height(m)": 3.5,
+    "Weight{kg}": 950,
+    "HP": 100,
+    "Attack": 180,
+    "Defense": 160,
+    "Sp.Atk": 150,
+    "Sp.Def": 90,
+    "Speed": 90,
+    "Type_1": "Ground",
+    "Type_2": "Fire",
+    "Is_Legendary": 1,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Undiscovered",
+    "Egg_Group_2": "",
+    "Generation": "Gen 7",
+    "Capture_Rate": 3,
+    "Base_Happiness": 0,
+    "Is_Baby": 0,
+    "Egg_Cycles": 120,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 770,
+    "Ability": [
+      "Desolate Land"
+    ]
   },
   {
     "id": 384,
