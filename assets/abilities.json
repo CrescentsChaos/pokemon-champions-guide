@@ -1004,6 +1004,162 @@
     "description": "Boosts the Speed stat drastically when the Pokémon is hit by a Fire- or Water-type move."
   },
   {
+    "name": "Steelworker",
+    "description": "Powers up Steel-type moves."
+  },
+  {
+    "name": "Steely Spirit",
+    "description": "Powers up the Steel-type moves of the Pokémon and its allies."
+  },
+  {
+    "name": "Stench",
+    "description": "By releasing a stench when attacking, the Pokémon may cause the target to flinch."
+  },
+  {
+    "name": "Sticky Hold",
+    "description": "The Pokémon's held items cling to its sticky body and cannot be removed by other Pokémon."
+  },
+  {
+    "name": "Storm Drain",
+    "description": "The Pokémon draws in all Water-type moves. Instead of taking damage from them, its Sp. Atk stat is boosted."
+  },
+  {
+    "name": "Strong Jaw",
+    "description": "The Pokémon's strong jaw boosts the power of its biting moves."
+  },
+  {
+    "name": "Sturdy",
+    "description": "The Pokémon cannot be knocked out by a single hit as long as its HP is full. One-hit KO moves will also fail to knock it out."
+  },
+  {
+    "name": "Suction Cups",
+    "description": "The Pokémon uses suction cups to stay in one spot. This protects it from moves and items that would force it to switch out."
+  },
+  {
+    "name": "Super Luck",
+    "description": "The Pokémon is so lucky that the critical-hit ratios of its moves are boosted."
+  },
+  {
+    "name": "Supersweet Syrup",
+    "description": "Lowers the evasion of opposing Pokémon by 1 stage when first sent into battle."
+  },
+  {
+    "name": "Supreme Overlord",
+    "description": "When the Pokémon enters a battle, its Attack and Sp. Atk stats are slightly boosted for each of the allies in its party that have already been defeated."
+  },
+  {
+    "name": "Surge Surfer",
+    "description": "Doubles the Pokémon's Speed stat on Electric Terrain."
+  },
+  {
+    "name": "Swarm",
+    "description": "Powers up Bug-type moves when the Pokémon's HP is low."
+  },
+  {
+    "name": "Sweet Veil",
+    "description": "Prevents the Pokémon and its allies from falling asleep."
+  },
+  {
+    "name": "Swift Swim",
+    "description": "Boosts the Pokémon's Speed stat in rain."
+  },
+  {
+    "name": "Synchronize",
+    "description": "If the Pokémon is burned, paralyzed, or poisoned by another Pokémon, that Pokémon will be inflicted with the same status condition."
+  },
+  {
+    "name": "Sword of Ruin",
+    "description": "The power of the Pokémon's ruinous sword lowers the Defense stats of all Pokémon except itself."
+  },
+  {
+    "name": "Symbiosis",
+    "description": "The Pokémon passes its held item to an ally that has used up an item."
+  },
+  {
+    "name": "Tablets of Ruin",
+    "description": "The power of the Pokémon's ruinous wooden tablets lowers the Attack stats of all Pokémon except itself."
+  },
+  {
+    "name": "Tangled Feet",
+    "description": "Boosts the Pokémon's evasiveness if it is confused."
+  },
+  {
+    "name": "Tangling Hair",
+    "description": "Contact with the Pokémon lowers the attacker's Speed stat."
+  },
+  {
+    "name": "Technician",
+    "description": "Powers up weak moves so the Pokémon can deal more damage with them."
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
+    "name": "",
+    "description": ""
+  },
+  {
     "name": "",
     "description": ""
   },
