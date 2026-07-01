@@ -1389,7 +1389,7 @@
                 try {
                     const aResp = await fetch('../assets/abilities.json' + cb).then(r => r.json());
                     allAbilities = aResp;
-                    allAbilities.forEach(a => { abilitiesMap[(a.name||a.Name||'').toLowerCase().replace(/[^a-z0-9]/g,'')] = a; });
+                    allAbilities.forEach(a => { abilitiesMap[(a.name || a.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '')] = a; });
                 } catch (e) { console.warn('Failed to load abilities.json', e); }
 
                 Object.keys(natureMap).forEach(n => {
@@ -2436,7 +2436,7 @@
             try {
                 const abilityKey = (abilityIn.value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                 abilityIn.title = abilitiesMap[abilityKey] ? abilitiesMap[abilityKey].description : '';
-            } catch (e) {}
+            } catch (e) { }
 
             document.getElementById('tera-input').value = p.tera || '';
 
