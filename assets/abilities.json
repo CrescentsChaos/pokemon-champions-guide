@@ -1,91 +1,87 @@
 [
   {
     "name": "Adaptability",
-    "description": "Increases the Same Type Attack Bonus (STAB) from 1.5x to 2x."
+    "description": "increases the Same Type Attack Bonus (STAB) multiplier from the standard 1.5x to 2.0x."
   },
   {
     "name": "Aerilate",
-    "description": "Normal-type moves become Flying-type moves. The power of those moves is boosted a little."
+    "description": "Converts the user's Normal-type moves into Flying-type moves. Grants a 1.2x power boost to those converted moves."
   },
   {
     "name": "Aftermath",
-    "description": "Damages the attacker if it knocks out the Pokémon with a move that makes direct contact."
+    "description": "Damages an attacking opponent if they knock out the user with a contact move. Deducts exactly 1/4 (25%) of the attacker's maximum HP."
   },
   {
     "name": "Air Lock",
-    "description": "Eliminates the effects of weather."
+    "description": "Eliminates all visual and mechanical effects of weather while the user is on the field. Weather remains active in the background (turns still count down), but no active modifiers apply."
   },
   {
     "name": "Analytic",
-    "description": "Boosts the power of the Pokémon's move if it is the last to act that turn."
+    "description": "Powers up the user's moves if it attacks last in the current turn. Grants a 1.3x power boost to any move executed."
   },
   {
     "name": "Anger Point",
-    "description": "The Pokémon is angered when it takes a critical hit, and that maxes its Attack stat."
+    "description": "Maximizes the user's Attack stat instantly when it is struck by a critical hit. Raises Attack straight to +6 stages (a 4x multiplier), regardless of its current stage."
   },
   {
     "name": "Anger Shell",
-    "description": "When an attack causes its HP to drop to half or less, the Pokémon gets angry. This lowers its Defense and Sp. Def stats but boosts its Attack, Sp. Atk, and Speed stats."
+    "description": "Triggers when an attacking move drops the user's HP from above half to 50% or less. Raises Attack, Sp. Atk, and Speed by 1 stage; lowers Defense and Sp. Def by 1 stage."
   },
   {
     "name": "Anticipation",
-    "description": "The Pokémon can sense an opposing Pokémon's dangerous moves."
+    "description": "Shudders upon entering battle if an opponent holds a dangerous move. Activates if a foe has a super-effective move, a One-Hit KO move, or Self-Destruct/Explosion."
   },
   {
     "name": "Arena Trap",
-    "description": "Prevents opposing Pokémon from fleeing from battle."
+    "description": "Prevents opposing Pokémon from manually switching out or fleeing from battle. Only affects grounded targets. Airborne targets (Flying-types, Ghost-types Levitate, Magnet Rise) are completely immune."
   },
   {
     "name": "Armor Tail",
-    "description": "The mysterious tail covering the Pokémon's head makes opponents unable to use priority moves against the Pokémon or its allies."
+    "description": "Blocks opposing priority moves directed at the user or its ally."
   },
   {
     "name": "Aroma Veil",
-    "description": "Protects the Pokémon and its allies from effects that prevent the use of moves."
+    "description": "Protects the user and its allies from moves that limit their mental choices. Grants complete immunity to Taunt, Torment, Encore, Disable, Cursed Body, Heal Block, and Infatuation."
   },
   {
     "name": "As One (Glastrier)",
-    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Glastrier's Chilling Neigh Ability."
+    "description": "Combines two abilities into one exclusively for Calyrex-Ice: Unnerve and Chilling Neigh. Prevents opponents from eating berries and raises the user's Attack by 1 stage whenever it knocks out a Pokémon."
   },
   {
     "name": "As One (Spectrier)",
-    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Spectrier's Grim Neigh Ability."
-  },
-  {
-    "name": "Asset Gab",
-    "description": "This Ability combines the effects of both Calyrex's Unnerve Ability and Spectrier's Grim Neigh Ability."
+    "description": "Combines two abilities into one exclusively for Calyrex-Shadow: Unnerve and Grim Neigh. Prevents opponents from eating berries and raises the user's Sp. Atk by 1 stage whenever it knocks out a Pokémon."
   },
   {
     "name": "Aura Break",
-    "description": "The effects of “Aura” Abilities are reversed to lower the power of affected moves."
+    "description": "Inverts the effects of Aura abilities (Dark Aura and Fairy Aura) while the user is active on the field. Instead of boosting moves by 1.33x, it forces those abilities to reduce Dark- and Fairy-type moves by 25% for everyone."
   },
   {
     "name": "Bad Dreams",
-    "description": "Damages opposing Pokémon that are asleep."
+    "description": "Damages sleeping opponents at the end of every turn while Darkrai is active on the field. Deducts exactly 1/8 (12.5%) of the sleeping target's maximum HP each turn."
   },
   {
     "name": "Ball Fetch",
-    "description": "If the Pokémon is not holding an item, it will fetch the Poké Ball from the first failed throw of the battle."
+    "description": "Retrieves the first Poké Ball that fails to catch a wild Pokémon if the user is not holding an item. Automatically picks up the failed ball and equips it into the user's item slot after the battle phase."
   },
   {
     "name": "Battery",
-    "description": "Powers up ally Pokémon's special moves."
+    "description": "Powers up special moves used by the user's allies. Grants a 1.3x power boost to the Special Attack damage of any partner on the field."
   },
   {
     "name": "Battle Armor",
-    "description": "Hard armor protects the Pokémon from critical hits."
+    "description": "Prevents the user from receiving critical hits from any attacking moves."
   },
   {
     "name": "Battle Bond",
-    "description": "When the Pokémon knocks out a target, its bond with its Trainer is strengthened, and its Attack, Sp. Atk, and Speed stats are boosted."
+    "description": "Raises Attack, Sp. Atk, and Speed by 1 stage each the first time the user secures a KO."
   },
   {
     "name": "Beads of Ruin",
-    "description": "The power of the Pokémon's ruinous beads lowers the Sp. Def stats of all Pokémon except itself."
+    "description": "Lowers the Special Defense stat of every other Pokémon on the field when the user enters the battle. Decreases the Sp. Def of all allies and opponents except itself by exactly 25%."
   },
   {
     "name": "Beast Boost",
-    "description": "The Pokémon boosts its most proficient stat each time it knocks out a Pokémon."
+    "description": "Raises the user's highest raw stat by 1 stage whenever it knocks out a Pokémon. Determines the boosted stat based on current, modified values (accounting for EVs/IVs and Natures, but excluding active stat stages or item boosts like Choice Band)."
   },
   {
     "name": "Berserk",
