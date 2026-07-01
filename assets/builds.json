@@ -4806,5 +4806,12 @@
             "644"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "646",
+        "pokemon": "Palafin",
+        "build": "Palafin @ Leftovers  \nAbility: Zero to Hero  \nEVs: 252 HP / 252 Atk / 4 Spe  \nAdamant Nature  \n- Jet Punch  \n- Bulk Up  \n- Wave Crash  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
