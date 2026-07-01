@@ -1184,19 +1184,71 @@
     "description": "The power of the Pokémon's ruinous vessel lowers the Sp. Atk stats of all Pokémon except itself."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Victory Star",
+    "description": "Boosts the accuracy of its allies and itself."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Vital Spirit",
+    "description": "The Pokémon is full of vitality, and that prevents it from falling asleep."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Volt Absorb",
+    "description": "If hit by an Electric-type move, the Pokémon has its HP restored instead of taking damage."
   },
   {
-    "name": "",
-    "description": ""
+    "name": "Wandering Spirit",
+    "description": "The Pokémon exchanges Abilities with a Pokémon that hits it with a move that makes direct contact."
+  },
+  {
+    "name": "Water Absorb",
+    "description": "If hit by a Water-type move, the Pokémon has its HP restored instead of taking damage."
+  },
+  {
+    "name": "Water Bubble",
+    "description": "Lowers the power of Fire-type moves that hit the Pokémon and prevents it from being burned."
+  },
+  {
+    "name": "Water Compaction",
+    "description": "Boosts the Defense stat sharply when the Pokémon is hit by a Water-type move."
+  },
+  {
+    "name": "Water Veil",
+    "description": "The Pokémon's water veil prevents it from being burned."
+  },
+  {
+    "name": "Weak Armor",
+    "description": "The Pokémon's Defense stat is lowered when it takes damage from physical moves, but its Speed stat is sharply boosted."
+  },
+  {
+    "name": "Well-Baked Body",
+    "description": "The Pokémon takes no damage when hit by Fire-type moves. Instead, its Defense stat is sharply boosted."
+  },
+  {
+    "name": "White Smoke",
+    "description": "The Pokémon is protected by its white smoke, which prevents other Pokémon from lowering its stats."
+  },
+  {
+    "name": "Wimp Out",
+    "description": "The Pokémon cowardly switches out when its HP becomes half or less."
+  },
+  {
+    "name": "Wind Power",
+    "description": "The Pokémon becomes charged when it is hit by a wind move, boosting the power of the next Electric-type move the Pokémon uses."
+  },
+  {
+    "name": "Wind Rider",
+    "description": "Boosts the Pokémon's Attack stat if Tailwind takes effect or if the Pokémon is hit by a wind move. The Pokémon also takes no damage from wind moves."
+  },
+  {
+    "name": "Wonder Guard",
+    "description": "Its mysterious power only lets supereffective moves hit the Pokémon."
+  },
+  {
+    "name": "Wonder Skin",
+    "description": "Makes status moves more likely to miss the Pokémon."
+  },
+  {
+    "name": "Zen Mode",
+    "description": "Changes the Pokémon’s shape when HP is half or less."
   }
 ]
