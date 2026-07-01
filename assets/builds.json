@@ -4893,5 +4893,71 @@
             "655"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "657",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 252 HP / 184 Def / 72 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Weather Ball  \n- Hypnosis  \n- Protect  \n- Perish Song",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "658",
+        "pokemon": "Gengar",
+        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 240 HP / 220 SpD / 48 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
+        "synergy": [
+            "657"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "659",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan @ Kangaskhanite  \nAbility: Scrappy  \nEVs: 252 HP / 252 Atk / 4 Def  \nAdamant Nature  \n- Double-Edge  \n- Low Kick  \n- Ice Punch  \n- Fake Out",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "660",
+        "pokemon": "Slowking-Galar",
+        "build": "Slowking-Galar @ Colbur Berry  \nAbility: Regenerator  \nEVs: 252 HP / 128 Def / 128 SpD  \nSassy Nature  \nIVs: 0 Atk  \n- Acid Spray  \n- Snarl  \n- Heal Pulse  \n- Trick Room",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "661",
+        "pokemon": "Politoed",
+        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 224 HP / 124 Def / 160 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Encore  \n- Psych Up  \n- Rain Dance",
+        "synergy": [
+            "660"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "662",
+        "pokemon": "Blastoise",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nEVs: 88 HP / 252 SpA / 168 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Water Spout  \n- Dark Pulse  \n- Shell Smash  \n- Protect",
+        "synergy": [
+            "660"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "663",
+        "pokemon": "Lopunny",
+        "build": "Lopunny @ Lopunnite  \nAbility: Limber  \nEVs: 128 HP / 128 Def / 252 Spe  \nJolly Nature  \n- Fake Out  \n- Close Combat  \n- Encore  \n- Healing Wish",
+        "synergy": [
+            "660"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "664",
+        "pokemon": "Sylveon",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 216 HP / 212 Def / 80 SpA  \nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Moonblast  \n- Calm Mind  \n- Protect",
+        "synergy": [
+            "660"
+        ],
+        "format": "Doubles"
     }
 ]
