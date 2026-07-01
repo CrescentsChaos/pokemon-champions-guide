@@ -4959,5 +4959,12 @@
             "660"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "665",
+        "pokemon": "Lycanroc-Dusk",
+        "build": "Lycanroc-Dusk @ Focus Sash  \nAbility: Tough Claws  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Close Combat  \n- Accelerock  \n- Rock Slide  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
