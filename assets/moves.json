@@ -21,7 +21,10 @@
     "type": "Fighting",
     "generation": "Generation I",
     "short_descripton": "Has an increased chance for a critical hit.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Double Slap",
@@ -33,7 +36,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Hits 2-5 times in one turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Comet Punch",
@@ -45,7 +51,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Hits 2-5 times in one turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Mega Punch",
@@ -57,7 +66,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Pay Day",
@@ -165,7 +177,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Raises the user's Attack by two stages.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Dance"
+    ]
   },
   {
     "name": "Cut",
@@ -405,7 +420,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Has a 30% chance to paralyze the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Wrap",
@@ -444,7 +462,7 @@
     "damage_class": "Physical"
   },
   {
-    "name": "Double Edge",
+    "name": "Double-Edge",
     "id": 38,
     "accuracy": 100,
     "pp": 15,
@@ -453,7 +471,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "User receives 1/3 the damage inflicted in recoil.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Tail Whip",
@@ -549,7 +570,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Sing",
@@ -597,7 +621,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Disables the target's last used move for 1-8 turns.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Mental"
+    ]
   },
   {
     "name": "Acid",
@@ -705,7 +732,10 @@
     "type": "Ice",
     "generation": "Generation I",
     "short_descripton": "Has a 10% chance to freeze the target.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Wind"
+    ]
   },
   {
     "name": "Psybeam",
@@ -753,7 +783,8 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "User foregoes its next turn to recharge.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": []
   },
   {
     "name": "Peck",
@@ -1089,7 +1120,10 @@
     "type": "Ground",
     "generation": "Generation I",
     "short_descripton": "User digs underground, dodging all attacks, and hits next turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Toxic",
@@ -1869,7 +1903,10 @@
     "type": "Psychic",
     "generation": "Generation I",
     "short_descripton": "User sleeps for two turns, completely healing itself.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Healing"
+    ]
   },
   {
     "name": "Rock Slide",
@@ -2073,7 +2110,10 @@
     "type": "Normal",
     "generation": "Generation Ii",
     "short_descripton": "Has a 30% chance to make the target flinch.  Only works if the user is sleeping.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Curse",
@@ -2097,7 +2137,10 @@
     "type": "Normal",
     "generation": "Generation Ii",
     "short_descripton": "Inflicts more damage when the user has less HP remaining, with a maximum of 200 power.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Conversion 2",
@@ -2349,7 +2392,10 @@
     "type": "Ice",
     "generation": "Generation Ii",
     "short_descripton": "Has a 100% chance to lower the target's Speed by one stage.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Wind"
+    ]
   },
   {
     "name": "Detect",
@@ -2553,7 +2599,10 @@
     "type": "Normal",
     "generation": "Generation Ii",
     "short_descripton": "Target falls in love if it has the opposite gender, and has a 50% chance to refuse attacking the user.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Mental"
+    ]
   },
   {
     "name": "Sleep Talk",
@@ -2721,7 +2770,10 @@
     "type": "Normal",
     "generation": "Generation Ii",
     "short_descripton": "Forces the target to repeat its last used move every turn for 2 to 6 turns.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Mental"
+    ]
   },
   {
     "name": "Pursuit",
@@ -2769,7 +2821,10 @@
     "type": "Steel",
     "generation": "Generation Ii",
     "short_descripton": "Has a 30% chance to lower the target's Defense by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Metal Claw",
@@ -2961,7 +3016,10 @@
     "type": "Ghost",
     "generation": "Generation Ii",
     "short_descripton": "Has a 20% chance to lower the target's Special Defense by one stage.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Ball & Bomb"
+    ]
   },
   {
     "name": "Future Sight",
@@ -3081,7 +3139,10 @@
     "type": "Fire",
     "generation": "Generation Iii",
     "short_descripton": "Has a 10% chance to burn the target.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Wind"
+    ]
   },
   {
     "name": "Hail",
@@ -3153,7 +3214,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Power doubles if user is burned, paralyzed, or poisoned.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Focus Punch",
@@ -3225,7 +3289,10 @@
     "type": "Dark",
     "generation": "Generation Iii",
     "short_descripton": "For the next few turns, the target can only use damaging moves.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Mental"
+    ]
   },
   {
     "name": "Helping Hand",
@@ -3237,7 +3304,8 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Ally's next move inflicts half more damage.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": []
   },
   {
     "name": "Trick",
@@ -3357,7 +3425,10 @@
     "type": "Fighting",
     "generation": "Generation Iii",
     "short_descripton": "Destroys Reflect and Light Screen.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Yawn",
@@ -3645,7 +3716,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Poison Fang",
@@ -3657,7 +3731,10 @@
     "type": "Poison",
     "generation": "Generation Iii",
     "short_descripton": "Has a 50% chance to badly poison the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Crush Claw",
@@ -3669,7 +3746,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Has a 50% chance to lower the target's Defense by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Blast Burn",
@@ -3729,7 +3809,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "If there be weather, this move has doubled power and the weather's type.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Ball & Bomb"
+    ]
   },
   {
     "name": "Aromatherapy",
@@ -4029,7 +4112,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Raises the user's Attack by one stage.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Dragon Claw",
@@ -4041,7 +4127,11 @@
     "type": "Dragon",
     "generation": "Generation Iii",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Frenzy Plant",
@@ -4437,7 +4527,10 @@
     "type": "Fighting",
     "generation": "Generation Iv",
     "short_descripton": "Lowers the user's Defense and Special Defense by one stage after inflicting damage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Payback",
@@ -4449,7 +4542,10 @@
     "type": "Dark",
     "generation": "Generation Iv",
     "short_descripton": "Power is doubled if the target has already moved this turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Assurance",
@@ -4725,7 +4821,10 @@
     "type": "Fire",
     "generation": "Generation Iv",
     "short_descripton": "User takes 1/3 the damage inflicted in recoil.  Has a 10% chance to burn the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Force Palm",
@@ -4773,7 +4872,10 @@
     "type": "Poison",
     "generation": "Generation Iv",
     "short_descripton": "Has a 30% chance to poison the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Dark Pulse",
@@ -4785,7 +4887,10 @@
     "type": "Dark",
     "generation": "Generation Iv",
     "short_descripton": "Has a 20% chance to make the target flinch.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Pulse"
+    ]
   },
   {
     "name": "Night Slash",
@@ -4797,7 +4902,11 @@
     "type": "Dark",
     "generation": "Generation Iv",
     "short_descripton": "Has an increased chance for a critical hit.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Aqua Tail",
@@ -4836,7 +4945,7 @@
     "damage_class": "Special"
   },
   {
-    "name": "X Scissor",
+    "name": "X-Scissor",
     "id": 404,
     "accuracy": 100,
     "pp": 15,
@@ -4845,7 +4954,11 @@
     "type": "Bug",
     "generation": "Generation Iv",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Bug Buzz",
@@ -4989,7 +5102,10 @@
     "type": "Normal",
     "generation": "Generation Iv",
     "short_descripton": "User foregoes its next turn to recharge.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Nasty Plot",
@@ -5025,7 +5141,10 @@
     "type": "Ice",
     "generation": "Generation Iv",
     "short_descripton": "Inflicts double damage if the user takes damage before attacking this turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Ice Shard",
@@ -5049,7 +5168,11 @@
     "type": "Ghost",
     "generation": "Generation Iv",
     "short_descripton": "Has an increased chance for a critical hit.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Thunder Fang",
@@ -5061,7 +5184,11 @@
     "type": "Electric",
     "generation": "Generation Iv",
     "short_descripton": "Has a 10% chance to paralyze the target and a 10% chance to make the target flinch.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Biting"
+    ]
   },
   {
     "name": "Ice Fang",
@@ -5073,7 +5200,11 @@
     "type": "Ice",
     "generation": "Generation Iv",
     "short_descripton": "Has a 10% chance to freeze the target and a 10% chance to make the target flinch.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Biting"
+    ]
   },
   {
     "name": "Fire Fang",
@@ -5085,7 +5216,11 @@
     "type": "Fire",
     "generation": "Generation Iv",
     "short_descripton": "Has a 10% chance to burn the target and a 10% chance to make the target flinch.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Biting"
+    ]
   },
   {
     "name": "Shadow Sneak",
@@ -5097,7 +5232,10 @@
     "type": "Ghost",
     "generation": "Generation Iv",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Mud Bomb",
@@ -5121,7 +5259,10 @@
     "type": "Psychic",
     "generation": "Generation Iv",
     "short_descripton": "Has an increased chance for a critical hit.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Slicing"
+    ]
   },
   {
     "name": "Zen Headbutt",
@@ -5133,7 +5274,10 @@
     "type": "Psychic",
     "generation": "Generation Iv",
     "short_descripton": "Has a 20% chance to make the target flinch.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Mirror Shot",
@@ -5229,7 +5373,10 @@
     "type": "Fire",
     "generation": "Generation Iv",
     "short_descripton": "Has a 30% chance to burn the target.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "All Pokemon"
+    ]
   },
   {
     "name": "Leaf Storm",
@@ -5301,7 +5448,10 @@
     "type": "Steel",
     "generation": "Generation Iv",
     "short_descripton": "Has a 20% chance to make the target flinch.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Magnet Bomb",
@@ -5853,7 +6003,10 @@
     "type": "Fire",
     "generation": "Generation V",
     "short_descripton": "Inflicts regular damage.  Raises the user's Speed by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Coil",
@@ -5901,7 +6054,10 @@
     "type": "Dark",
     "generation": "Generation V",
     "short_descripton": "Calculates damage with the target's attacking stat.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Simple Beam",
@@ -5949,7 +6105,10 @@
     "type": "Normal",
     "generation": "Generation V",
     "short_descripton": "Has double power if it's used more than once per turn.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Echoed Voice",
@@ -6489,7 +6648,10 @@
     "type": "Normal",
     "generation": "Generation V",
     "short_descripton": "Hits 2-5 times in one turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Hurricane",
@@ -6789,7 +6951,10 @@
     "type": "Ghost",
     "generation": "Generation Vi",
     "short_descripton": "User vanishes, dodging all attacks, and hits next turn.  Hits through Protect and Detect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Trick Or Treat",
@@ -6813,7 +6978,10 @@
     "type": "Normal",
     "generation": "Generation Vi",
     "short_descripton": "Lowers the target's Attack and Special Attack by one stage.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Ion Deluge",
@@ -6921,7 +7089,10 @@
     "type": "Fairy",
     "generation": "Generation Vi",
     "short_descripton": "Drains 75% of the damage inflicted to heal the user.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Crafty Shield",
@@ -6993,7 +7164,10 @@
     "type": "Fairy",
     "generation": "Generation Vi",
     "short_descripton": "Has a 10% chance to lower the target's Attack by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Fairy Wind",
@@ -7257,7 +7431,10 @@
     "type": "Fairy",
     "generation": "Generation Vi",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "All Opponents"
+    ]
   },
   {
     "name": "Celebrate",
@@ -7284,7 +7461,7 @@
     "damage_class": "Status"
   },
   {
-    "name": "Baby Doll Eyes",
+    "name": "Baby-Doll Eyes",
     "id": 608,
     "accuracy": 100,
     "pp": 30,
@@ -7293,7 +7470,8 @@
     "type": "Fairy",
     "generation": "Generation Vi",
     "short_descripton": "Lowers the target's Attack by one stage.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": []
   },
   {
     "name": "Nuzzle",
@@ -8025,7 +8203,11 @@
     "type": "Grass",
     "generation": "Generation Vii",
     "short_descripton": "Requires a turn to charge before attacking.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Leafage",
@@ -8097,7 +8279,10 @@
     "type": "Dark",
     "generation": "Generation Vii",
     "short_descripton": "Prevents the target from using sound-based moves for two turns.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Pollen Puff",
@@ -9537,7 +9722,10 @@
     "type": "Ice",
     "generation": "Generation Viii",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Dual Wingbeat",
@@ -10065,7 +10253,11 @@
     "type": "Fire",
     "generation": "Generation IX",
     "short_descripton": "The user's HP is restored by 1/2 of the damage dealt by this move.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Slicing"
+    ]
   },
   {
     "name": "Shed Tail",
@@ -10353,7 +10545,10 @@
     "type": "Grass",
     "generation": "Generation IX",
     "short_descripton": "Increases the user's Speed stat.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Raging Bull",
@@ -10402,5 +10597,32 @@
     "generation": "Generation IX",
     "short_descripton": "Gives the target the Syrupy status for 3 turns.",
     "damage_class": "Special"
+  },
+  {
+    "name": "Temper Flare",
+    "id": 886,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 90,
+    "priority": 0,
+    "type": "Fire",
+    "generation": "Generation IX",
+    "short_descripton": "Has double power if the user's last move failed.",
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
+  },
+  {
+    "name": "Chilly Reception",
+    "id": 887,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 0,
+    "priority": 0,
+    "type": "Ice",
+    "generation": "Generation IX",
+    "short_descripton": "Sets up a snowstorm for 5 turns, then switches the user out.",
+    "damage_class": "Status"
   }
 ]
