@@ -1736,7 +1736,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation I",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Speed by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Speed by one stage.",
     "damage_class": "Special"
   },
   {
@@ -1748,7 +1748,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation I",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 20% chance to confuse the target.",
     "damage_class": "Physical"
   },
   {
@@ -1880,7 +1880,7 @@
     "priority": 0,
     "type": "Rock",
     "generation": "Generation I",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -1892,7 +1892,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation I",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 10% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -1928,7 +1928,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation I",
-    "short_descripton": "Has a $effect_chance% chance to burn, freeze, or paralyze the target.",
+    "short_descripton": "Has a 20% chance to burn, freeze, or paralyze the target.",
     "damage_class": "Special"
   },
   {
@@ -2060,7 +2060,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
+    "short_descripton": "Has a 10% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
     "damage_class": "Physical"
   },
   {
@@ -2072,7 +2072,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.  Only works if the user is sleeping.",
+    "short_descripton": "Has a 30% chance to make the target flinch.  Only works if the user is sleeping.",
     "damage_class": "Special"
   },
   {
@@ -2168,7 +2168,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to freeze the target.",
+    "short_descripton": "Has a 10% chance to freeze the target.",
     "damage_class": "Special"
   },
   {
@@ -2252,7 +2252,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has a 30% chance to poison the target.",
     "damage_class": "Special"
   },
   {
@@ -2264,7 +2264,7 @@
     "priority": 0,
     "type": "Ground",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -2276,7 +2276,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -2300,7 +2300,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 100% chance to paralyze the target.",
     "damage_class": "Special"
   },
   {
@@ -2348,7 +2348,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Speed by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Speed by one stage.",
     "damage_class": "Special"
   },
   {
@@ -2504,7 +2504,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 30% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -2528,7 +2528,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Defense by one stage.",
+    "short_descripton": "Has a 10% chance to raise the user's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -2648,7 +2648,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
+    "short_descripton": "Has a 50% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
     "damage_class": "Physical"
   },
   {
@@ -2672,7 +2672,7 @@
     "priority": 0,
     "type": "Fighting",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 100% chance to confuse the target.",
     "damage_class": "Physical"
   },
   {
@@ -2696,7 +2696,7 @@
     "priority": 0,
     "type": "Dragon",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 30% chance to paralyze the target.",
     "damage_class": "Special"
   },
   {
@@ -2768,7 +2768,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 30% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -2780,7 +2780,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Attack by one stage.",
+    "short_descripton": "Has a 10% chance to raise the user's Attack by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -2864,7 +2864,7 @@
     "priority": 0,
     "type": "Dragon",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 20% chance to make the target flinch.",
     "damage_class": "Special"
   },
   {
@@ -2900,7 +2900,7 @@
     "priority": 0,
     "type": "Dark",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 20% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -2948,7 +2948,7 @@
     "priority": 0,
     "type": "Rock",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to raise all of the user's stats by one stage.",
+    "short_descripton": "Has a 10% chance to raise all of the user's stats by one stage.",
     "damage_class": "Special"
   },
   {
@@ -2960,7 +2960,7 @@
     "priority": 0,
     "type": "Ghost",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 20% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -2984,7 +2984,7 @@
     "priority": 0,
     "type": "Fighting",
     "generation": "Generation Ii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -3080,7 +3080,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 10% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -3476,7 +3476,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to inflict a status effect which depends upon the terrain.",
+    "short_descripton": "Has a 30% chance to inflict a status effect which depends upon the terrain.",
     "damage_class": "Physical"
   },
   {
@@ -3536,7 +3536,7 @@
     "priority": 0,
     "type": "Psychic",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -3548,7 +3548,7 @@
     "priority": 0,
     "type": "Psychic",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Attack by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -3584,7 +3584,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Iii",
-    "short_descripton": "Has an increased chance for a critical hit and a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has an increased chance for a critical hit and a 10% chance to burn the target.",
     "damage_class": "Physical"
   },
   {
@@ -3620,7 +3620,7 @@
     "priority": 0,
     "type": "Grass",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -3656,7 +3656,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to badly poison the target.",
+    "short_descripton": "Has a 50% chance to badly poison the target.",
     "damage_class": "Physical"
   },
   {
@@ -3668,7 +3668,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -3704,7 +3704,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Attack by one stage.",
+    "short_descripton": "Has a 20% chance to raise the user's Attack by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -3716,7 +3716,7 @@
     "priority": 0,
     "type": "Ghost",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -3800,7 +3800,7 @@
     "priority": 0,
     "type": "Rock",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Speed by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Speed by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -3812,7 +3812,7 @@
     "priority": 0,
     "type": "Bug",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to raise all of the user's stats by one stage.",
+    "short_descripton": "Has a 10% chance to raise all of the user's stats by one stage.",
     "damage_class": "Special"
   },
   {
@@ -3884,7 +3884,7 @@
     "priority": 0,
     "type": "Bug",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 10% chance to confuse the target.",
     "damage_class": "Special"
   },
   {
@@ -3908,7 +3908,7 @@
     "priority": 0,
     "type": "Psychic",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 10% chance to make the target flinch.",
     "damage_class": "Special"
   },
   {
@@ -3956,7 +3956,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 30% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -4088,7 +4088,7 @@
     "priority": 0,
     "type": "Ground",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Speed by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Speed by one stage.",
     "damage_class": "Special"
   },
   {
@@ -4100,7 +4100,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Iii",
-    "short_descripton": "Has an increased chance for a critical hit and a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has an increased chance for a critical hit and a 10% chance to poison the target.",
     "damage_class": "Physical"
   },
   {
@@ -4124,7 +4124,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Iii",
-    "short_descripton": "User takes 1/3 the damage inflicted in recoil.  Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "User takes 1/3 the damage inflicted in recoil.  Has a 10% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -4220,7 +4220,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation Iii",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 20% chance to confuse the target.",
     "damage_class": "Special"
   },
   {
@@ -4724,7 +4724,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Iv",
-    "short_descripton": "User takes 1/3 the damage inflicted in recoil.  Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "User takes 1/3 the damage inflicted in recoil.  Has a 10% chance to burn the target.",
     "damage_class": "Physical"
   },
   {
@@ -4736,7 +4736,7 @@
     "priority": 0,
     "type": "Fighting",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 30% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -4772,7 +4772,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has a 30% chance to poison the target.",
     "damage_class": "Physical"
   },
   {
@@ -4784,7 +4784,7 @@
     "priority": 0,
     "type": "Dark",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 20% chance to make the target flinch.",
     "damage_class": "Special"
   },
   {
@@ -4832,7 +4832,7 @@
     "priority": 0,
     "type": "Flying",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Special"
   },
   {
@@ -4856,7 +4856,7 @@
     "priority": 0,
     "type": "Bug",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -4880,7 +4880,7 @@
     "priority": 0,
     "type": "Dragon",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 20% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -4928,7 +4928,7 @@
     "priority": 0,
     "type": "Fighting",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -4940,7 +4940,7 @@
     "priority": 0,
     "type": "Grass",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -4964,7 +4964,7 @@
     "priority": 0,
     "type": "Ground",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5060,7 +5060,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target and a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 10% chance to paralyze the target and a 10% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -5072,7 +5072,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to freeze the target and a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 10% chance to freeze the target and a 10% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -5084,7 +5084,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to burn the target and a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 10% chance to burn the target and a 10% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -5108,7 +5108,7 @@
     "priority": 0,
     "type": "Ground",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 30% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5132,7 +5132,7 @@
     "priority": 0,
     "type": "Psychic",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 20% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -5144,7 +5144,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 30% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5156,7 +5156,7 @@
     "priority": 0,
     "type": "Steel",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5168,7 +5168,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 20% chance to confuse the target.",
     "damage_class": "Physical"
   },
   {
@@ -5216,7 +5216,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 30% chance to paralyze the target.",
     "damage_class": "Special"
   },
   {
@@ -5228,7 +5228,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 30% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -5276,7 +5276,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Iv",
-    "short_descripton": "Has an increased chance for a critical hit and a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has an increased chance for a critical hit and a 10% chance to poison the target.",
     "damage_class": "Physical"
   },
   {
@@ -5288,7 +5288,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has a 30% chance to poison the target.",
     "damage_class": "Physical"
   },
   {
@@ -5408,7 +5408,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Special Attack by one stage.",
+    "short_descripton": "Has a 70% chance to raise the user's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5576,7 +5576,7 @@
     "priority": 0,
     "type": "Grass",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Defense by two stages.",
+    "short_descripton": "Has a 40% chance to lower the target's Special Defense by two stages.",
     "damage_class": "Special"
   },
   {
@@ -5588,7 +5588,7 @@
     "priority": 0,
     "type": "Ghost",
     "generation": "Generation Iv",
-    "short_descripton": "Has a $effect_chance% chance to raise all of the user's stats by one stage.",
+    "short_descripton": "Has a 10% chance to raise all of the user's stats by one stage.",
     "damage_class": "Special"
   },
   {
@@ -5780,7 +5780,7 @@
     "priority": 0,
     "type": "Poison",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to poison the target.",
+    "short_descripton": "Has a 10% chance to poison the target.",
     "damage_class": "Special"
   },
   {
@@ -6032,7 +6032,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 30% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -6200,7 +6200,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 100% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -6260,7 +6260,7 @@
     "priority": 0,
     "type": "Bug",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Attack by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -6272,7 +6272,7 @@
     "priority": 0,
     "type": "Ground",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Speed by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Speed by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -6368,7 +6368,7 @@
     "priority": 0,
     "type": "Psychic",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -6404,7 +6404,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -6428,7 +6428,7 @@
     "priority": 0,
     "type": "Grass",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 50% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -6440,7 +6440,7 @@
     "priority": 0,
     "type": "Bug",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -6464,7 +6464,7 @@
     "priority": 0,
     "type": "Dark",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "short_descripton": "Has a 40% chance to lower the target's accuracy by one stage.",
     "damage_class": "Special"
   },
   {
@@ -6500,7 +6500,7 @@
     "priority": 0,
     "type": "Flying",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 30% chance to confuse the target.",
     "damage_class": "Special"
   },
   {
@@ -6536,7 +6536,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 30% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -6560,7 +6560,7 @@
     "priority": 0,
     "type": "Normal",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to put the target to sleep.",
+    "short_descripton": "Has a 10% chance to put the target to sleep.",
     "damage_class": "Special"
   },
   {
@@ -6596,7 +6596,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 20% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -6608,7 +6608,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 20% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -6620,7 +6620,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Special Attack by one stage.",
+    "short_descripton": "Has a 50% chance to raise the user's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -6632,7 +6632,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation V",
-    "short_descripton": "Requires a turn to charge before attacking.  Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Requires a turn to charge before attacking.  Has a 30% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -6644,7 +6644,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation V",
-    "short_descripton": "Requires a turn to charge before attacking.  Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Requires a turn to charge before attacking.  Has a 30% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -6656,7 +6656,7 @@
     "priority": 0,
     "type": "Dark",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Attack by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -6668,7 +6668,7 @@
     "priority": 0,
     "type": "Ice",
     "generation": "Generation V",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -6992,7 +6992,7 @@
     "priority": 0,
     "type": "Fairy",
     "generation": "Generation Vi",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Attack by one stage.",
+    "short_descripton": "Has a 10% chance to lower the target's Attack by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -7088,7 +7088,7 @@
     "priority": 0,
     "type": "Rock",
     "generation": "Generation Vi",
-    "short_descripton": "Has a $effect_chance% chance to raise the user's Defense by two stages for each target hit.",
+    "short_descripton": "Has a 50% chance to raise the user's Defense by two stages for each target hit.",
     "damage_class": "Physical"
   },
   {
@@ -7100,7 +7100,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation Vi",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 30% chance to burn the target.",
     "damage_class": "Special"
   },
   {
@@ -7136,7 +7136,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Vi",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Attack by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Special Attack by one stage.",
     "damage_class": "Special"
   },
   {
@@ -7304,7 +7304,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Vi",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 100% chance to paralyze the target.",
     "damage_class": "Physical"
   },
   {
@@ -8396,7 +8396,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Vii",
-    "short_descripton": "Has a $effect_chance% chance to paralyze the target.",
+    "short_descripton": "Has a 100% chance to paralyze the target.",
     "damage_class": "Special"
   },
   {
@@ -8492,7 +8492,7 @@
     "priority": 0,
     "type": "Ghost",
     "generation": "Generation Vii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 20% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -8516,7 +8516,7 @@
     "priority": 0,
     "type": "Water",
     "generation": "Generation Vii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Defense by one stage.",
+    "short_descripton": "Has a 20% chance to lower the target's Defense by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -8588,7 +8588,7 @@
     "priority": 0,
     "type": "Electric",
     "generation": "Generation Vii",
-    "short_descripton": "Has a $effect_chance% chance to make the target flinch.",
+    "short_descripton": "Has a 30% chance to make the target flinch.",
     "damage_class": "Physical"
   },
   {
@@ -9224,7 +9224,7 @@
     "priority": 0,
     "type": "Fire",
     "generation": "Generation Viii",
-    "short_descripton": "Has a $effect_chance% chance to burn the target.",
+    "short_descripton": "Has a 10% chance to burn the target.",
     "damage_class": "Physical"
   },
   {
@@ -9272,7 +9272,7 @@
     "priority": 0,
     "type": "Fairy",
     "generation": "Generation Viii",
-    "short_descripton": "Has a $effect_chance% chance to lower the target's Special Attack by one stage.",
+    "short_descripton": "Has a 100% chance to lower the target's Special Attack by one stage.",
     "damage_class": "Physical"
   },
   {
@@ -9284,7 +9284,7 @@
     "priority": 0,
     "type": "Fairy",
     "generation": "Generation Viii",
-    "short_descripton": "Has a $effect_chance% chance to confuse the target.",
+    "short_descripton": "Has a 20% chance to confuse the target.",
     "damage_class": "Special"
   },
   {
