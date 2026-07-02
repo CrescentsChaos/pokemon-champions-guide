@@ -12,6 +12,7 @@
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('page-enter');
     // Determine path prefix (more robust for file:// URLs)
     const subDirs = ['/guides/', '/pokedex/', '/abilitydex/', '/movedex/', '/itemdex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
     // Check if the current pathname contains any of the subdirectories preceded by a slash

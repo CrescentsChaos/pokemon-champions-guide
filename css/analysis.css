@@ -508,6 +508,32 @@
     letter-spacing: 0.04em;
 }
 
+.vgc-bench-slot__reason {
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.62);
+    font-weight: 500;
+}
+
+.vgc-lead-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+}
+
+.vgc-lead-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 10px;
+    background: rgba(255, 62, 62, 0.08);
+    border: 1px solid rgba(255, 62, 62, 0.2);
+    min-width: 120px;
+    flex: 1;
+}
+
 .vgc-playbook,
 .vgc-wincons {
     margin: 0;

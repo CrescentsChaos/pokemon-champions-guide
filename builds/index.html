@@ -345,7 +345,11 @@
             </div>
 
             <p id="builds-results-meta" class="builds-results-meta"></p>
-            <div id="builds-grid" style="margin-bottom: 2rem;">
+            <div id="builds-loading" class="builds-loading" aria-live="polite">
+                <div class="builds-loading__spinner"></div>
+                <p>Loading competitive builds…</p>
+            </div>
+            <div id="builds-grid" style="margin-bottom: 2rem; display: none;">
                 <!-- Builds will be injected here as high-fidelity cards -->
             </div>
 
@@ -449,6 +453,11 @@
         };
 
         async function loadData() {
+            const loadingEl = document.getElementById('builds-loading');
+            const gridEl = document.getElementById('builds-grid');
+            if (loadingEl) loadingEl.style.display = 'flex';
+            if (gridEl) gridEl.style.display = 'none';
+
             try {
                 const [pResp, bResp, mResp, iResp] = await Promise.all([
                     fetch('../assets/pokemon.json'),
@@ -492,6 +501,8 @@
                 }
 
                 renderBuilds();
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (gridEl) gridEl.style.display = '';
                 document.querySelectorAll('#library-section .fade-in, .section-title.fade-in').forEach(el => el.classList.add('appear'));
 
                 const buildId = urlParams.get('id');
@@ -500,7 +511,10 @@
                         selectBuild(buildId);
                     }, 100);
                 }
-            } catch (e) { console.error("Data load failed", e); }
+            } catch (e) {
+                console.error("Data load failed", e);
+                if (loadingEl) loadingEl.innerHTML = '<p style="color:#ff6b6b;">Failed to load builds. Please refresh.</p>';
+            }
         }
 
         function setupInfiniteScroll() {
@@ -866,7 +880,9 @@
             const t2Mega = dbMega.Type_2?.toLowerCase();
 
             const roles = detectRole(p, dbMega);
-            const rolesHtml = roles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('');
+            const visibleRoles = roles.slice(0, 3);
+            const rolesHtml = visibleRoles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('')
+                + (roles.length > 3 ? `<span class="role-badge role-badge--more" title="${roles.slice(3).join(', ')}">+${roles.length - 3}</span>` : '');
 
             const statsArr = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
             const statLabels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
@@ -959,8 +975,8 @@
                         ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
                     <div class="header-info">
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 10px;">
-                            <h3 style="font-size:1.1rem; color:white; margin:0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.species}</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 8px; min-width:0;">
+                            <h3 class="build-card-species">${p.species}</h3>
                             <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
@@ -974,10 +990,10 @@
                     </div>
                 </div>
 
-                <div style="margin-top:4px;">
-                    <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); font-weight:700; display:flex; gap:8px;">
+                    <div style="margin-top:4px;">
+                    <div class="build-card-meta-row">
                         <span>LVL ${p.level}</span>
-                        <span>Item: <span style="color:#eee">${(p.item || 'None').toUpperCase()}</span></span>
+                        <span>Item: <span class="build-card-item">${(p.item || 'None').toUpperCase()}</span></span>
                     </div>
                 </div>
 

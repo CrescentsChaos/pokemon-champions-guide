@@ -7,193 +7,20 @@
     <title>Counter Tool | Pokemon Champions Guide</title>
     <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/counter.css">
     <style>
         :root {
             --input-bg: rgba(0, 0, 0, 0.4);
             --focus-border: var(--primary-red);
         }
 
-        body {
-            padding-top: 10rem;
-            background: radial-gradient(circle at top right, rgba(255, 62, 62, 0.05), transparent 40%),
-                radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.02), #0a0a0c 100%);
-        }
-
-        .counter-container {
-            display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 2.5rem;
-            align-items: start;
-        }
-
-        @media (max-width: 1100px) {
-            .counter-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Premium Input Styles */
-        .import-box {
-            transition: var(--transition);
-        }
-
         .import-box.minimized {
-            height: 0;
-            opacity: 0;
-            overflow: hidden;
-            margin-bottom: 0;
-            padding: 0;
-            border: none;
-        }
-
-        .import-area {
-            width: 100%;
-            height: 12rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.2rem;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            resize: none;
-            transition: var(--transition);
-            margin-bottom: 1rem;
-        }
-
-        .import-area:focus {
-            outline: none;
-            border-color: var(--primary-red);
-            box-shadow: 0 0 20px rgba(255, 62, 62, 0.15);
-        }
-
-        /* Target Preview (Builder Style) */
-        .target-preview-card {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.6));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 1.5rem;
-            backdrop-filter: blur(15px);
-            position: relative;
             display: none;
-            /* Shown after import */
-            animation: fadeIn 0.4s ease;
         }
 
-        .target-preview-card.active {
-            display: block;
+        .target-editor {
+            margin-top: 0;
         }
-
-        .target-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary-red);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 900;
-            padding: 4px 15px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-            box-shadow: var(--accent-glow);
-            z-index: 10;
-        }
-
-        .target-main-info {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .target-sprite-large {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
-        }
-
-        .target-details h3 {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            color: white;
-        }
-
-        .target-type-tags {
-            display: flex;
-            gap: 6px;
-        }
-
-        .type-tag {
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 2px 10px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-
-        /* Stat Grid (Builder Style) */
-        .stat-rows-mini {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-row-mini {
-            display: grid;
-            grid-template-columns: 40px 1fr 35px;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .stat-label-mini {
-            font-size: 0.6rem;
-            font-weight: 800;
-            color: var(--text-muted);
-        }
-
-        .stat-bar-mini {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .stat-fill-mini {
-            height: 100%;
-            background: var(--primary-red);
-            border-radius: 2px;
-        }
-
-        .stat-val-mini {
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-align: right;
-        }
-
-        .moves-preview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .move-tag-mini {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* Editor Overrides */
-        .target-editor-toggle {
             background: rgba(255, 255, 255, 0.02);
             border: 1px dashed var(--glass-border);
             padding: 1.5rem;
@@ -516,50 +343,23 @@
         </div>
 
         <div class="counter-container">
-            <!-- Left Column: Build Management -->
-            <div class="builder-column">
-
-                <!-- Import State -->
-                <div id="import-view" class="import-box fade-in">
-                    <div class="glass" style="padding: 1.8rem; position: relative; overflow: hidden;">
-                        <div
-                            style="position: absolute; top:0; right:0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,62,62,0.1) 0%, transparent 70%); z-index: 0;">
-                        </div>
-                        <h3 style="margin-bottom: 1.2rem; font-size: 0.9rem; position: relative; z-index: 1;">Import
-                            Championship Build</h3>
-                        <textarea id="paste-input" class="import-area"
-                            placeholder="Paste PokePaste or raw build export here..."></textarea>
-
-                        <div style="display: flex; gap: 10px; position: relative; z-index: 1;">
-                            <button id="analyze-btn" class="btn analyze-btn" style="flex: 2; margin-top: 0;">
-                                <span>ANALYZE BUILD</span>
-                                <div class="loader" id="analyze-loader"
-                                    style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
-                            </button>
-                            <button id="show-editor-btn" class="secondary-btn" title="Manual Entry">
-                                ⌨️
-                            </button>
-                        </div>
-
-                        <div class="premade-builds-panel">
-                            <div class="premade-builds-panel__head">
-                                <span>Import Premade Build</span>
-                                <select id="premade-format-filter" class="dex-select" style="font-size:0.72rem;padding:0.4rem 1.5rem 0.4rem 0.65rem;">
-                                    <option value="">All Formats</option>
-                                    <option value="Singles">Singles</option>
-                                    <option value="Doubles">Doubles</option>
-                                </select>
-                            </div>
-                            <input type="search" id="premade-search" class="premade-search" placeholder="Search builds library by Pokémon…" autocomplete="off">
-                            <div id="premade-build-list" class="premade-build-list"></div>
-                        </div>
+            <div class="counter-sidebar">
+                <div id="import-view" class="import-box glass counter-import-card fade-in appear">
+                    <h3 class="counter-import-card__title">Import Championship Build</h3>
+                    <textarea id="paste-input" class="import-area"
+                        placeholder="Paste PokePaste or raw build export here…"></textarea>
+                    <div class="counter-import-actions">
+                        <button id="analyze-btn" class="btn analyze-btn">
+                            <span>ANALYZE BUILD</span>
+                            <div class="loader" id="analyze-loader"
+                                style="display: none; width: 18px; height: 18px; border-width: 2px;"></div>
+                        </button>
+                        <button id="show-editor-btn" class="secondary-btn" title="Manual Entry">⌨️</button>
                     </div>
                 </div>
 
-                <!-- Preview State (Builder Style Card) -->
                 <div id="target-preview" class="target-preview-card">
                     <div class="target-badge">TARGET BUILD</div>
-
                     <div class="target-main-info">
                         <img id="preview-sprite" src="" class="target-sprite-large" alt="">
                         <div class="target-details">
@@ -569,23 +369,15 @@
                                 id="preview-item">Item: None</div>
                         </div>
                     </div>
-
-                    <div class="stat-rows-mini" id="preview-stats">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <div class="moves-preview-grid" id="preview-moves">
-                        <!-- Populated by JS -->
-                    </div>
-
+                    <div class="stat-rows-mini" id="preview-stats"></div>
+                    <div class="moves-preview-grid" id="preview-moves"></div>
                     <div class="manage-controls">
                         <button id="edit-build-btn" class="secondary-btn">EDIT BUILD</button>
                         <button id="new-import-btn" class="secondary-btn">NEW IMPORT</button>
                     </div>
                 </div>
 
-                <!-- Manual Editor Modal/Overlay (Initially Hidden) -->
-                <div id="editor-view" class="glass target-editor" style="display: none; margin-top: 1rem;">
+                <div id="editor-view" class="glass target-editor counter-import-card" style="display: none;">
                     <div class="target-header">
                         <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" alt="Target"
                             class="target-sprite" id="target-sprite">
@@ -652,10 +444,22 @@
                         CANCEL
                     </button>
                 </div>
+
+                <div class="premade-builds-panel glass fade-in appear">
+                    <div class="premade-builds-panel__head">
+                        <span>Premade Builds Library</span>
+                        <select id="premade-format-filter" class="dex-select" style="font-size:0.72rem;padding:0.4rem 1.5rem 0.4rem 0.65rem;">
+                            <option value="">All Formats</option>
+                            <option value="Singles">Singles</option>
+                            <option value="Doubles">Doubles</option>
+                        </select>
+                    </div>
+                    <input type="search" id="premade-search" class="premade-search" placeholder="Search builds by Pokémon…" autocomplete="off">
+                    <div id="premade-build-list" class="premade-build-list premade-build-list--loading">Loading builds…</div>
+                </div>
             </div>
 
-            <!-- Right Column: Results -->
-            <div class="results-column">
+            <div class="results-column fade-in appear">
                 <div class="results-header">
                     <h3>Optimal Counter Measures</h3>
                     <span id="results-count" class="badge">0 RESULTS FOUND</span>
@@ -758,6 +562,14 @@
             const fmt = (document.getElementById('premade-format-filter')?.value || '').toLowerCase();
             if (!list) return;
 
+            if (!buildsDB.length) {
+                list.className = 'premade-build-list premade-build-list--loading';
+                list.innerHTML = 'Loading builds…';
+                return;
+            }
+
+            list.className = 'premade-build-list';
+
             let pool = buildsDB;
             if (fmt) pool = pool.filter(b => (b.format || 'Singles').toLowerCase() === fmt);
             if (query) {
@@ -767,7 +579,7 @@
                 );
             }
 
-            const shown = pool.slice(0, 24);
+            const shown = pool.slice(0, 32);
             if (!shown.length) {
                 list.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.45);padding:0.5rem;">No premade builds match.</div>';
                 return;
@@ -841,6 +653,9 @@
         }
 
         async function init() {
+            document.querySelectorAll('.counter-sidebar .fade-in, .results-column.fade-in, .section-title.fade-in')
+                .forEach(el => el.classList.add('appear'));
+
             try {
                 const [pkmn, mvs, blds] = await Promise.all([
                     fetch('../assets/pokemon.json').then(res => res.json()),
@@ -860,10 +675,15 @@
                 } else if (speciesParam) {
                     const match = buildsDB.find(b => normalizeKey(b.pokemon) === normalizeKey(speciesParam));
                     if (match) loadPremadeBuild(match.id);
+                    else showImportView();
                 } else {
                     showImportView();
                 }
-            } catch (e) { console.error("Load fail", e); }
+            } catch (e) {
+                console.error('Counter load failed', e);
+                const list = document.getElementById('premade-build-list');
+                if (list) list.innerHTML = '<div style="font-size:0.75rem;color:#ff6b6b;padding:0.5rem;">Failed to load build data.</div>';
+            }
         }
 
         function populateNatures() {
@@ -881,7 +701,13 @@
             document.getElementById('premade-format-filter')?.addEventListener('change', populatePremadeBuilds);
 
             // UI Mode Toggles
-            document.getElementById('new-import-btn').addEventListener('click', showImportView);
+            document.getElementById('new-import-btn').addEventListener('click', () => {
+                document.getElementById('paste-input').value = '';
+                targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+                document.getElementById('counter-results').innerHTML = `<div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;"><div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>Import a build on the left to begin strategic analysis.</div>`;
+                document.getElementById('results-count').innerText = '0 RESULTS FOUND';
+                showImportView();
+            });
             document.getElementById('edit-build-btn').addEventListener('click', showEditorView);
             document.getElementById('show-editor-btn').addEventListener('click', showEditorView);
             document.getElementById('cancel-editor-btn').addEventListener('click', () => {
@@ -917,21 +743,21 @@
 
         /* UI State Management */
         function showImportView() {
-            document.getElementById('import-view').style.display = 'block';
+            document.getElementById('import-view').classList.remove('minimized');
+            document.getElementById('import-view').style.display = '';
             document.getElementById('target-preview').classList.remove('active');
             document.getElementById('editor-view').style.display = 'none';
-            document.getElementById('paste-input').value = '';
         }
 
         function showPreviewView() {
-            document.getElementById('import-view').style.display = 'none';
+            document.getElementById('import-view').classList.add('minimized');
             document.getElementById('target-preview').classList.add('active');
             document.getElementById('editor-view').style.display = 'none';
             updatePreviewCard();
         }
 
         function showEditorView() {
-            document.getElementById('import-view').style.display = 'none';
+            document.getElementById('import-view').classList.add('minimized');
             document.getElementById('target-preview').classList.remove('active');
             document.getElementById('editor-view').style.display = 'block';
         }
@@ -1251,10 +1077,11 @@
         }
 
         function parseCandidateBuild(buildStr, pData) {
-            const build = { types: [pData.Type_1, pData.Type_2 || 'None'], moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, nature: 'Hardy', item: '' };
+            const build = { types: [pData.Type_1, pData.Type_2 || 'None'], moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, nature: 'Hardy', item: '', ability: '' };
             buildStr.split('\n').forEach(l => {
                 const line = l.trim();
                 if (line.includes('@')) build.item = line.split('@')[1].trim();
+                if (line.startsWith('Ability:')) build.ability = line.replace('Ability:', '').trim();
                 if (line.startsWith('Ability:')) build.ability = line.replace('Ability:', '').trim();
                 if (line.match(/Nature$/)) build.nature = line.replace('Nature', '').trim();
                 if (line.startsWith('- ')) build.moves.push(line.replace('- ', '').trim());

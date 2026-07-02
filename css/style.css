@@ -77,6 +77,15 @@ h3 {
     animation: fadeIn 0.8s ease forwards;
 }
 
+body.page-enter {
+    animation: pageEnter 0.4s ease;
+}
+
+@keyframes pageEnter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* Layout */
 .container {
     max-width: 1200px;
@@ -1314,6 +1323,40 @@ footer {
     gap: 1.5rem;
 }
 
+.builds-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 4rem 2rem;
+    margin-bottom: 2rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.builds-loading__spinner {
+    width: 42px;
+    height: 42px;
+    border: 3px solid rgba(255, 255, 255, 0.08);
+    border-top-color: var(--primary-red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.builds-loading p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* Premium Card Styles (Sync with Teambuilder) */
 .pokemon-card-premium {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.4));
@@ -1327,7 +1370,8 @@ footer {
     flex-direction: column;
     gap: 8px;
     min-height: auto;
-    /* Allow card to shrink/grow naturally */
+    overflow: hidden;
+    min-width: 0;
 }
 
 .card-header {
@@ -1361,25 +1405,66 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.build-card-species {
+    font-size: 1rem;
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    flex: 1;
+    min-width: 0;
+}
+
+.build-card-meta-row {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+}
+
+.build-card-item {
+    color: #eee;
+    word-break: break-word;
 }
 
 .roles-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     margin-top: 4px;
+    max-width: 100%;
 }
 
 .role-badge {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.88);
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 6px;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.role-badge--more {
+    background: rgba(255, 62, 62, 0.12);
+    border-color: rgba(255, 62, 62, 0.25);
+    color: var(--primary-red);
 }
 
 .format-badge {
@@ -1428,6 +1513,15 @@ footer {
     gap: 6px;
     margin-bottom: 3px;
     transition: var(--transition);
+    min-width: 0;
+    overflow: hidden;
+}
+
+.move-pill > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .move-pill-icons {

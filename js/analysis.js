@@ -190,6 +190,86 @@ function renderChampionsCompliancePanel(activeMons, checks) {
         </div>`;
 }
 
+function scoreLeadFitness(mon, monRoles, ctx, format) {
+    const moves = (mon.moves || []).map(m => normalizeMoveKey(m));
+    const speed = getMonSpeed(mon, getMonDb(mon)) || 0;
+    let score = 0;
+
+    if (monRoles.includes('Fake Out Pressure') || moves.includes('fakeout')) score += 42;
+    if (monRoles.includes('Redirection') || moves.includes('followme') || moves.includes('ragepowder')) score += 38;
+    if (monRoles.includes('Trick Room Setter') || moves.includes('trickroom')) score += ctx.utils?.tr ? 48 : 12;
+    if (monRoles.includes('Speed Control') || moves.includes('tailwind')) score += 36;
+    if (monRoles.includes('Hazard Setter') && format === 'Singles') score += 34;
+    if (moves.includes('protect')) score += 10;
+    if (monRoles.includes('Disruptor')) score += 18;
+    if (speed >= 110) score += 14;
+    else if (speed >= 85) score += 8;
+
+    if (monRoles.includes('Setup Sweeper')) score -= 28;
+    if (monRoles.includes('Restricted Legendary') && !monRoles.includes('Redirection') && !monRoles.includes('Fake Out Pressure')) score -= 18;
+    if (monRoles.includes('Trick Room Abuser') && !monRoles.includes('Trick Room Setter')) score -= 22;
+    if (monRoles.includes('Revenge Killer')) score -= 15;
+    if (speed < 50 && !ctx.utils?.tr && format === 'Doubles') score -= 12;
+
+    if (format === 'Singles') {
+        if (monRoles.includes('Physical Sweeper') || monRoles.includes('Special Sweeper')) score += 12;
+        if (monRoles.includes('Wallbreaker')) score += 8;
+    }
+
+    return score;
+}
+
+function explainLeadReason(mon, monRoles, ctx, format) {
+    const moves = (mon.moves || []).map(m => normalizeMoveKey(m));
+    if (moves.includes('fakeout')) return 'Fake Out disrupts the fastest threat Turn 1.';
+    if (moves.includes('followme') || moves.includes('ragepowder')) return 'Redirects attacks so your partner attacks freely.';
+    if (moves.includes('trickroom')) return 'Sets Trick Room to flip speed matchups.';
+    if (moves.includes('tailwind')) return 'Tailwind doubles team speed for four turns.';
+    if (monRoles.includes('Hazard Setter')) return 'Strong singles opener — lays hazards before pivoting.';
+    if (monRoles.includes('Physical Sweeper') || monRoles.includes('Special Sweeper')) return 'Offensive ace — apply immediate pressure.';
+    if (monRoles.includes('Setup Sweeper')) return 'Late-game sweeper — keep in back until supports set up.';
+    if (monRoles.includes('Physical Wall') || monRoles.includes('Special Wall')) return 'Defensive pivot — safe switch-in after scouting.';
+    return format === 'Doubles' ? 'Flexible lead based on matchup.' : 'Predicted lead based on role and speed.';
+}
+
+function predictLineup(activeMons, roles, format, ctx) {
+    if (!activeMons.length) {
+        return { leadIndices: [], backIndices: [], leads: [], backMons: [], leadReasons: [] };
+    }
+
+    const scores = activeMons.map((mon, i) => ({
+        i,
+        species: mon.species,
+        score: scoreLeadFitness(mon, roles[i] || [], ctx, format)
+    }));
+
+    if (format === 'Doubles' && activeMons.length >= 2) {
+        scores.sort((a, b) => b.score - a.score);
+        const leadIndices = [scores[0].i];
+        const second = scores.find(s => s.i !== leadIndices[0]) || scores[1];
+        if (second) leadIndices.push(second.i);
+        const backIndices = activeMons.map((_, idx) => idx).filter(idx => !leadIndices.includes(idx));
+        return {
+            leadIndices,
+            backIndices,
+            leads: leadIndices.map(i => activeMons[i]),
+            backMons: backIndices.map(i => activeMons[i]),
+            leadReasons: leadIndices.map(i => explainLeadReason(activeMons[i], roles[i] || [], ctx, format))
+        };
+    }
+
+    scores.sort((a, b) => b.score - a.score);
+    const leadIdx = scores[0].i;
+    const backIndices = activeMons.map((_, i) => i).filter(i => i !== leadIdx);
+    return {
+        leadIndices: [leadIdx],
+        backIndices,
+        leads: [activeMons[leadIdx]],
+        backMons: backIndices.map(i => activeMons[i]),
+        leadReasons: [explainLeadReason(activeMons[leadIdx], roles[leadIdx] || [], ctx, format)]
+    };
+}
+
 function buildTeamContext(activeMons, format, coverage, weaknesses, resistances, roles) {
     const moves = activeMons.flatMap(p => (p.moves || []).map(m => normalizeMoveKey(m)));
     const hasMove = (list) => list.some(m => moves.includes(m));
@@ -221,9 +301,6 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
         else speedTiers.slow++;
     });
 
-    const leadMons = activeMons.slice(0, 2);
-    const backMons = activeMons.slice(2);
-
     const spreadMoveKeys = ['earthquake', 'heatwave', 'rockslide', 'dazzlinggleam', 'makeitrain', 'bleakwindstorm', 'expandingforce', 'hypervoice', 'snarl', 'muddywater', 'surf', 'discharge', 'bulldoze', 'electroweb', 'breakingswipe', 'precipiceblades', 'originpulse', 'glaciate', 'dragonenergy', 'hypervoice'];
 
     let physicalMoveCount = 0;
@@ -240,16 +317,20 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
         });
     });
 
-    const ctx = {
+    const ctxBase = {
         coverage, weaknesses, resistances, format,
         flatRoles, moves, abilities, activeTypes, speciesList, teraTypes,
         items, duplicateItems, restrictedCount, championsEligible, championsChecks,
-        speeds, speedTiers, leadMons, backMons,
+        speeds, speedTiers,
         teamSize: activeMons.length, physicalMoveCount, specialMoveCount,
         hasSpecies: (names) => names.some(n => speciesList.includes(normalizeSpeciesKey(n))),
         hasAbility: (list) => list.some(a => abilities.includes(a.toLowerCase().replace(/[^a-z0-9]/g, ''))),
         roleCount: (role) => flatRoles.filter(r => r === role).length,
-        utils: {
+        utils: null
+    };
+
+    const spreadMoveKeysRef = spreadMoveKeys;
+    ctxBase.utils = {
             hazards: hasMove(['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe']),
             removal: hasMove(['rapidspin', 'defog', 'mortalspin', 'tidypup', 'courtchange']),
             tailwind: hasMove(['tailwind']),
@@ -260,7 +341,7 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
             protect: hasMove(['protect', 'detect', 'spikyshield', 'banefulbunker', 'kingsshield', 'silktrap', 'burningbulwark']),
             wideguard: hasMove(['wideguard']),
             quickguard: hasMove(['quickguard']),
-            spread: hasMove(spreadMoveKeys),
+            spread: hasMove(spreadMoveKeysRef),
             priority: hasMove(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap']),
             intimidate: abilities.includes('intimidate') || speciesList.includes('incineroar') || speciesList.includes('landorustherian'),
             drizzle: abilities.includes('drizzle') || hasMove(['raindance']),
@@ -278,9 +359,17 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
             sleep: hasMove(['spore', 'sleeppowder', 'hypnosis', 'yawn', 'darkvoid']),
             ragepowder: hasMove(['ragepowder']),
             followme: hasMove(['followme'])
-        }
     };
-    return ctx;
+
+    const lineup = predictLineup(activeMons, roles, format, ctxBase);
+    return {
+        ...ctxBase,
+        leadMons: lineup.leads,
+        backMons: lineup.backMons,
+        leadIndices: lineup.leadIndices,
+        backIndices: lineup.backIndices,
+        leadReasons: lineup.leadReasons
+    };
 }
 
 function ensureVgcPanel() {
@@ -309,11 +398,11 @@ function vgcToolStatus(active, label, tip) {
 
 function describeLeadPair(ctx, activeMons, roles) {
     if (!activeMons.length) return { label: 'No lead', summary: 'Add Pokémon to evaluate lead options.' };
-    const leadA = activeMons[0];
-    const leadB = activeMons[1];
-    const r0 = roles[0] || [];
-    const r1 = roles[1] || [];
-    const names = [leadA?.species, leadB?.species].filter(Boolean);
+    const leads = ctx.leadMons && ctx.leadMons.length ? ctx.leadMons : activeMons.slice(0, 2);
+    const leadIndices = ctx.leadIndices && ctx.leadIndices.length ? ctx.leadIndices : [0, 1].filter(i => i < activeMons.length);
+    const r0 = roles[leadIndices[0]] || [];
+    const r1 = roles[leadIndices[1]] || [];
+    const names = leads.map(p => p?.species).filter(Boolean);
 
     if (ctx.utils.fakeout && ctx.utils.tailwind) {
         return {
@@ -391,13 +480,49 @@ function identifyWinConditions(ctx) {
     return wins.slice(0, 3);
 }
 
+function renderSinglesLineupPanel(ctx, activeMons, roles) {
+    if (!activeMons.length) return '';
+    const leadIdx = ctx.leadIndices?.[0] ?? 0;
+    const lead = activeMons[leadIdx];
+    const leadReason = ctx.leadReasons?.[0] || explainLeadReason(lead, roles[leadIdx] || [], ctx, 'Singles');
+    const backHtml = (ctx.backIndices || []).map(idx => {
+        const p = activeMons[idx];
+        const reason = explainLeadReason(p, roles[idx] || [], ctx, 'Singles');
+        return `<div class="vgc-bench-slot">
+            <span class="vgc-bench-slot__name">${p?.species || 'Bench'}</span>
+            ${(roles[idx] || []).slice(0, 2).map(r => `<span class="role-badge">${r}</span>`).join('')}
+            <span class="vgc-bench-slot__reason">${reason}</span>
+        </div>`;
+    }).join('');
+
+    return `
+        <div class="vgc-analysis-panel__head">
+            <span class="vgc-analysis-panel__title">Singles Lineup Prediction</span>
+        </div>
+        <div class="vgc-analysis-grid">
+            <div class="vgc-analysis-block">
+                <h4 class="vgc-analysis-block__title">Predicted Lead / Ace</h4>
+                <div class="vgc-lead-row">
+                    <div class="vgc-lead-slot">
+                        <span class="vgc-bench-slot__name">${lead?.species || 'Lead'}</span>
+                        <span class="vgc-bench-slot__reason">${leadReason}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="vgc-analysis-block">
+                <h4 class="vgc-analysis-block__title">Revenge &amp; Pivot Options</h4>
+                <div class="vgc-bench-row">${backHtml || '<span class="analysis-section-note">Fill remaining slots for bench analysis.</span>'}</div>
+            </div>
+        </div>`;
+}
+
 function renderVgcAnalysis(ctx, activeMons, roles) {
     const panel = ensureVgcPanel();
     if (!panel) return;
 
     if (ctx.format !== 'Doubles') {
-        panel.innerHTML = '';
-        panel.style.display = 'none';
+        panel.innerHTML = renderSinglesLineupPanel(ctx, activeMons, roles);
+        panel.style.display = activeMons.length ? 'block' : 'none';
         return;
     }
     panel.style.display = 'block';
@@ -429,11 +554,25 @@ function renderVgcAnalysis(ctx, activeMons, roles) {
         { label: 'TR Abusers', count: ctx.speedTiers.trAbuser, color: '#9c27b0' }
     ];
 
-    const backBench = ctx.backMons.map((p, i) => {
-        const idx = i + 2;
+    const backBench = (ctx.backIndices || []).map((idx) => {
+        const p = activeMons[idx];
         const monRoles = (roles[idx] || []).slice(0, 2);
-        return `<div class="vgc-bench-slot"><span class="vgc-bench-slot__name">${(p.species || 'Slot').split('-')[0]}</span>${monRoles.map(r => `<span class="role-badge">${r}</span>`).join('')}</div>`;
+        const reason = explainLeadReason(p, roles[idx] || [], ctx, ctx.format);
+        return `<div class="vgc-bench-slot">
+            <span class="vgc-bench-slot__name">${(p?.species || 'Slot').split('-')[0]}</span>
+            ${monRoles.map(r => `<span class="role-badge">${r}</span>`).join('')}
+            <span class="vgc-bench-slot__reason">${reason}</span>
+        </div>`;
     }).join('') || '<span class="analysis-section-note">No back-line slots filled.</span>';
+
+    const leadSlots = (ctx.leadIndices || []).map((idx, li) => {
+        const p = activeMons[idx];
+        const reason = (ctx.leadReasons && ctx.leadReasons[li]) || explainLeadReason(p, roles[idx] || [], ctx, ctx.format);
+        return `<div class="vgc-lead-slot">
+            <span class="vgc-bench-slot__name">${p?.species || 'Lead'}</span>
+            <span class="vgc-bench-slot__reason">${reason}</span>
+        </div>`;
+    }).join('');
 
     panel.innerHTML = `
         <div class="vgc-analysis-panel__head">
@@ -459,9 +598,10 @@ function renderVgcAnalysis(ctx, activeMons, roles) {
             <div class="vgc-analysis-block">
                 <h4 class="vgc-analysis-block__title">Lead Pair — ${lead.label}</h4>
                 <p class="vgc-analysis-block__desc">${lead.summary}</p>
+                <div class="vgc-lead-row">${leadSlots}</div>
             </div>
             <div class="vgc-analysis-block">
-                <h4 class="vgc-analysis-block__title">Back Line</h4>
+                <h4 class="vgc-analysis-block__title">Predicted Back Line</h4>
                 <div class="vgc-bench-row">${backBench}</div>
             </div>
             <div class="vgc-analysis-block vgc-analysis-block--wide">
@@ -1032,7 +1172,7 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
         else if (hasHO && hasStall) playstyle = 'Bulky Offense';
         else if (!hasHO && hasStall) playstyle = 'Stall';
 
-        const leadSpecies = activeMons[0].species || 'the lead';
+        const leadSpecies = (ctx.leadMons?.[0]?.species || activeMons[0].species || 'the lead');
         const leadPair = describeLeadPair(ctx, activeMons, roles);
         const highCov = Object.entries(coverage).filter(e => e[1] > 0).length;
         const highWeak = Object.entries(weaknesses).filter(e => e[1] >= 2 && !(resistances[e[0]]));
@@ -1089,7 +1229,19 @@ async function loadTopPokemonsForFormat(format) {
             _topPokemonsCache = {};
         }
     }
-    return _topPokemonsCache[format] || _topPokemonsCache['Singles'] || [];
+    const base = _topPokemonsCache[format] || _topPokemonsCache['Singles'] || [];
+    const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
+    const fmt = (format || 'Singles').toLowerCase();
+    const merged = [...base];
+    buildsArr.forEach(b => {
+        if ((b.format || 'Singles').toLowerCase() !== fmt) return;
+        const name = b.pokemon;
+        if (!name) return;
+        if (!merged.some(m => normalizeSpeciesKey(m) === normalizeSpeciesKey(name))) {
+            merged.push(name);
+        }
+    });
+    return merged.slice(0, 28);
 }
 
 function findLatestBuildForSpecies(speciesName, format, buildsArr) {
