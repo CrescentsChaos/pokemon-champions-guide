@@ -991,10 +991,6 @@
                 </div>
 
                     <div style="margin-top:4px;">
-                    <div class="build-card-meta-row">
-                        <span>LVL ${p.level}</span>
-                        <span>Item: <span class="build-card-item">${(p.item || 'None').toUpperCase()}</span></span>
-                    </div>
                 </div>
 
                 <div class="build-card-stats-grid" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px; margin:4px 0; align-items: start;">
@@ -1796,8 +1792,8 @@
                     const scoreVal = item.score !== undefined ? Math.min(100, Math.floor(item.score)) : null;
                     const badgeBg = label === 'DIRECT SYNC' ? 'linear-gradient(135deg, #ffd54f, #ff9800)'
                         : label === 'LINKED SYNC' ? 'linear-gradient(135deg, #80cbc4, #00897b)'
-                        : label === 'CHAIN SYNC' ? 'linear-gradient(135deg, #90caf9, #1565c0)'
-                        : 'linear-gradient(135deg, #00ffcc, #0066ff)';
+                            : label === 'CHAIN SYNC' ? 'linear-gradient(135deg, #90caf9, #1565c0)'
+                                : 'linear-gradient(135deg, #00ffcc, #0066ff)';
                     scoreBadge.style = `position:absolute; top:-10px; right:10px; background:${badgeBg}; color:${label === 'SMART FIT' ? 'black' : 'white'}; font-size:0.62rem; font-weight:900; padding:3px 9px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,0,0,0.25); letter-spacing:0.03em;`;
                     scoreBadge.innerText = scoreVal != null ? `${label} ${scoreVal}%` : label;
                     card.appendChild(scoreBadge);
