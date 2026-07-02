@@ -68,21 +68,28 @@ const DexShared = (() => {
         }
 
         if (img.dataset.fallbackState === 'mega-local') {
-            img.dataset.fallbackState = 'alt-showdown';
-            let altClean = clean;
-            if (altClean.includes('-paldea-')) altClean = altClean.replace('-paldea-', '-');
-            else if (altClean.includes('-')) altClean = altClean.replace(/-/g, '');
-            img.src = `https://play.pokemonshowdown.com/sprites/ani/${altClean}.gif`;
+            img.dataset.fallbackState = 'smogon';
+            const folder = shiny ? 'xy-shiny' : 'xy';
+            img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
             return;
         }
 
-        if (img.dataset.fallbackState === 'alt-showdown') {
+        if (!img.dataset.fallbackState) {
             img.dataset.fallbackState = 'smogon';
             const folder = shiny ? 'xy-shiny' : 'xy';
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
             if (img.classList.contains('mega-toggle') && img.dataset.currentSrc === 'base') {
                 img.dataset.base = img.src;
             }
+            return;
+        }
+
+        if (img.dataset.fallbackState === 'smogon') {
+            img.dataset.fallbackState = 'alt-showdown';
+            let altClean = clean;
+            if (altClean.includes('-paldea-')) altClean = altClean.replace('-paldea-', '-');
+            else if (altClean.includes('-')) altClean = altClean.replace(/-/g, '');
+            img.src = `https://play.pokemonshowdown.com/sprites/${shiny ? 'ani-shiny' : 'ani'}/${altClean}.gif`;
             return;
         }
 

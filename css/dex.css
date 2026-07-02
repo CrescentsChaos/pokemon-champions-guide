@@ -6,6 +6,10 @@
 }
 
 .dex-header {
+    position: static;
+    width: auto;
+    z-index: auto;
+    padding: 0;
     margin-bottom: 2rem;
 }
 
