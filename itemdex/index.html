@@ -3,402 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Dex</title>
+    <title>Item Dex | Pokemon Champions Guide</title>
+    <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .dex-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .dex-card {
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .dex-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.16);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-        }
-
-        .dex-card-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .dex-card-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, max-content));
-            gap: 0.75rem;
-            color: rgba(255, 255, 255, 0.72);
-            font-size: 0.95rem;
-        }
-
-        .dex-card-description {
-            margin: 0;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.75;
-            font-size: 0.95rem;
-        }
-
-        .dex-sprite-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.55rem;
-        }
-
-        .dex-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 50px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.85rem;
-        }
-
-        .dex-sprite-cell {
-            width: 44px;
-            height: 44px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.04);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dex-sprite-cell img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
-
-        .dex-pokemon-badge {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            padding: 6px 12px;
-            color: white;
-            font-size: 0.82rem;
-        }
-
-        .dex-card-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dex-card-icon img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
-
-        .dex-empty-state {
-            padding: 2rem;
-            border: 1px dashed rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.02);
-            color: rgba(255, 255, 255, 0.65);
-            text-align: center;
-        }
-
-        .page-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/dex.css">
 </head>
-<body>
-    <section class="pokedex-section" style="padding-top: 8rem; min-height: 100vh;">
+<body class="dex-page">
+    <section class="dex-shell">
         <div class="container">
-            <div class="section-title fade-in">
-                <h2 class="pokedex-title" style="font-size: 4rem;">ITEM <span style="color: var(--primary-red)">DEX</span></h2>
-                <p>Browse every item with dataset usage, builds, and Pokémon.</p>
+            <div id="dex-nav-slot"></div>
+            <header class="dex-header fade-in">
+                <h1>Item <em>Dex</em></h1>
+                <p>Held items, mega stones, berries, and more — with sprites, usage data, and Champions availability.</p>
+            </header>
+
+            <div class="dex-toolbar fade-in">
+                <div class="dex-search-row">
+                    <input type="search" id="dex-search" class="dex-search" placeholder="Search items, effects, or Pokémon…" autocomplete="off">
+                </div>
+                <div class="dex-filters-row">
+                    <span class="dex-label">Sort</span>
+                    <select id="sort-primary" class="dex-select">
+                        <option value="name">Name</option>
+                        <option value="pokemon">Pokémon Count</option>
+                        <option value="builds">Build Count</option>
+                        <option value="category">Category</option>
+                        <option value="champions">Champions First</option>
+                    </select>
+                    <select id="sort-dir" class="dex-select">
+                        <option value="asc" selected>Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                    <span class="dex-label">Group</span>
+                    <select id="sort-group" class="dex-select">
+                        <option value="none" selected>None</option>
+                        <option value="category">By Category</option>
+                    </select>
+                </div>
+                <div class="dex-filters-row">
+                    <span class="dex-label">Filter</span>
+                    <select id="filter-category" class="dex-select">
+                        <option value="">All Categories</option>
+                        <option value="Held Item">Held Item</option>
+                        <option value="Mega Stone">Mega Stone</option>
+                        <option value="Z-Crystal">Z-Crystal</option>
+                        <option value="Type Item">Type Item</option>
+                        <option value="Berry">Berry</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label class="dex-check"><input type="checkbox" id="filter-champions"> Champions only</label>
+                </div>
             </div>
 
-            <div class="page-links fade-in">
-                <a href="../pokedex/" class="pokedex-select">Pokedex</a>
-                <a href="../movedex/" class="pokedex-select">Move Dex</a>
-                <a href="../abilitydex/" class="pokedex-select">Ability Dex</a>
-            </div>
-
-            <div class="pokedex-controls fade-in" style="gap:0.75rem; flex-wrap:wrap;">
-                <input type="text" id="dex-search" class="search-input" placeholder="Search items, categories, or effects...">
-                <select id="sort-select" class="pokedex-select" style="min-width: 220px;">
-                    <option value="name">Name</option>
-                    <option value="category">Category</option>
-                    <option value="pokemon">Pokémon Count</option>
-                    <option value="builds">Build Count</option>
-                </select>
-                <select id="sort-dir" class="pokedex-select" style="min-width: 160px;">
-                    <option value="asc" selected>Low → High</option>
-                    <option value="desc">High → Low</option>
-                </select>
-            </div>
-
+            <p id="dex-results-meta" class="dex-results-meta"></p>
             <div id="dex-grid" class="dex-grid"></div>
         </div>
     </section>
 
-    <script>
-        let allItems = [];
-        let allPokemon = [];
-        let allBuilds = [];
-        let filteredItems = [];
-        let usageMap = {};
-        let buildMap = {};
+    <div id="dex-detail-modal" class="modal-overlay dex-detail-modal">
+        <div class="modal-content">
+            <button type="button" class="close-modal" id="dex-close-modal">&times;</button>
+            <div id="dex-modal-body"></div>
+        </div>
+    </div>
 
-        const grid = document.getElementById('dex-grid');
-        const searchInput = document.getElementById('dex-search');
-        const sortSelect = document.getElementById('sort-select');
-        const sortDir = document.getElementById('sort-dir');
-
-        async function initDex() {
-            grid.innerHTML = '<div class="dex-empty-state">Loading Item Dex data...</div>';
-            try {
-                const cb = '?v=' + Date.now();
-                const [itemsRes, pokeRes, buildsRes] = await Promise.all([
-                    fetch('../assets/items.json' + cb),
-                    fetch('../assets/pokemon.json' + cb),
-                    fetch('../assets/builds.json' + cb)
-                ]);
-
-                allItems = await itemsRes.json();
-                allPokemon = await pokeRes.json();
-                allBuilds = await buildsRes.json();
-                buildUsageMaps();
-                sortSelect.value = 'name';
-                sortDir.value = 'asc';
-                applyFiltersAndSort();
-            } catch (err) {
-                console.error('Failed to load Item Dex data:', err);
-                grid.innerHTML = '<div class="dex-empty-state">Unable to load Item Dex data.</div>';
-            }
-        }
-
-        function normalizeKey(value) {
-            return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        }
-
-        function escapeHtmlAttr(value) {
-            return (value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
-        function escapeJsString(value) {
-            return (value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
-        }
-
-        function normalizeSpriteName(name) {
-            let clean = (name || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            if (clean === 'giratina-altered') clean = 'giratina-origin';
-            if (clean === 'mimikyu-disguised') clean = 'mimikyu';
-            if (clean.includes('noctowl')) clean = 'noctowl';
-            return clean;
-        }
-
-        function getSpriteUrl(name, shiny = false) {
-            const clean = normalizeSpriteName(name);
-            const base = shiny ? 'ani-shiny' : 'ani';
-            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
-        }
-
-        function getItemSpriteUrl(item) {
-            if (!item || item.toLowerCase() === 'none') return '';
-            const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
-        }
-
-        function handleSpriteError(img, name, shiny = false) {
-            if (img.dataset.fallbackState === 'final') return;
-            const clean = normalizeSpriteName(name);
-
-            if (!img.dataset.fallbackState) {
-                img.dataset.fallbackState = 'alt-showdown';
-                img.onerror = null;
-                let altClean = clean;
-                if (altClean.includes('-paldea-')) altClean = altClean.replace('-paldea-', '-');
-                else if (altClean.includes('-')) altClean = altClean.replace(/-/g, '');
-                img.src = `https://play.pokemonshowdown.com/sprites/ani/${altClean}.gif`;
-                return;
-            }
-
-            if (img.dataset.fallbackState === 'alt-showdown') {
-                img.dataset.fallbackState = 'smogon';
-                img.onerror = null;
-                img.src = `https://www.smogon.com/dex/media/sprites/xy/${clean}.gif`;
-                return;
-            }
-
-            img.dataset.fallbackState = 'final';
-            img.onerror = null;
-            img.src = 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
-        }
-
-        function handleItemError(img, item) {
-            if (img.dataset.fallback === 'true' || !item) {
-                img.style.display = 'none';
-                return;
-            }
-            img.dataset.fallback = 'true';
-            const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
-            img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
-            img.style.display = 'block';
-        }
-
-        function buildUsageMaps() {
-            usageMap = {};
-            buildMap = {};
-
-            allPokemon.forEach(pokemon => {
-                const itemList = Array.isArray(pokemon.Items) ? pokemon.Items : (pokemon.Items ? [pokemon.Items] : []);
-                itemList.forEach(item => {
-                    const key = normalizeKey(item);
-                    if (!usageMap[key]) usageMap[key] = new Set();
-                    usageMap[key].add(pokemon.Name);
-                });
-            });
-
-            allBuilds.forEach(build => {
-                const line = (build.build || '').split('\n')[0] || '';
-                const match = line.match(/@\s*(.+)$/);
-                if (!match) return;
-                const item = match[1].trim();
-                const key = normalizeKey(item);
-                if (!buildMap[key]) buildMap[key] = new Set();
-                buildMap[key].add(build.pokemon || build.pokemon_name || 'Unknown');
-            });
-        }
-
-        function applyFiltersAndSort() {
-            const query = searchInput.value.toLowerCase().trim();
-            filteredItems = allItems.map(item => {
-                const name = item.name || item.Name || 'Unknown';
-                const key = normalizeKey(name);
-                const users = Array.from(usageMap[key] || []).sort();
-                const buildUsers = Array.from(buildMap[key] || []).sort();
-                const combinedUsers = Array.from(new Set([...users, ...buildUsers])).sort();
-                return {
-                    item,
-                    name,
-                    category: item.category || item.Category || 'Held Item',
-                    users: combinedUsers,
-                    buildCount: buildUsers.length
-                };
-            }).filter(entry => {
-                if (!query) return true;
-                const text = [entry.name, entry.category, entry.item.description, entry.item.effect]
-                    .filter(Boolean)
-                    .join(' ').toLowerCase();
-                return text.includes(query) || entry.users.join(' ').toLowerCase().includes(query);
-            });
-
-            filteredItems.sort((a, b) => {
-                const mode = sortSelect.value;
-                const dir = sortDir.value === 'asc' ? 1 : -1;
-                let av, bv;
-
-                switch (mode) {
-                    case 'category':
-                        av = a.category.toLowerCase();
-                        bv = b.category.toLowerCase();
-                        break;
-                    case 'pokemon':
-                        av = a.users.length;
-                        bv = b.users.length;
-                        break;
-                    case 'builds':
-                        av = a.buildCount || 0;
-                        bv = b.buildCount || 0;
-                        break;
-                    default:
-                        av = a.name.toLowerCase();
-                        bv = b.name.toLowerCase();
-                }
-                if (typeof av === 'string' && typeof bv === 'string') return av.localeCompare(bv) * dir;
-                return (av - bv) * dir;
-            });
-
-            renderDex();
-        }
-
-        function renderDex() {
-            if (!filteredItems.length) {
-                grid.innerHTML = '<div class="dex-empty-state">No items matched your search.</div>';
-                return;
-            }
-
-            grid.innerHTML = '';
-            const fragment = document.createDocumentFragment();
-            filteredItems.forEach(entry => fragment.appendChild(createItemCard(entry)));
-            grid.appendChild(fragment);
-        }
-
-        function createItemCard(entry) {
-            const card = document.createElement('div');
-            card.className = 'dex-card';
-            const users = entry.users;
-            const rawName = entry.name || 'Unknown';
-            const safeName = escapeHtmlAttr(rawName);
-            const jsName = escapeJsString(rawName);
-            const spriteHtml = users.slice(0, 18).map(name => {
-                const rawPokemon = name || 'Unknown';
-                const safePokemon = escapeHtmlAttr(rawPokemon);
-                const jsPokemon = escapeJsString(rawPokemon);
-                return `
-                <div class="dex-sprite-cell" title="${safePokemon}">
-                    <img src="${getSpriteUrl(rawPokemon)}" alt="${safePokemon}" onerror="handleSpriteError(this, '${jsPokemon}')">
-                </div>
-            `;
-            }).join('');
-            const itemSpriteUrl = getItemSpriteUrl(rawName);
-            card.innerHTML = `
-                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                    <div class="dex-card-icon"><img src="${itemSpriteUrl}" alt="${safeName}" onerror="handleItemError(this, '${jsName}')"></div>
-                    <div class="dex-card-title">${safeName}</div>
-                </div>
-                <div class="dex-card-meta">
-                    <div><strong>Category</strong><br>${entry.category}</div>
-                    <div><strong>Used by</strong><br>${users.length}</div>
-                    <div><strong>Builds</strong><br>${entry.buildCount || 0}</div>
-                </div>
-                <p class="dex-card-description">${entry.item.description || entry.item.effect || 'No description available.'}</p>
-                <div>
-                    <div style="color: rgba(255,255,255,0.78); margin-bottom: 0.65rem; font-size: 0.92rem;"><strong>Pokémon using this item</strong></div>
-                    <div class="dex-sprite-row">${spriteHtml}${users.length > 18 ? `<span class="dex-pill">+${users.length - 18}</span>` : ''}</div>
-                </div>
-            `;
-            return card;
-        }
-
-        searchInput.addEventListener('input', applyFiltersAndSort);
-        sortSelect.addEventListener('change', applyFiltersAndSort);
-        sortDir.addEventListener('change', applyFiltersAndSort);
-
-        initDex();
-    </script>
+    <script src="../js/dex-shared.js"></script>
+    <script src="../js/dex/itemdex.js"></script>
     <script src="../js/main.js"></script>
 </body>
 </html>

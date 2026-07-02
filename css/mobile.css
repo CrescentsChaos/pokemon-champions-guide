@@ -442,47 +442,40 @@
     }
 }
 
-/* ─── Pokedex page ─── */
+/* ─── Dex pages (shared) ─── */
 @media (max-width: 768px) {
-    .pokedex-section {
-        padding-top: 6rem !important;
+    .dex-shell {
+        padding-top: 6rem;
     }
 
-    .pokedex-title {
+    .dex-header h1 {
         font-size: 2rem !important;
     }
 
-    .pokedex-section .search-input {
-        padding: 1rem 1.15rem !important;
-        font-size: 1rem !important;
+    .dex-toolbar {
+        padding: 1rem;
     }
 
-    .pokemon-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
-        gap: 1rem !important;
+    .dex-search-row {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .pokedex-card {
+    .dex-search {
+        min-width: 0;
+    }
+
+    .dex-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dex-select {
+        width: 100%;
+    }
+
+    .dex-detail-modal .modal-content {
         padding: 1.25rem !important;
-    }
-
-    .pokemon-number {
-        font-size: 1.75rem !important;
-    }
-
-    .pokemon-img {
-        width: 80px !important;
-        height: 80px !important;
-    }
-
-    .modal-content h2 {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (max-width: 400px) {
-    .pokemon-grid {
-        grid-template-columns: 1fr 1fr !important;
     }
 }
 
