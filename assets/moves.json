@@ -93,7 +93,11 @@
     "type": "Fire",
     "generation": "Generation I",
     "short_descripton": "Has a 10% chance to burn the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Ice Punch",
@@ -105,7 +109,11 @@
     "type": "Ice",
     "generation": "Generation I",
     "short_descripton": "Has a 10% chance to freeze the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Thunder Punch",
@@ -117,7 +125,11 @@
     "type": "Electric",
     "generation": "Generation I",
     "short_descripton": "Has a 10% chance to paralyze the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Scratch",
@@ -459,7 +471,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Hits every turn for 2-3 turns, then confuses the user.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Double-Edge",
@@ -708,7 +723,10 @@
     "type": "Water",
     "generation": "Generation I",
     "short_descripton": "Inflicts regular damage and can hit Dive users.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "All Pokemon"
+    ]
   },
   {
     "name": "Ice Beam",
@@ -832,7 +850,10 @@
     "type": "Fighting",
     "generation": "Generation I",
     "short_descripton": "Inflicts more damage to heavier targets, with a maximum of 120 power.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Counter",
@@ -844,7 +865,10 @@
     "type": "Fighting",
     "generation": "Generation I",
     "short_descripton": "Inflicts twice the damage the user received from the last physical hit it took.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Seismic Toss",
@@ -856,7 +880,10 @@
     "type": "Fighting",
     "generation": "Generation I",
     "short_descripton": "Inflicts damage equal to the user's level.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Strength",
@@ -1096,7 +1123,10 @@
     "type": "Ground",
     "generation": "Generation I",
     "short_descripton": "Inflicts regular damage and can hit Dig users.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "All Pokemon"
+    ]
   },
   {
     "name": "Fissure",
@@ -1267,7 +1297,10 @@
     "type": "Normal",
     "generation": "Generation I",
     "short_descripton": "Lowers the target's Defense by two stages.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Double Team",
@@ -2050,7 +2083,10 @@
     "type": "Dark",
     "generation": "Generation Ii",
     "short_descripton": "Takes the target's item.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Spider Web",
@@ -2188,7 +2224,10 @@
     "type": "Fighting",
     "generation": "Generation Ii",
     "short_descripton": "Inflicts more damage when the user has less HP remaining, with a maximum of 200 power.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Spite",
@@ -2443,7 +2482,10 @@
     "type": "Dragon",
     "generation": "Generation Ii",
     "short_descripton": "Hits every turn for 2-3 turns, then confuses the user.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Sandstorm",
@@ -2722,7 +2764,11 @@
     "type": "Fighting",
     "generation": "Generation Ii",
     "short_descripton": "Has a 100% chance to confuse the target.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Megahorn",
@@ -2956,7 +3002,11 @@
     "type": "Dark",
     "generation": "Generation Ii",
     "short_descripton": "Has a 20% chance to lower the target's Defense by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Biting"
+    ]
   },
   {
     "name": "Mirror Coat",
@@ -3091,7 +3141,10 @@
     "type": "Normal",
     "generation": "Generation Iii",
     "short_descripton": "Forced to use this move for several turns.  Pokémon cannot fall asleep in that time.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Stockpile",
@@ -3166,7 +3219,10 @@
     "type": "Dark",
     "generation": "Generation Iii",
     "short_descripton": "Prevents the target from using the same move twice in a row.",
-    "damage_class": "Status"
+    "damage_class": "Status",
+    "tags": [
+      "Mental"
+    ]
   },
   {
     "name": "Flatter",
@@ -3229,7 +3285,11 @@
     "type": "Fighting",
     "generation": "Generation Iii",
     "short_descripton": "If the user takes damage before attacking, the attack is canceled.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Smelling Salts",
@@ -3980,7 +4040,11 @@
     "type": "Ghost",
     "generation": "Generation Iii",
     "short_descripton": "Never misses.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Extrasensory",
@@ -4515,7 +4579,10 @@
     "type": "Bug",
     "generation": "Generation Iv",
     "short_descripton": "User must switch out after attacking.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Close Combat",
@@ -4557,7 +4624,10 @@
     "type": "Dark",
     "generation": "Generation Iv",
     "short_descripton": "Power is doubled if the target has already received damage this turn.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Embargo",
@@ -4930,7 +5000,10 @@
     "type": "Grass",
     "generation": "Generation Iv",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Ball & Bomb"
+    ]
   },
   {
     "name": "Air Slash",
@@ -5018,7 +5091,11 @@
     "type": "Fighting",
     "generation": "Generation Iv",
     "short_descripton": "Drains half the damage inflicted to heal the user.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   },
   {
     "name": "Vacuum Wave",
@@ -5042,7 +5119,10 @@
     "type": "Fighting",
     "generation": "Generation Iv",
     "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Ball & Bomb"
+    ]
   },
   {
     "name": "Energy Ball",
@@ -5054,7 +5134,10 @@
     "type": "Grass",
     "generation": "Generation Iv",
     "short_descripton": "Has a 10% chance to lower the target's Special Defense by one stage.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Ball & Bomb"
+    ]
   },
   {
     "name": "Brave Bird",
@@ -5361,7 +5444,10 @@
     "type": "Electric",
     "generation": "Generation Iv",
     "short_descripton": "Has a 30% chance to paralyze the target.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "All Pokemon"
+    ]
   },
   {
     "name": "Lava Plume",
@@ -5907,7 +5993,10 @@
     "type": "Fighting",
     "generation": "Generation V",
     "short_descripton": "Always scores a critical hit.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Flame Burst",
@@ -6030,7 +6119,10 @@
     "type": "Fighting",
     "generation": "Generation V",
     "short_descripton": "Lowers the target's Speed by one stage.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Acid Spray",
@@ -6300,7 +6392,10 @@
     "type": "Flying",
     "generation": "Generation V",
     "short_descripton": "Has double power if the user has no held item.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Reflect Type",
@@ -6492,7 +6587,10 @@
     "type": "Electric",
     "generation": "Generation V",
     "short_descripton": "User receives 1/4 the damage it inflicts in recoil.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Drill Run",
@@ -6819,7 +6917,10 @@
     "type": "Dark",
     "generation": "Generation V",
     "short_descripton": "Has a 100% chance to lower the target's Special Attack by one stage.",
-    "damage_class": "Special"
+    "damage_class": "Special",
+    "tags": [
+      "Sound-Based"
+    ]
   },
   {
     "name": "Icicle Crash",
@@ -8654,7 +8755,11 @@
     "type": "Psychic",
     "generation": "Generation Vii",
     "short_descripton": "Destroys Reflect and Light Screen.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Biting"
+    ]
   },
   {
     "name": "Stomping Tantrum",
@@ -8666,7 +8771,10 @@
     "type": "Ground",
     "generation": "Generation Vii",
     "short_descripton": "Has double power if the user's last move failed.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Shadow Bone",
@@ -9662,7 +9770,10 @@
     "type": "Dark",
     "generation": "Generation Viii",
     "short_descripton": "Inflicts regular damage with no additional effect.",
-    "damage_class": "Physical"
+    "damage_class": "Physical",
+    "tags": [
+      "Contact"
+    ]
   },
   {
     "name": "Poltergeist",
@@ -10624,5 +10735,21 @@
     "generation": "Generation IX",
     "short_descripton": "Sets up a snowstorm for 5 turns, then switches the user out.",
     "damage_class": "Status"
+  },
+  {
+    "name": "Rage Fist",
+    "id": 888,
+    "accuracy": 100,
+    "pp": 10,
+    "power": 50,
+    "priority": 0,
+    "type": "Ghost",
+    "generation": "Generation IX",
+    "short_descripton": "Power doubles if the user was hit by an attack in the previous turn. Resets upon switching.",
+    "damage_class": "Physical",
+    "tags": [
+      "Contact",
+      "Punching"
+    ]
   }
 ]
