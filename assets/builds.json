@@ -1759,21 +1759,27 @@
         "id": "251",
         "pokemon": "Whimsicott",
         "build": "Whimsicott @ Focus Sash  \nAbility: Prankster  \nLevel: 50  \nTera Type: Grass  \nEVs: 252 HP / 252 Def / 4 SpA  \nBold Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Sunny Day  \n- Encore  \n- Tailwind",
-        "synergy": [],
+        "synergy": [
+            "250"
+        ],
         "format": "Doubles"
     },
     {
         "id": "252",
         "pokemon": "Garchomp",
         "build": "Garchomp @ Yache Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- Earthquake  \n- Dragon Claw  \n- Rock Slide  \n- Protect",
-        "synergy": [],
+        "synergy": [
+            "251"
+        ],
         "format": "Doubles"
     },
     {
         "id": "253",
         "pokemon": "Sneasler",
         "build": "Sneasler @ White Herb  \nAbility: Unburden  \nLevel: 50  \nTera Type: Fighting  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nAdamant Nature  \n- Close Combat  \n- Dire Claw  \n- Rock Tomb  \n- Protect",
-        "synergy": [],
+        "synergy": [
+            "251"
+        ],
         "format": "Doubles"
     },
     {
@@ -1815,7 +1821,9 @@
         "id": "259",
         "pokemon": "Kingambit",
         "build": "Kingambit @ Chople Berry  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Iron Head  \n- Protect  \n- Low Kick  \n- Sucker Punch",
-        "synergy": [],
+        "synergy": [
+            "251"
+        ],
         "format": "Doubles"
     },
     {
@@ -4524,7 +4532,9 @@
         "id": "613",
         "pokemon": "Steelix",
         "build": "Steelix @ Steelixite  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 252 HP / 48 Atk / 210 SpD  \nBrave Nature  \n- Protect  \n- Heavy Slam  \n- High Horsepower  \n- Wide Guard",
-        "synergy": [],
+        "synergy": [
+            "615"
+        ],
         "format": "Doubles"
     },
     {
