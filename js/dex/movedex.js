@@ -158,7 +158,6 @@
             </div>
             ${move.tags && move.tags.length ? D.moveTagsHtml(move.tags) : ''}
             <div class="dex-meta-grid">
-                <div class="dex-meta-cell"><strong>Category</strong><span class="dex-meta-icon">${D.dmgClassIconOnlyHtml(move.damage_class, 24)}</span></div>
                 <div class="dex-meta-cell"><strong>Power</strong><span>${move.power ?? '—'}</span></div>
                 <div class="dex-meta-cell"><strong>Acc</strong><span>${move.accuracy ?? '—'}</span></div>
                 <div class="dex-meta-cell"><strong>PP</strong><span>${move.pp ?? '—'}</span></div>
@@ -185,8 +184,7 @@
                     <h2 class="dex-detail-name">${D.escapeHtml(move.name)}</h2>
                     <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
                     <div class="dex-detail-category-row">
-                        ${D.dmgClassIconOnlyHtml(move.damage_class, 40)}
-                        ${D.dmgClassHtml(move.damage_class, 28)}
+                        ${D.dmgClassHtml(move.damage_class, 32)}
                     </div>
                     ${move.tags ? D.moveTagsHtml(move.tags) : ''}
                     <div class="modal-info-grid" style="margin-top:1.25rem;">

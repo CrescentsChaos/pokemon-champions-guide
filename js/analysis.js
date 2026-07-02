@@ -151,6 +151,45 @@ function checkSlotChampionsEligible(p) {
     return { eligible: reasons.length === 0, reasons };
 }
 
+function escapeAnalysisHtml(value) {
+    return (value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function championsReasonClass(reason) {
+    if ((reason || '').startsWith('Item:')) return 'item';
+    if ((reason || '').startsWith('Move:')) return 'move';
+    return 'species';
+}
+
+function renderChampionsReasonsHtml(reasons, compact = false) {
+    if (!reasons || !reasons.length) return '';
+    const compactCls = compact ? ' analysis-champ-reasons--compact' : '';
+    return `<div class="analysis-champ-reasons${compactCls}">${reasons.map(r =>
+        `<span class="analysis-champ-reason analysis-champ-reason--${championsReasonClass(r)}">${escapeAnalysisHtml(r)}</span>`
+    ).join('')}</div>`;
+}
+
+function renderChampionsCompliancePanel(activeMons, checks) {
+    const illegal = activeMons.map((p, i) => ({ species: p.species || 'Unknown', check: checks[i] }))
+        .filter(entry => entry.check && !entry.check.eligible);
+    if (!illegal.length) return '';
+
+    const rows = illegal.map(entry => `
+        <div class="analysis-champions-detail__row">
+            <span class="analysis-champions-detail__name">${escapeAnalysisHtml(entry.species)}</span>
+            ${renderChampionsReasonsHtml(entry.check.reasons)}
+        </div>`).join('');
+
+    return `
+        <div class="analysis-champions-detail">
+            <div class="analysis-champions-detail__head">
+                <span class="analysis-champions-detail__title">Champions Incompatibility</span>
+                <span class="analysis-champions-detail__count">${illegal.length} slot${illegal.length > 1 ? 's' : ''} blocked</span>
+            </div>
+            ${rows}
+        </div>`;
+}
+
 function buildTeamContext(activeMons, format, coverage, weaknesses, resistances, roles) {
     const moves = activeMons.flatMap(p => (p.moves || []).map(m => normalizeMoveKey(m)));
     const hasMove = (list) => list.some(m => moves.includes(m));
@@ -483,8 +522,11 @@ function renderScoreboard(ctx, activeMons) {
         const check = ctx.championsChecks[i];
         const cls = check.eligible ? 'analysis-champ-chip--ok' : 'analysis-champ-chip--bad';
         const title = check.eligible ? 'Champions legal' : check.reasons.join('; ');
-        return `<span class="analysis-champ-chip ${cls}" title="${title.replace(/"/g, '&quot;')}">${(p.species || 'Slot').split('-')[0]}</span>`;
+        const reasonHint = check.eligible ? '' : `<span class="analysis-champ-chip__reason">${escapeAnalysisHtml(check.reasons[0] || 'Not legal')}</span>`;
+        return `<span class="analysis-champ-chip ${cls}" title="${escapeAnalysisHtml(title)}">${(p.species || 'Slot').split('-')[0]}${reasonHint}</span>`;
     }).join('');
+
+    const championsDetail = renderChampionsCompliancePanel(activeMons, ctx.championsChecks);
 
     board.innerHTML = `
         <div class="analysis-scoreboard__head">
@@ -523,7 +565,8 @@ function renderScoreboard(ctx, activeMons) {
             ${champChips}
             ${ctx.duplicateItems.length ? `<span class="analysis-champ-chip analysis-champ-chip--warn" title="Duplicate held items">⚠ Duplicate items</span>` : ''}
             ${ctx.restrictedCount > 2 ? `<span class="analysis-champ-chip analysis-champ-chip--warn" title="${ctx.restrictedCount} restricted-level Pokémon">⚠ ${ctx.restrictedCount} Restricted</span>` : ''}
-        </div>`;
+        </div>
+        ${championsDetail}`;
 }
 
 function renderInsightCard(issue) {
@@ -869,7 +912,7 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
         const monRoles = (roles[i] || []).slice(0, 4);
 
         const card = document.createElement('div');
-        card.className = 'analysis-mon-card';
+        card.className = 'analysis-mon-card' + (champ.eligible ? '' : ' analysis-mon-card--illegal');
         card.innerHTML = `
             <div class="analysis-mon-card__sprite">
                 <img src="${spriteUrl}" alt="${p.species || ''}"
@@ -878,8 +921,9 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
             <div class="analysis-mon-card__body">
                 <div class="analysis-mon-card__name">
                     ${(p.species || 'Unknown').toUpperCase()}
-                    ${champ.eligible ? '<span class="analysis-champ-chip analysis-champ-chip--ok">CHAMP</span>' : '<span class="analysis-champ-chip analysis-champ-chip--bad">ILLEGAL</span>'}
+                    ${champ.eligible ? '<span class="analysis-champ-chip analysis-champ-chip--ok">CHAMP</span>' : '<span class="analysis-champ-chip analysis-champ-chip--bad">NOT LEGAL</span>'}
                 </div>
+                ${champ.eligible ? '' : `<div class="analysis-mon-card__champ-block"><span class="analysis-mon-card__champ-label">Why not Champions?</span>${renderChampionsReasonsHtml(champ.reasons)}</div>`}
                 <div class="analysis-mon-card__meta">
                     <span class="analysis-mon-card__types">
                         <img src="${typeIconSrc(t1)}" alt="${t1}">
@@ -920,6 +964,18 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
             activeIssues.push({ type: 'medium', text: 'Slow Team Without TR', tip: 'Mostly slow Pokémon without Trick Room — opponents will move first every turn.', icon: '🐢' });
         }
     }
+
+    activeMons.forEach((p, i) => {
+        const check = ctx.championsChecks[i];
+        if (!check.eligible) {
+            activeIssues.push({
+                type: 'champions',
+                text: `${(p.species || 'Slot').split('-')[0]} — Champions Blocked`,
+                tip: check.reasons.join(' · ') + '. Replace species, item, or moves to qualify for Champions format.',
+                icon: '🏆'
+            });
+        }
+    });
 
     const order = { synergy: 0, champions: 1, high: 2, medium: 3, low: 4 };
     activeIssues.sort((a, b) => (order[a.type] ?? 5) - (order[b.type] ?? 5));

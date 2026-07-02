@@ -1297,6 +1297,60 @@
             }, 300);
         }
 
+        function slotMoveTypes(p) {
+            return (p.moves || []).map(m => {
+                const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return (movesMap[clean]?.type || '').toLowerCase();
+            }).filter(t => t);
+        }
+
+        function slotCleanMoves(p) {
+            return (p.moves || []).map(m => m.toLowerCase().replace(/[^a-z0-9]/g, ''));
+        }
+
+        function buildSynergyDepthMap(teamBuildIds, maxDepth = 3) {
+            const depthMap = new Map();
+            const onTeam = new Set(teamBuildIds.filter(Boolean));
+            const queue = teamBuildIds.filter(Boolean).map(id => ({ id, depth: 0 }));
+            while (queue.length) {
+                const { id, depth } = queue.shift();
+                if (depth >= maxDepth) continue;
+                const build = allBuilds.find(b => b.id === id);
+                if (!build || !Array.isArray(build.synergy)) continue;
+                build.synergy.forEach(synId => {
+                    if (onTeam.has(synId)) return;
+                    const nextDepth = depth + 1;
+                    const existing = depthMap.get(synId);
+                    if (existing === undefined || nextDepth < existing) {
+                        depthMap.set(synId, nextDepth);
+                    }
+                    if (nextDepth < maxDepth) queue.push({ id: synId, depth: nextDepth });
+                });
+            }
+            return depthMap;
+        }
+
+        function synergyBoostForDepth(depth) {
+            if (depth === 1) return 120000;
+            if (depth === 2) return 70000;
+            if (depth === 3) return 40000;
+            return 0;
+        }
+
+        function synergySourceLabel(depth) {
+            if (depth === 1) return 'DIRECT SYNC';
+            if (depth === 2) return 'LINKED SYNC';
+            if (depth === 3) return 'CHAIN SYNC';
+            return 'SMART FIT';
+        }
+
+        function finalSynergyPercent(sourceDepth, smartScore) {
+            if (sourceDepth === 1) return 100;
+            if (sourceDepth === 2) return Math.min(99, 96 + Math.floor(smartScore / 200));
+            if (sourceDepth === 3) return Math.min(97, 91 + Math.floor(smartScore / 150));
+            return Math.min(94, Math.max(42, Math.floor(60 + smartScore / 4.2)));
+        }
+
         function getSmartRecommendations(mainBuild, format, count = 5, excludedIds = [], baseTeam = null) {
             const pMain = parsePaste(mainBuild.build);
             const mainSpeciesClean = pMain.species.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1308,49 +1362,42 @@
             const usedSpecies = new Set();
             const usedItems = new Set();
             let megaCount = 0;
-
-            // SYNERGY TRACKING
-            const directSynergyIds = new Set(mainBuild.synergy || []);
-            const priorityPool = new Set(directSynergyIds);
-            const recursiveSynergyIds = new Set();
-
-            directSynergyIds.forEach(id => {
-                const synBuild = allBuilds.find(b => b.id === id);
-                if (synBuild && synBuild.synergy) {
-                    synBuild.synergy.forEach(synId => {
-                        if (synId !== mainBuild.id) {
-                            priorityPool.add(synId);
-                        }
-                    });
-                }
-            });
+            const isDoubles = (format || 'Singles').toLowerCase() === 'doubles';
 
             if (baseTeam && baseTeam.length > 0) {
                 baseTeam.forEach(member => {
-                    const p = parsePaste(member.build.build || member.build);
+                    const buildRecord = member.build && typeof member.build === 'object' ? member.build : member;
+                    const paste = buildRecord.build || buildRecord;
+                    const p = typeof paste === 'string' ? parsePaste(paste) : parsePaste(buildRecord.build || '');
                     const s = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
                     const db = getEffectivePokemonData(p, allPokemon) || getBasePokemonData(p, allPokemon);
                     const types = [db?.Type_1?.toLowerCase(), db?.Type_2?.toLowerCase()].filter(t => t);
                     const it = (p.item || '').toLowerCase();
 
                     team.push({
-                        build: member.build,
+                        build: buildRecord,
+                        buildId: buildRecord.id,
                         species: s,
-                        types: types,
+                        types,
                         roles: detectRole(p, db),
-                        weaknesses: getWeaknesses(types)
+                        weaknesses: getWeaknesses(types),
+                        moveTypes: slotMoveTypes(p),
+                        moves: slotCleanMoves(p)
                     });
                     usedSpecies.add(s);
                     if (it && it !== 'none') usedItems.add(it);
-                    if (isMega((member.build.pokemon || p.species), it)) megaCount++;
+                    if (isMega((buildRecord.pokemon || p.species), it)) megaCount++;
                 });
             } else {
                 team.push({
                     build: mainBuild,
+                    buildId: mainBuild.id,
                     species: mainSpeciesClean,
                     types: [mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t),
                     roles: detectRole(pMain, mainBuildData),
-                    weaknesses: getWeaknesses([mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t))
+                    weaknesses: getWeaknesses([mainBuildData?.Type_1?.toLowerCase(), mainBuildData?.Type_2?.toLowerCase()].filter(t => t)),
+                    moveTypes: slotMoveTypes(pMain),
+                    moves: slotCleanMoves(pMain)
                 });
                 usedSpecies.add(mainSpeciesClean);
                 const mainItem = (pMain.item || '').toLowerCase();
@@ -1406,13 +1453,14 @@
                 candidates = champCandidates;
             }
 
-            candidates.sort(() => Math.random() - 0.5);
-
             for (let i = 0; i < count; i++) {
                 let bestCand = null;
                 let bestTotalScore = -Infinity;
                 let bestSmartScore = 0;
-                let bestSource = 'smart'; // 'direct', 'recursive', or 'smart'
+                let bestSourceDepth = null;
+
+                const teamBuildIds = team.map(m => m.buildId).filter(Boolean);
+                const synergyDepthMap = buildSynergyDepthMap(teamBuildIds, 3);
 
                 const teamTypes = team.flatMap(m => m.types);
                 const teamRoles = team.flatMap(m => m.roles);
@@ -1436,15 +1484,9 @@
                     if (p.ability) abilities.push(p.ability.toLowerCase());
 
                     let smartScore = 0;
-                    let synergyBoost = 0;
-                    let source = 'smart';
-
-                    // Get candidate's move types for offensive analysis
-                    const candMoveTypes = p.moves.map(m => {
-                        const clean = m.toLowerCase().replace(/[^a-z0-9]/g, '');
-                        return (movesMap[clean]?.type || '').toLowerCase();
-                    }).filter(t => t);
-                    const candSTAB = types; // STAB types for offensive pressure
+                    const candMoveTypes = slotMoveTypes(p);
+                    const candCleanMoves = slotCleanMoves(p);
+                    const candSTAB = types;
 
                     // ── 1. DEFENSIVE SYNERGY WITH LEADER (resist leader's weaknesses) ──
                     team[0].weaknesses.forEach(w => {
@@ -1595,59 +1637,56 @@
                     const teamHasPriority = team.some(m => m.moves && m.moves.some(mv => priorityMoves.includes(mv)));
                     if (!teamHasPriority && candCleanMoves.some(m => priorityMoves.includes(m))) smartScore += 18;
 
-                    // ── 13. ENTROPY / VARIETY (avoid repeating same recommendations) ──
+                    // ── 13. VGC / DOUBLES ROLE NICHE ──
+                    if (isDoubles) {
+                        const doublesRoles = ['Fake Out Pressure', 'Speed Control', 'Redirection', 'Trick Room Setter', 'Damage Mitigation', 'Screener'];
+                        doublesRoles.forEach(dr => {
+                            if (roles.includes(dr) && !teamRoles.includes(dr)) smartScore += 22;
+                        });
+                        const spreadMoves = ['earthquake', 'heatwave', 'rockslide', 'dazzlinggleam', 'snarl', 'muddywater', 'surf', 'bleakwindstorm', 'expandingforce'];
+                        const teamHasSpread = team.some(m => m.moves && m.moves.some(mv => spreadMoves.includes(mv)));
+                        if (!teamHasSpread && candCleanMoves.some(m => spreadMoves.includes(m))) smartScore += 20;
+                        const teamHasProtect = team.some(m => m.moves && m.moves.some(mv => mv === 'protect'));
+                        if (!teamHasProtect && candCleanMoves.includes('protect')) smartScore += 16;
+                    }
+
+                    // ── 14. ENTROPY / VARIETY (avoid repeating same recommendations) ──
                     const hitCount = rcmdHistory.get(b.id) || 0;
                     smartScore -= (hitCount * 40);
 
-                    // ── 14. PREDEFINED SYNERGY (Recursive Priority) ──
-                    if (directSynergyIds.has(b.id)) {
-                        synergyBoost = 10000;
-                        source = 'direct';
-                    } else if (priorityPool.has(b.id)) {
-                        synergyBoost = 5000;
-                        source = 'recursive';
-                    }
+                    // ── 15. SYNERGY GRAPH (direct → linked → chain) ──
+                    const synDepth = synergyDepthMap.get(b.id);
+                    const synergyBoost = synDepth ? synergyBoostForDepth(synDepth) : 0;
 
-                    let totalScore = smartScore + synergyBoost + (Math.random() * 20);
+                    let totalScore = smartScore + synergyBoost + (Math.random() * 8);
 
                     if (totalScore > bestTotalScore) {
                         bestTotalScore = totalScore;
                         bestSmartScore = smartScore;
-                        bestSource = source;
+                        bestSourceDepth = synDepth || null;
                         bestCand = { build: b, species: s, item, types, roles, weaknesses, isMega: isCandMega, moveTypes: candMoveTypes, moves: candCleanMoves };
                     }
                 }
 
                 if (bestCand) {
-                    // CALCULATE MEANINGFUL PERCENTAGE
-                    let finalPercentage = 0;
-                    if (bestSource === 'direct') {
-                        finalPercentage = 100;
-                    } else if (bestSource === 'recursive') {
-                        finalPercentage = 95 + Math.min(4, Math.max(0, bestSmartScore / 100)); // 95-99%
-                    } else {
-                        // Smart Fit: Base 60%, adds up based on score. 
-                        // A score of 150 (very good) leads to 60 + 150/5 = 90%.
-                        finalPercentage = Math.min(94, Math.floor(65 + (bestSmartScore / 5)));
-                        finalPercentage = Math.max(40, finalPercentage); // Floor at 40%
-                    }
+                    const finalPercentage = finalSynergyPercent(bestSourceDepth, bestSmartScore);
+                    const sourceLabel = synergySourceLabel(bestSourceDepth);
 
-                    rcmdResults.push({ build: bestCand.build, score: finalPercentage });
-
-                    // Add new synergies to priority pool
-                    if (bestCand.build.synergy) {
-                        bestCand.build.synergy.forEach(sid => priorityPool.add(sid));
-                    }
+                    rcmdResults.push({ build: bestCand.build, score: finalPercentage, sourceDepth: bestSourceDepth, sourceLabel });
 
                     usedSpecies.add(bestCand.species);
                     if (bestCand.item && bestCand.item !== 'none') usedItems.add(bestCand.item);
                     if (bestCand.isMega) megaCount++;
 
                     team.push({
+                        build: bestCand.build,
+                        buildId: bestCand.build.id,
                         species: bestCand.species,
                         types: bestCand.types,
                         roles: bestCand.roles,
-                        weaknesses: bestCand.weaknesses
+                        weaknesses: bestCand.weaknesses,
+                        moveTypes: bestCand.moveTypes,
+                        moves: bestCand.moves
                     });
                 } else {
                     break;
@@ -1725,12 +1764,14 @@
 
                     // Add Score Badge
                     const scoreBadge = document.createElement('div');
-                    scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
-                    if (item.score !== undefined) {
-                        scoreBadge.innerText = `SYNERGY: ${Math.min(100, Math.floor(item.score))}%`;
-                    } else {
-                        scoreBadge.innerText = `SYNERGY: MATCH`;
-                    }
+                    const label = item.sourceLabel || 'SMART FIT';
+                    const scoreVal = item.score !== undefined ? Math.min(100, Math.floor(item.score)) : null;
+                    const badgeBg = label === 'DIRECT SYNC' ? 'linear-gradient(135deg, #ffd54f, #ff9800)'
+                        : label === 'LINKED SYNC' ? 'linear-gradient(135deg, #80cbc4, #00897b)'
+                        : label === 'CHAIN SYNC' ? 'linear-gradient(135deg, #90caf9, #1565c0)'
+                        : 'linear-gradient(135deg, #00ffcc, #0066ff)';
+                    scoreBadge.style = `position:absolute; top:-10px; right:10px; background:${badgeBg}; color:${label === 'SMART FIT' ? 'black' : 'white'}; font-size:0.62rem; font-weight:900; padding:3px 9px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,0,0,0.25); letter-spacing:0.03em;`;
+                    scoreBadge.innerText = scoreVal != null ? `${label} ${scoreVal}%` : label;
                     card.appendChild(scoreBadge);
 
                     // Add Shuffle Button (Individual Slot)
