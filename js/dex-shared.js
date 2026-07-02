@@ -134,8 +134,12 @@ const DexShared = (() => {
         return `<img src="${ASSET_PREFIX}assets/${file}.png" class="dex-dmg-icon" style="width:${size}px;height:${size}px;" alt="${escapeHtml(label)}" title="${escapeHtml(label)} category">`;
     }
 
+    function dmgClassIconOnlyHtml(damageClass, size = 24) {
+        return dmgClassIconHtml(damageClass, size);
+    }
+
     function dmgClassHtml(damageClass, iconSize = 20) {
-        return `<span class="dex-dmg-wrap">${dmgClassIconHtml(damageClass, iconSize)}${dmgClassBadge(damageClass)}</span>`;
+        return `<span class="dex-dmg-wrap" title="${escapeHtml(damageClass || 'Status')} category">${dmgClassIconHtml(damageClass, iconSize)}<span class="dex-dmg-badge dex-dmg-${(damageClass || 'Status').toLowerCase()}">${escapeHtml(damageClass || 'Status')}</span></span>`;
     }
 
     function moveTagsHtml(tags) {
@@ -245,7 +249,7 @@ const DexShared = (() => {
         normalizeKey, escapeHtml, escapeJs,
         normalizeSpriteName, getSpriteUrl, handleSpriteError,
         getItemSpriteUrl, handleItemError,
-        typeIconHtml, dmgClassBadge, dmgClassIconHtml, dmgClassHtml, moveTagsHtml,
+        typeIconHtml, dmgClassBadge, dmgClassIconHtml, dmgClassIconOnlyHtml, dmgClassHtml, moveTagsHtml,
         spriteImgHtml, spriteCellHtml, statBarHtml,
         compareValues, sortList, groupList,
         renderNav, bindModal, openModal, closeModal,

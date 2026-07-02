@@ -1117,7 +1117,9 @@
                 const container = document.getElementById('synergy-container');
                 if (container) {
                     container.style.display = 'block';
-                    // Trigger animation reflow
+                    container.classList.add('appear', 'is-visible');
+                    container.style.opacity = '1';
+                    container.style.transform = 'none';
                     container.offsetHeight;
                     setTimeout(() => {
                         container.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -23,7 +23,7 @@
     font-weight: 900;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.72);
 }
 
 .analysis-format-pill {
@@ -63,7 +63,7 @@
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.62);
     margin-bottom: 0.35rem;
 }
 
@@ -170,10 +170,319 @@
 .analysis-card__title--insights { color: #4caf50; }
 
 .analysis-section-note {
-    font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.38);
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.62);
     line-height: 1.55;
     margin: -0.35rem 0 1rem;
+}
+
+.analysis-empty-note {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 1.25rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.analysis-highlight {
+    color: var(--primary-red);
+}
+
+.analysis-highlight--danger {
+    color: #ef5350;
+}
+
+.analysis-diversity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.65rem;
+}
+
+.analysis-diversity-header__label {
+    font-size: 0.68rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.72);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.analysis-diversity-header__value {
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--primary-red);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* VGC Doubles breakdown panel */
+.vgc-analysis-panel {
+    margin-bottom: 1.75rem;
+    padding: 1.35rem 1.5rem;
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(74, 144, 226, 0.08), rgba(0, 0, 0, 0.35));
+    border: 1px solid rgba(74, 144, 226, 0.22);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+    animation: analysisFadeIn 0.35s ease-out;
+}
+
+@keyframes analysisFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.vgc-analysis-panel__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.15rem;
+}
+
+.vgc-analysis-panel__title {
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ec8ff;
+}
+
+.vgc-analysis-panel__score {
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(74, 144, 226, 0.15);
+    border: 1px solid rgba(74, 144, 226, 0.35);
+    color: #c5ddff;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.vgc-analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+
+.vgc-analysis-block {
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.vgc-analysis-block--wide {
+    grid-column: 1 / -1;
+}
+
+.vgc-analysis-block__title {
+    margin: 0 0 0.4rem;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.vgc-analysis-block__desc {
+    margin: 0 0 0.65rem;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.vgc-tool-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.vgc-tool-chip {
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.28rem 0.55rem;
+    border-radius: 6px;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.vgc-tool-chip--active {
+    background: rgba(76, 175, 80, 0.14);
+    border: 1px solid rgba(76, 175, 80, 0.35);
+    color: #a5d6a7;
+}
+
+.vgc-tool-chip--missing {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.vgc-speed-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.vgc-speed-bar {
+    display: grid;
+    grid-template-columns: minmax(72px, 1fr) 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.62rem;
+}
+
+.vgc-speed-bar__label {
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.vgc-speed-bar__track {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.vgc-speed-bar__fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vgc-speed-bar__count {
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'JetBrains Mono', monospace;
+    min-width: 1rem;
+    text-align: right;
+}
+
+.vgc-bench-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.vgc-bench-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    min-width: 100px;
+}
+
+.vgc-bench-slot__name {
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.04em;
+}
+
+.vgc-playbook,
+.vgc-wincons {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.vgc-playbook li,
+.vgc-wincons li {
+    margin-bottom: 0.35rem;
+}
+
+.vgc-playbook li::marker {
+    color: #4a90e2;
+}
+
+.vgc-wincons li::marker {
+    color: var(--primary-red);
+}
+
+.analysis-scoreboard {
+    animation: analysisFadeIn 0.3s ease-out;
+}
+
+.analysis-insight {
+    animation: analysisFadeIn 0.25s ease-out backwards;
+}
+
+.analysis-insight:nth-child(2) { animation-delay: 0.04s; }
+.analysis-insight:nth-child(3) { animation-delay: 0.08s; }
+.analysis-insight:nth-child(4) { animation-delay: 0.12s; }
+
+.analysis-insight__body {
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.analysis-insight--low .analysis-insight__title { color: rgba(255, 255, 255, 0.72); }
+
+.threat-row {
+    animation: analysisFadeIn 0.3s ease-out backwards;
+}
+
+.threat-meta-label {
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.62);
+    text-transform: uppercase;
+}
+
+.threat-meta-value {
+    font-size: 0.65rem;
+    font-weight: 900;
+}
+
+.threat-move-pill {
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.threat-name {
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.threat-rank {
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 1px;
+}
+
+.threat-calc-note {
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.threat-calc-best {
+    font-size: 0.62rem;
+    color: #81c784;
+}
+
+@media (max-width: 768px) {
+    .vgc-analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vgc-analysis-block--wide {
+        grid-column: auto;
+    }
 }
 
 .analysis-mon-card {
@@ -350,12 +659,6 @@
 .analysis-insight--low .analysis-insight__title { color: rgba(255, 255, 255, 0.55); }
 .analysis-insight--champions .analysis-insight__title { color: #ffcc80; }
 
-.analysis-insight__body {
-    font-size: 0.68rem;
-    line-height: 1.55;
-    color: rgba(255, 255, 255, 0.58);
-}
-
 .analysis-diversity-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -385,7 +688,7 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(255, 255, 255, 0.55);
     margin-top: 0.2rem;
 }
 
@@ -417,15 +720,15 @@
     font-weight: 900;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.62);
     margin-bottom: 0.35rem;
 }
 
 .analysis-strategy-block p {
     margin: 0;
-    font-size: 0.84rem;
-    line-height: 1.65;
-    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.86rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .threat-summary-row {

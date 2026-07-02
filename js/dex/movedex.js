@@ -8,6 +8,7 @@
 
     async function init() {
         document.getElementById('dex-nav-slot').innerHTML = D.renderNav('move');
+        injectCategoryLegend();
         const cb = '?v=' + Date.now();
         const [movesRes, pokeRes] = await Promise.all([
             fetch(D.ASSET_PREFIX + 'assets/moves.json' + cb),
@@ -59,6 +60,23 @@
             dir: document.getElementById('sort-dir').value,
             group: document.getElementById('sort-group').value
         };
+    }
+
+    function injectCategoryLegend() {
+        const row = document.querySelector('.dex-filters-row:last-of-type');
+        if (!row || document.getElementById('dmg-category-legend')) return;
+        const legend = document.createElement('div');
+        legend.id = 'dmg-category-legend';
+        legend.className = 'dex-dmg-legend';
+        legend.innerHTML = `
+            <span class="dex-label">Category</span>
+            ${D.dmgClassIconOnlyHtml('Physical', 22)}
+            <span class="dex-dmg-legend__text">Physical</span>
+            ${D.dmgClassIconOnlyHtml('Special', 22)}
+            <span class="dex-dmg-legend__text">Special</span>
+            ${D.dmgClassIconOnlyHtml('Status', 22)}
+            <span class="dex-dmg-legend__text">Status</span>`;
+        row.appendChild(legend);
     }
 
     function applyFilters() {
@@ -130,15 +148,17 @@
             <div class="dex-card-top">
                 <div>
                     <div class="dex-card-title">${D.escapeHtml(move.name)}</div>
-                    <div style="display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap;">
-                        ${D.typeIconHtml(move.type, 24)}
-                        ${D.dmgClassHtml(move.damage_class, 18)}
+                    <div class="dex-card-type-row">
+                        ${D.typeIconHtml(move.type, 26)}
+                        ${D.dmgClassIconOnlyHtml(move.damage_class, 26)}
+                        <span class="dex-dmg-badge dex-dmg-${(move.damage_class || 'Status').toLowerCase()}">${D.escapeHtml(move.damage_class || 'Status')}</span>
                     </div>
                 </div>
                 <span class="dex-card-id">#${move.id || '—'}</span>
             </div>
             ${move.tags && move.tags.length ? D.moveTagsHtml(move.tags) : ''}
             <div class="dex-meta-grid">
+                <div class="dex-meta-cell"><strong>Category</strong><span class="dex-meta-icon">${D.dmgClassIconOnlyHtml(move.damage_class, 24)}</span></div>
                 <div class="dex-meta-cell"><strong>Power</strong><span>${move.power ?? '—'}</span></div>
                 <div class="dex-meta-cell"><strong>Acc</strong><span>${move.accuracy ?? '—'}</span></div>
                 <div class="dex-meta-cell"><strong>PP</strong><span>${move.pp ?? '—'}</span></div>
@@ -163,8 +183,11 @@
                         ${D.typeIconHtml(move.type, 48)}
                     </div>
                     <h2 class="dex-detail-name">${D.escapeHtml(move.name)}</h2>
-                    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
-                    <div style="display:flex;gap:8px;justify-content:center;margin:1rem 0;">${D.dmgClassHtml(move.damage_class, 24)}</div>
+                    <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
+                    <div class="dex-detail-category-row">
+                        ${D.dmgClassIconOnlyHtml(move.damage_class, 40)}
+                        ${D.dmgClassHtml(move.damage_class, 28)}
+                    </div>
                     ${move.tags ? D.moveTagsHtml(move.tags) : ''}
                     <div class="modal-info-grid" style="margin-top:1.25rem;">
                         <div class="info-item"><span class="info-label">Power</span><span class="info-value">${move.power ?? '—'}</span></div>

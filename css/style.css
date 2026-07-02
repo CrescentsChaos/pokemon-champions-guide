@@ -1294,6 +1294,12 @@ footer {
     display: none;
 }
 
+#synergy-container.appear,
+#synergy-container.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
 .synergy-header {
     margin-bottom: 3rem;
     display: flex;
@@ -1365,15 +1371,15 @@ footer {
 }
 
 .role-badge {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.88);
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 0.6rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .format-badge {
@@ -1832,12 +1838,12 @@ footer {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 800;
-    padding: 3px 7px;
+    padding: 4px 8px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     white-space: nowrap;
 }
 

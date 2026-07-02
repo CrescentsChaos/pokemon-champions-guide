@@ -350,13 +350,56 @@
 
 .dex-dmg-icon {
     object-fit: contain;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
     flex-shrink: 0;
 }
 
-.dex-dmg-physical { background: rgba(238, 129, 48, 0.2); color: #EE8130; border: 1px solid rgba(238, 129, 48, 0.3); }
-.dex-dmg-special  { background: rgba(99, 144, 240, 0.2); color: #6390F0; border: 1px solid rgba(99, 144, 240, 0.3); }
-.dex-dmg-status   { background: rgba(180, 180, 180, 0.12); color: #aaa; border: 1px solid rgba(180, 180, 180, 0.2); }
+.dex-card-type-row {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-top: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.dex-meta-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dex-dmg-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: 0.25rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dex-dmg-legend__text {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.55);
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dex-detail-category-row {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.dex-dmg-physical { background: rgba(238, 129, 48, 0.2); color: #f5b87a; border: 1px solid rgba(238, 129, 48, 0.35); }
+.dex-dmg-special  { background: rgba(99, 144, 240, 0.2); color: #9eb8f8; border: 1px solid rgba(99, 144, 240, 0.35); }
+.dex-dmg-status   { background: rgba(180, 180, 180, 0.14); color: #ccc; border: 1px solid rgba(180, 180, 180, 0.28); }
 
 .dex-tag-row {
     display: flex;
