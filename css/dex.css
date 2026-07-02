@@ -342,6 +342,18 @@
     letter-spacing: 0.04em;
 }
 
+.dex-dmg-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dex-dmg-icon {
+    object-fit: contain;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+    flex-shrink: 0;
+}
+
 .dex-dmg-physical { background: rgba(238, 129, 48, 0.2); color: #EE8130; border: 1px solid rgba(238, 129, 48, 0.3); }
 .dex-dmg-special  { background: rgba(99, 144, 240, 0.2); color: #6390F0; border: 1px solid rgba(99, 144, 240, 0.3); }
 .dex-dmg-status   { background: rgba(180, 180, 180, 0.12); color: #aaa; border: 1px solid rgba(180, 180, 180, 0.2); }

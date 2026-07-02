@@ -131,6 +131,27 @@
             border-color: #e63946;
             background: rgba(255, 255, 255, 0.08);
         }
+
+        .builds-results-meta {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.45);
+            margin: -1rem 0 1.5rem;
+            letter-spacing: 0.04em;
+        }
+
+        .move-cat-icon {
+            object-fit: contain;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+            flex-shrink: 0;
+        }
+
+        .move-pill-icons {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -323,6 +344,7 @@
                 </div>
             </div>
 
+            <p id="builds-results-meta" class="builds-results-meta"></p>
             <div id="builds-grid" style="margin-bottom: 2rem;">
                 <!-- Builds will be injected here as high-fidelity cards -->
             </div>
@@ -385,13 +407,6 @@
                 if (it !== 'eviolite' && it !== 'meteorite') return true;
             }
             return false;
-        }
-
-        function getBST(species) {
-            if (!species) return 0;
-            const search = species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const db = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
-            return db ? (parseInt(db.Total_Stats) || 0) : 0;
         }
 
         const rolesList = [
@@ -549,7 +564,7 @@
             if (item === 'lustrousglobe' && species === 'palkia') return 'palkiaorigin';
             if (item === 'griseouscore' && species === 'giratina') return 'giratinaorigin';
             if (item === 'flameplate' && species === 'arceus') return 'arceusfire';
-            if (item === ' splashplate' && species === 'arceus') return 'arceuswater';
+            if (item === 'splashplate' && species === 'arceus') return 'arceuswater';
             if (item === 'zapplate' && species === 'arceus') return 'arceuselectric';
             if (item === 'icicleplate' && species === 'arceus') return 'arceusice';
             if (item === 'fistplate' && species === 'arceus') return 'arceusfighting';
@@ -658,20 +673,19 @@
         }
 
         function handleSpriteError(img, species, shiny) {
-            if (!species || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
+            if (!species || img.dataset.fallbackState === 'dead') return;
 
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
 
             if (!img.dataset.fallbackState && isMegaURL) {
-                img.dataset.fallbackState = '1';
+                img.dataset.fallbackState = 'mega-local';
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
                 else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
-                else if (img.src.includes('primal') || img.src.includes('primal')) suffix = 'primal';
+                else if (img.src.includes('primal')) suffix = 'primal';
 
-                // If clean already ends with suffix, don't append it again
                 const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
                 const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
@@ -680,11 +694,19 @@
                 return;
             }
 
-            img.dataset.fallbackState = 'final';
+            if (!img.dataset.fallbackState) {
+                img.dataset.fallbackState = 'smogon';
+                const folder = shiny ? 'xy-shiny' : 'xy';
+                img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+                if (img.classList.contains('mega-toggle') && img.dataset.currentSrc === 'base') {
+                    img.dataset.base = img.src;
+                }
+                return;
+            }
+
+            img.dataset.fallbackState = 'dead';
             img.dataset.fallback = 'true';
             img.classList.remove('mega-toggle');
-            const folder = shiny ? 'xy-shiny' : 'xy';
-            img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
         }
 
         function getMegaSpriteUrl(p) {
@@ -707,21 +729,12 @@
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
         }
 
-        setInterval(() => {
-            document.querySelectorAll('img.mega-toggle').forEach(img => {
-                if (img.dataset.fallback === 'true') {
-                    img.classList.remove('mega-toggle');
-                    return;
-                }
-                if (img.dataset.currentSrc !== 'mega') {
-                    img.src = img.dataset.mega;
-                    img.dataset.currentSrc = 'mega';
-                } else {
-                    img.src = img.dataset.base;
-                    img.dataset.currentSrc = 'base';
-                }
-            });
-        }, 3000);
+        function getDmgClassIcon(damageClass, size = 14) {
+            const dc = (damageClass || 'Status').toLowerCase();
+            const file = { physical: 'move-physical', special: 'move-special', status: 'move-status' }[dc] || 'move-status';
+            const label = damageClass || 'Status';
+            return `<img src="../assets/${file}.png" class="move-cat-icon" style="width:${size}px;height:${size}px;" alt="${label}" title="${label} move">`;
+        }
 
         function getSpriteUrl(p) {
             if (!p || !p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
@@ -899,8 +912,11 @@
 
                 return `
                     <div class="move-pill" title="${tooltipOptions}">
-                        <img src="../assets/type-icons/${mt}_type.png" alt="${mt}" class="type-icon" style="height: 16px; margin-right: 4px; pointer-events: none;">
-                        <span style="font-size: 0.75rem;">${m}</span>
+                        <span class="move-pill-icons">
+                            <img src="../assets/type-icons/${mt}_type.png" alt="${mt}" class="type-icon" style="height: 16px; pointer-events: none;">
+                            ${getDmgClassIcon(moveData.damage_class, 14)}
+                        </span>
+                        <span>${m}</span>
                     </div>
                 `;
             }).join('');
@@ -981,16 +997,6 @@
             return card;
         }
 
-        function createEmptyCard() {
-            const el = document.createElement('div');
-            el.className = 'empty-slot-premium';
-            el.innerHTML = `
-                <div style="font-size:3rem; opacity:0.2;">+</div>
-                <div style="font-weight:900; font-size:0.7rem; letter-spacing:2px; opacity:0.3;">EMPTY SLOT</div>
-            `;
-            return el;
-        }
-
         function renderBuilds(append = false) {
             const grid = document.getElementById('builds-grid');
             if (!append) {
@@ -1051,8 +1057,8 @@
 
                 filtered.sort((a, b) => {
                     try {
-                        const pa = parsePaste(a.build)[0] || {};
-                        const pb = parsePaste(b.build)[0] || {};
+                        const pa = parsePaste(a.build);
+                        const pb = parsePaste(b.build);
                         const da = getEffectivePokemonData(pa, allPokemon) || getBasePokemonData(pa, allPokemon) || {};
                         const db = getEffectivePokemonData(pb, allPokemon) || getBasePokemonData(pb, allPokemon) || {};
                         const av = keyFuncs[sortKey](a, pa, da);
@@ -1083,6 +1089,13 @@
             });
 
             const sentinel = document.getElementById('load-more-sentinel');
+            const metaEl = document.getElementById('builds-results-meta');
+            if (metaEl) {
+                const shown = Math.min(displayedCount, filtered.length);
+                metaEl.textContent = shown === filtered.length
+                    ? `Showing ${filtered.length.toLocaleString()} build${filtered.length === 1 ? '' : 's'}`
+                    : `Showing ${shown.toLocaleString()} of ${filtered.length.toLocaleString()} builds`;
+            }
             if (displayedCount >= filtered.length) {
                 sentinel.style.display = 'none';
             } else {
@@ -1686,8 +1699,7 @@
 
             // First slot: The selected build itself
             const pSelf = parsePaste(mainBuild.build);
-            const speciesSelf = pSelf.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const dbSelf = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSelf);
+            const dbSelf = getEffectivePokemonData(pSelf, allPokemon) || getBasePokemonData(pSelf, allPokemon);
             const selfCard = createTeamCard(pSelf, dbSelf, mainBuild);
             selfCard.style.border = '2px solid var(--primary-red)';
             selfCard.style.boxShadow = 'var(--accent-glow)';
@@ -1704,17 +1716,15 @@
                 const item = scoredBuilds[i];
 
                 if (item) {
-                    const isRawBuild = typeof item.build === 'string';
-                    const buildInfo = isRawBuild ? item : item.build;
-                    const p = parsePaste(buildInfo.build);
-                    const speciesSearch = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const dbRef = allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === speciesSearch);
+                    const buildInfo = item.build && typeof item.build === 'object' ? item.build : item;
+                    const p = parsePaste(buildInfo.build || buildInfo);
+                    const dbRef = getEffectivePokemonData(p, allPokemon) || getBasePokemonData(p, allPokemon);
                     const card = createTeamCard(p, dbRef, buildInfo);
 
                     // Add Score Badge
                     const scoreBadge = document.createElement('div');
                     scoreBadge.style = "position:absolute; top:-10px; right:10px; background:linear-gradient(135deg, #00ffcc, #0066ff); color:black; font-size:0.55rem; font-weight:900; padding:2px 8px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,255,204,0.3);";
-                    if (!isRawBuild && item.score !== undefined) {
+                    if (item.score !== undefined) {
                         scoreBadge.innerText = `SYNERGY: ${Math.min(100, Math.floor(item.score))}%`;
                     } else {
                         scoreBadge.innerText = `SYNERGY: MATCH`;
@@ -1755,6 +1765,11 @@
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('toast');
                 toast.innerText = `${type} Paste Copied!`;
+                toast.classList.add('active');
+                setTimeout(() => toast.classList.remove('active'), 3000);
+            }).catch(() => {
+                const toast = document.getElementById('toast');
+                toast.innerText = 'Copy failed — check browser permissions';
                 toast.classList.add('active');
                 setTimeout(() => toast.classList.remove('active'), 3000);
             });

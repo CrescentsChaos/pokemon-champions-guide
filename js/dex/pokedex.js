@@ -206,6 +206,7 @@
                     <span class="dex-move-item-name">${D.escapeHtml(m.name || mName)}</span>
                     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                         ${D.typeIconHtml(m.type, 22)}
+                        ${D.dmgClassIconHtml(m.damage_class, 16)}
                         ${D.dmgClassBadge(m.damage_class)}
                     </div>
                 </div>

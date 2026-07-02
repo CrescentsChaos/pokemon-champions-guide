@@ -132,7 +132,7 @@
                     <div class="dex-card-title">${D.escapeHtml(move.name)}</div>
                     <div style="display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap;">
                         ${D.typeIconHtml(move.type, 24)}
-                        ${D.dmgClassBadge(move.damage_class)}
+                        ${D.dmgClassHtml(move.damage_class, 18)}
                     </div>
                 </div>
                 <span class="dex-card-id">#${move.id || '—'}</span>
@@ -164,7 +164,7 @@
                     </div>
                     <h2 class="dex-detail-name">${D.escapeHtml(move.name)}</h2>
                     <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
-                    <div style="display:flex;gap:8px;justify-content:center;margin:1rem 0;">${D.dmgClassBadge(move.damage_class)}</div>
+                    <div style="display:flex;gap:8px;justify-content:center;margin:1rem 0;">${D.dmgClassHtml(move.damage_class, 24)}</div>
                     ${move.tags ? D.moveTagsHtml(move.tags) : ''}
                     <div class="modal-info-grid" style="margin-top:1.25rem;">
                         <div class="info-item"><span class="info-label">Power</span><span class="info-value">${move.power ?? '—'}</span></div>
