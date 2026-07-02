@@ -483,9 +483,17 @@
 
                 populateFilters();
                 setupInfiniteScroll();
-                renderBuilds();
 
                 const urlParams = new URLSearchParams(window.location.search);
+                const searchParam = urlParams.get('search');
+                if (searchParam) {
+                    const searchInput = document.getElementById('build-search');
+                    if (searchInput) searchInput.value = searchParam;
+                }
+
+                renderBuilds();
+                document.querySelectorAll('#library-section .fade-in, .section-title.fade-in').forEach(el => el.classList.add('appear'));
+
                 const buildId = urlParams.get('id');
                 if (buildId) {
                     setTimeout(() => {
@@ -999,10 +1007,14 @@
 
         function renderBuilds(append = false) {
             const grid = document.getElementById('builds-grid');
+            if (!grid) return;
+            const isInitial = !append && grid.childElementCount === 0;
             if (!append) {
                 grid.innerHTML = '';
                 displayedCount = batchSize;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (!isInitial) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
 
             const searchInput = document.getElementById('build-search');
@@ -1077,7 +1089,7 @@
                 const dbRef = getEffectivePokemonData(p, allPokemon);
 
                 const wrapper = document.createElement('div');
-                wrapper.className = `build-card-wrapper ${selectedBuildId === build.id ? 'selected' : ''}`;
+                wrapper.className = `build-card-wrapper ${String(selectedBuildId) === String(build.id) ? 'selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
@@ -1104,12 +1116,13 @@
         }
 
         function selectBuild(id) {
-            selectedBuildId = id;
+            const idStr = String(id);
+            selectedBuildId = idStr;
             document.querySelectorAll('.build-card-wrapper').forEach(el => el.classList.remove('selected'));
-            const card = document.getElementById(`build-${id}`);
+            const card = document.getElementById(`build-${idStr}`);
             if (card) card.classList.add('selected');
 
-            const build = allBuilds.find(b => b.id === id);
+            const build = allBuilds.find(b => String(b.id) === idStr);
             if (build) {
                 currentMainBuild = build;
                 recommendationFormat = build.format || 'Singles';
@@ -1633,7 +1646,6 @@
 
                     // ── 12. PRIORITY MOVE DIVERSITY ──
                     const priorityMoves = ['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap'];
-                    const candCleanMoves = p.moves.map(m => m.toLowerCase().replace(/[^a-z0-9]/g, ''));
                     const teamHasPriority = team.some(m => m.moves && m.moves.some(mv => priorityMoves.includes(mv)));
                     if (!teamHasPriority && candCleanMoves.some(m => priorityMoves.includes(m))) smartScore += 18;
 

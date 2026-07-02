@@ -354,6 +354,103 @@
             border-color: white;
         }
 
+        .premade-builds-panel {
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        .premade-builds-panel__head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.65rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .premade-builds-panel__head span {
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .premade-search {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
+        }
+
+        .premade-search:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .premade-build-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .premade-build-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition);
+        }
+
+        .premade-build-item:hover {
+            background: rgba(255, 62, 62, 0.12);
+            border-color: rgba(255, 62, 62, 0.35);
+            transform: translateX(3px);
+        }
+
+        .premade-build-item__meta {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .counter-verdict {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-top: 0.35rem;
+        }
+
+        .counter-verdict--ohko { color: #81c784; }
+        .counter-verdict--pressure { color: #ffb74d; }
+        .counter-verdict--tank { color: #90caf9; }
+
         .target-header {
             display: flex;
             gap: 1rem;
@@ -442,6 +539,19 @@
                             <button id="show-editor-btn" class="secondary-btn" title="Manual Entry">
                                 ⌨️
                             </button>
+                        </div>
+
+                        <div class="premade-builds-panel">
+                            <div class="premade-builds-panel__head">
+                                <span>Import Premade Build</span>
+                                <select id="premade-format-filter" class="dex-select" style="font-size:0.72rem;padding:0.4rem 1.5rem 0.4rem 0.65rem;">
+                                    <option value="">All Formats</option>
+                                    <option value="Singles">Singles</option>
+                                    <option value="Doubles">Doubles</option>
+                                </select>
+                            </div>
+                            <input type="search" id="premade-search" class="premade-search" placeholder="Search builds library by Pokémon…" autocomplete="off">
+                            <div id="premade-build-list" class="premade-build-list"></div>
                         </div>
                     </div>
                 </div>
@@ -563,6 +673,8 @@
     </main>
 
     <script src="../js/main.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/damage-calc.js"></script>
     <script>
         // Data and Constants
         let pokemonDB = [];
@@ -604,6 +716,81 @@
         ];
 
         let targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+
+        function normalizeKey(value) {
+            return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function findPokemonByName(name) {
+            const key = normalizeKey(name);
+            return pokemonDB.find(p => normalizeKey(p.Name || p.name) === key)
+                || pokemonDB.find(p => normalizeKey(p.Name || p.name).includes(key) && key.length > 3);
+        }
+
+        function mapEvStatKey(stat) {
+            const s = (stat || '').toLowerCase().replace(/[^a-z]/g, '');
+            if (s === 'hp') return 'hp';
+            if (s === 'atk') return 'atk';
+            if (s === 'def') return 'def';
+            if (s === 'spa' || s === 'spatk' || s === 'satk') return 'spa';
+            if (s === 'spd' || s === 'spdef' || s === 'sdef') return 'spd';
+            if (s === 'spe' || s === 'speed') return 'spe';
+            return null;
+        }
+
+        function slotFromTargetState(state) {
+            return {
+                species: state.name,
+                item: state.item || '',
+                ability: state.ability || '',
+                level: state.level || 50,
+                nature: state.nature || 'Hardy',
+                evs: { ...state.evs },
+                ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+                moves: [...(state.moves || [])],
+                tera: 'Normal'
+            };
+        }
+
+        function populatePremadeBuilds() {
+            const list = document.getElementById('premade-build-list');
+            const query = (document.getElementById('premade-search')?.value || '').toLowerCase().trim();
+            const fmt = (document.getElementById('premade-format-filter')?.value || '').toLowerCase();
+            if (!list) return;
+
+            let pool = buildsDB;
+            if (fmt) pool = pool.filter(b => (b.format || 'Singles').toLowerCase() === fmt);
+            if (query) {
+                pool = pool.filter(b =>
+                    (b.pokemon || '').toLowerCase().includes(query) ||
+                    (b.build || '').toLowerCase().includes(query)
+                );
+            }
+
+            const shown = pool.slice(0, 24);
+            if (!shown.length) {
+                list.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.45);padding:0.5rem;">No premade builds match.</div>';
+                return;
+            }
+
+            list.innerHTML = shown.map(b => `
+                <button type="button" class="premade-build-item" data-build-id="${b.id}">
+                    <span>${b.pokemon}</span>
+                    <span class="premade-build-item__meta">${(b.format || 'Singles')} #${b.id}</span>
+                </button>`).join('');
+
+            list.querySelectorAll('.premade-build-item').forEach(btn => {
+                btn.addEventListener('click', () => loadPremadeBuild(btn.dataset.buildId));
+            });
+        }
+
+        function loadPremadeBuild(buildId) {
+            const build = buildsDB.find(b => String(b.id) === String(buildId));
+            if (!build) return;
+            document.getElementById('paste-input').value = build.build;
+            parsePaste(build.build);
+            analyze();
+        }
 
         /* Form Handling Helpers */
         function getBasePokemonData(name) {
@@ -663,9 +850,19 @@
                 pokemonDB = pkmn; movesDB = mvs; buildsDB = blds;
                 populateNatures();
                 setupEventListeners();
+                populatePremadeBuilds();
 
-                // Set initial state
-                showImportView();
+                const params = new URLSearchParams(window.location.search);
+                const buildParam = params.get('build');
+                const speciesParam = params.get('species');
+                if (buildParam) {
+                    loadPremadeBuild(buildParam);
+                } else if (speciesParam) {
+                    const match = buildsDB.find(b => normalizeKey(b.pokemon) === normalizeKey(speciesParam));
+                    if (match) loadPremadeBuild(match.id);
+                } else {
+                    showImportView();
+                }
             } catch (e) { console.error("Load fail", e); }
         }
 
@@ -677,10 +874,11 @@
         function setupEventListeners() {
             document.getElementById('analyze-btn').addEventListener('click', analyze);
             document.getElementById('paste-input').addEventListener('input', (e) => {
-                if (e.target.value.trim().length > 10) {
-                    parsePaste(e.target.value);
-                }
+                const text = e.target.value.trim();
+                if (text.length > 20) parsePaste(text);
             });
+            document.getElementById('premade-search')?.addEventListener('input', populatePremadeBuilds);
+            document.getElementById('premade-format-filter')?.addEventListener('change', populatePremadeBuilds);
 
             // UI Mode Toggles
             document.getElementById('new-import-btn').addEventListener('click', showImportView);
@@ -803,16 +1001,19 @@
         }
 
         function parsePaste(text) {
-            const lines = text.split('\n'); if (lines.length < 1) return;
+            const lines = text.split('\n'); if (lines.length < 1) return false;
             const nameLine = lines[0].split('@');
             let name = nameLine[0].trim();
             if (name.includes('(')) name = name.substring(name.indexOf('(') + 1, name.indexOf(')')).trim();
-            const pkData = pokemonDB.find(p => (p.Name || p.name).toLowerCase() === name.toLowerCase());
+            const pkData = findPokemonByName(name);
             if (pkData) {
                 targetBuild.name = pkData.Name || pkData.name;
                 targetBuild.types = [pkData.Type_1, pkData.Type_2 || 'None'];
                 document.getElementById('target-name').value = targetBuild.name;
                 updateSprite(targetBuild.name);
+            } else {
+                targetBuild.name = name;
+                document.getElementById('target-name').value = name;
             }
             if (nameLine[1]) { targetBuild.item = nameLine[1].trim(); document.getElementById('target-item').value = targetBuild.item; }
             targetBuild.moves = [];
@@ -824,10 +1025,10 @@
                 if (line.match(/Nature$/)) { targetBuild.nature = line.replace('Nature', '').trim(); document.getElementById('target-nature').value = targetBuild.nature; }
                 if (line.startsWith('EVs:')) {
                     line.replace('EVs:', '').trim().split('/').forEach(p => {
-                        const s = p.trim().split(' ');
+                        const s = p.trim().split(/\s+/);
                         const val = parseInt(s[0]);
-                        const stat = s[1].toLowerCase();
-                        if (targetBuild.evs.hasOwnProperty(stat)) {
+                        const stat = mapEvStatKey(s.slice(1).join(''));
+                        if (stat && targetBuild.evs.hasOwnProperty(stat)) {
                             targetBuild.evs[stat] = val;
                             const input = document.querySelector(`.target-ev[data-stat="${stat}"]`);
                             if (input) input.value = val;
@@ -839,6 +1040,7 @@
             const moveInputs = document.querySelectorAll('.target-move');
             moveInputs.forEach((input, i) => { input.value = targetBuild.moves[i] || ''; });
             updateTargetFromUI();
+            return !!targetBuild.name;
         }
 
         function updateTargetFromUI() {
@@ -869,95 +1071,181 @@
             const btn = document.getElementById('analyze-btn');
             const loader = document.getElementById('analyze-loader');
             const resultsContainer = document.getElementById('counter-results');
+            updateTargetFromUI();
             if (!targetBuild.name) return;
 
             btn.disabled = true; loader.style.display = 'block';
             resultsContainer.style.opacity = '0.4';
-
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 200));
 
             const targetData = getEffectivePokemonData(targetBuild.name, targetBuild.item);
             if (!targetData) {
                 btn.disabled = false; loader.style.display = 'none';
+                resultsContainer.innerHTML = '<div class="placeholder-text">Could not resolve Pokémon data for this build.</div>';
                 return;
             }
 
+            const targetKey = normalizeKey(targetBuild.name);
+            const targetSlot = slotFromTargetState(targetBuild);
+            const field = typeof getDefaultField === 'function' ? getDefaultField('Singles') : null;
+            const hasCalc = typeof buildCalcStateFromSlot === 'function' && typeof findBestDamage === 'function' && field;
+            let targetAttacker = null;
+            let targetDefender = null;
+            if (hasCalc) {
+                targetAttacker = buildCalcStateFromSlot(targetSlot, 1, targetData, movesDB);
+                targetDefender = buildCalcStateFromSlot(targetSlot, 2, targetData, movesDB);
+            }
+
             const targetStats = {
-                hp: getStat(parseInt(targetData.HP), 31, targetBuild.evs.hp, 50, targetBuild.nature, 'hp'),
-                atk: getStat(parseInt(targetData.Attack), 31, targetBuild.evs.atk, 50, targetBuild.nature, 'atk'),
-                def: getStat(parseInt(targetData.Defense), 31, targetBuild.evs.def, 50, targetBuild.nature, 'def'),
-                spa: getStat(parseInt(targetData['Sp.Atk']), 31, targetBuild.evs.spa, 50, targetBuild.nature, 'spa'),
-                spd: getStat(parseInt(targetData['Sp.Def']), 31, targetBuild.evs.spd, 50, targetBuild.nature, 'spd'),
-                spe: getStat(parseInt(targetData.Speed), 31, targetBuild.evs.spe, 50, targetBuild.nature, 'spe')
+                hp: getStat(parseInt(targetData.HP), 31, targetBuild.evs.hp, targetBuild.level, targetBuild.nature, 'hp'),
+                atk: getStat(parseInt(targetData.Attack), 31, targetBuild.evs.atk, targetBuild.level, targetBuild.nature, 'atk'),
+                def: getStat(parseInt(targetData.Defense), 31, targetBuild.evs.def, targetBuild.level, targetBuild.nature, 'def'),
+                spa: getStat(parseInt(targetData['Sp.Atk']), 31, targetBuild.evs.spa, targetBuild.level, targetBuild.nature, 'spa'),
+                spd: getStat(parseInt(targetData['Sp.Def']), 31, targetBuild.evs.spd, targetBuild.level, targetBuild.nature, 'spd'),
+                spe: getStat(parseInt(targetData.Speed), 31, targetBuild.evs.spe, targetBuild.level, targetBuild.nature, 'spe')
             };
+            if (normalizeKey(targetBuild.item).includes('choicescarf')) targetStats.spe = Math.floor(targetStats.spe * 1.5);
 
             const counters = [];
             buildsDB.forEach(build => {
-                if (build.pokemon === targetBuild.name) return;
+                if (normalizeKey(build.pokemon) === targetKey) return;
 
-                // Parse the candidate build to get its item
-                const cBuildParsed = parseCandidateBuild(build.build, { Type_1: 'Normal' }); // Placeholder data, fixed below
-
-                // Get effective data for candidate (Mega/Form check)
+                const cBuildParsed = parseCandidateBuild(build.build, targetData);
                 const candidateData = getEffectivePokemonData(build.pokemon, cBuildParsed.item);
                 if (!candidateData) return;
 
-                // Re-parse with correct types if form changed
-                cBuildParsed.types = [candidateData.Type_1, candidateData.Type_2 || 'None'];
-
                 const cStats = calculateCandidateStats(cBuildParsed, candidateData);
-                let score = 0, points = [], dead = false, maxTook = 0;
-
-                const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
-                targetMoves.forEach(m => {
-                    const moveType = m.type.toLowerCase();
-                    const isSpecial = m.damage_class === 'Special';
-                    const targetAtk = isSpecial ? targetStats.spa : targetStats.atk;
-                    const candidateDef = isSpecial ? cStats.spd : cStats.def;
-                    let typeMult = 1;
-                    [candidateData.Type_1, candidateData.Type_2].filter(t => t && t !== 'None').forEach(ct => {
-                        const eff = typeChart[moveType]?.[ct.toLowerCase()];
-                        if (eff !== undefined) typeMult *= eff;
-                    });
-                    const stab = [targetData.Type_1, targetData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                    const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * targetAtk / candidateDef) / 50) + 2) * stab * typeMult;
-                    const tookPercent = (estDmg / cStats.hp) * 100;
-                    if (tookPercent > maxTook) maxTook = tookPercent;
-                });
-                if (maxTook >= 100) dead = true;
-                if (maxTook < 50) { score += 40; points.push(`Takes max ${Math.round(maxTook)}% from moves.`); }
-                else if (maxTook < 85) { score += 20; points.push(`Can tank hits (${Math.round(maxTook)}% max).`); }
-
+                let score = 0;
+                const points = [];
+                let dead = false;
+                let maxTook = 0;
                 let bestDealt = 0;
-                const candidateMoves = cBuildParsed.moves.map(mName => movesDB.find(m => m.name.toLowerCase() === mName.toLowerCase())).filter(m => m);
-                candidateMoves.forEach(m => {
-                    const moveType = m.type.toLowerCase();
-                    const isSpecial = m.damage_class === 'Special';
-                    const candAtk = isSpecial ? cStats.spa : cStats.atk;
-                    const targetDef = isSpecial ? targetStats.spd : targetStats.def;
-                    let typeMult = 1;
-                    [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None').forEach(tt => {
-                        const eff = typeChart[moveType]?.[tt.toLowerCase()];
-                        if (eff !== undefined) typeMult *= eff;
+                let verdict = '';
+
+                if (hasCalc) {
+                    const candSlot = {
+                        species: candidateData.Name || candidateData.name || build.pokemon,
+                        item: cBuildParsed.item || '',
+                        ability: cBuildParsed.ability || '',
+                        level: 50,
+                        nature: cBuildParsed.nature || 'Hardy',
+                        evs: { ...cBuildParsed.evs },
+                        ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+                        moves: [...cBuildParsed.moves],
+                        tera: 'Normal'
+                    };
+                    const candAttacker = buildCalcStateFromSlot(candSlot, 1, candidateData, movesDB);
+                    const candDefender = buildCalcStateFromSlot(candSlot, 2, candidateData, movesDB);
+                    const offense = findBestDamage(candAttacker, targetDefender, field);
+                    const defense = findBestDamage(targetAttacker, candDefender, field);
+
+                    if (offense && parseFloat(offense.maxPercent) > 0) {
+                        bestDealt = parseFloat(offense.maxPercent);
+                        if (bestDealt >= 100) {
+                            score += 50;
+                            points.push(`Calc OHKO: ${offense.move} (${offense.maxPercent}%).`);
+                            verdict = 'ohko';
+                        } else if (bestDealt >= 75) {
+                            score += 35;
+                            points.push(`Heavy calc pressure: ${offense.move} (${offense.minPercent}–${offense.maxPercent}%).`);
+                            verdict = verdict || 'pressure';
+                        } else if (bestDealt >= 50) {
+                            score += 22;
+                            points.push(`Solid damage: ${offense.move} (${offense.maxPercent}%).`);
+                        }
+                    }
+
+                    if (defense && parseFloat(defense.maxPercent) > 0) {
+                        maxTook = parseFloat(defense.maxPercent);
+                        if (maxTook >= 100) {
+                            dead = true;
+                            points.push(`OHKO'd by target: ${defense.move} (${defense.maxPercent}%).`);
+                        } else if (maxTook < 45) {
+                            score += 28;
+                            points.push(`Tanks target hits (${defense.move}: ${defense.maxPercent}% max).`);
+                            verdict = verdict || 'tank';
+                        } else if (maxTook < 70) {
+                            score += 14;
+                            points.push(`Survives key hits (${defense.maxPercent}% max from target).`);
+                        }
+                    }
+
+                    const candSpeed = getEffectiveSpeed(candAttacker, field);
+                    const targetSpeed = getEffectiveSpeed(targetAttacker, field);
+                    if (candSpeed > targetSpeed) {
+                        score += 12;
+                        points.push(`Outspeeds (${candSpeed} vs ${targetSpeed}).`);
+                    } else if (candSpeed < targetSpeed) {
+                        score -= 6;
+                    }
+                } else {
+                    const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => normalizeKey(m.name) === normalizeKey(mName))).filter(m => m);
+                    targetMoves.forEach(m => {
+                        const moveType = m.type.toLowerCase();
+                        const isSpecial = m.damage_class === 'Special';
+                        const targetAtk = isSpecial ? targetStats.spa : targetStats.atk;
+                        const candidateDef = isSpecial ? cStats.spd : cStats.def;
+                        let typeMult = 1;
+                        [candidateData.Type_1, candidateData.Type_2].filter(t => t && t !== 'None').forEach(ct => {
+                            const eff = typeChart[moveType]?.[ct.toLowerCase()];
+                            if (eff !== undefined) typeMult *= eff;
+                        });
+                        const stab = [targetData.Type_1, targetData.Type_2].includes(m.type) ? 1.5 : 1.0;
+                        const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * targetAtk / candidateDef) / 50) + 2) * stab * typeMult;
+                        maxTook = Math.max(maxTook, (estDmg / cStats.hp) * 100);
                     });
-                    const stab = [candidateData.Type_1, candidateData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                    const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * candAtk / targetDef) / 50) + 2) * stab * typeMult;
-                    const dealtPercent = (estDmg / targetStats.hp) * 100;
-                    if (dealtPercent > bestDealt) bestDealt = dealtPercent;
+                    if (maxTook >= 100) dead = true;
+                    if (maxTook < 50) { score += 35; points.push(`Takes max ${Math.round(maxTook)}% from target moves.`); verdict = 'tank'; }
+                    else if (maxTook < 85) { score += 18; points.push(`Can tank hits (${Math.round(maxTook)}% max).`); }
+
+                    cBuildParsed.moves.map(mName => movesDB.find(m => normalizeKey(m.name) === normalizeKey(mName))).filter(m => m).forEach(m => {
+                        const moveType = m.type.toLowerCase();
+                        const isSpecial = m.damage_class === 'Special';
+                        const candAtk = isSpecial ? cStats.spa : cStats.atk;
+                        const targetDef = isSpecial ? targetStats.spd : targetStats.def;
+                        let typeMult = 1;
+                        [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None').forEach(tt => {
+                            const eff = typeChart[moveType]?.[tt.toLowerCase()];
+                            if (eff !== undefined) typeMult *= eff;
+                        });
+                        const stab = [candidateData.Type_1, candidateData.Type_2].includes(m.type) ? 1.5 : 1.0;
+                        const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * candAtk / targetDef) / 50) + 2) * stab * typeMult;
+                        bestDealt = Math.max(bestDealt, (estDmg / targetStats.hp) * 100);
+                    });
+                    if (bestDealt >= 100) { score += 40; points.push(`OHKO pressure (${Math.round(bestDealt)}%).`); verdict = 'ohko'; }
+                    else if (bestDealt >= 50) { score += 22; points.push(`2HKO range (${Math.round(bestDealt)}%).`); }
+                    if (cStats.spe > targetStats.spe) { score += 12; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
+                }
+
+                const targetTypes = [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None');
+                const candTypes = [candidateData.Type_1, candidateData.Type_2].filter(t => t && t !== 'None');
+                let resistScore = 0;
+                targetTypes.forEach(tt => {
+                    candTypes.forEach(ct => {
+                        const eff = typeChart[tt.toLowerCase()]?.[ct.toLowerCase()];
+                        if (eff === 0) resistScore += 20;
+                        else if (eff !== undefined && eff < 1) resistScore += 10;
+                    });
                 });
+                if (resistScore) {
+                    score += Math.min(25, resistScore);
+                    points.push('Strong defensive typing vs target STAB.');
+                }
 
-                if (bestDealt >= 100) { score += 45; points.push(`Guaranteed OHKO (${Math.round(bestDealt)}%).`); }
-                else if (bestDealt >= 50) { score += 25; points.push(`Solid 2HKO pressure (${Math.round(bestDealt)}%).`); }
-
-                if (cStats.spe > targetStats.spe) { score += 15; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
-
-                if (score > 35 && !dead) counters.push({ ...build, pokemon: candidateData.Name || candidateData.name, score: Math.min(100, Math.round(score)), points });
+                if (score > 30 && !dead) {
+                    counters.push({
+                        ...build,
+                        pokemon: candidateData.Name || candidateData.name,
+                        score: Math.min(100, Math.round(score)),
+                        points: points.slice(0, 5),
+                        verdict
+                    });
+                }
             });
 
             counters.sort((a, b) => b.score - a.score);
             loader.style.display = 'none'; btn.disabled = false;
             resultsContainer.style.opacity = '1';
-
             showPreviewView();
             renderResults(counters.slice(0, 15));
         }
@@ -972,10 +1260,10 @@
                 if (line.startsWith('- ')) build.moves.push(line.replace('- ', '').trim());
                 if (line.startsWith('EVs:')) {
                     line.replace('EVs:', '').trim().split('/').forEach(p => {
-                        const s = p.trim().split(' ');
+                        const s = p.trim().split(/\s+/);
                         const val = parseInt(s[0]);
-                        const stat = s[1].toLowerCase();
-                        if (build.evs.hasOwnProperty(stat)) build.evs[stat] = val;
+                        const stat = mapEvStatKey(s.slice(1).join(''));
+                        if (stat && build.evs.hasOwnProperty(stat)) build.evs[stat] = val;
                     });
                 }
             });
@@ -997,6 +1285,12 @@
             if (build.item === 'Choice Band') stats.atk = Math.floor(stats.atk * 1.5);
             if (build.item === 'Choice Specs') stats.spa = Math.floor(stats.spa * 1.5);
             if (build.item === 'Assault Vest') stats.spd = Math.floor(stats.spd * 1.5);
+
+            const itemKey = (build.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (itemKey === 'choicescarf') stats.spe = Math.floor(stats.spe * 1.5);
+            if (itemKey === 'choiceband') stats.atk = Math.floor(stats.atk * 1.5);
+            if (itemKey === 'choicespecs') stats.spa = Math.floor(stats.spa * 1.5);
+            if (itemKey === 'assaultvest') stats.spd = Math.floor(stats.spd * 1.5);
 
             return stats;
         }
@@ -1021,8 +1315,9 @@
                         <div class="counter-meta-premium">
                             <h4>${c.pokemon}</h4>
                             <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 800; letter-spacing: 0.5px;">
-                                ${c.format.toUpperCase()} ${c.role || 'COUNTER'}
+                                ${(c.format || 'Singles').toUpperCase()} · BUILD #${c.id}
                             </div>
+                            ${c.verdict ? `<div class="counter-verdict counter-verdict--${c.verdict}">${c.verdict === 'ohko' ? '● OHKO Threat' : c.verdict === 'tank' ? '● Defensive Answer' : '● Offensive Pressure'}</div>` : ''}
                         </div>
                     </div>
 
@@ -1036,7 +1331,10 @@
                     </div>
 
                     <div id="build-${i}" class="build-raw-premium">${c.build}</div>
-                    <button class="build-btn-premium" onclick="toggleBuild(${i})">View Matchup Build</button>
+                    <div style="display:flex;gap:8px;margin-top:1rem;">
+                        <button class="build-btn-premium" style="margin-top:0;flex:1;" onclick="toggleBuild(${i})">View Build Paste</button>
+                        <button class="build-btn-premium" style="margin-top:0;flex:1;background:rgba(74,144,226,0.2);border-color:rgba(74,144,226,0.4);" onclick="copyCounterPaste(${i})">Copy Paste</button>
+                    </div>
                 </div>
             `}).join('');
         }
@@ -1044,6 +1342,12 @@
         function toggleBuild(id) {
             const el = document.getElementById(`build-${id}`);
             el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function copyCounterPaste(id) {
+            const el = document.getElementById(`build-${id}`);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent || '').catch(() => {});
         }
 
         init();

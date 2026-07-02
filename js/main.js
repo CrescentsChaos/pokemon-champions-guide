@@ -152,5 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     faders.forEach(fader => {
         appearOnScroll.observe(fader);
+        const rect = fader.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+            fader.classList.add('appear');
+        }
     });
 });

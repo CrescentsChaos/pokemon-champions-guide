@@ -35,6 +35,7 @@
                 </p>
                 <div class="home-hero__actions">
                     <a href="builds/" class="home-btn home-btn--primary">Browse Meta Builds</a>
+                    <a href="counter/" class="home-btn home-btn--ghost">Counter Threats</a>
                     <a href="teambuilder/" class="home-btn home-btn--ghost">Open Team Builder</a>
                 </div>
                 <ul class="home-hero__points">
@@ -75,6 +76,50 @@
                     <span class="home-stat__label">Integrated tools</span>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="home-workflow" aria-labelledby="workflow-title">
+        <div class="container">
+            <div class="home-section__head fade-in">
+                <span class="home-section__eyebrow">Workflow</span>
+                <h2 id="workflow-title">From meta scan to matchup answers</h2>
+                <p>Four connected steps — each tool feeds the next so your prep stays consistent.</p>
+            </div>
+            <ol class="home-workflow__steps fade-in">
+                <li class="home-workflow__step">
+                    <span class="home-workflow__num">1</span>
+                    <div>
+                        <h3>Browse meta builds</h3>
+                        <p>Filter singles and doubles sets by role, typing, and Champions eligibility.</p>
+                        <a href="builds/">Open library →</a>
+                    </div>
+                </li>
+                <li class="home-workflow__step">
+                    <span class="home-workflow__num">2</span>
+                    <div>
+                        <h3>Import or draft a team</h3>
+                        <p>Paste Showdown sets into the team builder or adapt a library build.</p>
+                        <a href="teambuilder/">Build a team →</a>
+                    </div>
+                </li>
+                <li class="home-workflow__step">
+                    <span class="home-workflow__num">3</span>
+                    <div>
+                        <h3>Pressure-test damage</h3>
+                        <p>Validate OHKOs, speed tiers, and field conditions with the damage calculator.</p>
+                        <a href="calc/">Run calcs →</a>
+                    </div>
+                </li>
+                <li class="home-workflow__step">
+                    <span class="home-workflow__num">4</span>
+                    <div>
+                        <h3>Find counters</h3>
+                        <p>Load any premade or pasted threat and rank answers from the build database.</p>
+                        <a href="counter/">Counter tool →</a>
+                    </div>
+                </li>
+            </ol>
         </div>
     </section>
 
@@ -177,8 +222,8 @@
                     <span class="home-meta-tag">Loading…</span>
                 </div>
                 <p class="home-meta-note">
-                    Meta rankings are sourced from the platform dataset and updated as new builds are added to the
-                    library.
+                    Click a Pokémon to open the counter tool with that threat pre-loaded, or
+                    <a href="builds/" class="home-meta-link">browse all builds</a>.
                 </p>
             </div>
         </div>
@@ -205,6 +250,28 @@
         (async function loadHomeData() {
             const fmt = (n) => n.toLocaleString('en-US');
 
+            function animateStat(el, target) {
+                if (!el || !Number.isFinite(target)) return;
+                const duration = 900;
+                const start = performance.now();
+                function frame(now) {
+                    const t = Math.min(1, (now - start) / duration);
+                    const eased = 1 - Math.pow(1 - t, 3);
+                    el.textContent = fmt(Math.round(target * eased));
+                    if (t < 1) requestAnimationFrame(frame);
+                }
+                requestAnimationFrame(frame);
+            }
+
+            function renderMetaTags(containerId, names) {
+                const el = document.getElementById(containerId);
+                if (!el || !names.length) return;
+                el.innerHTML = names.slice(0, 10).map((name, i) => {
+                    const enc = encodeURIComponent(name);
+                    return `<a href="counter/?species=${enc}" class="home-meta-tag${i < 3 ? ' home-meta-tag--hot' : ''}" title="Find counters for ${name}">${name}</a>`;
+                }).join('');
+            }
+
             try {
                 const [pokemon, moves, builds, topMeta] = await Promise.all([
                     fetch('assets/pokemon.json').then(r => r.json()),
@@ -213,22 +280,14 @@
                     fetch('assets/top_pokemons.json').then(r => r.json())
                 ]);
 
-                document.getElementById('stat-pokemon').textContent = fmt(pokemon.length);
-                document.getElementById('stat-moves').textContent = fmt(moves.length);
-                document.getElementById('stat-builds').textContent = fmt(builds.length);
+                animateStat(document.getElementById('stat-pokemon'), pokemon.length);
+                animateStat(document.getElementById('stat-moves'), moves.length);
+                animateStat(document.getElementById('stat-builds'), builds.length);
 
                 renderMetaTags('meta-tags-singles', topMeta.Singles || []);
                 renderMetaTags('meta-tags-doubles', topMeta.Doubles || []);
             } catch (e) {
                 console.warn('Home data load failed', e);
-            }
-
-            function renderMetaTags(containerId, names) {
-                const el = document.getElementById(containerId);
-                if (!el || !names.length) return;
-                el.innerHTML = names.slice(0, 10).map((name, i) =>
-                    `<span class="home-meta-tag${i < 3 ? ' home-meta-tag--hot' : ''}">${name}</span>`
-                ).join('');
             }
         })();
     </script>
