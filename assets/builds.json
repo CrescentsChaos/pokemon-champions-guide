@@ -5008,5 +5008,39 @@
             "668"
         ],
         "format": "Doubles"
+    },
+    {
+        "id": "670",
+        "pokemon": "Houndstone",
+        "build": "Houndstone @ Sitrus Berry  \nAbility: Sand Rush  \nEVs: 56 HP / 252 Atk / 200 Spe  \n- Last Respects  \n- Will-O-Wisp  \n- Ally Switch  \n- Protect",
+        "synergy": [
+            "615"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "671",
+        "pokemon": "Mamoswine",
+        "build": "Mamoswine @ Focus Sash  \nAbility: Oblivious  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Earthquake  \n- Ice Shard  \n- Icicle Crash  \n- Protect",
+        "synergy": [
+            "670"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "672",
+        "pokemon": "Snorlax",
+        "build": "Snorlax @ Leftovers  \nAbility: Thick Fat  \nEVs: 252 HP / 4 Atk / 252 Def  \nRelaxed Nature  \nIVs: 0 Atk  \n- Encore  \n- Yawn  \n- Fissure  \n- Protect",
+        "synergy": [
+            "658"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "673",
+        "pokemon": "Raichu",
+        "build": "Raichu @ Raichunite X  \nAbility: Lightning Rod  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Fake Out  \n- Volt Tackle  \n- Volt Switch  \n- Encore",
+        "synergy": [],
+        "format": "Doubles"
     }
 ]
