@@ -1043,7 +1043,7 @@ const SYNERGY_RULES = [
         tip: 'Snow boosts Ice-type Defense and enables Slush Rush sweepers — pair setter with fast Ice attackers.'
     },
     {
-        id: 'sand-core', text: 'Sand Rush Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ground_type.png',
+        id: 'sand-core', text: 'Sand Rush Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/sandstorm.png',
         check: c => c.utils.sand && (c.hasAbility(['sandrush', 'sandrush']) || c.flatRoles.includes('Weather Abuser')),
         tip: 'Sand doubles Sand Rush Speed and chips non-immune foes — Excadrill and Ground types thrive.'
     },
