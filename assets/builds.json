@@ -4976,5 +4976,37 @@
         "build": "Lycanroc-Dusk @ Focus Sash  \nAbility: Tough Claws  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Close Combat  \n- Accelerock  \n- Rock Slide  \n- Protect",
         "synergy": [],
         "format": "Doubles"
+    },
+    {
+        "id": "666",
+        "pokemon": "Lycanroc-Dusk",
+        "build": "Lycanroc-Dusk @ Focus Sash  \nAbility: Tough Claws  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Close Combat  \n- Accelerock  \n- Rock Slide  \n- Protect",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "667",
+        "pokemon": "Lycanroc-Dusk",
+        "build": "Lycanroc-Dusk @ Focus Sash  \nAbility: Tough Claws  \nEVs: 4 HP / 252 Atk / 252 Spe  \nAdamant Nature  \n- Sucker Punch  \n- Accelerock  \n- Trailblaze  \n- Taunt",
+        "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "668",
+        "pokemon": "Drampa",
+        "build": "Drampa @ Drampanite  \nAbility: Cloud Nine  \nEVs: 252 HP / 56 Def / 200 SpA  \nQuiet Nature  \nIVs: 0 Atk  \n- Protect  \n- Hyper Voice  \n- Earth Power  \n- Calm Mind",
+        "synergy": [
+            "669"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "669",
+        "pokemon": "Oranguru",
+        "build": "Oranguru @ Colbur Berry  \nAbility: Inner Focus  \nEVs: 252 HP / 160 Def / 96 SpD  \nCalm Nature  \nIVs: 0 Atk  \n- Foul Play  \n- Instruct  \n- Trick Room  \n- Psychic",
+        "synergy": [
+            "668"
+        ],
+        "format": "Doubles"
     }
 ]
