@@ -552,6 +552,123 @@
     color: #4a90e2;
 }
 
+/* Smogon-style build prose */
+.build-prose-panel {
+    margin-bottom: 1.75rem;
+    padding: 1.75rem 2rem !important;
+    background: linear-gradient(135deg, rgba(35, 35, 40, 0.85), rgba(12, 12, 14, 0.95)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.build-prose-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.build-prose-panel__title {
+    font-size: 1.05rem !important;
+    text-transform: none !important;
+    letter-spacing: -0.01em !important;
+    color: #fff !important;
+    margin: 0 !important;
+}
+
+.build-prose-panel__format {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-red);
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 62, 62, 0.3);
+    background: rgba(255, 62, 62, 0.08);
+}
+
+.build-prose-section {
+    margin-bottom: 1.35rem;
+}
+
+.build-prose-section:last-child {
+    margin-bottom: 0;
+}
+
+.build-prose-section__title {
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.65rem;
+}
+
+.build-prose-body {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.build-prose-body p {
+    margin: 0 0 0.75rem;
+}
+
+.build-prose-body p:last-child {
+    margin-bottom: 0;
+}
+
+.build-prose-link {
+    color: #6eb5ff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.build-prose-link:hover {
+    text-decoration: underline;
+}
+
+.build-prose-set-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.82rem;
+}
+
+.build-prose-set-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.build-prose-set-card li {
+    padding: 0.2rem 0;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.build-prose-set-card__label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 0.35rem;
+}
+
+@media (max-width: 640px) {
+    .build-prose-set-card {
+        grid-template-columns: 1fr;
+    }
+}
+
 .vgc-wincons li::marker {
     color: var(--primary-red);
 }
