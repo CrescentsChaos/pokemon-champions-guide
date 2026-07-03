@@ -331,34 +331,34 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
 
     const spreadMoveKeysRef = spreadMoveKeys;
     ctxBase.utils = {
-            hazards: hasMove(['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe']),
-            removal: hasMove(['rapidspin', 'defog', 'mortalspin', 'tidypup', 'courtchange']),
-            tailwind: hasMove(['tailwind']),
-            tr: hasMove(['trickroom']),
-            fakeout: hasMove(['fakeout']),
-            redirection: hasMove(['followme', 'ragepowder', 'allyswitch']),
-            helpinghand: hasMove(['helpinghand']),
-            protect: hasMove(['protect', 'detect', 'spikyshield', 'banefulbunker', 'kingsshield', 'silktrap', 'burningbulwark']),
-            wideguard: hasMove(['wideguard']),
-            quickguard: hasMove(['quickguard']),
-            spread: hasMove(spreadMoveKeysRef),
-            priority: hasMove(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap']),
-            intimidate: abilities.includes('intimidate') || speciesList.includes('incineroar') || speciesList.includes('landorustherian'),
-            drizzle: abilities.includes('drizzle') || hasMove(['raindance']),
-            drought: abilities.includes('drought') || hasMove(['sunnyday']),
-            snow: abilities.includes('snowwarning') || hasMove(['snowscape', 'chillyreception']),
-            sand: abilities.includes('sandstream') || hasMove(['sandstorm']),
-            psychicterrain: abilities.includes('psychicsurge') || hasMove(['psychicterrain']),
-            grassyterrain: abilities.includes('grassysurge') || hasMove(['grassyterrain']),
-            electricterrain: abilities.includes('electricsurge') || hasMove(['electricterrain']),
-            expandingforce: hasMove(['expandingforce']),
-            makeitrain: hasMove(['makeitrain']),
-            partingshot: hasMove(['partingshot']),
-            icywind: hasMove(['icywind', 'electroweb', 'bulldoze']),
-            screens: hasMove(['reflect', 'lightscreen', 'auroraveil']),
-            sleep: hasMove(['spore', 'sleeppowder', 'hypnosis', 'yawn', 'darkvoid']),
-            ragepowder: hasMove(['ragepowder']),
-            followme: hasMove(['followme'])
+        hazards: hasMove(['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe']),
+        removal: hasMove(['rapidspin', 'defog', 'mortalspin', 'tidypup', 'courtchange']),
+        tailwind: hasMove(['tailwind']),
+        tr: hasMove(['trickroom']),
+        fakeout: hasMove(['fakeout']),
+        redirection: hasMove(['followme', 'ragepowder', 'allyswitch']),
+        helpinghand: hasMove(['helpinghand']),
+        protect: hasMove(['protect', 'detect', 'spikyshield', 'banefulbunker', 'kingsshield', 'silktrap', 'burningbulwark']),
+        wideguard: hasMove(['wideguard']),
+        quickguard: hasMove(['quickguard']),
+        spread: hasMove(spreadMoveKeysRef),
+        priority: hasMove(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap']),
+        intimidate: abilities.includes('intimidate') || speciesList.includes('incineroar') || speciesList.includes('landorustherian'),
+        drizzle: abilities.includes('drizzle') || hasMove(['raindance']),
+        drought: abilities.includes('drought') || hasMove(['sunnyday']),
+        snow: abilities.includes('snowwarning') || hasMove(['snowscape', 'chillyreception']),
+        sand: abilities.includes('sandstream') || hasMove(['sandstorm']),
+        psychicterrain: abilities.includes('psychicsurge') || hasMove(['psychicterrain']),
+        grassyterrain: abilities.includes('grassysurge') || hasMove(['grassyterrain']),
+        electricterrain: abilities.includes('electricsurge') || hasMove(['electricterrain']),
+        expandingforce: hasMove(['expandingforce']),
+        makeitrain: hasMove(['makeitrain']),
+        partingshot: hasMove(['partingshot']),
+        icywind: hasMove(['icywind', 'electroweb', 'bulldoze']),
+        screens: hasMove(['reflect', 'lightscreen', 'auroraveil']),
+        sleep: hasMove(['spore', 'sleeppowder', 'hypnosis', 'yawn', 'darkvoid']),
+        ragepowder: hasMove(['ragepowder']),
+        followme: hasMove(['followme'])
     };
 
     const lineup = predictLineup(activeMons, roles, format, ctxBase);
@@ -590,9 +590,9 @@ function renderVgcAnalysis(ctx, activeMons, roles) {
                 <p class="vgc-analysis-block__desc">${ctx.utils.tr ? 'Trick Room available — slow mons become fast under TR.' : ctx.utils.tailwind ? 'Tailwind compensates for slower Pokémon.' : ctx.speedTiers.fast >= ctx.teamSize - 1 ? 'Mostly fast — vulnerable to Trick Room and Tailwind.' : 'Mixed speed tiers — mind turn order and speed control wars.'}</p>
                 <div class="vgc-speed-bars">
                     ${speedBars.map(b => {
-                        const pct = ctx.teamSize ? Math.round((b.count / ctx.teamSize) * 100) : 0;
-                        return `<div class="vgc-speed-bar"><span class="vgc-speed-bar__label">${b.label}</span><div class="vgc-speed-bar__track"><div class="vgc-speed-bar__fill" style="width:${pct}%;background:${b.color}"></div></div><span class="vgc-speed-bar__count">${b.count}</span></div>`;
-                    }).join('')}
+        const pct = ctx.teamSize ? Math.round((b.count / ctx.teamSize) * 100) : 0;
+        return `<div class="vgc-speed-bar"><span class="vgc-speed-bar__label">${b.label}</span><div class="vgc-speed-bar__track"><div class="vgc-speed-bar__fill" style="width:${pct}%;background:${b.color}"></div></div><span class="vgc-speed-bar__count">${b.count}</span></div>`;
+    }).join('')}
                 </div>
             </div>
             <div class="vgc-analysis-block">
@@ -877,117 +877,191 @@ function sharedAnalyzeTeam(activeMons, format = 'Singles') {
 }
 
 const SYNERGY_RULES = [
-    { id: 'rain-core', text: 'Rain Offense Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/water_type.png',
+    {
+        id: 'rain-core', text: 'Rain Offense Core', type: 'synergy', icon: getAssetPrefix() + 'assets/rain.png',
         check: c => (c.utils.drizzle || c.hasSpecies(['pelipper'])) && (c.hasSpecies(['archaludon', 'basculegion', 'palafin', 'overqwil', 'pelipper']) || c.flatRoles.includes('Weather Abuser')),
-        tip: 'Rain setter paired with abusers — classic VGC tempo. Pelipper + Swift Swim or Thunder synergy maximizes turns.' },
-    { id: 'sun-core', text: 'Sun / Trick Room Sun', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/fire_type.png',
+        tip: 'Rain setter paired with abusers — classic VGC tempo. Pelipper + Swift Swim or Thunder synergy maximizes turns.'
+    },
+    {
+        id: 'sun-core', text: 'Sun / Trick Room Sun', type: 'synergy', icon: getAssetPrefix() + 'assets/sun.png',
         check: c => (c.utils.drought || c.hasSpecies(['torkoal', 'ninetalesalola'])) && (c.flatRoles.includes('Weather Abuser') || c.utils.tr),
-        tip: 'Sun engine detected. Chlorophyll, Protosynthesis, or Trick Room abusers capitalize on reduced Water damage and boosted Fire.' },
-    { id: 'intimidate-support', text: 'Intimidate Cycle', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/dark_type.png',
+        tip: 'Sun engine detected. Chlorophyll, Protosynthesis, or Trick Room abusers capitalize on reduced Water damage and boosted Fire.'
+    },
+    {
+        id: 'intimidate-support', text: 'Intimidate Cycle', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/dark_type.png',
         check: c => c.utils.intimidate && c.flatRoles.some(r => ['Physical Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r)),
-        tip: 'Intimidate softens physical hits for your sweepers — a staple of balanced VGC teams.' },
-    { id: 'psychic-terrain', text: 'Psychic Terrain Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/psychic_type.png',
+        tip: 'Intimidate softens physical hits for your sweepers — a staple of balanced VGC teams.'
+    },
+    {
+        id: 'psychic-terrain', text: 'Psychic Terrain Core', type: 'synergy', icon: getAssetPrefix() + 'assets/psychic.png',
         check: c => (c.utils.psychicterrain || c.hasSpecies(['indeedee', 'farigiraf'])) && (c.utils.expandingforce || c.hasSpecies(['armarouge', 'hatterene', 'espathra'])),
-        tip: 'Terrain blocks priority and powers Expanding Force — dominant doubles archetype when paired correctly.' },
-    { id: 'trick-room-engine', text: 'Trick Room Engine', type: 'synergy', icon: '🌀',
+        tip: 'Terrain blocks priority and powers Expanding Force — dominant doubles archetype when paired correctly.'
+    },
+    {
+        id: 'trick-room-engine', text: 'Trick Room Engine', type: 'synergy', icon: getAssetPrefix() + 'assets/trick_room.png',
         check: c => c.utils.tr && c.roleCount('Trick Room Abuser') >= 1,
-        tip: 'Trick Room setter with slow sweepers. Ensure allies can function under reversed speed tiers.' },
-    { id: 'tailwind-offense', text: 'Tailwind Hyper Offense', type: 'synergy', icon: '💨',
+        tip: 'Trick Room setter with slow sweepers. Ensure allies can function under reversed speed tiers.'
+    },
+    {
+        id: 'tailwind-offense', text: 'Tailwind Hyper Offense', type: 'synergy', icon: getAssetPrefix() + 'assets/tailwind.png',
         check: c => c.utils.tailwind && c.flatRoles.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker'].includes(r)),
-        tip: 'Tailwind doubles speed for four turns — pair with Protect users and spread moves for maximum pressure.' },
-    { id: 'fakeout-pressure', text: 'Fake Out + Protect Core', type: 'synergy', icon: '⚡',
+        tip: 'Tailwind doubles speed for four turns — pair with Protect users and spread moves for maximum pressure.'
+    },
+    {
+        id: 'fakeout-pressure', text: 'Fake Out + Protect Core', type: 'synergy', icon: '⚡',
         check: c => c.utils.fakeout && c.utils.protect,
-        tip: 'Fake Out buys free turns while Protect scouts and blocks double-targets — VGC fundamentals.' },
-    { id: 'redirection-setup', text: 'Redirection Support', type: 'synergy', icon: '🎯',
+        tip: 'Fake Out buys free turns while Protect scouts and blocks double-targets — VGC fundamentals.'
+    },
+    {
+        id: 'redirection-setup', text: 'Redirection Support', type: 'synergy', icon: '🎯',
         check: c => c.utils.redirection && (c.flatRoles.includes('Setup Sweeper') || c.utils.helpinghand),
-        tip: 'Follow Me / Rage Powder redirects attacks so partners can set up, Terastallize, or fire spread moves.' },
-    { id: 'commander', text: 'Commander Core', type: 'synergy', icon: 'https://play.pokemonshowdown.com/sprites/ani/tatsugiri.gif',
+        tip: 'Follow Me / Rage Powder redirects attacks so partners can set up, Terastallize, or fire spread moves.'
+    },
+    {
+        id: 'commander', text: 'Commander Core', type: 'synergy', icon: 'https://play.pokemonshowdown.com/sprites/ani/tatsugiri.gif',
         check: c => c.hasSpecies(['dondozo']) && c.hasSpecies(['tatsugiri']),
-        tip: 'Dondozo + Tatsugiri Commander boosts stats to overwhelming levels. Protect the pair early.' },
-    { id: 'grimmsnarl-screens', text: 'Screen Support', type: 'synergy', icon: '🛡️',
+        tip: 'Dondozo + Tatsugiri Commander boosts stats to overwhelming levels. Protect the pair early.'
+    },
+    {
+        id: 'grimmsnarl-screens', text: 'Screen Support', type: 'synergy', icon: '🛡️',
         check: c => c.utils.screens && c.flatRoles.some(r => ['Screener', 'Damage Mitigation'].includes(r)),
-        tip: 'Reflect/Light Screen halve damage — pair with bulky attackers or setup sweepers for win conditions.' },
-    { id: 'spread-coverage', text: 'Spread Move Coverage', type: 'synergy', icon: '💥',
+        tip: 'Reflect/Light Screen halve damage — pair with bulky attackers or setup sweepers for win conditions.'
+    },
+    {
+        id: 'spread-coverage', text: 'Spread Move Coverage', type: 'synergy', icon: '💥',
         check: c => c.format === 'Doubles' && c.utils.spread,
-        tip: 'Spread moves hit both opponents — essential for doubles damage output. Mind ally damage in Earthquake/Blizzard.' },
-    { id: 'helping-hand', text: 'Helping Hand Support', type: 'synergy', icon: '🤝',
+        tip: 'Spread moves hit both opponents — essential for doubles damage output. Mind ally damage in Earthquake/Blizzard.'
+    },
+    {
+        id: 'helping-hand', text: 'Helping Hand Support', type: 'synergy', icon: '🤝',
         check: c => c.utils.helpinghand && c.flatRoles.some(r => ['Wallbreaker', 'Physical Sweeper', 'Special Sweeper'].includes(r)),
-        tip: 'Helping Hand boosts ally damage 50% — common on Whimsicott, Tornadus, or support slots.' },
-    { id: 'fantasy-core', text: 'Fantasy Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/dragon_type.png',
+        tip: 'Helping Hand boosts ally damage 50% — common on Whimsicott, Tornadus, or support slots.'
+    },
+    {
+        id: 'fantasy-core', text: 'Fantasy Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/dragon_type.png',
         check: c => c.activeTypes.has('Steel') && c.activeTypes.has('Fairy') && c.activeTypes.has('Dragon'),
-        tip: 'Steel/Fairy/Dragon defensive backbone — resists most common offensive typings.' },
-    { id: 'ghost-normal', text: 'Ghost-Normal Immunity Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ghost_type.png',
+        tip: 'Steel/Fairy/Dragon defensive backbone — resists most common offensive typings.'
+    },
+    {
+        id: 'ghost-normal', text: 'Ghost-Normal Immunity Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ghost_type.png',
         check: c => c.activeTypes.has('Ghost') && c.activeTypes.has('Normal'),
-        tip: 'Ghost and Normal cover each other\'s Fighting/Ghost immunities — strong defensive pairing.' },
-    { id: 'weather-engine', text: 'Weather Engine', type: 'synergy', icon: '☀️',
+        tip: 'Ghost and Normal cover each other\'s Fighting/Ghost immunities — strong defensive pairing.'
+    },
+    {
+        id: 'weather-engine', text: 'Weather Engine', type: 'synergy', icon: '☀️',
         check: c => c.flatRoles.includes('Weather Setter') && c.flatRoles.includes('Weather Abuser'),
-        tip: 'Dedicated weather setter plus abusers — synchronize ability and move types for maximum value.' },
-    { id: 'terrain-engine', text: 'Terrain Engine', type: 'synergy', icon: '🌿',
+        tip: 'Dedicated weather setter plus abusers — synchronize ability and move types for maximum value.'
+    },
+    {
+        id: 'terrain-engine', text: 'Terrain Engine', type: 'synergy', icon: '🌿',
         check: c => c.flatRoles.includes('Terrain Setter') && c.flatRoles.includes('Terrain Abuser'),
-        tip: 'Terrain setter with Expanding Force, Grassy Glide, or Rising Voltage users — terrain wars decide games.' },
-    { id: 'champions-full', text: 'Champions Roster Ready', type: 'champions', icon: '🏆',
+        tip: 'Terrain setter with Expanding Force, Grassy Glide, or Rising Voltage users — terrain wars decide games.'
+    },
+    {
+        id: 'champions-full', text: 'Champions Roster Ready', type: 'champions', icon: '🏆',
         check: c => c.teamSize > 0 && c.championsEligible === c.teamSize,
-        tip: 'All Pokémon, items, and moves are Champions-legal. Ready for Champions format play.' },
-    { id: 'champions-partial', text: 'Champions Compliance Gap', type: 'high', icon: '🏆',
+        tip: 'All Pokémon, items, and moves are Champions-legal. Ready for Champions format play.'
+    },
+    {
+        id: 'champions-partial', text: 'Champions Compliance Gap', type: 'high', icon: '🏆',
         check: c => c.teamSize > 0 && c.championsEligible < c.teamSize,
-        tip: 'One or more slots use illegal Pokémon, items, or moves for Champions. Review the roster strip above.' },
-    { id: 'duplicate-items', text: 'Duplicate Held Items', type: 'medium', icon: '⚠️',
+        tip: 'One or more slots use illegal Pokémon, items, or moves for Champions. Review the roster strip above.'
+    },
+    {
+        id: 'duplicate-items', text: 'Duplicate Held Items', type: 'medium', icon: '⚠️',
         check: c => c.duplicateItems.length > 0,
-        tip: 'VGC rules prohibit duplicate items. Each Pokémon must hold a different item.' },
-    { id: 'too-many-restricted', text: 'Restricted Overload', type: 'medium', icon: '⚠️',
+        tip: 'VGC rules prohibit duplicate items. Each Pokémon must hold a different item.'
+    },
+    {
+        id: 'too-many-restricted', text: 'Restricted Overload', type: 'medium', icon: '⚠️',
         check: c => c.restrictedCount > 2,
-        tip: 'More than two 670+ BST Pokémon detected. Standard VGC allows max 2 restricted per team.' },
-    { id: 'no-speed-doubles', text: 'No Speed Control', type: 'high', icon: '⚠️',
+        tip: 'More than two 670+ BST Pokémon detected. Standard VGC allows max 2 restricted per team.'
+    },
+    {
+        id: 'no-speed-doubles', text: 'No Speed Control', type: 'high', icon: '⚠️',
         check: c => c.format === 'Doubles' && !c.utils.tailwind && !c.utils.tr && !c.utils.icywind,
-        tip: 'Doubles requires Tailwind, Trick Room, or speed drops (Icy Wind/Electroweb). Add a speed-control option.' },
-    { id: 'no-fakeout-doubles', text: 'No Early Pressure', type: 'medium', icon: '⚡',
+        tip: 'Doubles requires Tailwind, Trick Room, or speed drops (Icy Wind/Electroweb). Add a speed-control option.'
+    },
+    {
+        id: 'no-fakeout-doubles', text: 'No Early Pressure', type: 'medium', icon: '⚡',
         check: c => c.format === 'Doubles' && !c.utils.fakeout && !c.utils.sleep && c.teamSize >= 4,
-        tip: 'No Fake Out or sleep pressure. Early-turn disruption helps secure setup and prevents opposing snowball.' },
-    { id: 'no-protect-doubles', text: 'Low Protect Coverage', type: 'medium', icon: '🛡️',
+        tip: 'No Fake Out or sleep pressure. Early-turn disruption helps secure setup and prevents opposing snowball.'
+    },
+    {
+        id: 'no-protect-doubles', text: 'Low Protect Coverage', type: 'medium', icon: '🛡️',
         check: c => c.format === 'Doubles' && !c.utils.protect && c.teamSize >= 4,
-        tip: 'Protect is near-mandatory in VGC doubles. At least one slot should scout and block double targets.' },
-    { id: 'no-redirection-doubles', text: 'No Redirection', type: 'low', icon: '🎯',
+        tip: 'Protect is near-mandatory in VGC doubles. At least one slot should scout and block double targets.'
+    },
+    {
+        id: 'no-redirection-doubles', text: 'No Redirection', type: 'low', icon: '🎯',
         check: c => c.format === 'Doubles' && !c.utils.redirection && c.flatRoles.includes('Setup Sweeper'),
-        tip: 'Setup sweepers benefit from Follow Me or Rage Powder to absorb hits during setup turns.' },
-    { id: 'physical-heavy', text: 'Physical-Heavy Offense', type: 'low', icon: '👊',
+        tip: 'Setup sweepers benefit from Follow Me or Rage Powder to absorb hits during setup turns.'
+    },
+    {
+        id: 'physical-heavy', text: 'Physical-Heavy Offense', type: 'low', icon: '👊',
         check: c => c.physicalMoveCount >= 8 && c.specialMoveCount <= 3,
-        tip: 'Team leans physical. Intimidate from opponents will reduce damage — consider special coverage or mixed attackers.' },
-    { id: 'special-heavy', text: 'Special-Heavy Offense', type: 'low', icon: '✨',
+        tip: 'Team leans physical. Intimidate from opponents will reduce damage — consider special coverage or mixed attackers.'
+    },
+    {
+        id: 'special-heavy', text: 'Special-Heavy Offense', type: 'low', icon: '✨',
         check: c => c.specialMoveCount >= 8 && c.physicalMoveCount <= 3,
-        tip: 'Team leans special. Amoonguss, Assault Vest walls, and Lightning Rod can wall you — diversify damage types.' },
-    { id: 'no-hazard-control', text: 'No Hazard Control', type: 'medium', icon: '🧹',
+        tip: 'Team leans special. Amoonguss, Assault Vest walls, and Lightning Rod can wall you — diversify damage types.'
+    },
+    {
+        id: 'no-hazard-control', text: 'No Hazard Control', type: 'medium', icon: '🧹',
         check: c => c.format !== 'Doubles' && !c.utils.removal && c.utils.hazards,
-        tip: 'You set hazards but lack removal. Defog or Rapid Spin is needed to control the field.' },
-    { id: 'no-hazards-singles', text: 'No Entry Hazards', type: 'low', icon: '🪨',
+        tip: 'You set hazards but lack removal. Defog or Rapid Spin is needed to control the field.'
+    },
+    {
+        id: 'no-hazards-singles', text: 'No Entry Hazards', type: 'low', icon: '🪨',
         check: c => c.format !== 'Doubles' && !c.utils.hazards && c.teamSize >= 4,
-        tip: 'No Stealth Rock or Spikes. Entry hazards wear down switches and secure KOs on fragile threats.' },
-    { id: 'tera-diversity', text: 'Strong Tera Diversity', type: 'synergy', icon: '💎',
+        tip: 'No Stealth Rock or Spikes. Entry hazards wear down switches and secure KOs on fragile threats.'
+    },
+    {
+        id: 'tera-diversity', text: 'Strong Tera Diversity', type: 'synergy', icon: '💎',
         check: c => new Set(c.teraTypes).size >= Math.min(4, c.teamSize),
-        tip: 'Varied Tera types let you adapt mid-game — offensive, defensive, and STAB Terastallization options.' },
-    { id: 'tera-overlap', text: 'Tera Type Overlap', type: 'low', icon: '💎',
+        tip: 'Varied Tera types let you adapt mid-game — offensive, defensive, and STAB Terastallization options.'
+    },
+    {
+        id: 'tera-overlap', text: 'Tera Type Overlap', type: 'low', icon: '💎',
         check: c => c.teamSize >= 3 && new Set(c.teraTypes).size <= 2,
-        tip: 'Multiple Pokémon share Tera types. Diversify Terastallization targets to avoid predictable plays.' },
-    { id: 'wide-guard-core', text: 'Wide Guard Support', type: 'synergy', icon: '🛡️',
+        tip: 'Multiple Pokémon share Tera types. Diversify Terastallization targets to avoid predictable plays.'
+    },
+    {
+        id: 'wide-guard-core', text: 'Wide Guard Support', type: 'synergy', icon: '🛡️',
         check: c => c.format === 'Doubles' && c.utils.wideguard && c.utils.spread,
-        tip: 'Wide Guard blocks opposing spread while your team fires Earthquake or Rock Slide — classic doubles tech.' },
-    { id: 'priority-stack', text: 'Priority Stack', type: 'synergy', icon: '⚡',
+        tip: 'Wide Guard blocks opposing spread while your team fires Earthquake or Rock Slide — classic doubles tech.'
+    },
+    {
+        id: 'priority-stack', text: 'Priority Stack', type: 'synergy', icon: '⚡',
         check: c => c.format === 'Doubles' && c.utils.priority && c.utils.tailwind,
-        tip: 'Tailwind plus priority moves closes games after speed control — hard for opponents to revenge-KO.' },
-    { id: 'snow-core', text: 'Snow / Ice Offense', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ice_type.png',
+        tip: 'Tailwind plus priority moves closes games after speed control — hard for opponents to revenge-KO.'
+    },
+    {
+        id: 'snow-core', text: 'Snow / Ice Offense', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ice_type.png',
         check: c => (c.utils.snow || c.hasSpecies(['ninetalesalola', 'abomasnow'])) && c.flatRoles.includes('Weather Abuser'),
-        tip: 'Snow boosts Ice-type Defense and enables Slush Rush sweepers — pair setter with fast Ice attackers.' },
-    { id: 'sand-core', text: 'Sand Rush Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ground_type.png',
+        tip: 'Snow boosts Ice-type Defense and enables Slush Rush sweepers — pair setter with fast Ice attackers.'
+    },
+    {
+        id: 'sand-core', text: 'Sand Rush Core', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/ground_type.png',
         check: c => c.utils.sand && (c.hasAbility(['sandrush', 'sandrush']) || c.flatRoles.includes('Weather Abuser')),
-        tip: 'Sand doubles Sand Rush Speed and chips non-immune foes — Excadrill and Ground types thrive.' },
-    { id: 'electric-terrain', text: 'Electric Terrain Offense', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/electric_type.png',
+        tip: 'Sand doubles Sand Rush Speed and chips non-immune foes — Excadrill and Ground types thrive.'
+    },
+    {
+        id: 'electric-terrain', text: 'Electric Terrain Offense', type: 'synergy', icon: getAssetPrefix() + 'assets/type-icons/electricterrain.png',
         check: c => c.utils.electricterrain && (c.hasSpecies(['miraidon', 'regieleki']) || c.flatRoles.includes('Terrain Abuser')),
-        tip: 'Electric Terrain boosts Electric moves and prevents sleep — pair with fast special attackers.' },
-    { id: 'no-spread-doubles', text: 'No Spread Moves', type: 'medium', icon: '💥',
+        tip: 'Electric Terrain boosts Electric moves and prevents sleep — pair with fast special attackers.'
+    },
+    {
+        id: 'no-spread-doubles', text: 'No Spread Moves', type: 'medium', icon: '💥',
         check: c => c.format === 'Doubles' && !c.utils.spread && c.teamSize >= 4,
-        tip: 'Doubles rewards spread damage (Earthquake, Heat Wave, Dazzling Gleam). Single-target only limits KO potential.' },
-    { id: 'double-restricted', text: 'Double Restricted Core', type: 'synergy', icon: '🐉',
+        tip: 'Doubles rewards spread damage (Earthquake, Heat Wave, Dazzling Gleam). Single-target only limits KO potential.'
+    },
+    {
+        id: 'double-restricted', text: 'Double Restricted Core', type: 'synergy', icon: '🐉',
         check: c => c.format === 'Doubles' && c.restrictedCount === 2,
-        tip: 'Two restricted Pokémon — standard VGC limit. Build support around enabling both to attack.' }
+        tip: 'Two restricted Pokémon — standard VGC limit. Build support around enabling both to attack.'
+    }
 ];
 
 function linkMon(name) {
@@ -1289,12 +1363,12 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
         </div>
         <div class="analysis-role-bars">
             ${['Speed Control', 'Fake Out Pressure', 'Redirection', 'Trick Room Setter', 'Setup Sweeper', 'Damage Mitigation', 'Physical Sweeper', 'Special Sweeper']
-                .map(role => {
-                    const n = ctx.roleCount(role);
-                    if (!n) return '';
-                    const pct = Math.min(100, (n / ctx.teamSize) * 100);
-                    return `<div class="analysis-role-bar"><span class="analysis-role-bar__label">${role}</span><div class="analysis-role-bar__track"><div class="analysis-role-bar__fill" style="width:${pct}%"></div></div><span class="analysis-role-bar__count">${n}</span></div>`;
-                }).filter(Boolean).join('') || '<span class="analysis-section-note">No specialized roles detected — team may be balanced/generalist.</span>'}
+            .map(role => {
+                const n = ctx.roleCount(role);
+                if (!n) return '';
+                const pct = Math.min(100, (n / ctx.teamSize) * 100);
+                return `<div class="analysis-role-bar"><span class="analysis-role-bar__label">${role}</span><div class="analysis-role-bar__track"><div class="analysis-role-bar__fill" style="width:${pct}%"></div></div><span class="analysis-role-bar__count">${n}</span></div>`;
+            }).filter(Boolean).join('') || '<span class="analysis-section-note">No specialized roles detected — team may be balanced/generalist.</span>'}
         </div>`;
 
     // Strategy overview
@@ -1331,12 +1405,16 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
         const blocks = [
             { title: 'Team Identity', body: `This is a <strong class="analysis-highlight">${playstyle}</strong> ${format} composition anchored by <strong>${leadSpecies}</strong>. Champions legality: <strong>${ctx.championsEligible}/${ctx.teamSize}</strong> slots. ${ctx.restrictedCount ? `${ctx.restrictedCount} restricted-level Pokémon on roster.` : 'No restricted BST concerns.'}` },
             { title: 'Offensive Plan', body: `Super-effective coverage spans <strong>${highCov}/18</strong> types (${diversityPerc}% index). ${ctx.physicalMoveCount > ctx.specialMoveCount ? 'Physical-biased' : ctx.specialMoveCount > ctx.physicalMoveCount ? 'Special-biased' : 'Balanced'} damage profile. ${ctx.utils.priority ? 'Priority moves provide late-game cleanup.' : ''} ${ctx.utils.spread && format === 'Doubles' ? 'Spread coverage threatens both opponents simultaneously.' : ''} ${format === 'Doubles' && ctx.utils.helpinghand ? 'Helping Hand amplifies partner KOs.' : ''}` },
-            { title: 'Defensive Structure', body: highWeak.length
-                ? `Shared weaknesses in <strong class="analysis-highlight analysis-highlight--danger">${highWeak.map(w => w[0]).join(', ')}</strong> — add immunities, redirection, or Tera pivots. ${ctx.utils.intimidate ? 'Intimidate provides physical damage reduction.' : ''} ${ctx.utils.wideguard ? 'Wide Guard blocks opposing spread.' : ''}`
-                : `No critical shared type gaps. ${ctx.utils.screens ? 'Screens reduce incoming damage.' : ''} ${ctx.utils.protect ? 'Protect users scout and block double-targets.' : format === 'Doubles' ? 'Consider adding Protect for doubles safety.' : ''}` },
-            { title: format === 'Doubles' ? 'VGC Game Plan' : 'Singles Game Plan', body: format === 'Doubles'
-                ? `Doubles toolkit: ${vgcTools.length ? vgcTools.join(', ') : 'limited support tools'}. ${synergyCores.length ? `Active cores: ${synergyCores.join(', ')}.` : 'Build explicit win conditions via speed control + redirection.'} ${leadPair.label ? `Recommended lead: ${leadPair.label}.` : ''} Terastallize on the winning turn and protect your restricted Pokémon.`
-                : `Singles focus: ${ctx.utils.hazards ? 'hazard stacking' : 'no hazards'} ${ctx.utils.removal ? 'with removal' : ''}. ${ctx.flatRoles.includes('Pivot') ? 'Pivot chains maintain momentum.' : 'Use switches to preserve win conditions.'}` }
+            {
+                title: 'Defensive Structure', body: highWeak.length
+                    ? `Shared weaknesses in <strong class="analysis-highlight analysis-highlight--danger">${highWeak.map(w => w[0]).join(', ')}</strong> — add immunities, redirection, or Tera pivots. ${ctx.utils.intimidate ? 'Intimidate provides physical damage reduction.' : ''} ${ctx.utils.wideguard ? 'Wide Guard blocks opposing spread.' : ''}`
+                    : `No critical shared type gaps. ${ctx.utils.screens ? 'Screens reduce incoming damage.' : ''} ${ctx.utils.protect ? 'Protect users scout and block double-targets.' : format === 'Doubles' ? 'Consider adding Protect for doubles safety.' : ''}`
+            },
+            {
+                title: format === 'Doubles' ? 'VGC Game Plan' : 'Singles Game Plan', body: format === 'Doubles'
+                    ? `Doubles toolkit: ${vgcTools.length ? vgcTools.join(', ') : 'limited support tools'}. ${synergyCores.length ? `Active cores: ${synergyCores.join(', ')}.` : 'Build explicit win conditions via speed control + redirection.'} ${leadPair.label ? `Recommended lead: ${leadPair.label}.` : ''} Terastallize on the winning turn and protect your restricted Pokémon.`
+                    : `Singles focus: ${ctx.utils.hazards ? 'hazard stacking' : 'no hazards'} ${ctx.utils.removal ? 'with removal' : ''}. ${ctx.flatRoles.includes('Pivot') ? 'Pivot chains maintain momentum.' : 'Use switches to preserve win conditions.'}`
+            }
         ];
 
         strategyText.innerHTML = blocks.map(b => `
@@ -1882,9 +1960,9 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
 
     const dangerStyles = {
         critical: { bg: 'rgba(244, 67, 54, 0.12)', border: '#f44336', label: 'CRITICAL', labelBg: '#f44336' },
-        warning:  { bg: 'rgba(255, 152, 0, 0.08)', border: '#FF9800', label: 'CAUTION', labelBg: '#FF9800' },
-        safe:     { bg: 'rgba(255, 255, 255, 0.02)', border: 'rgba(255,255,255,0.08)', label: 'NEUTRAL', labelBg: 'rgba(255,255,255,0.15)' },
-        covered:  { bg: 'rgba(76, 175, 80, 0.08)', border: '#4CAF50', label: 'COVERED', labelBg: '#4CAF50' }
+        warning: { bg: 'rgba(255, 152, 0, 0.08)', border: '#FF9800', label: 'CAUTION', labelBg: '#FF9800' },
+        safe: { bg: 'rgba(255, 255, 255, 0.02)', border: 'rgba(255,255,255,0.08)', label: 'NEUTRAL', labelBg: 'rgba(255,255,255,0.15)' },
+        covered: { bg: 'rgba(76, 175, 80, 0.08)', border: '#4CAF50', label: 'COVERED', labelBg: '#4CAF50' }
     };
 
     // Summary stats
@@ -1951,9 +2029,9 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                 <div style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Counters Your Teammates</div>
                 <div style="display:flex; gap:4px; flex-wrap:wrap;">
                     ${threat.teammateCounters.map(c => {
-                        const label = c.neutralizesCheck ? 'removes check' : (c.removesCoverage ? 'breaks coverage' : 'pressure');
-                        return `<span class="matchup-chip threat" title="${c.move}: ${c.maxPercent}%">${c.victim}: ${c.move} (${c.maxPercent}%) · ${label}</span>`;
-                    }).join('')}
+                const label = c.neutralizesCheck ? 'removes check' : (c.removesCoverage ? 'breaks coverage' : 'pressure');
+                return `<span class="matchup-chip threat" title="${c.move}: ${c.maxPercent}%">${c.victim}: ${c.move} (${c.maxPercent}%) · ${label}</span>`;
+            }).join('')}
                 </div>
             </div>`
             : '';
