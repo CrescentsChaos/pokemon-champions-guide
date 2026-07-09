@@ -5012,7 +5012,7 @@
     {
         "id": "670",
         "pokemon": "Houndstone",
-        "build": "Houndstone @ Sitrus Berry  \nAbility: Sand Rush  \nEVs: 56 HP / 252 Atk / 200 Spe  \n- Last Respects  \n- Will-O-Wisp  \n- Ally Switch  \n- Protect",
+        "build": "Houndstone @ Sitrus Berry  \nAbility: Sand Rush  \nEVs: 56 HP / 252 Atk / 200 Spe \nAdamant Nature  \n- Last Respects  \n- Will-O-Wisp  \n- Ally Switch  \n- Protect",
         "synergy": [
             "615"
         ],
@@ -5041,6 +5041,51 @@
         "pokemon": "Raichu",
         "build": "Raichu @ Raichunite X  \nAbility: Lightning Rod  \nEVs: 4 HP / 252 Atk / 252 Spe  \nJolly Nature  \n- Fake Out  \n- Volt Tackle  \n- Volt Switch  \n- Encore",
         "synergy": [],
+        "format": "Doubles"
+    },
+    {
+        "id": "674",
+        "pokemon": "Aerodactyl",
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Rock  \nEVs: 224 HP / 88 Atk / 60 Def / 136 Spe  \nJolly Nature  \n- Rock Slide  \n- Ice Fang  \n- Wide Guard  \n- Tailwind",
+        "synergy": [
+            "250"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "675",
+        "pokemon": "Kingambit",
+        "build": "Kingambit @ Focus Sash  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 102 HP / 200 Atk / 208 Spe  \nAdamant Nature  \n- Kowtow Cleave  \n- Sucker Punch  \n- Protect  \n- Iron Head",
+        "synergy": [
+            "674"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "676",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 224 HP / 196 Def / 88 SpA  \nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Helping Hand  \n- Weather Ball  \n- Protect",
+        "synergy": [
+            "677"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "677",
+        "pokemon": "Mamoswine",
+        "build": "Mamoswine @ Focus Sash  \nAbility: Oblivious  \nEVs: 252 Atk / 4 SpD / 252 Spe  \nJolly Nature  \n- High Horsepower  \n- Rock Tomb  \n- Ice Shard  \n- Protect",
+        "synergy": [
+            "676"
+        ],
+        "format": "Doubles"
+    },
+    {
+        "id": "678",
+        "pokemon": "Venusaur",
+        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 252 SpA / 252 Spe  \nModest Nature  \nIVs: 0 Atk  \n- Leaf Storm  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
+        "synergy": [
+            "677"
+        ],
         "format": "Doubles"
     }
 ]
