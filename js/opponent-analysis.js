@@ -565,6 +565,9 @@ function pickBestBringCombination(ourMons, format, bringCount) {
             score -= ww.penalty;
         }
 
+        const megasInCombo = bring.filter(isMegaCapable).length;
+        if (megasInCombo > 1) score -= 55;
+
         const typeSet = new Set();
         bring.forEach(m => {
             const db = getMonDb(m);
@@ -701,10 +704,91 @@ function classifyCheck(offense, outspeeds) {
     return 'Low damage';
 }
 
-function buildCounterMatrix(ourMons, oppMons, format, oppBring) {
+function getBaseSpeciesKey(mon) {
+    const info = getBattleFormeInfo(mon);
+    return normalizeSpeciesKey(info.baseDb?.Name || mon.species);
+}
+
+function isMirrorMatchup(ourMon, oppMon) {
+    return getBaseSpeciesKey(ourMon) === getBaseSpeciesKey(oppMon);
+}
+
+function getKoPriority(koLabel, maxPercent) {
+    const max = parseFloat(maxPercent) || 0;
+    const ko = (koLabel || '').toLowerCase();
+    if (ko.includes('ohko') && !ko.includes('2hko') && !ko.includes('3hko')) return 100;
+    if (max >= 100) return 95;
+    if (ko.includes('2hko')) return 55;
+    if (max >= 75) return 40;
+    if (ko.includes('3hko')) return 25;
+    if (max >= 50) return 15;
+    return 0;
+}
+
+function compareCounterEntries(a, b, ourBringSpecies, megaInBring) {
+    const aBring = ourBringSpecies.has(a.species) ? 1 : 0;
+    const bBring = ourBringSpecies.has(b.species) ? 1 : 0;
+    if (aBring !== bBring) return bBring - aBring;
+
+    if (a.isMirror !== b.isMirror) return a.isMirror ? 1 : -1;
+
+    if (a.extraMega && !b.extraMega) return 1;
+    if (b.extraMega && !a.extraMega) return -1;
+
+    const aKo = getKoPriority(a.koLabel, a.maxPercent);
+    const bKo = getKoPriority(b.koLabel, b.maxPercent);
+    if (aKo !== bKo) return bKo - aKo;
+
+    if (a.speedTier === 'faster' && b.speedTier !== 'faster') return -1;
+    if (b.speedTier === 'faster' && a.speedTier !== 'faster') return 1;
+
+    return b.netScore - a.netScore;
+}
+
+function buildMirrorMatchAdvice(ourMon, oppMon, format, ourBringMons) {
+    if (!isMirrorMatchup(ourMon, oppMon)) return null;
+    const ourSnap = getSpeedSnapshot(ourMon, format);
+    const oppSnap = getSpeedSnapshot(oppMon, format);
+    const ourInBring = ourBringMons.some(m => m.species === ourMon.species);
+    const bothMega = ourSnap.info.isMega && oppSnap.info.isMega;
+    const lines = [];
+
+    if (bothMega) {
+        lines.push('Mirror Mega — only one Mega per battle; avoid trading into their identical form. Use a different slot.');
+    }
+    if (ourSnap.battleSpeed === oppSnap.battleSpeed) {
+        lines.push(`Speed tie at ${ourSnap.battleSpeed} Spe — lead something else or use priority; mirror is a 50/50.`);
+    } else if (ourSnap.battleSpeed > oppSnap.battleSpeed) {
+        lines.push(`You outspeed (${ourSnap.battleSpeed} vs ${oppSnap.battleSpeed}) — but mirror still risks mutual KO from Rock/Dragon coverage.`);
+    } else {
+        lines.push(`They outspeed (${oppSnap.battleSpeed} vs ${ourSnap.battleSpeed}) — do not mirror lead unless you have a bulkier set.`);
+    }
+    if (!ourInBring) {
+        lines.push('This mon is not in your recommended bring — use a bring-slot answer instead.');
+    }
+    const nonMirror = ourBringMons.filter(m => !isMirrorMatchup(m, oppMon));
+    if (nonMirror.length) {
+        lines.push(`Prefer **${nonMirror.slice(0, 2).map(m => m.species).join('** or **')}** from your bring over a mirror.`);
+    }
+    return lines.join(' ');
+}
+
+function buildCounterMatrix(ourMons, oppMons, format, oppBring, ourBring) {
     const broughtSpecies = new Set((oppBring?.mons || []).map(m => m.species));
+    const ourBringMons = ourBring?.mons || ourMons;
+    const ourBringSpecies = new Set(ourBringMons.map(m => m.species));
+    const megaInBring = ourBringMons.filter(isMegaCapable).map(m => m.species);
+    const hasMegaInBring = megaInBring.length > 0;
     const matrix = [];
-    oppMons.forEach(opp => {
+
+    const sortedOpp = [...oppMons].sort((a, b) => {
+        const aIn = broughtSpecies.has(a.species) ? 0 : 1;
+        const bIn = broughtSpecies.has(b.species) ? 0 : 1;
+        if (aIn !== bIn) return aIn - bIn;
+        return oppMons.indexOf(a) - oppMons.indexOf(b);
+    });
+
+    sortedOpp.forEach(opp => {
         const row = {
             opponent: opp.species,
             oppTypes: [getMonDb(opp)?.Type_1, getMonDb(opp)?.Type_2].filter(Boolean),
@@ -716,6 +800,9 @@ function buildCounterMatrix(ourMons, oppMons, format, oppBring) {
 
         ourMons.forEach(our => {
             const m = computeMatchupPair(our, opp, format);
+            const mirror = isMirrorMatchup(our, opp);
+            const inBring = ourBringSpecies.has(our.species);
+            const extraMega = hasMegaInBring && isMegaCapable(our) && !megaInBring.includes(our.species);
             const entry = {
                 species: our.species,
                 move: m.offense?.move || '—',
@@ -729,17 +816,36 @@ function buildCounterMatrix(ourMons, oppMons, format, oppBring) {
                 ourSpeed: m.ourSpeed,
                 oppSpeed: m.oppSpeed,
                 netScore: m.netScore,
-                checkLabel: m.checkLabel
+                checkLabel: m.checkLabel,
+                inBring,
+                isMirror: mirror,
+                extraMega,
+                koPriority: getKoPriority(m.offense?.koLabel, m.offense?.maxPercent)
             };
 
-            if (m.netScore >= 20) row.counters.push(entry);
-            else if (m.netScore >= 5) row.checks.push(entry);
+            if (m.netScore >= 20 && !mirror) row.counters.push(entry);
+            else if (m.netScore >= 20 && mirror) row.checks.push(entry);
+            else if (m.netScore >= 5 && !mirror) row.checks.push(entry);
+            else if (m.netScore >= 5 && mirror) row.checks.push({ ...entry, isMirror: true });
             if (m.defense && parseFloat(m.defense.maxPercent) >= 75) row.threats.push(entry);
         });
 
-        row.counters.sort((a, b) => b.netScore - a.netScore);
-        row.checks.sort((a, b) => b.netScore - a.netScore);
-        row.bestAnswer = row.counters[0] || row.checks[0] || null;
+        const sortFn = (a, b) => compareCounterEntries(a, b, ourBringSpecies, megaInBring);
+        row.counters.sort(sortFn);
+        row.checks.sort(sortFn);
+
+        const allRanked = [...row.counters, ...row.checks];
+        row.bestAnswer = allRanked.find(e => e.inBring && !e.isMirror)
+            || allRanked.find(e => e.inBring)
+            || allRanked.find(e => !e.isMirror && !e.extraMega)
+            || allRanked[0] || null;
+        row.altAnswers = allRanked.filter(e => e !== row.bestAnswer).slice(0, 4);
+        row.mirrorNote = ourMons.filter(our => isMirrorMatchup(our, opp)).length
+            ? buildMirrorMatchAdvice(
+                ourMons.find(our => isMirrorMatchup(our, opp)),
+                opp, format, ourBringMons
+            )
+            : null;
         row.oppForme = getBattleFormeInfo(opp);
         matrix.push(row);
     });
@@ -1349,7 +1455,7 @@ function renderLeadPanel(leadAnalysis, format) {
         </table>` : ''}`;
 }
 
-function renderCounterMatrix(matrix, ourMons, oppMons, format) {
+function renderCounterMatrix(matrix, ourMons, oppMons, format, ourBring) {
     const el = document.getElementById('opp-counter-matrix');
     if (!el) return;
 
@@ -1364,9 +1470,8 @@ function renderCounterMatrix(matrix, ourMons, oppMons, format) {
         const typeImgs = row.oppTypes.map(t =>
             `<img src="${typeIconSrc(t)}" alt="${t}" height="16">`
         ).join('');
-        const allAnswers = [...row.counters, ...row.checks].sort((a, b) => b.netScore - a.netScore);
-        const best = allAnswers[0];
-        const alts = allAnswers.slice(1, 4);
+        const best = row.bestAnswer;
+        const alts = row.altAnswers || [];
         const isBench = row.isBench;
         const vsLabel = forme.isMega ? forme.battleLabel : row.opponent;
 
@@ -1376,11 +1481,16 @@ function renderCounterMatrix(matrix, ourMons, oppMons, format) {
                 : entry.speedTier === 'slower' ? '<span class="opp-speed-tag opp-speed-tag--slow">Slower — tank or pivot</span>'
                     : '<span class="opp-speed-tag">Speed tie</span>';
             const koText = entry.koLabel ? entry.koLabel.replace('Guaranteed ', '') : '';
+            const tags = [];
+            if (!entry.inBring) tags.push('<span class="opp-preview-tag opp-preview-tag--bench">NOT IN BRING</span>');
+            if (entry.isMirror) tags.push('<span class="opp-preview-tag opp-preview-tag--mirror">MIRROR</span>');
+            if (entry.extraMega) tags.push('<span class="opp-preview-tag opp-preview-tag--bench">2ND MEGA</span>');
             return `
                 <div class="opp-action ${isPrimary ? 'opp-action--primary' : 'opp-action--alt'}">
                     <div class="opp-action__label">${isPrimary ? 'USE' : 'ALT'}</div>
                     <div class="opp-action__body">
                         <span class="opp-action__mon">${escapeAnalysisHtml(entry.species)}</span>
+                        ${tags.join('')}
                         <span class="opp-action__arrow">→</span>
                         <span class="opp-action__move">${escapeAnalysisHtml(entry.move)}</span>
                         <span class="opp-action__dmg">${entry.minPercent}–${entry.maxPercent}%</span>
@@ -1395,6 +1505,10 @@ function renderCounterMatrix(matrix, ourMons, oppMons, format) {
                 <span class="opp-watch-label">⚠ Watch out</span>
                 ${row.threats.slice(0, 2).map(t => `<span class="opp-watch-item">${escapeAnalysisHtml(vsLabel)} hits ${escapeAnalysisHtml(t.species)} with <strong>${escapeAnalysisHtml(t.defenseMove)}</strong> (${t.defensePercent}%)</span>`).join('')}
                </div>`
+            : '';
+
+        const mirrorHtml = row.mirrorNote
+            ? `<div class="opp-mirror-note"><span class="opp-mirror-note__label">Mirror match</span><p>${row.mirrorNote.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p></div>`
             : '';
 
         const snap = oppMon ? getSpeedSnapshot(oppMon, format) : null;
@@ -1418,22 +1532,25 @@ function renderCounterMatrix(matrix, ourMons, oppMons, format) {
                     </div>
                 </div>
                 <div class="opp-action-card__answers">
-                    ${best ? renderAction(best, true) : '<div class="opp-action opp-action--gap">No calc check found — consider type coverage or team change</div>'}
+                    ${best ? renderAction(best, true) : '<div class="opp-action opp-action--gap">No bring-slot check — adjust team or coverage</div>'}
                     ${alts.map(a => renderAction(a, false)).join('')}
                 </div>
+                ${mirrorHtml}
                 ${threatHtml}
             </div>`;
     }).join('');
 }
 
-function renderMatchupSummary(ourTeam, oppMons, matrix, format) {
+function renderMatchupSummary(ourTeam, oppMons, matrix, format, ourBring) {
     const el = document.getElementById('opp-matchup-summary');
     if (!el) return;
 
-    const covered = matrix.filter(r => r.counters.length > 0).length;
-    const total = matrix.length;
-    const gaps = matrix.filter(r => r.counters.length === 0 && r.checks.length === 0).map(r => r.opponent);
+    const bringMatrix = matrix.filter(r => !r.isBench);
+    const covered = bringMatrix.filter(r => r.bestAnswer && r.bestAnswer.inBring).length;
+    const total = bringMatrix.length;
+    const gaps = bringMatrix.filter(r => !r.bestAnswer || !r.bestAnswer.inBring).map(r => r.opponent);
     const bringCount = BRING_COUNT[format] || 3;
+    const megaCount = (ourBring?.mons || []).filter(isMegaCapable).length;
 
     let grade = 'B';
     if (covered === total && total > 0) grade = 'A';
@@ -1443,11 +1560,11 @@ function renderMatchupSummary(ourTeam, oppMons, matrix, format) {
     el.innerHTML = `
         <div class="opp-summary-grade">${grade}</div>
         <div class="opp-summary-stats">
-            <div><span class="opp-summary-num">${covered}/${total}</span><span class="opp-summary-lbl">Threats covered</span></div>
+            <div><span class="opp-summary-num">${covered}/${total}</span><span class="opp-summary-lbl">Bring threats answered</span></div>
             <div><span class="opp-summary-num">${bringCount}</span><span class="opp-summary-lbl">Mons to bring (${format})</span></div>
-            <div><span class="opp-summary-num">${ourTeam.filter(p => p.species).length}</span><span class="opp-summary-lbl">Your roster</span></div>
+            <div><span class="opp-summary-num">${megaCount}</span><span class="opp-summary-lbl">Mega slot${megaCount !== 1 ? 's' : ''} in bring</span></div>
         </div>
-        ${gaps.length ? `<p class="opp-summary-gap"><strong>Coverage gaps:</strong> ${gaps.map(g => escapeAnalysisHtml(g)).join(', ')} — these lack a calc-confirmed check in your current roster.</p>` : '<p class="opp-summary-ok">All entered opponent threats have at least one calc-based check on your team.</p>'}`;
+        ${gaps.length ? `<p class="opp-summary-gap"><strong>Coverage gaps:</strong> ${gaps.map(g => escapeAnalysisHtml(g)).join(', ')} — no OHKO/check from your <em>bring</em> slot. Roster-only answers are listed as ALT.</p>` : '<p class="opp-summary-ok">All predicted opponent brings have a calc-confirmed answer from your recommended bring.</p>'}`;
 }
 
 function runOpponentPrepAnalysis() {
@@ -1474,7 +1591,7 @@ function runOpponentPrepAnalysis() {
 
     const oppBring = predictOpponentBringSet(oppActive, format, ourActive);
     const ourBring = pickBestBringCombination(ourActive, format, bringCount);
-    const matrix = buildCounterMatrix(ourActive, oppActive, format, oppBring);
+    const matrix = buildCounterMatrix(ourActive, oppActive, format, oppBring, ourBring);
     const leadAnalysis = analyzeLeadRecommendation(ourBring.mons, oppBring.mons, format, oppBring.archetype);
     const interactionWarnings = typeof buildInteractionWarnings === 'function'
         ? buildInteractionWarnings(ourActive, oppActive, oppBring) : [];
@@ -1495,8 +1612,8 @@ function runOpponentPrepAnalysis() {
     renderBringPanel(ourBring, oppBring, format);
     renderLeadPanel(leadAnalysis, format);
     renderBattleIntelPanel(battlePlan, speedChart, megaIntel, format, interactionWarnings, interactionPlays, matchupGaps);
-    renderCounterMatrix(matrix, ourActive, oppActive, format);
-    renderMatchupSummary(ourActive, oppActive, matrix, format);
+    renderCounterMatrix(matrix, ourActive, oppActive, format, ourBring);
+    renderMatchupSummary(ourActive, oppActive, matrix, format, ourBring);
 }
 
 function showOpponentPrepView() {

@@ -1211,6 +1211,48 @@
     color: #ffcc80;
 }
 
+.opp-preview-tag--mirror {
+    background: rgba(156, 39, 176, 0.2);
+    color: #ce93d8;
+    border: 1px solid rgba(156, 39, 176, 0.35);
+    font-size: 0.55rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.opp-mirror-note {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border-left: 3px solid #9c27b0;
+    background: rgba(156, 39, 176, 0.08);
+}
+
+.opp-mirror-note__label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ce93d8;
+    margin-bottom: 4px;
+}
+
+.opp-mirror-note p {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.opp-action__body .opp-preview-tag {
+    display: inline-block;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
 .opp-preview-int-tags {
     display: flex;
     flex-wrap: wrap;

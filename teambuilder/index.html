@@ -1099,9 +1099,17 @@
                 </div>
 
                 <div id="opponent-prep-results">
+                    <div class="opp-analysis-card opp-summary-card" id="opp-matchup-summary"></div>
+
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds</h3>
-                        <div id="opponent-team-preview"></div>
+                        <h3 class="opp-section-title" style="color: #e040fb; margin-bottom: 1rem;">Battle Intel &amp; Game Plan</h3>
+                        <div id="opp-battle-intel"></div>
+                    </div>
+
+                    <div class="opp-analysis-card">
+                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against Each Threat</h3>
+                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Answers from your <strong>recommended bring</strong> first — OHKO &gt; 2HKO. Roster-only / mirror / 2nd-Mega options marked as ALT.</p>
+                        <div id="opp-counter-matrix"></div>
                     </div>
 
                     <div class="opp-analysis-card">
@@ -1115,16 +1123,8 @@
                     </div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #e040fb; margin-bottom: 1rem;">Battle Intel & Game Plan</h3>
-                        <div id="opp-battle-intel"></div>
-                    </div>
-
-                    <div class="opp-analysis-card opp-summary-card" id="opp-matchup-summary"></div>
-
-                    <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against Each Threat</h3>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Exact move recommendations from the damage calc — includes benched opponent sets you should still scout.</p>
-                        <div id="opp-counter-matrix"></div>
+                        <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.35);">— scout reference</span></h3>
+                        <div id="opponent-team-preview"></div>
                     </div>
                 </div>
             </div>
@@ -1390,7 +1390,7 @@
     <script src="../js/analysis.js?v=5"></script>
     <script src="../js/build-narrative.js?v=5"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
-    <script src="../js/opponent-analysis.js?v=6"></script>
+    <script src="../js/opponent-analysis.js?v=7"></script>
 
     <script>
 
