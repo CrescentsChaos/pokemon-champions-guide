@@ -1117,8 +1117,8 @@
                     <div class="opp-analysis-card opp-summary-card" id="opp-matchup-summary"></div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">Counter Matrix</h3>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Which of your Pokémon check each opponent threat — damage %, KO chance, and speed tier from the calc engine.</p>
+                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against Each Threat</h3>
+                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Exact move recommendations from the damage calc — includes benched opponent sets you should still scout.</p>
                         <div id="opp-counter-matrix"></div>
                     </div>
                 </div>
@@ -1288,6 +1288,17 @@
         </div>
     </section>
 
+    <!-- Opponent Build Swap Overlay -->
+    <div class="overlay" id="opponent-build-overlay" style="display: none;">
+        <div class="overlay-content" style="max-width: 520px;">
+            <h2 id="opponent-build-overlay-title">Swap Build</h2>
+            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Choose a different library build for this opponent slot.</p>
+            <div id="opponent-build-list" class="opp-build-list"></div>
+            <button type="button" class="analyze-btn" style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+                onclick="document.getElementById('opponent-build-overlay').style.display='none'">CANCEL</button>
+        </div>
+    </div>
+
     <!-- Opponent Search Overlay -->
     <div class="overlay" id="opponent-search-overlay" style="display: none;">
         <div class="overlay-content">
@@ -1372,7 +1383,7 @@
     <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js?v=5"></script>
     <script src="../js/build-narrative.js?v=5"></script>
-    <script src="../js/opponent-analysis.js?v=1"></script>
+    <script src="../js/opponent-analysis.js?v=2"></script>
 
     <script>
 

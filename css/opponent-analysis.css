@@ -570,3 +570,414 @@
         align-items: flex-start;
     }
 }
+
+/* Build swap */
+.opp-swap-build-btn {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px 8px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(156, 39, 176, 0.15);
+    border: 1px solid rgba(156, 39, 176, 0.35);
+    color: #ce93d8;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.opp-swap-build-btn:hover {
+    background: rgba(156, 39, 176, 0.3);
+}
+
+.opp-swap-build-btn--inline {
+    display: inline-block;
+    width: auto;
+    margin-top: 0;
+    padding: 4px 10px;
+}
+
+.opp-build-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+.opp-build-option {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    color: #eee;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.opp-build-option:hover {
+    border-color: #9c27b0;
+    background: rgba(156, 39, 176, 0.08);
+}
+
+.opp-build-option--active {
+    border-color: #9c27b0;
+    background: rgba(156, 39, 176, 0.12);
+}
+
+.opp-build-option__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.opp-build-option__fmt {
+    font-weight: 900;
+    font-size: 0.8rem;
+    color: #e040fb;
+}
+
+.opp-build-option__id {
+    font-size: 0.65rem;
+    opacity: 0.5;
+}
+
+.opp-build-option__current {
+    margin-left: auto;
+    font-size: 0.55rem;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(76, 175, 80, 0.2);
+    color: #81c784;
+}
+
+.opp-build-option__detail {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+}
+
+.opp-build-option__moves {
+    display: block;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.4;
+}
+
+/* Archetype banner */
+.opp-archetype-banner {
+    background: rgba(33, 150, 243, 0.08);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #90caf9;
+}
+
+.opp-archetype-label {
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    margin-right: 8px;
+}
+
+/* Preview bring/bench tags */
+.opp-preview-card--bring {
+    border-color: rgba(244, 67, 54, 0.25);
+}
+
+.opp-preview-card--bench {
+    opacity: 0.82;
+    border-style: dashed;
+}
+
+.opp-preview-tag {
+    font-size: 0.55rem;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+}
+
+.opp-preview-tag--bring {
+    background: rgba(244, 67, 54, 0.2);
+    color: #ef9a9a;
+}
+
+.opp-preview-tag--bench {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.opp-preview-item-line {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.opp-preview-moves-label {
+    font-size: 0.58rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    margin: 8px 0 4px;
+    letter-spacing: 0.06em;
+}
+
+.opp-preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.opp-preview-build {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.threat-move-pill--dim {
+    opacity: 0.55;
+}
+
+/* Bring panel with moves */
+.opp-bring-mon__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.opp-bring-mon__name {
+    display: block;
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.opp-bring-mon__moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.opp-bring-mon--highlight {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.opp-bench-title {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 1rem 0 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.opp-bring-list--bench .opp-bring-mon {
+    opacity: 0.75;
+    border-style: dashed;
+}
+
+.opp-bring-reasoning {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.55;
+}
+
+.opp-bring-reasoning li {
+    margin-bottom: 4px;
+}
+
+/* Action cards — what move to use */
+#opp-counter-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.opp-action-card {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.15rem;
+}
+
+.opp-action-card--bench {
+    border-style: dashed;
+    opacity: 0.88;
+}
+
+.opp-action-card__head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.opp-action-card__sprite {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.opp-action-card__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-weight: 900;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.opp-action-card__moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.opp-action-card__answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opp-action {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+.opp-action--primary {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.25);
+}
+
+.opp-action--alt {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.opp-action--gap {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.opp-action__label {
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.4);
+    min-width: 28px;
+    padding-top: 2px;
+}
+
+.opp-action--primary .opp-action__label {
+    color: #81c784;
+}
+
+.opp-action__body {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.opp-action__mon {
+    font-weight: 900;
+    color: #fff;
+}
+
+.opp-action__arrow {
+    opacity: 0.4;
+}
+
+.opp-action__move {
+    font-weight: 800;
+    color: #ffcc80;
+}
+
+.opp-action__dmg {
+    font-weight: 900;
+    color: #81c784;
+    font-family: monospace;
+}
+
+.opp-action__ko {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #aed581;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(139, 195, 74, 0.15);
+}
+
+.opp-speed-tag {
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.opp-speed-tag--fast {
+    background: rgba(76, 175, 80, 0.15);
+    color: #81c784;
+}
+
+.opp-speed-tag--slow {
+    background: rgba(255, 152, 0, 0.12);
+    color: #ffb74d;
+}
+
+.opp-watch-box {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 152, 0, 0.06);
+    border-radius: 8px;
+    border-left: 3px solid #ff9800;
+}
+
+.opp-watch-label {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #ffb74d;
+    margin-bottom: 4px;
+}
+
+.opp-watch-item {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.45;
+}
+
+.opp-watch-item strong {
+    color: #ffcc80;
+}
+

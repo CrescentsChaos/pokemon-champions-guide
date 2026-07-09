@@ -67,6 +67,73 @@ function getOpponentSpriteUrl(species) {
     return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
 }
 
+function getSpeciesBuildList(species, format) {
+    const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
+    const key = normalizeSpeciesKey(species);
+    const fmt = (format || 'Singles').toLowerCase();
+    const matches = buildsArr.filter(b => normalizeSpeciesKey(b.pokemon) === key);
+    matches.sort((a, b) => {
+        const aFmt = (a.format || 'Singles').toLowerCase() === fmt ? 1 : 0;
+        const bFmt = (b.format || 'Singles').toLowerCase() === fmt ? 1 : 0;
+        if (aFmt !== bFmt) return bFmt - aFmt;
+        return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
+    });
+    return matches;
+}
+
+function applyOpponentBuildRecord(slotIndex, buildRecord) {
+    if (!buildRecord || typeof parseAnalysisBuild !== 'function') return;
+    const slot = parseAnalysisBuild(buildRecord.build);
+    slot._buildSource = 'library';
+    slot._buildId = buildRecord.id;
+    _opponentTeam[slotIndex] = slot;
+    renderOpponentRoster();
+    runOpponentPrepAnalysis();
+}
+
+function openOpponentBuildSwap(slotIndex) {
+    const p = _opponentTeam[slotIndex];
+    if (!p || !p.species) return;
+    _opponentBuildSwapSlot = slotIndex;
+    const overlay = document.getElementById('opponent-build-overlay');
+    const list = document.getElementById('opponent-build-list');
+    if (!overlay || !list) return;
+
+    const builds = getSpeciesBuildList(p.species, _opponentFormat);
+    document.getElementById('opponent-build-overlay-title').textContent = `Swap Build — ${p.species}`;
+
+    if (!builds.length) {
+        list.innerHTML = '<p class="opp-empty-note">No library builds for this species.</p>';
+    } else {
+        list.innerHTML = '';
+        builds.forEach(b => {
+            const parsed = parseAnalysisBuild(b.build);
+            const moves = (parsed.moves || []).filter(Boolean).join(' · ') || 'No moves';
+            const isActive = String(p._buildId) === String(b.id);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `opp-build-option ${isActive ? 'opp-build-option--active' : ''}`;
+            btn.innerHTML = `
+                <span class="opp-build-option__head">
+                    <span class="opp-build-option__fmt">${escapeAnalysisHtml(b.format || 'Standard')}</span>
+                    <span class="opp-build-option__id">#${b.id}</span>
+                    ${isActive ? '<span class="opp-build-option__current">ACTIVE</span>' : ''}
+                </span>
+                <span class="opp-build-option__detail">${parsed.item ? '@ ' + escapeAnalysisHtml(parsed.item) : 'No item'} · ${escapeAnalysisHtml(parsed.ability || 'Ability')}</span>
+                <span class="opp-build-option__moves">${escapeAnalysisHtml(moves)}</span>`;
+            btn.onclick = () => {
+                applyOpponentBuildRecord(slotIndex, b);
+                overlay.style.display = 'none';
+            };
+            list.appendChild(btn);
+        });
+    }
+
+    overlay.style.display = 'flex';
+}
+
+let _opponentBuildSwapSlot = 0;
+
 function resolveOpponentBuild(species, format) {
     const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
     let build = typeof findLatestBuildForSpecies === 'function'
@@ -201,23 +268,221 @@ function scoreMonThreatLevel(mon, format) {
     return score;
 }
 
+function detectOpponentArchetype(mons, format) {
+    const roles = mons.map(m => typeof detectRole === 'function' ? detectRole(m, getMonDb(m)) : []);
+    const ctx = typeof buildTeamContext === 'function'
+        ? buildTeamContext(mons, format, {}, {}, {}, roles)
+        : { utils: {}, flatRoles: roles.flat(), hasSpecies: () => false };
+
+    const archetypes = [];
+    const labels = [];
+    const moves = mons.flatMap(m => (m.moves || []).map(mv => normalizeMoveKey(mv)));
+    const hasRainDance = moves.includes('raindance');
+    const hasPrimaryRainSetter = mons.some((m, i) => {
+        const ab = (m.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const r = roles[i] || [];
+        const key = normalizeSpeciesKey(m.species);
+        return ab === 'drizzle' || r.includes('Weather Setter') && ['pelipper', 'politoed', 'kyogre'].includes(key);
+    });
+
+    if (ctx.utils?.drizzle || hasPrimaryRainSetter || (hasRainDance && roles.flat().includes('Weather Abuser'))) {
+        archetypes.push('rain');
+        labels.push('Rain offense');
+    }
+    if (ctx.utils?.drought || ctx.hasSpecies?.(['torkoal', 'ninetalesalola'])) {
+        archetypes.push('sun');
+        labels.push('Sun offense');
+    }
+    if (ctx.utils?.tr) {
+        archetypes.push('trickroom');
+        labels.push('Trick Room');
+    }
+    if (ctx.utils?.tailwind) {
+        archetypes.push('tailwind');
+        labels.push('Tailwind offense');
+    }
+    if (ctx.utils?.psychicterrain || ctx.utils?.expandingforce) {
+        archetypes.push('psychicterrain');
+        labels.push('Psychic Terrain');
+    }
+    if (ctx.utils?.fakeout && ctx.utils?.protect) {
+        archetypes.push('fakeout-core');
+        labels.push('Fake Out + Protect');
+    }
+
+    return {
+        archetypes, labels, ctx, roles,
+        hasPrimaryRainSetter,
+        hasRainDance,
+        label: labels.length ? labels.join(' · ') : 'Balanced'
+    };
+}
+
+function scoreArchetypeFit(mon, idx, archetypeInfo) {
+    const roles = archetypeInfo.roles[idx] || [];
+    const { archetypes } = archetypeInfo;
+    let bonus = 0;
+    const ab = (mon.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const key = normalizeSpeciesKey(mon.species);
+    const moves = (mon.moves || []).map(m => normalizeMoveKey(m));
+
+    if (archetypes.includes('rain')) {
+        if (ab === 'drizzle' || roles.includes('Weather Setter')) bonus += 55;
+        if (['pelipper', 'politoed', 'kyogre'].includes(key)) bonus += 50;
+        if (roles.includes('Weather Abuser')) bonus += 35;
+        if (ab === 'swiftswim' || ab === 'aquatech') bonus += 28;
+        if (moves.includes('raindance') && !archetypeInfo.hasPrimaryRainSetter) bonus += 40;
+        if (roles.includes('Screener') && archetypeInfo.hasPrimaryRainSetter) bonus -= 12;
+        if (roles.includes('Cleric/Healer') && !roles.includes('Weather Abuser')) bonus -= 8;
+    }
+    if (archetypes.includes('sun')) {
+        if (ab === 'drought' || roles.includes('Weather Setter')) bonus += 55;
+        if (roles.includes('Weather Abuser')) bonus += 35;
+        if (ab === 'chlorophyll' || ab === 'protosynthesis') bonus += 28;
+    }
+    if (archetypes.includes('trickroom')) {
+        if (roles.includes('Trick Room Setter') || moves.includes('trickroom')) bonus += 50;
+        if (roles.includes('Trick Room Abuser')) bonus += 38;
+        if (roles.includes('Revenge Killer') && !roles.includes('Trick Room Abuser')) bonus -= 10;
+    }
+    if (archetypes.includes('tailwind')) {
+        if (moves.includes('tailwind') || roles.includes('Speed Control')) bonus += 45;
+        if (roles.includes('Physical Sweeper') || roles.includes('Special Sweeper')) bonus += 15;
+    }
+    if (archetypes.includes('fakeout-core')) {
+        if (moves.includes('fakeout')) bonus += 35;
+        if (moves.includes('protect')) bonus += 12;
+    }
+
+    return bonus;
+}
+
+function getMandatoryBringIndices(mons, archetypeInfo) {
+    const mandatory = new Set();
+    const { archetypes, roles } = archetypeInfo;
+
+    if (archetypes.includes('rain')) {
+        let setterIdx = -1;
+        mons.forEach((m, i) => {
+            const r = roles[i] || [];
+            const ab = (m.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const key = normalizeSpeciesKey(m.species);
+            if (ab === 'drizzle' || (r.includes('Weather Setter') && ['pelipper', 'politoed', 'kyogre'].includes(key))) {
+                setterIdx = i;
+            }
+        });
+        if (setterIdx < 0) {
+            mons.forEach((m, i) => {
+                if ((m.moves || []).some(mv => normalizeMoveKey(mv) === 'raindance')) setterIdx = i;
+            });
+        }
+        if (setterIdx >= 0) mandatory.add(setterIdx);
+    }
+
+    if (archetypes.includes('sun')) {
+        mons.forEach((m, i) => {
+            const r = roles[i] || [];
+            const ab = (m.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (ab === 'drought' || (r.includes('Weather Setter') && archetypeInfo.ctx?.hasSpecies?.(['torkoal', 'ninetalesalola']))) {
+                mandatory.add(i);
+            }
+        });
+    }
+
+    if (archetypes.includes('trickroom')) {
+        let trSetter = -1;
+        mons.forEach((m, i) => {
+            const r = roles[i] || [];
+            if (r.includes('Trick Room Setter') || (m.moves || []).some(mv => normalizeMoveKey(mv) === 'trickroom')) {
+                trSetter = i;
+                mandatory.add(i);
+            }
+        });
+        if (trSetter >= 0) {
+            const abuser = mons.findIndex((m, i) => (roles[i] || []).includes('Trick Room Abuser'));
+            if (abuser >= 0) mandatory.add(abuser);
+        }
+    }
+
+    if (archetypes.includes('tailwind')) {
+        const twIdx = mons.findIndex((m, i) =>
+            (m.moves || []).some(mv => normalizeMoveKey(mv) === 'tailwind') || (roles[i] || []).includes('Speed Control')
+        );
+        if (twIdx >= 0) mandatory.add(twIdx);
+    }
+
+    return mandatory;
+}
+
+function predictOpponentBringSet(mons, format) {
+    const bringCount = BRING_COUNT[format] || 3;
+    if (mons.length <= bringCount) {
+        return {
+            indices: mons.map((_, i) => i),
+            mons: [...mons],
+            benchIndices: [],
+            benchMons: [],
+            archetype: detectOpponentArchetype(mons, format),
+            reasoning: []
+        };
+    }
+
+    const archetypeInfo = detectOpponentArchetype(mons, format);
+    const mandatory = getMandatoryBringIndices(mons, archetypeInfo);
+    const scored = mons.map((m, i) => ({
+        i,
+        score: scoreMonThreatLevel(m, format) + scoreArchetypeFit(m, i, archetypeInfo),
+        mandatory: mandatory.has(i)
+    }));
+
+    const picked = [];
+    scored.filter(s => s.mandatory).sort((a, b) => b.score - a.score).forEach(s => {
+        if (picked.length < bringCount && !picked.includes(s.i)) picked.push(s.i);
+    });
+    scored.filter(s => !picked.includes(s.i)).sort((a, b) => b.score - a.score).forEach(s => {
+        if (picked.length < bringCount) picked.push(s.i);
+    });
+
+    const benchIndices = mons.map((_, i) => i).filter(i => !picked.includes(i));
+    const reasoning = [];
+
+    if (archetypeInfo.archetypes.includes('rain')) {
+        const setter = picked.map(i => mons[i]).find((m, _) => {
+            const idx = mons.indexOf(m);
+            return mandatory.has(idx) && (archetypeInfo.roles[idx] || []).includes('Weather Setter');
+        }) || picked.map(i => mons[i]).find(m => (m.moves || []).some(mv => normalizeMoveKey(mv) === 'raindance'));
+        if (setter) reasoning.push(`Rain team — ${setter.species} is core as the weather setter and almost always brought.`);
+        const abusers = picked.map(i => mons[i]).filter((m, _) => (archetypeInfo.roles[mons.indexOf(m)] || []).includes('Weather Abuser'));
+        if (abusers.length) reasoning.push(`Rain abusers (${abusers.map(a => a.species).join(', ')}) prioritized over passive support.`);
+        const benchedSupport = benchIndices.map(i => mons[i]).filter((m, _) => {
+            const r = archetypeInfo.roles[mons.indexOf(m)] || [];
+            return r.includes('Screener') || r.includes('Cleric/Healer');
+        });
+        if (benchedSupport.length) reasoning.push(`${benchedSupport.map(b => b.species).join(', ')} likely benched — redundant when primary rain core is brought.`);
+    }
+
+    if (!reasoning.length) {
+        reasoning.push(`Team reads as ${archetypeInfo.label} — bring prioritizes highest-threat win conditions.`);
+    }
+
+    return {
+        indices: picked,
+        mons: picked.map(i => mons[i]),
+        benchIndices,
+        benchMons: benchIndices.map(i => mons[i]),
+        archetype: archetypeInfo,
+        reasoning
+    };
+}
+
 function predictBringSet(mons, format, isOpponent) {
     const bringCount = BRING_COUNT[format] || 3;
     if (mons.length <= bringCount) {
-        return { indices: mons.map((_, i) => i), mons: [...mons], scores: mons.map(m => scoreMonThreatLevel(m, format)) };
+        return { indices: mons.map((_, i) => i), mons: [...mons], benchMons: [], benchIndices: [], reasoning: [] };
     }
 
-    const indices = mons.map((_, i) => i);
-
     if (isOpponent) {
-        const scored = indices.map(i => ({ i, score: scoreMonThreatLevel(mons[i], format) }));
-        scored.sort((a, b) => b.score - a.score);
-        const picked = scored.slice(0, bringCount).map(s => s.i);
-        return {
-            indices: picked,
-            mons: picked.map(i => mons[i]),
-            scores: picked.map(i => scoreMonThreatLevel(mons[i], format))
-        };
+        return predictOpponentBringSet(mons, format);
     }
 
     return pickBestBringCombination(mons, format, bringCount);
@@ -225,7 +490,7 @@ function predictBringSet(mons, format, isOpponent) {
 
 function pickBestBringCombination(ourMons, format, bringCount) {
     const oppMons = getActiveOpponentMons();
-    const oppBring = predictBringSet(oppMons, format, true);
+    const oppBring = predictOpponentBringSet(oppMons, format);
     const indices = ourMons.map((_, i) => i);
     const combos = combinations(indices, bringCount);
 
@@ -365,12 +630,14 @@ function classifyCheck(offense, outspeeds) {
     return 'Low damage';
 }
 
-function buildCounterMatrix(ourMons, oppMons, format) {
+function buildCounterMatrix(ourMons, oppMons, format, oppBring) {
+    const broughtSpecies = new Set((oppBring?.mons || []).map(m => m.species));
     const matrix = [];
     oppMons.forEach(opp => {
         const row = {
             opponent: opp.species,
             oppTypes: [getMonDb(opp)?.Type_1, getMonDb(opp)?.Type_2].filter(Boolean),
+            isBench: !broughtSpecies.has(opp.species),
             counters: [],
             checks: [],
             threats: []
@@ -406,7 +673,7 @@ function buildCounterMatrix(ourMons, oppMons, format) {
     return matrix;
 }
 
-function analyzeLeadRecommendation(ourBring, oppBring, format) {
+function analyzeLeadRecommendation(ourBring, oppBring, format, oppArchetype) {
     if (!ourBring.length || !oppBring.length) {
         return { ourLeads: [], oppLeads: [], reasoning: [], leadMatchups: [] };
     }
@@ -465,8 +732,16 @@ function analyzeLeadRecommendation(ourBring, oppBring, format) {
         }
         if (oppCtx.utils?.tr && ourCtx.utils?.tr) {
             reasoning.push('Both teams have Trick Room — lead depends on who wins the speed-control war Turn 1. Consider taunting or KOing their setter.');
-        } else if (oppCtx.utils?.tr) {
+        } else         if (oppCtx.utils?.tr) {
             reasoning.push(`Opponent may lead Trick Room (${oppNames}) — KO the setter or apply immediate pressure before TR goes up.`);
+        }
+        if (oppArchetype?.archetypes?.includes('rain')) {
+            const setter = oppLineup.leads.find(p => {
+                const r = oppRoles[oppBring.indexOf(p)] || [];
+                return r.includes('Weather Setter') || normalizeSpeciesKey(p.species) === 'pelipper';
+            }) || oppLineup.leads.find(p => (p.moves || []).some(m => normalizeMoveKey(m) === 'raindance'));
+            if (setter) reasoning.push(`Rain team — expect ${setter.species} to set weather early. KO or Taunt the setter Turn 1, or bring your own weather override.`);
+            else reasoning.push('Rain team detected — opponent will try to establish rain Turn 1. Pressure their setter before Swift Swim users snowball.');
         }
 
         if (!reasoning.length) {
@@ -503,6 +778,12 @@ function analyzeLeadRecommendation(ourBring, oppBring, format) {
     };
 }
 
+function renderMovePills(moves, dim = false) {
+    const list = (moves || []).filter(Boolean).slice(0, 4);
+    if (!list.length) return '<span class="threat-move-pill" style="opacity:0.45">No moves</span>';
+    return list.map(m => `<span class="threat-move-pill ${dim ? 'threat-move-pill--dim' : ''}">${escapeAnalysisHtml(m)}</span>`).join('');
+}
+
 function renderOpponentRoster() {
     const grid = document.getElementById('opponent-roster-grid');
     if (!grid) return;
@@ -513,13 +794,14 @@ function renderOpponentRoster() {
         const db = filled ? getMonDb(p) : null;
         const t1 = (db?.Type_1 || '').toLowerCase();
         const t2 = (db?.Type_2 || '').toLowerCase();
+        const buildCount = filled ? getSpeciesBuildList(p.species, _opponentFormat).length : 0;
         const buildBadge = p._buildSource === 'library'
             ? `<span class="opp-slot-badge opp-slot-badge--lib">Build #${p._buildId || '?'}</span>`
             : (filled ? `<span class="opp-slot-badge opp-slot-badge--default">Default set</span>` : '');
 
         return `
             <div class="opp-slot ${filled ? 'opp-slot--filled' : ''}" data-slot="${i}">
-                <button type="button" class="opp-slot-clear" onclick="clearOpponentSlot(${i})" title="Clear slot" ${filled ? '' : 'style="display:none"'}>×</button>
+                <button type="button" class="opp-slot-clear" onclick="event.stopPropagation(); clearOpponentSlot(${i})" title="Clear slot" ${filled ? '' : 'style="display:none"'}>×</button>
                 <div class="opp-slot-body" onclick="openOpponentSearch(${i})">
                     ${filled
                 ? `<img src="${sprite}" alt="${escapeAnalysisHtml(p.species)}" class="opp-slot-sprite" onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/${p.species.toLowerCase().replace(/ /g, '-').replace(/\\./g, '')}.png'">`
@@ -534,6 +816,7 @@ function renderOpponentRoster() {
                         ${buildBadge}
                     </div>
                 </div>
+                ${filled && buildCount > 1 ? `<button type="button" class="opp-swap-build-btn" onclick="event.stopPropagation(); openOpponentBuildSwap(${i})" title="Swap build">⇄ Build</button>` : ''}
             </div>`;
     }).join('');
 }
@@ -589,7 +872,7 @@ function updateOpponentSearchResults(q) {
     }
 }
 
-function renderOpponentTeamPreview(oppMons) {
+function renderOpponentTeamPreview(oppMons, oppBring) {
     const el = document.getElementById('opponent-team-preview');
     if (!el) return;
 
@@ -598,54 +881,70 @@ function renderOpponentTeamPreview(oppMons) {
         return;
     }
 
-    el.innerHTML = oppMons.map(p => {
+    const broughtSpecies = new Set((oppBring?.mons || []).map(m => m.species));
+
+    el.innerHTML = oppMons.map((p) => {
+        const slotIdx = _opponentTeam.indexOf(p);
         const db = getMonDb(p);
         const roles = typeof detectRole === 'function' ? detectRole(p, db) : [];
-        const moves = (p.moves || []).filter(Boolean).slice(0, 4);
-        const movesHtml = moves.length
-            ? moves.map(m => `<span class="threat-move-pill">${escapeAnalysisHtml(m)}</span>`).join('')
-            : '<span class="threat-move-pill" style="opacity:0.5">No moves in build</span>';
+        const isBring = broughtSpecies.has(p.species);
+        const buildCount = getSpeciesBuildList(p.species, _opponentFormat).length;
 
         return `
-            <div class="opp-preview-card">
+            <div class="opp-preview-card ${isBring ? 'opp-preview-card--bring' : 'opp-preview-card--bench'}">
                 <img src="${getOpponentSpriteUrl(p.species)}" alt="${escapeAnalysisHtml(p.species)}" class="opp-preview-sprite">
                 <div class="opp-preview-body">
                     <div class="opp-preview-head">
                         <span class="opp-preview-name">${escapeAnalysisHtml(p.species)}</span>
-                        ${p.item ? `<span class="opp-preview-item">${escapeAnalysisHtml(p.item)}</span>` : ''}
+                        <span class="opp-preview-tag ${isBring ? 'opp-preview-tag--bring' : 'opp-preview-tag--bench'}">${isBring ? 'LIKELY IN' : 'LIKELY OUT'}</span>
                     </div>
+                    ${p.item ? `<div class="opp-preview-item-line">@${escapeAnalysisHtml(p.item)} · ${escapeAnalysisHtml(p.nature)}</div>` : `<div class="opp-preview-item-line">${escapeAnalysisHtml(p.nature)}</div>`}
                     <div class="opp-preview-roles">${roles.slice(0, 2).map(r => `<span class="role-badge">${r}</span>`).join('')}</div>
-                    <div class="opp-preview-moves">${movesHtml}</div>
-                    <div class="opp-preview-stats">
-                        <span>${p.nature}</span>
-                        ${p._buildSource === 'library' ? `<span>Build #${p._buildId}</span>` : '<span>Estimated set</span>'}
+                    <div class="opp-preview-moves-label">Moves</div>
+                    <div class="opp-preview-moves">${renderMovePills(p.moves, !isBring)}</div>
+                    <div class="opp-preview-actions">
+                        <span class="opp-preview-build">${p._buildSource === 'library' ? `Build #${p._buildId}` : 'Estimated set'}</span>
+                        ${buildCount > 0 ? `<button type="button" class="opp-swap-build-btn opp-swap-build-btn--inline" onclick="openOpponentBuildSwap(${slotIdx >= 0 ? slotIdx : 0})">⇄ Swap build${buildCount > 1 ? ` (${buildCount})` : ''}</button>` : ''}
                     </div>
                 </div>
             </div>`;
     }).join('');
 }
 
+function renderBringMonCard(p, highlight) {
+    return `
+        <div class="opp-bring-mon ${highlight ? 'opp-bring-mon--highlight' : ''}">
+            <img src="${getOpponentSpriteUrl(p.species)}" alt="">
+            <div class="opp-bring-mon__info">
+                <span class="opp-bring-mon__name">${escapeAnalysisHtml(p.species)}</span>
+                <div class="opp-bring-mon__moves">${renderMovePills(p.moves)}</div>
+            </div>
+        </div>`;
+}
+
 function renderBringPanel(ourBring, oppBring, format) {
     const el = document.getElementById('opp-bring-panel');
     if (!el) return;
     const count = BRING_COUNT[format] || 3;
+    const archetype = oppBring.archetype;
 
-    const renderMonList = (mons, label, cls) => `
-        <div class="opp-bring-col ${cls}">
-            <h4>${label} <span class="opp-bring-count">(${count} of 6)</span></h4>
-            <div class="opp-bring-list">
-                ${mons.map(p => `
-                    <div class="opp-bring-mon">
-                        <img src="${getOpponentSpriteUrl(p.species)}" alt="">
-                        <span>${escapeAnalysisHtml(p.species)}</span>
-                    </div>`).join('')}
-            </div>
-        </div>`;
+    const oppReasoning = (oppBring.reasoning || []).map(r => `<li>${escapeAnalysisHtml(r)}</li>`).join('');
 
     el.innerHTML = `
+        ${archetype?.label ? `<div class="opp-archetype-banner"><span class="opp-archetype-label">Detected:</span> ${escapeAnalysisHtml(archetype.label)}</div>` : ''}
         <div class="opp-bring-grid">
-            ${renderMonList(oppBring.mons, 'Opponent predicted bring', 'opp-bring-col--opp')}
-            ${renderMonList(ourBring.mons, 'Your recommended bring', 'opp-bring-col--you')}
+            <div class="opp-bring-col opp-bring-col--opp">
+                <h4>Opponent predicted bring <span class="opp-bring-count">(${count} of 6)</span></h4>
+                <div class="opp-bring-list">${(oppBring.mons || []).map(p => renderBringMonCard(p, true)).join('')}</div>
+                ${oppBring.benchMons?.length ? `
+                    <h5 class="opp-bench-title">Likely benched — still scout these sets</h5>
+                    <div class="opp-bring-list opp-bring-list--bench">${oppBring.benchMons.map(p => renderBringMonCard(p, false)).join('')}</div>` : ''}
+                ${oppReasoning ? `<ul class="opp-bring-reasoning">${oppReasoning}</ul>` : ''}
+            </div>
+            <div class="opp-bring-col opp-bring-col--you">
+                <h4>Your recommended bring <span class="opp-bring-count">(${count} of 6)</span></h4>
+                <div class="opp-bring-list">${(ourBring.mons || []).map(p => renderBringMonCard(p, true)).join('')}</div>
+            </div>
         </div>`;
 }
 
@@ -706,7 +1005,7 @@ function renderLeadPanel(leadAnalysis, format) {
         </table>` : ''}`;
 }
 
-function renderCounterMatrix(matrix) {
+function renderCounterMatrix(matrix, ourMons, oppMons, format) {
     const el = document.getElementById('opp-counter-matrix');
     if (!el) return;
 
@@ -716,33 +1015,60 @@ function renderCounterMatrix(matrix) {
     }
 
     el.innerHTML = matrix.map(row => {
+        const oppMon = oppMons.find(m => m.species === row.opponent);
         const typeImgs = row.oppTypes.map(t =>
             `<img src="${typeIconSrc(t)}" alt="${t}" height="16">`
         ).join('');
+        const allAnswers = [...row.counters, ...row.checks].sort((a, b) => b.netScore - a.netScore);
+        const best = allAnswers[0];
+        const alts = allAnswers.slice(1, 4);
+        const isBench = row.isBench;
 
-        const renderEntries = (entries, kind) => entries.map(e => {
-            const speedTag = e.speedTier === 'faster' ? ' ⚡' : e.speedTier === 'slower' ? ' 🐢' : '';
-            const ko = e.koLabel ? ` · ${e.koLabel.replace('Guaranteed ', '')}` : '';
-            return `<span class="matchup-chip ${kind}" title="Offense: ${e.move} ${e.minPercent}–${e.maxPercent}% | Defense taken: ${e.defenseMove} ${e.defensePercent}%">
-                ${escapeAnalysisHtml(e.species)}: ${escapeAnalysisHtml(e.move)} (${e.maxPercent}%)${speedTag}${ko}
-                <span class="opp-check-tag">${e.checkLabel}</span>
-            </span>`;
-        }).join('');
+        const renderAction = (entry, isPrimary) => {
+            if (!entry) return '';
+            const speedLabel = entry.speedTier === 'faster' ? '<span class="opp-speed-tag opp-speed-tag--fast">Outspeeds</span>'
+                : entry.speedTier === 'slower' ? '<span class="opp-speed-tag opp-speed-tag--slow">Slower — must tank or pivot</span>'
+                    : '<span class="opp-speed-tag">Speed tie</span>';
+            const koText = entry.koLabel ? entry.koLabel.replace('Guaranteed ', '') : '';
+            return `
+                <div class="opp-action ${isPrimary ? 'opp-action--primary' : 'opp-action--alt'}">
+                    <div class="opp-action__label">${isPrimary ? 'USE' : 'ALT'}</div>
+                    <div class="opp-action__body">
+                        <span class="opp-action__mon">${escapeAnalysisHtml(entry.species)}</span>
+                        <span class="opp-action__arrow">→</span>
+                        <span class="opp-action__move">${escapeAnalysisHtml(entry.move)}</span>
+                        <span class="opp-action__dmg">${entry.minPercent}–${entry.maxPercent}%</span>
+                        ${koText ? `<span class="opp-action__ko">${escapeAnalysisHtml(koText)}</span>` : ''}
+                        ${speedLabel}
+                    </div>
+                </div>`;
+        };
+
+        const threatHtml = row.threats.length
+            ? `<div class="opp-watch-box">
+                <span class="opp-watch-label">⚠ Watch out</span>
+                ${row.threats.slice(0, 2).map(t => `<span class="opp-watch-item">${escapeAnalysisHtml(row.opponent)} hits ${escapeAnalysisHtml(t.species)} with <strong>${escapeAnalysisHtml(t.defenseMove)}</strong> (${t.defensePercent}%)</span>`).join('')}
+               </div>`
+            : '';
 
         return `
-            <div class="opp-counter-row">
-                <div class="opp-counter-head">
-                    <span class="opp-counter-name">${escapeAnalysisHtml(row.opponent)}</span>
-                    ${typeImgs}
+            <div class="opp-action-card ${isBench ? 'opp-action-card--bench' : ''}">
+                <div class="opp-action-card__head">
+                    <img src="${getOpponentSpriteUrl(row.opponent)}" alt="" class="opp-action-card__sprite">
+                    <div>
+                        <div class="opp-action-card__title">
+                            <span>vs ${escapeAnalysisHtml(row.opponent)}</span>
+                            ${typeImgs}
+                            ${isBench ? '<span class="opp-preview-tag opp-preview-tag--bench">BENCH</span>' : '<span class="opp-preview-tag opp-preview-tag--bring">BRING</span>'}
+                        </div>
+                        <div class="opp-action-card__moves">${renderMovePills(oppMon?.moves, isBench)}</div>
+                    </div>
                 </div>
-                <div class="opp-counter-section">
-                    <span class="opp-counter-label">Hard counters / checks</span>
-                    <div class="opp-counter-chips">${renderEntries([...row.counters, ...row.checks].slice(0, 6), 'check') || '<span class="matchup-chip gap">No reliable check — consider tech or team change</span>'}</div>
+                <div class="opp-action-card__answers">
+                    ${best ? renderAction(best, true) : '<div class="opp-action opp-action--gap">No calc check found — consider type coverage or team change</div>'}
+                    ${alts.map(a => renderAction(a, false)).join('')}
                 </div>
-                <div class="opp-counter-section">
-                    <span class="opp-counter-label">They threaten your answers</span>
-                    <div class="opp-counter-chips">${renderEntries(row.threats.slice(0, 4), 'threat') || '<span style="opacity:0.4;font-size:0.7rem">Low offensive pressure on your counters</span>'}</div>
-                </div>
+                ${threatHtml}
             </div>`;
     }).join('');
 }
@@ -790,18 +1116,18 @@ function runOpponentPrepAnalysis() {
     }
 
     if (results) results.style.display = oppActive.length ? 'block' : 'none';
-    renderOpponentTeamPreview(oppActive);
 
     if (!oppActive.length) return;
 
-    const oppBring = predictBringSet(oppActive, format, true);
+    const oppBring = predictOpponentBringSet(oppActive, format);
     const ourBring = pickBestBringCombination(ourActive, format, bringCount);
-    const matrix = buildCounterMatrix(ourActive, oppActive, format);
-    const leadAnalysis = analyzeLeadRecommendation(ourBring.mons, oppBring.mons, format);
+    const matrix = buildCounterMatrix(ourActive, oppActive, format, oppBring);
+    const leadAnalysis = analyzeLeadRecommendation(ourBring.mons, oppBring.mons, format, oppBring.archetype);
 
+    renderOpponentTeamPreview(oppActive, oppBring);
     renderBringPanel(ourBring, oppBring, format);
     renderLeadPanel(leadAnalysis, format);
-    renderCounterMatrix(matrix);
+    renderCounterMatrix(matrix, ourActive, oppActive, format);
     renderMatchupSummary(ourActive, oppActive, matrix, format);
 }
 
@@ -826,5 +1152,7 @@ if (typeof globalThis !== 'undefined') {
     globalThis.clearOpponentSlot = clearOpponentSlot;
     globalThis.clearOpponentTeam = clearOpponentTeam;
     globalThis.setOpponentSpecies = setOpponentSpecies;
+    globalThis.openOpponentBuildSwap = openOpponentBuildSwap;
+    globalThis.applyOpponentBuildRecord = applyOpponentBuildRecord;
     globalThis.updateOpponentSearchResults = updateOpponentSearchResults;
 }
