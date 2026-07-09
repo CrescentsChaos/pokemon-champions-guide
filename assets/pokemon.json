@@ -992,7 +992,11 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 395
+    "Total_Stats": 395,
+    "Ability": [
+      "Compound Eyes",
+      "Tinted Lens"
+    ]
   },
   {
     "id": 13,
@@ -1453,7 +1457,12 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 413
+    "Total_Stats": 413,
+    "Ability": [
+      "Run Away",
+      "Hustle",
+      "Guts"
+    ]
   },
   {
     "id": 21,
@@ -1505,7 +1514,11 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 442
+    "Total_Stats": 442,
+    "Ability": [
+      "Keen Eye",
+      "Sniper"
+    ]
   },
   {
     "id": 23,
@@ -2200,7 +2213,41 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 450
+    "Total_Stats": 450,
+    "Ability": [
+      "Sand Rush",
+      "Sand Veil"
+    ]
+  },
+  {
+    "id": 28,
+    "Name": "Sandslash-Alola",
+    "Height(m)": 1,
+    "Weight{kg}": 29.5,
+    "HP": 75,
+    "Attack": 100,
+    "Defense": 120,
+    "Sp.Atk": 25,
+    "Sp.Def": 65,
+    "Speed": 65,
+    "Type_1": "Ice",
+    "Type_2": "Steel",
+    "Is_Legendary": 0,
+    "Is_Mythical": 0,
+    "Egg_Group_1": "Field",
+    "Egg_Group_2": "",
+    "Generation": "Gen 7",
+    "Capture_Rate": 90,
+    "Base_Happiness": 70,
+    "Is_Baby": 0,
+    "Egg_Cycles": 20,
+    "Past_Type": "",
+    "Is_Pseudo_Legendary": 0,
+    "Total_Stats": 450,
+    "Ability": [
+      "Snow Cloak",
+      "Slush Rush"
+    ]
   },
   {
     "id": 29,
@@ -2278,7 +2325,12 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 505
+    "Total_Stats": 505,
+    "Ability": [
+      "Poison Point",
+      "Sheer Force",
+      "Rivalry"
+    ]
   },
   {
     "id": 32,
@@ -2356,7 +2408,12 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 505
+    "Total_Stats": 505,
+    "Ability": [
+      "Poison Point",
+      "Sheer Force",
+      "Rivalry"
+    ]
   },
   {
     "id": 35,
@@ -52614,7 +52671,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Protosynthesis"
+    ]
   },
   {
     "id": 1006,
@@ -52640,7 +52700,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Quark Drive"
+    ]
   },
   {
     "id": 1007,
@@ -52666,7 +52729,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 670
+    "Total_Stats": 670,
+    "Ability": [
+      "Orichalcum Pulse"
+    ]
   },
   {
     "id": 1008,
@@ -52692,7 +52758,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 670
+    "Total_Stats": 670,
+    "Ability": [
+      "Hadron Engine"
+    ]
   },
   {
     "id": 1009,
@@ -52718,7 +52787,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Protosynthesis"
+    ]
   },
   {
     "id": 1010,
@@ -52744,7 +52816,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Quark Drive"
+    ]
   },
   {
     "id": 1011,
@@ -52905,7 +52980,11 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 555
+    "Total_Stats": 555,
+    "Ability": [
+      "Toxic Chain",
+      "Guard Dog"
+    ]
   },
   {
     "id": 1015,
@@ -52931,7 +53010,11 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 555
+    "Total_Stats": 555,
+    "Ability": [
+      "Toxic Chain",
+      "Frisk"
+    ]
   },
   {
     "id": 1016,
@@ -52957,7 +53040,11 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 555
+    "Total_Stats": 555,
+    "Ability": [
+      "Toxic Chain",
+      "Technician"
+    ]
   },
   {
     "id": 1017,
@@ -52983,7 +53070,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 550
+    "Total_Stats": 550,
+    "Ability": [
+      "Defiant"
+    ]
   },
   {
     "id": 1017,
@@ -53282,7 +53372,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Protosynthesis"
+    ]
   },
   {
     "id": 1021,
@@ -53308,7 +53401,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Protosynthesis"
+    ]
   },
   {
     "id": 1022,
@@ -53334,7 +53430,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Quark Drive"
+    ]
   },
   {
     "id": 1023,
@@ -53360,7 +53459,10 @@
     "Egg_Cycles": 50,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 590
+    "Total_Stats": 590,
+    "Ability": [
+      "Quark Drive"
+    ]
   },
   {
     "id": 1024,
@@ -53386,7 +53488,10 @@
     "Egg_Cycles": 5,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 450
+    "Total_Stats": 450,
+    "Ability": [
+      "Tera Shift"
+    ]
   },
   {
     "id": 1024,
@@ -53470,6 +53575,9 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 600
+    "Total_Stats": 600,
+    "Ability": [
+      "Poison Puppeteer"
+    ]
   }
 ]
