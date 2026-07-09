@@ -17,29 +17,7 @@ function toggleChampionsMode() {
 
     [p1, p2].forEach(pk => {
         if (!pk) return;
-        let total = 0;
-        const maxTotal = isChampionsMode ? 66 : 508;
-        const maxStat = isChampionsMode ? 32 : 252;
-
-        ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
-            if (isChampionsMode) {
-                pk.evs[k] = Math.min(32, Math.floor((pk.evs[k] || 0) / 8));
-            } else {
-                pk.evs[k] = Math.min(252, (pk.evs[k] || 0) * 8);
-            }
-            total += pk.evs[k];
-        });
-
-        if (total > maxTotal) {
-            let excess = total - maxTotal;
-            ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
-                if (excess > 0 && pk.evs[k] > 0) {
-                    const sub = Math.min(pk.evs[k], excess);
-                    pk.evs[k] -= sub;
-                    excess -= sub;
-                }
-            });
-        }
+        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
         updateStatsUI(pk);
     });
 
@@ -59,22 +37,7 @@ function getEvLimits() {
 }
 
 function clampPokemonEvs(pk) {
-    const { maxStat, maxTotal } = getEvLimits();
-    let total = 0;
-    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
-        pk.evs[k] = Math.max(0, Math.min(maxStat, pk.evs[k] || 0));
-        total += pk.evs[k];
-    });
-    if (total > maxTotal) {
-        let excess = total - maxTotal;
-        ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
-            if (excess > 0 && pk.evs[k] > 0) {
-                const sub = Math.min(pk.evs[k], excess);
-                pk.evs[k] -= sub;
-                excess -= sub;
-            }
-        });
-    }
+    pk.evs = clampEvsForMode(pk.evs, isChampionsMode);
 }
 
 function normalizeSpeciesKey(name) {
@@ -327,6 +290,7 @@ function setupEventListeners() {
                         return;
                     }
                     updateItemSprite(pk);
+                    updateMegaButtonVisibility(pk);
                 }
 
                 if (field === 'ability' || field === 'item' || field === 'nature') updateStatsUI(pk);
@@ -382,11 +346,24 @@ function setupEventListeners() {
 
     document.querySelectorAll('.field-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            if (btn.getAttribute('data-effect') === 'Spikes') {
+                let count = parseInt(btn.getAttribute('data-count') || '0', 10);
+                count = (count + 1) % 4;
+                btn.setAttribute('data-count', count);
+                btn.textContent = `Spikes (${count})`;
+                btn.classList.toggle('active', count > 0);
+                updateFieldState();
+                if (p1) updateStatsUI(p1);
+                if (p2) updateStatsUI(p2);
+                recalculate();
+                return;
+            }
+
             const parent = btn.parentElement;
-            if (!btn.classList.contains('toggle-btn')) {
+            if (!btn.classList.contains('toggle-btn') && !btn.classList.contains('cycle-btn')) {
                 parent.querySelectorAll('.field-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-            } else {
+            } else if (btn.classList.contains('toggle-btn')) {
                 btn.classList.toggle('active');
             }
             updateFieldState();
@@ -696,6 +673,8 @@ function populatePokemonUI(pk) {
         }
     }
 
+    updateMegaButtonVisibility(pk);
+
     const formeBtn = document.getElementById(`${p}-forme-toggle`);
     if (formeBtn) {
         const hasBattleForme = ["Terapagos", "Terapagos-Terastal", "Terapagos-Stellar", "Aegislash", "Aegislash-Blade", "Zygarde", "Zygarde-10%", "Zygarde-Complete", "Wishiwashi", "Wishiwashi-School", "Palafin", "Palafin-Hero"].includes(pk.name);
@@ -709,6 +688,11 @@ function populatePokemonUI(pk) {
 
     const eligibleMoves = (pkData && pkData.Moves && pkData.Moves.length > 0) ? pkData.Moves : movesDB.map(m => m.name);
     let sortedMoves = [...eligibleMoves];
+    pk.moves.forEach(m => {
+        if (m?.name && m.name !== 'None' && !sortedMoves.some(n => n.toLowerCase() === m.name.toLowerCase())) {
+            sortedMoves.unshift(m.name);
+        }
+    });
     sortedMoves.sort((a, b) => {
         const idxA = recMoves.findIndex(m => m.toLowerCase() === a.toLowerCase());
         const idxB = recMoves.findIndex(m => m.toLowerCase() === b.toLowerCase());
@@ -739,7 +723,8 @@ function populatePokemonUI(pk) {
                     const mDB = movesDB.find(x => x.name === mName) || { name: mName };
                     const isRec = recMoves.find(m => m.toLowerCase() === mName.toLowerCase());
                     const label = (isRec ? '⭐ ' : '') + mDB.name;
-                    return `<option value="${mDB.name}" ${move.name === mDB.name ? 'selected' : ''}>${label}</option>`;
+                    const selected = (move.name || '').toLowerCase() === (mDB.name || '').toLowerCase();
+                    return `<option value="${mDB.name}" ${selected ? 'selected' : ''}>${label}</option>`;
                 }).join('')}
             </select>
             ${hasMove ? `
@@ -872,19 +857,27 @@ function toggleForme(id) {
 function updateMove(pId, idx, moveName) {
     const pk = pId === 1 ? p1 : p2;
     const prevCrit = pk.moves[idx].crit;
+    if (!moveName || moveName === 'None') {
+        pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
+        populatePokemonUI(pk);
+        recalculate();
+        return;
+    }
+
     const rec = BattleCalc.MoveIndex.findInArray(movesDB, moveName);
     if (rec) {
         const hits = BattleCalc.isMultiHitMove(rec.name) ? getDefaultHitCount(rec.name, pk) : undefined;
-        pk.moves[idx] = BattleCalc.createMoveState(rec.name, {
+        pk.moves[idx] = {
+            name: rec.name,
             basePower: rec.power,
             type: rec.type,
             category: rec.category,
             crit: prevCrit,
             customized: false,
             ...(hits ? { hits } : {})
-        });
+        };
     } else {
-        pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
+        pk.moves[idx] = { name: moveName, basePower: 0, type: 'Normal', category: 'Physical', crit: prevCrit };
     }
     populatePokemonUI(pk);
     recalculate();
@@ -1075,7 +1068,7 @@ function updateFieldState() {
                 helpingHand: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Helping Hand'),
                 protosynthesis: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protosynthesis'),
                 quarkDrive: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Quark Drive'),
-                spikes: parseInt(Array.from(btns).find(b => b.getAttribute('data-effect') === 'Spikes')?.getAttribute('data-count') || 0)
+                spikes: parseInt(panel.querySelector('[data-effect="Spikes"]')?.getAttribute('data-count') || 0, 10)
             };
         }
     });
@@ -1087,6 +1080,86 @@ function updateHPBar(id, percent) {
     if (percent > 50) bar.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
     else if (percent > 20) bar.style.background = 'linear-gradient(90deg, #FFC107, #FFEB3B)';
     else bar.style.background = 'linear-gradient(90deg, #F44336, #E91E63)';
+}
+
+function canUseMegaEvolution(pk) {
+    if (!pk?.name || !pk?.item || pk.item === 'None') return false;
+    if (!getMegaSpriteUrl(pk)) return false;
+    const base = pk.name.split('-Mega')[0];
+    return pokemonDB.some(p =>
+        p.Name === `${base}-Mega` || p.Name === `${base}-Mega-X` || p.Name === `${base}-Mega-Y` || p.Name === `${base}-Mega-Z`
+    );
+}
+
+function updateMegaButtonVisibility(pk) {
+    const btn = document.getElementById(`p${pk.id}-mega-toggle`);
+    if (!btn) return;
+    const show = canUseMegaEvolution(pk);
+    btn.style.display = show ? 'inline-block' : 'none';
+    if (!show) btn.classList.remove('active');
+}
+
+function generatePokemonPaste(pk) {
+    if (!pk?.name) return '';
+    let line = pk.name;
+    if (pk.item && pk.item !== 'None') line += ` @ ${pk.item}`;
+    let paste = line + '\n';
+    if (pk.ability && pk.ability !== 'None') paste += `Ability: ${pk.ability}\n`;
+    if (pk.level && pk.level !== 50) paste += `Level: ${pk.level}\n`;
+    if (pk.tera && pk.teraType) paste += `Tera Type: ${pk.teraType}\n`;
+
+    const evParts = [];
+    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+        const val = pk.evs?.[k] || 0;
+        if (!val) return;
+        const label = k === 'spa' ? 'SpA' : k === 'spd' ? 'SpD' : k === 'spe' ? 'Spe' : k.charAt(0).toUpperCase() + k.slice(1);
+        evParts.push(`${val} ${label}`);
+    });
+    if (evParts.length) paste += `EVs: ${evParts.join(' / ')}\n`;
+    paste += `${pk.nature || 'Serious'} Nature\n`;
+
+    const ivParts = [];
+    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+        const val = pk.ivs?.[k];
+        if (val !== undefined && val !== 31) {
+            const label = k === 'spa' ? 'SpA' : k === 'spd' ? 'SpD' : k === 'spe' ? 'Spe' : k.charAt(0).toUpperCase() + k.slice(1);
+            ivParts.push(`${val} ${label}`);
+        }
+    });
+    if (ivParts.length) paste += `IVs: ${ivParts.join(' / ')}\n`;
+
+    (pk.moves || []).forEach(m => {
+        if (m?.name && m.name !== 'None') paste += `- ${m.name}\n`;
+    });
+    return paste.trim();
+}
+
+let exportTargetId = 1;
+
+function openExportModal(id) {
+    exportTargetId = id;
+    const pk = id === 1 ? p1 : p2;
+    const label = document.getElementById('export-target-label');
+    if (label) label.textContent = `Exporting ${pk?.name || 'Pokemon ' + id}`;
+    document.getElementById('export-output').value = generatePokemonPaste(pk);
+    document.getElementById('export-modal').classList.add('active');
+}
+
+function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('active');
+}
+
+async function copyExportPaste() {
+    const text = document.getElementById('export-output').value;
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Paste copied to clipboard!');
+    } catch (e) {
+        const area = document.getElementById('export-output');
+        area.select();
+        document.execCommand('copy');
+        showToast('Paste copied to clipboard!');
+    }
 }
 
 function openImportModal(id) {
@@ -1200,6 +1273,13 @@ function importPokePaste(id, paste) {
             }
         });
 
+        if (isChampionsMode) {
+            const maxEv = Math.max(...['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k => pk.evs[k] || 0));
+            pk.evs = maxEv > 32 ? convertEvsToChampions(pk.evs) : normalizeChampionsEvs(pk.evs);
+        } else {
+            pk.evs = clampEvsForMode(pk.evs, false);
+        }
+
         populatePokemonUI(pk);
         clampPokemonEvs(pk);
         updateStatsUI(pk);
@@ -1239,6 +1319,9 @@ window.updateMoveField = updateMoveField;
 window.updateHits = updateHits;
 window.toggleCrit = toggleCrit;
 window.selectMove = selectMove;
+window.openExportModal = openExportModal;
+window.closeExportModal = closeExportModal;
+window.copyExportPaste = copyExportPaste;
 window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 

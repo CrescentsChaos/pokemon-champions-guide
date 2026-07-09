@@ -42,6 +42,7 @@
         <div class="calc-grid">
             <!-- Pokemon 1 (Attacker) -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
+                <div class="panel-role-badge attacker-badge">Attacker</div>
                 <div class="panel-header">
                     <div class="sprite-container">
                         <img id="p1-sprite" src="" alt="" onerror="handleSpriteError(this, window.p1?.name, false)">
@@ -59,7 +60,7 @@
                             <select id="p1-tera-type" class="type-select"></select>
                         </label>
                         <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle"
-                            onclick="toggleMega(1)">MEGA</button>
+                            onclick="toggleMega(1)" style="display:none;">MEGA</button>
                         <button class="field-btn toggle-btn forme-btn" id="p1-forme-toggle" onclick="toggleForme(1)"
                             style="display:none; margin-left: 5px;">FORME</button>
 
@@ -68,7 +69,10 @@
                     <div class="level-row">
                         <span>Level</span>
                         <input type="number" id="p1-level" value="50" min="1" max="100">
-                        <button class="import-btn" onclick="openImportModal(1)">Import Paste</button>
+                        <div class="paste-actions">
+                            <button class="import-btn" onclick="openImportModal(1)">Import</button>
+                            <button class="export-btn" onclick="openExportModal(1)">Export</button>
+                        </div>
                     </div>
 
                     <table class="stats-table">
@@ -192,7 +196,7 @@
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
-                            <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn cycle-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
                         <div class="side-controls">
@@ -204,7 +208,7 @@
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
-                            <button class="field-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn cycle-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
 
@@ -230,6 +234,7 @@
 
             <!-- Pokemon 2 (Defender) -->
             <div class="calc-panel glass defender-panel" id="p2-panel">
+                <div class="panel-role-badge defender-badge">Defender</div>
                 <div class="panel-header">
                     <div class="sprite-container">
                         <img id="p2-sprite" src="" alt="" onerror="handleSpriteError(this, window.p2?.name, false)">
@@ -247,7 +252,7 @@
                             <select id="p2-tera-type" class="type-select"></select>
                         </label>
                         <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle"
-                            onclick="toggleMega(2)">MEGA</button>
+                            onclick="toggleMega(2)" style="display:none;">MEGA</button>
                         <button class="field-btn toggle-btn forme-btn" id="p2-forme-toggle" onclick="toggleForme(2)"
                             style="display:none; margin-left: 5px;">FORME</button>
 
@@ -256,7 +261,10 @@
                     <div class="level-row">
                         <span>Level</span>
                         <input type="number" id="p2-level" value="50" min="1" max="100">
-                        <button class="import-btn" onclick="openImportModal(2)">Import Paste</button>
+                        <div class="paste-actions">
+                            <button class="import-btn" onclick="openImportModal(2)">Import</button>
+                            <button class="export-btn" onclick="openExportModal(2)">Export</button>
+                        </div>
                     </div>
 
                     <table class="stats-table">
@@ -337,6 +345,19 @@
             </div>
         </div>
     </main>
+
+    <div id="export-modal" class="modal">
+        <div class="modal-content glass">
+            <button class="modal-close" onclick="closeExportModal()">&times;</button>
+            <h3>Export PokePaste</h3>
+            <p id="export-target-label" class="modal-subtitle">Exporting Pokemon 1</p>
+            <textarea id="export-output" readonly placeholder="Your exported set will appear here..."></textarea>
+            <div class="modal-actions">
+                <button class="field-btn cancel-btn" onclick="closeExportModal()">Close</button>
+                <button class="field-btn active confirm-btn" id="copy-export-btn" onclick="copyExportPaste()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
 
     <div id="import-modal" class="modal">
         <div class="modal-content glass">

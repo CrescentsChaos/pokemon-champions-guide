@@ -1283,29 +1283,7 @@
             isChampionsMode = !isChampionsMode;
 
             team.forEach(p => {
-                let total = 0;
-                const maxTotal = isChampionsMode ? 66 : 508;
-                const maxStat = isChampionsMode ? 32 : 252;
-
-                ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
-                    if (isChampionsMode) {
-                        p.evs[k] = Math.min(32, Math.floor((p.evs[k] || 0) / 8));
-                    } else {
-                        p.evs[k] = Math.min(252, (p.evs[k] || 0) * 8);
-                    }
-                    total += p.evs[k];
-                });
-
-                if (total > maxTotal) {
-                    let excess = total - maxTotal;
-                    ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
-                        if (excess > 0 && p.evs[k] > 0) {
-                            const sub = Math.min(p.evs[k], excess);
-                            p.evs[k] -= sub;
-                            excess -= sub;
-                        }
-                    });
-                }
+                p.evs = isChampionsMode ? convertEvsToChampions(p.evs) : convertEvsFromChampions(p.evs);
             });
 
             const btn = document.getElementById('champions-mode-toggle');
@@ -2630,6 +2608,9 @@
                 }
 
                 p.evs[stat] = val;
+                if (isChampionsMode) {
+                    p.evs = normalizeChampionsEvs(p.evs);
+                }
                 syncUI();
             };
 
@@ -2924,14 +2905,17 @@
                                 else if (key === 'spd' || key === 'spdef' || key === 'sdef') key = 'spd';
                                 else if (key === 'spe' || key === 'speed') key = 'spe';
                                 if (slot.evs[key] !== undefined) {
-                                    let parsedEv = parseInt(match[1]);
-                                    if (isChampionsMode) {
-                                        parsedEv = Math.round(parsedEv / 8);
-                                    }
+                                    let parsedEv = parseInt(match[1], 10);
                                     slot.evs[key] = parsedEv;
                                 }
                             }
                         });
+                        if (isChampionsMode) {
+                            const maxEv = Math.max(...['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k => slot.evs[k] || 0));
+                            slot.evs = maxEv > 32 ? convertEvsToChampions(slot.evs) : normalizeChampionsEvs(slot.evs);
+                        } else {
+                            slot.evs = clampEvsForMode(slot.evs, false);
+                        }
                     } else if (line.match(/^IVs\s*:/i)) {
                         line.split(':')[1].split('/').forEach(p => {
                             const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);

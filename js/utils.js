@@ -87,9 +87,119 @@ function calculateStat(base, iv, ev, level, natureType, statKey, championsMode =
     return val;
 }
 
+const EV_STAT_KEYS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+const CHAMPIONS_EV_TOTAL = 66;
+const CHAMPIONS_EV_MAX_STAT = 32;
+const STANDARD_EV_TOTAL = 508;
+const STANDARD_EV_MAX_STAT = 252;
+
+/**
+ * Normalizes Champions EVs to exactly 66 total (or less if capped),
+ * distributing any remainder to the lowest EV stat(s).
+ */
+function normalizeChampionsEvs(evs, targetTotal = CHAMPIONS_EV_TOTAL, maxPerStat = CHAMPIONS_EV_MAX_STAT) {
+    const result = {};
+    EV_STAT_KEYS.forEach(k => {
+        result[k] = Math.max(0, Math.min(maxPerStat, parseInt(evs?.[k], 10) || 0));
+    });
+
+    let total = EV_STAT_KEYS.reduce((sum, k) => sum + result[k], 0);
+
+    if (total > targetTotal) {
+        let excess = total - targetTotal;
+        ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+            if (excess <= 0) return;
+            const sub = Math.min(result[k], excess);
+            result[k] -= sub;
+            excess -= sub;
+        });
+        return result;
+    }
+
+    let remainder = targetTotal - total;
+    while (remainder > 0) {
+        let lowestKey = null;
+        let lowestVal = Infinity;
+        EV_STAT_KEYS.forEach(k => {
+            if (result[k] < maxPerStat && result[k] < lowestVal) {
+                lowestVal = result[k];
+                lowestKey = k;
+            }
+        });
+        if (!lowestKey) break;
+        const add = Math.min(remainder, maxPerStat - result[lowestKey]);
+        result[lowestKey] += add;
+        remainder -= add;
+    }
+
+    return result;
+}
+
+/**
+ * Converts standard (Smogon) EVs to Champions EVs with full 66-point allocation.
+ */
+function convertEvsToChampions(evs) {
+    const converted = {};
+    EV_STAT_KEYS.forEach(k => {
+        converted[k] = Math.min(CHAMPIONS_EV_MAX_STAT, Math.floor((parseInt(evs?.[k], 10) || 0) / 8));
+    });
+    return normalizeChampionsEvs(converted);
+}
+
+/**
+ * Converts Champions EVs back to standard Smogon EVs.
+ */
+function convertEvsFromChampions(evs) {
+    const converted = {};
+    EV_STAT_KEYS.forEach(k => {
+        converted[k] = Math.min(STANDARD_EV_MAX_STAT, (parseInt(evs?.[k], 10) || 0) * 8);
+    });
+
+    let total = EV_STAT_KEYS.reduce((sum, k) => sum + converted[k], 0);
+    if (total > STANDARD_EV_TOTAL) {
+        let excess = total - STANDARD_EV_TOTAL;
+        ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+            if (excess <= 0) return;
+            const sub = Math.min(converted[k], excess);
+            converted[k] -= sub;
+            excess -= sub;
+        });
+    }
+    return converted;
+}
+
+/**
+ * Clamps EVs to format limits; in Champions mode ensures 66 total via remainder fill.
+ */
+function clampEvsForMode(evs, championsMode = false) {
+    if (championsMode) {
+        return normalizeChampionsEvs(evs);
+    }
+
+    const result = {};
+    EV_STAT_KEYS.forEach(k => {
+        result[k] = Math.max(0, Math.min(STANDARD_EV_MAX_STAT, parseInt(evs?.[k], 10) || 0));
+    });
+
+    let total = EV_STAT_KEYS.reduce((sum, k) => sum + result[k], 0);
+    if (total > STANDARD_EV_TOTAL) {
+        let excess = total - STANDARD_EV_TOTAL;
+        ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
+            if (excess <= 0) return;
+            const sub = Math.min(result[k], excess);
+            result[k] -= sub;
+            excess -= sub;
+        });
+    }
+    return result;
+}
+
 // Export for Node environments (testing)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { getPokemonAbilities, calculateStat, getPermanentForm };
+    module.exports = {
+        getPokemonAbilities, calculateStat, getPermanentForm,
+        normalizeChampionsEvs, convertEvsToChampions, convertEvsFromChampions, clampEvsForMode
+    };
 }
 
 function getPermanentForm(p) {
