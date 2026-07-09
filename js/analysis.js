@@ -114,12 +114,12 @@ function getMonDb(p) {
     return allPokemon.find(x => normalizeSpeciesKey(x.Name) === key) || null;
 }
 
-function getMonSpeed(p, db) {
+function getMonSpeed(p, db, format = 'Singles') {
     if (!db) return null;
     if (typeof buildCalcStateFromSlot === 'function' && typeof getEffectiveSpeed === 'function' && typeof getDefaultField === 'function') {
         const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
         const state = buildCalcStateFromSlot(p, 1, db, movesDb);
-        return getEffectiveSpeed(state, getDefaultField('Doubles'));
+        return getEffectiveSpeed(state, getDefaultField(format));
     }
     if (typeof calculateStat === 'function') {
         return calculateStat(db.Speed || 0, p.ivs?.spe, p.evs?.spe, p.level, p.nature, 'spe');
@@ -192,7 +192,7 @@ function renderChampionsCompliancePanel(activeMons, checks) {
 
 function scoreLeadFitness(mon, monRoles, ctx, format) {
     const moves = (mon.moves || []).map(m => normalizeMoveKey(m));
-    const speed = getMonSpeed(mon, getMonDb(mon)) || 0;
+    const speed = getMonSpeed(mon, getMonDb(mon), ctx.format) || 0;
     let score = 0;
 
     if (monRoles.includes('Fake Out Pressure') || moves.includes('fakeout')) score += 42;
@@ -290,10 +290,10 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
     }).length;
     const championsChecks = activeMons.map(p => checkSlotChampionsEligible(p));
     const championsEligible = championsChecks.filter(c => c.eligible).length;
-    const speeds = activeMons.map(p => getMonSpeed(p, getMonDb(p))).filter(s => s != null);
+    const speeds = activeMons.map(p => getMonSpeed(p, getMonDb(p), format)).filter(s => s != null);
     const speedTiers = { fast: 0, mid: 0, slow: 0, trAbuser: 0 };
     activeMons.forEach((p, i) => {
-        const speed = getMonSpeed(p, getMonDb(p));
+        const speed = getMonSpeed(p, getMonDb(p), format);
         const monRoles = roles[i] || [];
         if (monRoles.includes('Trick Room Abuser') || (speed != null && speed < 55)) speedTiers.trAbuser++;
         else if (speed != null && speed >= 100) speedTiers.fast++;
@@ -1200,7 +1200,7 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
         const db = getMonDb(p);
         const t1 = (db?.Type_1 || 'Normal').toLowerCase();
         const t2 = db?.Type_2?.toLowerCase();
-        const speed = getMonSpeed(p, db);
+        const speed = getMonSpeed(p, db, format);
         const champ = ctx.championsChecks[i];
         const spriteUrl = (typeof getSpriteUrl === 'function') ? getSpriteUrl(p) : '';
         const speciesJs = (p.species || '').replace(/'/g, "\\'");
@@ -2107,4 +2107,5 @@ if (typeof globalThis !== 'undefined') {
     globalThis.findLatestBuildForSpecies = findLatestBuildForSpecies;
     globalThis.normalizeSpeciesKey = normalizeSpeciesKey;
     globalThis.loadTopPokemonsForFormat = loadTopPokemonsForFormat;
+    globalThis.formatEvLine = formatEvLine;
 }

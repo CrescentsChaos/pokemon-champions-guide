@@ -162,12 +162,12 @@
 
         #analysis-dashboard.synergy-analysis-active .build-prose-panel {
             display: block !important;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         #build-prose-panel .build-prose-section {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
+            margin-bottom: 0.55rem;
+            padding-bottom: 0.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
@@ -261,9 +261,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 0.65rem;
         }
 
         .build-prose-nav a {
@@ -330,7 +328,7 @@
             </div>
 
             <!-- Analysis Dashboard -->
-            <div id="analysis-dashboard" style="margin-bottom: 4rem;">
+            <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
                 <div class="analysis-card build-prose-panel" id="build-prose-panel" style="display:none;">
                     <div class="build-prose-panel__head">
                         <h3 class="build-prose-panel__title">Build Analysis</h3>
@@ -566,8 +564,8 @@
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
-    <script src="../js/analysis.js?v=4"></script>
-    <script src="../js/build-narrative.js?v=4"></script>
+    <script src="../js/analysis.js?v=5"></script>
+    <script src="../js/build-narrative.js?v=5"></script>
     <script>
         let allPokemon = [];
         let pokemonMap = {};
@@ -1311,7 +1309,7 @@
                             <img src="../assets/type-icons/${mt}_type.png" alt="${mt}" class="type-icon" style="height: 16px; pointer-events: none;">
                             ${getDmgClassIcon(moveData.damage_class, 14)}
                         </span>
-                        <span>${m}</span>
+                        <span class="move-name">${m}</span>
                     </div>
                 `;
             }).join('');
@@ -1363,9 +1361,6 @@
                         </div>
                         <div class="roles-row">${rolesHtml}</div>
                     </div>
-                </div>
-
-                    <div style="margin-top:4px;">
                 </div>
 
                 <div class="build-card-stats-grid" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:10px; margin:4px 0; align-items: start;">
@@ -2086,7 +2081,7 @@
 
             // Add "LEAD BUILD" badge
             const leadBadge = document.createElement('div');
-            leadBadge.style = "position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; font-size:0.6rem; font-weight:900; padding:2px 10px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(255,51,51,0.5);";
+            leadBadge.style.cssText = "position:absolute; top:6px; left:50%; transform:translateX(-50%); background:var(--primary-red); color:white; font-size:0.6rem; font-weight:900; padding:3px 10px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(255,51,51,0.5); line-height:1.3;";
             leadBadge.innerText = "PRIMARY BUILD";
             selfCard.appendChild(leadBadge);
 
@@ -2109,7 +2104,7 @@
                         : label === 'LINKED SYNC' ? 'linear-gradient(135deg, #80cbc4, #00897b)'
                             : label === 'CHAIN SYNC' ? 'linear-gradient(135deg, #90caf9, #1565c0)'
                                 : 'linear-gradient(135deg, #00ffcc, #0066ff)';
-                    scoreBadge.style = `position:absolute; top:-10px; right:10px; background:${badgeBg}; color:${label === 'SMART FIT' ? 'black' : 'white'}; font-size:0.62rem; font-weight:900; padding:3px 9px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,0,0,0.25); letter-spacing:0.03em;`;
+                    scoreBadge.style.cssText = `position:absolute; top:6px; right:8px; background:${badgeBg}; color:${label === 'SMART FIT' ? 'black' : 'white'}; font-size:0.62rem; font-weight:900; padding:3px 9px; border-radius:10px; z-index:10; white-space:nowrap; box-shadow:0 0 10px rgba(0,0,0,0.25); letter-spacing:0.03em; line-height:1.3;`;
                     scoreBadge.innerText = scoreVal != null ? `${label} ${scoreVal}%` : label;
                     card.appendChild(scoreBadge);
 

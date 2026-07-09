@@ -1297,8 +1297,8 @@ footer {
 
 /* Synergy Section */
 #synergy-container {
-    margin-top: 5rem;
-    padding-top: 5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: none;
 }
@@ -1310,17 +1310,26 @@ footer {
 }
 
 .synergy-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 #builds-grid,
 #synergy-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+#synergy-grid .pokemon-card-premium {
+    overflow: visible;
+    padding-top: 1.35rem;
+    margin-top: 0.35rem;
 }
 
 .builds-loading {
@@ -1368,9 +1377,9 @@ footer {
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     min-height: auto;
-    overflow: hidden;
+    overflow: visible;
     min-width: 0;
 }
 
@@ -1520,8 +1529,19 @@ footer {
     font-size: 0.68rem;
     line-height: 1.25;
     word-break: break-word;
+    overflow-wrap: anywhere;
     flex: 1;
     min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+}
+
+.pokemon-card-premium .move-pill span.move-name,
+.move-pill .move-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .premium-sprite.mega-toggle {
@@ -1569,6 +1589,20 @@ footer {
     flex-shrink: 0;
 }
 
+/* Legacy rule kept for icons only — move names use .move-name */
+.move-pill .move-pill-icons + .move-name,
+.move-pill > span.move-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #eee;
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
+}
+
 .move-cat-icon {
     object-fit: contain;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
@@ -1577,16 +1611,6 @@ footer {
 .move-pill:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
-}
-
-.move-pill span {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #eee;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .move-type-label {

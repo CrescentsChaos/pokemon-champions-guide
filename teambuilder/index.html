@@ -961,70 +961,111 @@
                             onclick="setTeamAnalysisFormat('Doubles')">DOUBLES</button>
                     </div>
                 </div>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 25px;">Advanced analysis of
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1rem;">Advanced analysis of
                     your team's coverage, roles, and synergy.</p>
 
-                <!-- Strategy Overview AI Report -->
-                <!-- Strategy Overview AI Report -->
-                <div class="analysis-card" id="strategy-overview-card"
-                    style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); display: none;">
-                    <h3
-                        style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.2rem;">🧠</span> Strategy <span
-                            style="color:var(--primary-red)">Overview</span>
-                    </h3>
-                    <p id="strategy-overview-text"
-                        style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;">
-                    </p>
-                </div>
-
-                <div class="analysis-grid">
-                    <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card"
-                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3
-                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
-                                Offensive Coverage</h3>
-                            <div class="type-badge-grid" id="offensive-coverage"></div>
+                <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
+                    <div class="analysis-card build-prose-panel" id="build-prose-panel" style="display:none;">
+                        <div class="build-prose-panel__head">
+                            <h3 class="build-prose-panel__title">Build Analysis</h3>
+                            <span class="build-prose-panel__format" id="build-prose-format"></span>
                         </div>
-                        <div class="analysis-card"
-                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3
-                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
-                                Defensive Weaknesses</h3>
-                            <div class="type-badge-grid" id="defensive-coverage"></div>
-                        </div>
+                        <nav class="build-prose-nav" aria-label="Analysis sections">
+                            <a href="#build-prose-section-overview">Overview</a>
+                            <a href="#build-prose-section-set">Set</a>
+                            <a href="#build-prose-section-teammates">Teammates</a>
+                            <a href="#build-prose-section-checks">Checks</a>
+                            <a href="#build-prose-section-meta">Meta</a>
+                        </nav>
+                        <section class="build-prose-section" id="build-prose-section-overview">
+                            <h4 class="build-prose-section__title">Overview</h4>
+                            <div id="build-prose-overview" class="build-prose-body"></div>
+                        </section>
+                        <section class="build-prose-section" id="build-prose-section-set">
+                            <h4 class="build-prose-section__title" id="build-prose-set-title">Set</h4>
+                            <div id="build-prose-set" class="build-prose-body"></div>
+                        </section>
+                        <section class="build-prose-section" id="build-prose-section-teammates">
+                            <h4 class="build-prose-section__title">Teammates &amp; Synergy</h4>
+                            <div id="build-prose-teammates" class="build-prose-body"></div>
+                        </section>
+                        <section class="build-prose-section" id="build-prose-section-checks">
+                            <h4 class="build-prose-section__title">Checks &amp; Counters</h4>
+                            <div id="build-prose-checks" class="build-prose-body"></div>
+                        </section>
+                        <section class="build-prose-section" id="build-prose-section-meta">
+                            <h4 class="build-prose-section__title">Meta Matchups</h4>
+                            <div id="build-prose-meta" class="build-prose-body"></div>
+                        </section>
+                        <section class="build-prose-section build-prose-section--compact" id="build-prose-section-alternates" style="display:none;">
+                            <h4 class="build-prose-section__title">Other Options</h4>
+                            <div id="build-prose-alternates" class="build-prose-body"></div>
+                        </section>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 25px;">
-                        <div class="analysis-card"
-                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3
-                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
-                                Synergy Role Map</h3>
-                            <div id="pokemon-roles" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+                    <div class="analysis-card" id="strategy-overview-card"
+                        style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3
+                            style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: white;">
+                            <span style="font-size: 1.2rem;">🧠</span> Build Strategy Summary
+                        </h3>
+                        <p id="strategy-overview-text"
+                            style="font-size: 0.9rem; color: #ddd; line-height: 1.7; margin-top: 15px; font-weight: 400;">
+                        </p>
+                    </div>
+
+                    <div class="analysis-grid analysis-dashboard-grid">
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
+                            <div class="analysis-card"
+                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h3
+                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
+                                    Offensive Coverage</h3>
+                                <div class="type-badge-grid" id="offensive-coverage"
+                                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                                </div>
+                            </div>
+                            <div class="analysis-card"
+                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h3
+                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
+                                    Defensive Weaknesses</h3>
+                                <div class="type-badge-grid" id="defensive-coverage"
+                                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                                </div>
+                            </div>
                         </div>
-                        <div class="analysis-card"
-                            style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h3
-                                style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
-                                Synergy Insights</h3>
-                            <div id="meta-threat-insights"></div>
-                            <div id="synergy-insights"></div>
-                            <div id="move-diversity"
-                                style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
+                            <div class="analysis-card"
+                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h3
+                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
+                                    Synergy Role Map</h3>
+                                <div id="pokemon-roles" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                            </div>
+                            <div class="analysis-card"
+                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h3
+                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
+                                    Synergy Insights</h3>
+                                <div id="meta-threat-insights"></div>
+                                <div id="synergy-insights"></div>
+                                <div id="move-diversity"
+                                    style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="analysis-card"
-                    style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
-                    <h3
-                        style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
-                        ⚔️ Meta Threat Matchup</h3>
-                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team
-                        stacks up against the top-ranked meta threats.</p>
-                    <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
+                    <div class="analysis-card"
+                        style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                        <h3
+                            style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                            ⚔️ Meta Threat Matchup</h3>
+                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team
+                            stacks up against the top-ranked meta threats for this format.</p>
+                        <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1257,11 +1298,13 @@
     <script src="../js/battle/move-index.js"></script>
     <script src="../js/battle/stat-modifiers.js"></script>
     <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/field-effects.js"></script>
     <script src="../js/battle/damage-core.js"></script>
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
-    <script src="../js/analysis.js"></script>
+    <script src="../js/analysis.js?v=5"></script>
+    <script src="../js/build-narrative.js?v=5"></script>
 
     <script>
 
@@ -1357,11 +1400,12 @@
         async function init() {
             try {
                 const cb = '?v=' + Date.now();
-                const [p, m, i, b] = await Promise.all([
+                const [p, m, i, b, topResp] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb).then(r => r.json()),
                     fetch('../assets/moves.json' + cb).then(r => r.json()),
                     fetch('../assets/items.json' + cb).then(r => r.json()),
-                    fetch('../assets/builds.json' + cb).then(r => r.json()).catch(() => [])
+                    fetch('../assets/builds.json' + cb).then(r => r.json()).catch(() => []),
+                    fetch('../assets/top_pokemons.json' + cb).catch(() => null)
                 ]);
                 allPokemon = p;
                 allBuilds = b;
@@ -1370,6 +1414,11 @@
                 moves_database = m;
                 initMoveIndex(allMoves);
                 allItems = i;
+                if (topResp) {
+                    try {
+                        globalThis._topPokemonsCache = await topResp.json();
+                    } catch (e) { /* ignore */ }
+                }
                 m.forEach(mv => { const key = (mv.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''); movesMap[key] = mv; });
                 // load abilities
                 try {

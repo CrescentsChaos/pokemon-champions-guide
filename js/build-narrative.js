@@ -88,12 +88,19 @@
     }
 
     function getMonTypes(db, mon) {
+        if (db?.Type_1) return [db.Type_1, db.Type_2].filter(t => t && t !== 'None');
         if (mon?.tera && mon.tera !== 'Normal') return [mon.tera];
-        return [db?.Type_1, db?.Type_2].filter(Boolean);
+        return [];
+    }
+
+    function getBattleTypes(db, mon) {
+        if (mon?.tera && mon.tera !== 'Normal') return [mon.tera];
+        return [db?.Type_1, db?.Type_2].filter(t => t && t !== 'None');
     }
 
     function formatEvSpread(evs) {
         if (typeof window.formatEvLine === 'function') return window.formatEvLine(evs);
+        if (typeof globalThis.formatEvLine === 'function') return globalThis.formatEvLine(evs);
         const labels = { hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe' };
         const parts = Object.entries(evs || {})
             .filter(([, v]) => v > 0)
@@ -144,7 +151,7 @@
     function describeMoveSlot(moveName, mon, db, format) {
         if (!moveName) return '';
         const ref = getMoveRef(moveName);
-        const types = getMonTypes(db, mon);
+        const types = getBattleTypes(db, mon);
         const moveType = ref?.type || 'Normal';
         const category = ref?.damage_class || ref?.category || 'Physical';
         const power = ref?.power;
@@ -264,13 +271,13 @@
     }
 
     function getWeaknessList(db, mon) {
-        const types = getMonTypes(db, mon);
+        const types = getBattleTypes(db, mon);
         if (typeof getWeaknesses === 'function') return getWeaknesses(types.map(t => t.toLowerCase()));
         return [];
     }
 
     function getResistanceList(db, mon) {
-        const types = getMonTypes(db, mon);
+        const types = getBattleTypes(db, mon);
         const res = [];
         if (typeof TYPE_CHART === 'undefined' || typeof getEffectiveness !== 'function') return res;
         Object.keys(TYPE_CHART).forEach(atk => {
@@ -347,7 +354,8 @@
         if (typeof findBestDamage !== 'function' || typeof buildCalcStateFromSlot !== 'function' || !db) return [];
         const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
         const field = (typeof getDefaultField === 'function') ? getDefaultField(format) : { format };
-        const attacker = buildCalcStateFromSlot(mainMon, 1, db, movesDb);
+        const effAttDb = (typeof getMonDb === 'function') ? (getMonDb(mainMon) || db) : db;
+        const attacker = buildCalcStateFromSlot(mainMon, 1, effAttDb, movesDb);
         const targets = getMetaTargetNames(format);
         const results = [];
 
@@ -355,14 +363,14 @@
             const defenderSlot = buildDefenderSlotFromMeta(name, format);
             const tDb = resolveTargetDb(defenderSlot.species || name);
             if (!tDb) return;
-            const effDb = (typeof getEffectivePokemonData === 'function' && typeof allPokemon !== 'undefined')
+            const defDb = (typeof getEffectivePokemonData === 'function' && typeof allPokemon !== 'undefined')
                 ? (getEffectivePokemonData(defenderSlot, allPokemon) || tDb)
                 : tDb;
-            const defender = buildCalcStateFromSlot(defenderSlot, 2, effDb, movesDb);
+            const defender = buildCalcStateFromSlot(defenderSlot, 2, defDb, movesDb);
             const best = findBestDamage(attacker, defender, field);
             if (best && parseFloat(best.maxPercent) > 0) {
                 results.push({
-                    target: effDb.Name || effDb.name || name,
+                    target: defDb.Name || defDb.name || name,
                     move: best.move,
                     min: best.minPercent,
                     max: best.maxPercent,
@@ -455,7 +463,10 @@
         }
 
         const speed = typeof getEffectiveSpeed === 'function' && typeof buildCalcStateFromSlot === 'function'
-            ? getEffectiveSpeed(buildCalcStateFromSlot(mainMon, 1, db, (typeof allMoves !== 'undefined') ? allMoves : []), (typeof getDefaultField === 'function') ? getDefaultField(format) : null)
+            ? getEffectiveSpeed(
+                buildCalcStateFromSlot(mainMon, 1, (typeof getMonDb === 'function' ? getMonDb(mainMon) : db) || db, (typeof allMoves !== 'undefined') ? allMoves : []),
+                (typeof getDefaultField === 'function') ? getDefaultField(format) : null
+            )
             : null;
         if (speed != null) {
             paras.push(speedTierNote(speed, format));
@@ -490,7 +501,7 @@
 
     function composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons) {
         const types = getMonTypes(db, mainMon).join('/') || 'Unknown';
-        const speed = typeof getMonSpeed === 'function' ? getMonSpeed(mainMon, db) : null;
+        const speed = typeof getMonSpeed === 'function' ? getMonSpeed(mainMon, db, format) : null;
         const roleText = mainRoles.slice(0, 4).join(', ') || 'generalist';
         const archetype = inferArchetype(ctx, mainRoles);
         const weak = getWeaknessList(db, mainMon);
@@ -499,8 +510,14 @@
         const paras = [];
         const isDoubles = (format || '').toLowerCase() === 'doubles';
         const bst = parseInt(db?.Total_Stats, 10) || 0;
+        const itemKey = (mainMon.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
-        paras.push(`<p>${link(mainMon.species)} is a ${link(types)} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread packages <strong>${roleText.toLowerCase()}</strong> into a single set: ${joinList(mainRoles.slice(0, 3).map(r => getRoleDesc(r)))}</p>`);
+        paras.push(`<p>${link(mainMon.species)} is a ${joinList(getMonTypes(db, mainMon).map(t => link(t)))} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread is tuned as a <strong>${roleText.toLowerCase()}</strong>.</p>`);
+
+        mainRoles.slice(0, 3).forEach(r => {
+            const desc = getRoleDesc(r);
+            if (desc) paras.push(`<p>${desc}</p>`);
+        });
 
         if (bst >= 600) {
             paras.push(`<p>With a ${bst} base stat total, ${link(mainMon.species)} carries real bulk or power compared to standard Pokémon — respect its staying power and plan KOs with calc-backed lines rather than chip damage alone.</p>`);
@@ -513,7 +530,11 @@
         }
 
         if (speed != null) {
-            paras.push(`<p>${speedTierNote(speed, format)} In practice, compare this number to common ${format} benchmarks — Choice Scarf users near 200+, base 100s near 150–170, and Trick Room abusers below 50.</p>`);
+            let bench = 'Compare this number to common ' + format + ' benchmarks';
+            if (itemKey.includes('choicescarf')) bench = 'Choice Scarf defines this speed tier';
+            else if (itemKey.includes('rusted') || itemKey.includes('rustedshield') || itemKey.includes('rustedsword')) bench = 'Speed comes from base stats and EVs — this form cannot hold a Choice Scarf';
+            else if (itemKey.includes('assaultvest')) bench = 'Assault Vest locks status options but does not change Speed';
+            paras.push(`<p>${speedTierNote(speed, format)} ${bench}: unboosted 100-base Pokémon near 150–170, fast Scarfers near 200+, Trick Room abusers below 50.</p>`);
         }
 
         if (weak.length || resist.length) {
