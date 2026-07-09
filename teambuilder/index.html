@@ -1253,6 +1253,13 @@
 
     <script src="../js/main.js"></script>
     <script src="../js/utils.js"></script>
+    <script src="../js/battle/type-chart.js"></script>
+    <script src="../js/battle/move-index.js"></script>
+    <script src="../js/battle/stat-modifiers.js"></script>
+    <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/damage-core.js"></script>
+    <script src="../js/battle/ko-chance.js"></script>
+    <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js"></script>
 
@@ -1383,6 +1390,7 @@
                 pokemon_database = p;
                 allMoves = m;
                 moves_database = m;
+                initMoveIndex(allMoves);
                 allItems = i;
                 m.forEach(mv => { const key = (mv.name || '').toLowerCase().replace(/[^a-z0-9]/g, ''); movesMap[key] = mv; });
                 // load abilities

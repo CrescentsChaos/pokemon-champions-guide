@@ -42,6 +42,9 @@ try {
 
     fs.writeFileSync(jsonPath, JSON.stringify(moves, null, 2));
     console.log(`Successfully converted ${moves.length} moves to JSON.`);
+
+    // Enrich with battle calculation metadata
+    require(path.join(__dirname, 'scripts', 'enrich-moves-battle.js'));
 } catch (err) {
     console.error('Error converting CSV:', err);
 }

@@ -141,6 +141,7 @@ async function init() {
         movesDB = mvs;
         itemsDB = itms;
         buildsDB = blds;
+        initMoveIndex(movesDB);
 
         window.p1 = setupPokemonState(1);
         window.p2 = setupPokemonState(2);
@@ -773,14 +774,16 @@ function toggleForme(id) {
 function updateMove(pId, idx, moveName) {
     const pk = pId === 1 ? p1 : p2;
     const prevCrit = pk.moves[idx].crit;
-    const mData = movesDB.find(x => x.name === moveName);
-    if (mData) {
-        const hits = isMultiHitMove(mData.name) ? getDefaultHitCount(mData.name, pk) : undefined;
-        pk.moves[idx] = {
-            name: mData.name, basePower: parseInt(mData.power) || 0,
-            type: mData.type, category: mData.damage_class, crit: prevCrit,
+    const rec = BattleCalc.MoveIndex.findInArray(movesDB, moveName);
+    if (rec) {
+        const hits = BattleCalc.isMultiHitMove(rec.name) ? getDefaultHitCount(rec.name, pk) : undefined;
+        pk.moves[idx] = BattleCalc.createMoveState(rec.name, {
+            basePower: rec.power,
+            type: rec.type,
+            category: rec.category,
+            crit: prevCrit,
             ...(hits ? { hits } : {})
-        };
+        });
     } else {
         pk.moves[idx] = { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false };
     }
