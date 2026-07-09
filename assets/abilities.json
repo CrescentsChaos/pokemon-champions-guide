@@ -1201,7 +1201,7 @@
   },
   {
     "name": "Water Bubble",
-    "description": "Lowers the power of Fire-type moves that hit the Pokémon and prevents it from being burned."
+    "description": "Halves the damage the Pokémon takes from Fire-type moves and doubles the power of its Water-type moves. The Pokémon cannot be burned."
   },
   {
     "name": "Water Compaction",
