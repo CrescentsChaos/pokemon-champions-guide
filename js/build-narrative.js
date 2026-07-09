@@ -9,6 +9,57 @@
         return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    /** Oxford-comma list join — avoids "A and B and C and D" grammar errors. */
+    function joinList(items, formatter) {
+        const fmt = formatter || (x => x);
+        const list = (items || []).filter(Boolean).map(fmt);
+        if (list.length === 0) return '';
+        if (list.length === 1) return list[0];
+        if (list.length === 2) return list[0] + ' and ' + list[1];
+        return list.slice(0, -1).join(', ') + ', and ' + list[list.length - 1];
+    }
+
+    function getMetaTargetNames(format) {
+        const fmt = format || 'Singles';
+        const cache = (typeof global !== 'undefined' && global._topPokemonsCache) ? global._topPokemonsCache : null;
+        if (!cache) return [];
+        const list = cache[fmt] || cache.Singles || [];
+        return list.slice(0, 12);
+    }
+
+    function resolveTargetDb(speciesName) {
+        const key = normKey(speciesName);
+        if (typeof getEffectivePokemonData === 'function' && typeof allPokemon !== 'undefined') {
+            return getEffectivePokemonData({ species: speciesName, item: '' }, allPokemon)
+                || allPokemon.find(p => normKey(p.Name || p.name) === key);
+        }
+        if (typeof allPokemon !== 'undefined') {
+            return allPokemon.find(p => normKey(p.Name || p.name) === key);
+        }
+        return null;
+    }
+
+    function buildDefenderSlotFromMeta(speciesName, format) {
+        const builds = (typeof allBuilds !== 'undefined') ? allBuilds : [];
+        if (typeof findLatestBuildForSpecies === 'function') {
+            const latest = findLatestBuildForSpecies(speciesName, format, builds);
+            if (latest && typeof parseAnalysisBuild === 'function') {
+                return parseAnalysisBuild(latest.build);
+            }
+        }
+        return {
+            species: speciesName,
+            item: '',
+            ability: '',
+            level: 50,
+            tera: 'Normal',
+            evs: { hp: 252, def: 4, spd: 252, atk: 0, spa: 0, spe: 0 },
+            ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+            nature: 'Bold',
+            moves: ['Protect']
+        };
+    }
+
     function link(name) {
         if (typeof linkMon === 'function') return linkMon(name);
         return `<span class="build-prose-link">${esc(name)}</span>`;
@@ -297,22 +348,30 @@
         const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
         const field = (typeof getDefaultField === 'function') ? getDefaultField(format) : { format };
         const attacker = buildCalcStateFromSlot(mainMon, 1, db, movesDb);
-        const targets = ['Garchomp', 'Incineroar', 'Rillaboom', 'Kingambit', 'Landorus-Therian', 'Flutter Mane'];
+        const targets = getMetaTargetNames(format);
         const results = [];
 
         targets.forEach(name => {
-            let tDb = null;
-            if (typeof allPokemon !== 'undefined') {
-                tDb = allPokemon.find(p => normKey(p.Name) === normKey(name));
-            }
+            const defenderSlot = buildDefenderSlotFromMeta(name, format);
+            const tDb = resolveTargetDb(defenderSlot.species || name);
             if (!tDb) return;
-            const defender = buildCalcStateFromSlot({ species: name, level: mainMon.level || 50, evs: { hp: 252, def: 4, spd: 4, atk: 0, spa: 0, spe: 0 }, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }, nature: 'Bold', moves: ['Protect'], ability: 'None', item: 'None' }, 2, tDb, movesDb);
+            const effDb = (typeof getEffectivePokemonData === 'function' && typeof allPokemon !== 'undefined')
+                ? (getEffectivePokemonData(defenderSlot, allPokemon) || tDb)
+                : tDb;
+            const defender = buildCalcStateFromSlot(defenderSlot, 2, effDb, movesDb);
             const best = findBestDamage(attacker, defender, field);
             if (best && parseFloat(best.maxPercent) > 0) {
-                results.push({ target: name, move: best.move, min: best.minPercent, max: best.maxPercent, ko: best.koLabel });
+                results.push({
+                    target: effDb.Name || effDb.name || name,
+                    move: best.move,
+                    min: best.minPercent,
+                    max: best.maxPercent,
+                    ko: best.koLabel,
+                    usesMetaBuild: defenderSlot.moves && defenderSlot.moves.filter(Boolean).length > 1
+                });
             }
         });
-        return results.sort((a, b) => parseFloat(b.max) - parseFloat(a.max)).slice(0, 4);
+        return results.sort((a, b) => parseFloat(b.max) - parseFloat(a.max)).slice(0, 6);
     }
 
     function composeFormatGameplay(mainMon, mainRoles, format, ctx) {
@@ -367,7 +426,7 @@
                 return ref && types.some(t => t && t.toLowerCase() === (ref.type || '').toLowerCase());
             });
             const coverage = moves.filter(m => !stab.includes(m) && (getMoveRef(m)?.power || 0) > 0);
-            paras.push(`${link(mainMon.species)} carries ${moves.map(m => link(m)).join(', ')}. ${stab.length ? `Primary STAB comes from ${stab.map(m => link(m)).join(' and ')}` : 'This set leans on coverage rather than STAB'}${coverage.length ? `, while ${coverage.map(m => link(m)).join(' and ')} hit types the base typing cannot` : ''}. In team preview, identify which move threatens the opponent's restricted Pokémon or common switch-ins, and avoid revealing your Tera line too early.`);
+            paras.push(`${link(mainMon.species)} carries ${joinList(moves, m => link(m))}. ${stab.length ? `Primary STAB comes from ${joinList(stab, m => link(m))}` : 'This set leans on coverage rather than STAB'}${coverage.length ? `, while ${joinList(coverage, m => link(m))} cover typings the base ${getMonTypes(db, mainMon).join('/')} line cannot` : ''}. In team preview, identify which move threatens the opponent's restricted Pokémon or common switch-ins, and avoid revealing your Tera line too early.`);
         }
 
         if (moveKeys.includes('blizzard') || moveKeys.includes('thunder') || moveKeys.includes('hurricane')) {
@@ -377,15 +436,34 @@
             paras.push(`${link('Icy Wind')} and similar spread speed drops punish both opponents in doubles while chipping HP — use them to put slower sweepers in range of a follow-up KO from your partner, not as primary damage.`);
         }
 
-        paras.push(`The ${evLine} spread with a ${mainMon.nature || 'Serious'} nature targets ${evIntent(mainMon.evs, mainRoles).join(' and ') || 'standard benchmarks'}. ${natureAnalysis(mainMon.nature, mainMon.evs)} Every leftover EV should answer a specific calc: surviving a hit, outspeeding a tier, or guaranteeing an OHKO on a meta threat.`);
+        paras.push(`The ${evLine} spread with a ${mainMon.nature || 'Serious'} nature targets ${joinList(evIntent(mainMon.evs, mainRoles)) || 'standard benchmarks'}. ${natureAnalysis(mainMon.nature, mainMon.evs)} Every leftover EV should answer a specific calc: surviving a hit, outspeeding a tier, or guaranteeing an OHKO on a meta threat.`);
 
         if (item) {
             paras.push(describeItem(item, mainMon, mainRoles, moves, format));
         }
 
         if (benchmarks.length) {
-            paras.push('Damage benchmarks against common targets (neutral spreads, level ' + (mainMon.level || 50) + '): ' +
-                benchmarks.map(b => `${link(b.move)} vs ${link(b.target)} (${b.min}–${b.max}%${b.ko ? ', ' + b.ko.toLowerCase() : ''})`).join('; ') + '. Treat these as planning numbers — real games add screens, Intimidate, and Tera.');
+            const metaNames = getMetaTargetNames(format);
+            const metaNote = metaNames.length
+                ? ` Benchmarks use latest ${esc(format)} builds from the meta pool (${joinList(metaNames.slice(0, 5), n => link(n))}${metaNames.length > 5 ? ', and others' : ''}).`
+                : '';
+            paras.push('Damage benchmarks against ranked meta targets (level ' + (mainMon.level || 50) + '): ' +
+                benchmarks.map(b => {
+                    const buildTag = b.usesMetaBuild ? 'meta build' : 'default spread';
+                    return `${link(b.move)} vs ${link(b.target)} (${b.min}–${b.max}%${b.ko ? ', ' + b.ko.toLowerCase() : ''}, ${buildTag})`;
+                }).join('; ') + '.' + metaNote + ' Treat these as planning numbers — real games add screens, Intimidate, Tera, and hazards.');
+        }
+
+        const speed = typeof getEffectiveSpeed === 'function' && typeof buildCalcStateFromSlot === 'function'
+            ? getEffectiveSpeed(buildCalcStateFromSlot(mainMon, 1, db, (typeof allMoves !== 'undefined') ? allMoves : []), (typeof getDefaultField === 'function') ? getDefaultField(format) : null)
+            : null;
+        if (speed != null) {
+            paras.push(speedTierNote(speed, format));
+        }
+
+        const metaTargets = getMetaTargetNames(format).filter(n => normKey(n) !== normKey(mainMon.species));
+        if (metaTargets.length >= 3) {
+            paras.push(`In current ${esc(format)} Champion meta, expect to face ${joinList(metaTargets.slice(0, 6), n => link(n))} regularly. This set should have a defined plan against each: which move you click, whether you Tera, and whether you stay in or pivot. If a staple threatens a clean OHKO, that is a team-building problem — fix it with EVs, item choice, or a partner, not hope.`);
         }
 
         if (mainMon.tera && mainMon.tera !== 'Normal') {
@@ -422,7 +500,7 @@
         const isDoubles = (format || '').toLowerCase() === 'doubles';
         const bst = parseInt(db?.Total_Stats, 10) || 0;
 
-        paras.push(`<p>${link(mainMon.species)} is a ${link(types)} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread packages <strong>${roleText.toLowerCase()}</strong> into a single set: ${mainRoles.slice(0, 3).map(r => getRoleDesc(r)).join(' ')}</p>`);
+        paras.push(`<p>${link(mainMon.species)} is a ${link(types)} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread packages <strong>${roleText.toLowerCase()}</strong> into a single set: ${joinList(mainRoles.slice(0, 3).map(r => getRoleDesc(r)))}</p>`);
 
         if (bst >= 600) {
             paras.push(`<p>With a ${bst} base stat total, ${link(mainMon.species)} carries real bulk or power compared to standard Pokémon — respect its staying power and plan KOs with calc-backed lines rather than chip damage alone.</p>`);
@@ -440,10 +518,10 @@
 
         if (weak.length || resist.length) {
             let def = '<p>Typing defines your defensive ceiling: ';
-            if (resist.length) def += `${link(mainMon.species)} resists or ignores ${resist.slice(0, 5).map(t => link(t)).join(', ')}`;
+            if (resist.length) def += `${link(mainMon.species)} resists or ignores ${joinList(resist.slice(0, 5), t => link(t))}`;
             if (weak.length && resist.length) def += ', but ';
             else if (weak.length) def += `${link(mainMon.species)} is vulnerable to `;
-            if (weak.length) def += `${weak.slice(0, 5).map(t => link(t)).join(', ')}. ${teammates.length ? 'Your recommended teammates partially cover these gaps — see Team Options below.' : 'Add teammates that switch into these typings before queueing.'}`;
+            if (weak.length) def += `${joinList(weak.slice(0, 5), t => link(t))}. ${teammates.length ? 'Your recommended teammates partially cover these gaps — see Team Options below.' : 'Add teammates that switch into these typings before queueing.'}`;
             else def += ' — a relatively safe defensive profile if you avoid unknown coverage moves.';
             def += '</p>';
             paras.push(def);
@@ -452,7 +530,7 @@
         composeFormatGameplay(mainMon, mainRoles, format, ctx).forEach(p => paras.push('<p>' + p + '</p>'));
 
         if (teammates.length) {
-            paras.push(`<p>Team preview should highlight how ${link(mainMon.species)} fits with ${teammates.slice(0, 4).map(t => link(t.species)).join(', ')}. ${isDoubles ? 'Doubles rewards explicit speed-control and redirection plans — declare whether this Pokémon leads or cleans late before the game starts.' : 'Singles rewards knowing which opposing Pokémon this set forces out and what you switch into afterward.'}</p>`);
+            paras.push(`<p>Team preview should highlight how ${link(mainMon.species)} fits with ${joinList(teammates.slice(0, 4).map(t => link(t.species)))}. ${isDoubles ? 'Doubles rewards explicit speed-control and redirection plans — declare whether this Pokémon leads or cleans late before the game starts.' : 'Singles rewards knowing which opposing Pokémon this set forces out and what you switch into afterward.'}</p>`);
         }
 
         const primaryRole = mainRoles[0] || 'Generalist';
@@ -503,7 +581,7 @@
 
         const mainRoles = roles[0] || [];
         const leadPair = typeof describeLeadPair === 'function' ? describeLeadPair(ctx, [mainMon, ...teammates], roles) : { summary: '' };
-        let html = `<p><strong>Recommended core:</strong> ${teammates.map(t => link(t.species)).join(', ')} round out this ${format} team around ${link(mainMon.species)}. ${leadPair.summary}</p>`;
+        let html = `<p><strong>Recommended core:</strong> ${joinList(teammates.map(t => link(t.species)))} round out this ${format} team around ${link(mainMon.species)}. ${leadPair.summary}</p>`;
 
         html += `<p>In ${format}, team synergy is not just type coverage — it is turn order, redirection, and speed control working together. ${link(mainMon.species)} should know which partner sets snow, Tailwind, or Trick Room before you click moves, because this set's damage moves assume those conditions when applicable.</p>`;
 
@@ -539,7 +617,7 @@
         let html = '';
 
         html += '<p><strong>What threatens this set:</strong> ';
-        html += `${link(mainMon.species)} is pressured by ${weak.length ? weak.map(t => link(t)).join(', ') : 'common coverage types'}. `;
+        html += `${link(mainMon.species)} is pressured by ${weak.length ? joinList(weak.map(t => link(t))) : 'common coverage types'}. `;
         if (mainRoles.includes('Physical Sweeper') || mainRoles.includes('Wallbreaker')) {
             html += 'Intimidate users, Will-O-Wisp, and priority (Sucker Punch, Extreme Speed, Bullet Punch) often stop a sweep before it starts. Faster Choice Scarf revenge killers capitalize on a locked or boosted position.';
         } else if (mainRoles.includes('Special Sweeper')) {
@@ -613,10 +691,10 @@
 
         html += '<p>';
         if (critical.length) {
-            html += 'Against the current <strong>' + esc(format) + '</strong> meta, this team has <strong class="analysis-highlight analysis-highlight--danger">' + critical.length + ' critical gap' + (critical.length > 1 ? 's' : '') + '</strong> versus staples such as ' + critical.slice(0, 3).map(t => link(t.name)).join(', ') + '. ';
+            html += 'Against the current <strong>' + esc(format) + '</strong> meta, this team has <strong class="analysis-highlight analysis-highlight--danger">' + critical.length + ' critical gap' + (critical.length > 1 ? 's' : '') + '</strong> versus staples such as ' + joinList(critical.slice(0, 3).map(t => link(t.name))) + '. ';
             html += 'Address these before tournament prep — consider adding a dedicated check, speed control, or Tera answer.</p>';
         } else if (covered.length >= 3) {
-            html += 'This core handles several top threats well, including ' + covered.slice(0, 3).map(t => link(t.name)).join(', ') + '. ';
+            html += 'This core handles several top threats well, including ' + joinList(covered.slice(0, 3).map(t => link(t.name))) + '. ';
             html += 'Focus on positioning and preserving your fastest answers for endgame.</p>';
         } else {
             html += 'Matchups are mixed across the ' + esc(format) + ' field — no single gap dominates, but Tera timing and lead selection decide most games.</p>';

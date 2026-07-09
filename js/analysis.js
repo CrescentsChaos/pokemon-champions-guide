@@ -1380,10 +1380,14 @@ function normalizeSpeciesKey(name) {
 }
 
 async function loadTopPokemonsForFormat(format) {
+    if (!_topPokemonsCache && typeof globalThis !== 'undefined' && globalThis._topPokemonsCache) {
+        _topPokemonsCache = globalThis._topPokemonsCache;
+    }
     if (!_topPokemonsCache) {
         try {
             const resp = await fetch('../assets/top_pokemons.json?v=' + Date.now());
             _topPokemonsCache = await resp.json();
+            if (typeof globalThis !== 'undefined') globalThis._topPokemonsCache = _topPokemonsCache;
         } catch (e) {
             _topPokemonsCache = {};
         }
@@ -2096,4 +2100,11 @@ function buildsToActiveMons(buildEntries) {
 function analyzeLibraryTeam(mainBuild, synergyBuilds, format = 'Singles') {
     window._currentMainBuildId = mainBuild?.id || null;
     sharedAnalyzeTeam(buildsToActiveMons([mainBuild, ...(synergyBuilds || [])]), format);
+}
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.parseAnalysisBuild = parseAnalysisBuild;
+    globalThis.findLatestBuildForSpecies = findLatestBuildForSpecies;
+    globalThis.normalizeSpeciesKey = normalizeSpeciesKey;
+    globalThis.loadTopPokemonsForFormat = loadTopPokemonsForFormat;
 }

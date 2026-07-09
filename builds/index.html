@@ -176,6 +176,135 @@
             margin-bottom: 0;
             padding-bottom: 0;
         }
+
+        .library-toolbar-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: linear-gradient(180deg, rgba(12, 12, 14, 0.98) 70%, rgba(12, 12, 14, 0));
+            padding: 0.5rem 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            min-height: 0;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(255, 62, 62, 0.12);
+            border: 1px solid rgba(255, 62, 62, 0.35);
+            color: #ffb4b4;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .filter-chip button {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.85rem;
+            line-height: 1;
+            opacity: 0.8;
+        }
+
+        .filter-chip button:hover { opacity: 1; }
+
+        .builds-results-meta {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin: 0.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .build-card-wrapper {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .build-card-wrapper:hover {
+            transform: translateY(-3px);
+        }
+
+        .build-card-wrapper.selected {
+            outline: 2px solid var(--primary-red);
+            outline-offset: 3px;
+            border-radius: 16px;
+        }
+
+        .build-card-quick-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .build-card-quick-actions .btn {
+            padding: 4px 8px;
+            font-size: 0.55rem;
+            white-space: nowrap;
+        }
+
+        .build-prose-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .build-prose-nav a {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .build-prose-nav a:hover {
+            background: rgba(255, 62, 62, 0.15);
+            color: white;
+            border-color: rgba(255, 62, 62, 0.35);
+        }
+
+        #synergy-container.is-visible {
+            scroll-margin-top: 1rem;
+        }
+
+        .clear-filters-btn {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .clear-filters-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
     </style>
 </head>
 
@@ -207,6 +336,13 @@
                         <h3 class="build-prose-panel__title">Build Analysis</h3>
                         <span class="build-prose-panel__format" id="build-prose-format"></span>
                     </div>
+                    <nav class="build-prose-nav" aria-label="Analysis sections">
+                        <a href="#build-prose-section-overview">Overview</a>
+                        <a href="#build-prose-section-set">Set</a>
+                        <a href="#build-prose-section-teammates">Teammates</a>
+                        <a href="#build-prose-section-checks">Checks</a>
+                        <a href="#build-prose-section-meta">Meta</a>
+                    </nav>
                     <section class="build-prose-section" id="build-prose-section-overview">
                         <h4 class="build-prose-section__title">Overview</h4>
                         <div id="build-prose-overview" class="build-prose-body"></div>
@@ -354,6 +490,7 @@
         </div>
 
         <div id="library-section">
+            <div class="library-toolbar-sticky">
             <div class="search-wrapper fade-in">
                 <input type="text" id="build-search"
                     placeholder="Search by Pokemon name (e.g. Miraidon, Incineroar)...">
@@ -395,7 +532,10 @@
                             style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS
                             ELIGIBLE ONLY</span>
                     </label>
+                    <button type="button" id="clear-filters-btn" class="clear-filters-btn" title="Reset all filters">Clear filters</button>
                 </div>
+            </div>
+            <div id="filter-chips" class="filter-chips-row" aria-live="polite"></div>
             </div>
 
             <p id="builds-results-meta" class="builds-results-meta"></p>
@@ -421,12 +561,13 @@
     <script src="../js/battle/move-index.js"></script>
     <script src="../js/battle/stat-modifiers.js"></script>
     <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/field-effects.js"></script>
     <script src="../js/battle/damage-core.js"></script>
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
-    <script src="../js/analysis.js?v=3"></script>
-    <script src="../js/build-narrative.js?v=3"></script>
+    <script src="../js/analysis.js?v=4"></script>
+    <script src="../js/build-narrative.js?v=4"></script>
     <script>
         let allPokemon = [];
         let pokemonMap = {};
@@ -454,7 +595,66 @@
 
         function debouncedRenderBuilds(append = false) {
             clearTimeout(renderBuildsTimer);
-            renderBuildsTimer = setTimeout(() => renderBuilds(append), 180);
+            renderBuildsTimer = setTimeout(() => {
+                updateFilterChips();
+                renderBuilds(append);
+            }, 180);
+        }
+
+        function updateFilterChips() {
+            const row = document.getElementById('filter-chips');
+            if (!row) return;
+            const chips = [];
+            const search = document.getElementById('build-search')?.value?.trim();
+            const type = document.getElementById('type-filter')?.value;
+            const role = document.getElementById('role-filter')?.value;
+            const format = document.getElementById('format-filter')?.value;
+            const ability = document.getElementById('ability-filter')?.value?.trim();
+            const move = document.getElementById('move-filter')?.value?.trim();
+            const champs = document.getElementById('champions-eligible-filter')?.checked;
+
+            if (search) chips.push({ label: `Search: ${search}`, clear: () => { document.getElementById('build-search').value = ''; } });
+            if (type) chips.push({ label: `Type: ${type}`, clear: () => { document.getElementById('type-filter').value = ''; } });
+            if (role) chips.push({ label: `Role: ${role}`, clear: () => { document.getElementById('role-filter').value = ''; } });
+            if (format) chips.push({ label: `Format: ${format}`, clear: () => { document.getElementById('format-filter').value = ''; } });
+            if (ability) chips.push({ label: `Ability: ${ability}`, clear: () => { document.getElementById('ability-filter').value = ''; } });
+            if (move) chips.push({ label: `Move: ${move}`, clear: () => { document.getElementById('move-filter').value = ''; } });
+            if (champs) chips.push({ label: 'Champions eligible', clear: () => { document.getElementById('champions-eligible-filter').checked = false; } });
+
+            if (!chips.length) {
+                row.innerHTML = '';
+                return;
+            }
+            row.innerHTML = chips.map((c, i) =>
+                `<span class="filter-chip">${c.label} <button type="button" data-chip="${i}" aria-label="Remove filter">×</button></span>`
+            ).join('');
+            row.querySelectorAll('button[data-chip]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    chips[parseInt(btn.dataset.chip, 10)].clear();
+                    debouncedRenderBuilds();
+                });
+            });
+        }
+
+        function clearAllFilters() {
+            const search = document.getElementById('build-search');
+            if (search) search.value = '';
+            ['type-filter', 'role-filter', 'format-filter'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            ['ability-filter', 'move-filter'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const champs = document.getElementById('champions-eligible-filter');
+            if (champs) champs.checked = false;
+            const sort = document.getElementById('build-sort-select');
+            if (sort) sort.value = 'pokemon';
+            const dir = document.getElementById('build-sort-dir');
+            if (dir) dir.value = 'desc';
+            filteredBuildsCache = null;
+            debouncedRenderBuilds();
         }
 
         function getFilterCacheKey() {
@@ -621,16 +821,22 @@
             if (gridEl) gridEl.style.display = 'none';
 
             try {
-                const [pResp, bResp, mResp, iResp] = await Promise.all([
+                const [pResp, bResp, mResp, iResp, topResp] = await Promise.all([
                     fetch('../assets/pokemon.json'),
                     fetch('../assets/builds.json'),
                     fetch('../assets/moves.json'),
-                    fetch('../assets/items.json')
+                    fetch('../assets/items.json'),
+                    fetch('../assets/top_pokemons.json').catch(() => null)
                 ]);
                 allPokemon = await pResp.json();
                 allBuilds = await bResp.json();
                 allMoves = await mResp.json();
                 allItems = await iResp.json();
+                if (topResp) {
+                    try {
+                        globalThis._topPokemonsCache = await topResp.json();
+                    } catch (e) { /* ignore */ }
+                }
                 initMoveIndex(allMoves);
 
                 // load abilities
@@ -1177,9 +1383,10 @@
                                 ${abilityNameForCard.toUpperCase()}
                             </span>
                         </div>
-                    <div style="display: flex; gap: 4px;">
-                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY PASTE</button>
-                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem; background: #4a90e2;" onclick="event.stopPropagation(); copyChampPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">CHAMP PASTE</button>
+                    <div class="build-card-quick-actions">
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem;" onclick="event.stopPropagation(); copyPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">COPY</button>
+                        <button class="btn" style="padding: 4px 8px; font-size: 0.55rem; background: #4a90e2;" onclick="event.stopPropagation(); copyChampPaste(\`${rawBuild.build.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '\\n')}\`)">CHAMP</button>
+                        <a class="btn" href="../counter/?build=${rawBuild.id}" style="padding: 4px 8px; font-size: 0.55rem; background: #2d6a4f; text-decoration: none; display: inline-flex; align-items: center;" onclick="event.stopPropagation();">COUNTERS</a>
                     </div>
                 </div>
             `;
@@ -1986,6 +2193,7 @@
         document.getElementById('champions-eligible-filter').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('build-sort-select').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('build-sort-dir').addEventListener('change', () => debouncedRenderBuilds());
+        document.getElementById('clear-filters-btn')?.addEventListener('click', clearAllFilters);
         const champsBtn = document.getElementById('champions-only-btn');
         if (champsBtn) {
             champsBtn.addEventListener('click', () => {

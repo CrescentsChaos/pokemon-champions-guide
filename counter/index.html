@@ -482,6 +482,7 @@
     <script src="../js/battle/move-index.js"></script>
     <script src="../js/battle/stat-modifiers.js"></script>
     <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/field-effects.js"></script>
     <script src="../js/battle/damage-core.js"></script>
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
@@ -930,38 +931,33 @@
 
             const targetKey = normalizeKey(targetBuild.name);
             const targetSlot = slotFromTargetState(targetBuild);
-            const field = typeof getDefaultField === 'function' ? getDefaultField('Singles') : null;
+            const targetFormat = (targetBuild.format || 'Singles');
+            const field = typeof getDefaultField === 'function' ? getDefaultField(targetFormat) : null;
             const hasCalc = typeof buildCalcStateFromSlot === 'function' && typeof findBestDamage === 'function' && field;
-            let targetAttacker = null;
-            let targetDefender = null;
-            if (hasCalc) {
-                targetAttacker = buildCalcStateFromSlot(targetSlot, 1, targetData, movesDB);
-                targetDefender = buildCalcStateFromSlot(targetSlot, 2, targetData, movesDB);
+            if (!hasCalc) {
+                btn.disabled = false; loader.style.display = 'none';
+                resultsContainer.style.opacity = '1';
+                resultsContainer.innerHTML = '<div class="placeholder-text">Damage calculator failed to load. Refresh the page.</div>';
+                return;
             }
 
-            const targetStats = {
-                hp: getStat(parseInt(targetData.HP), 31, targetBuild.evs.hp, targetBuild.level, targetBuild.nature, 'hp'),
-                atk: getStat(parseInt(targetData.Attack), 31, targetBuild.evs.atk, targetBuild.level, targetBuild.nature, 'atk'),
-                def: getStat(parseInt(targetData.Defense), 31, targetBuild.evs.def, targetBuild.level, targetBuild.nature, 'def'),
-                spa: getStat(parseInt(targetData['Sp.Atk']), 31, targetBuild.evs.spa, targetBuild.level, targetBuild.nature, 'spa'),
-                spd: getStat(parseInt(targetData['Sp.Def']), 31, targetBuild.evs.spd, targetBuild.level, targetBuild.nature, 'spd'),
-                spe: getStat(parseInt(targetData.Speed), 31, targetBuild.evs.spe, targetBuild.level, targetBuild.nature, 'spe')
-            };
-            if (normalizeKey(targetBuild.item).includes('choicescarf')) targetStats.spe = Math.floor(targetStats.spe * 1.5);
+            let targetAttacker = null;
+            let targetDefender = null;
+            targetAttacker = buildCalcStateFromSlot(targetSlot, 1, targetData, movesDB);
+            targetDefender = buildCalcStateFromSlot(targetSlot, 2, targetData, movesDB);
 
-            const targetFormat = (targetBuild.format || 'Singles').toLowerCase();
+            const targetFormatKey = targetFormat.toLowerCase();
             const candidatePool = buildsDB.filter(b =>
                 normalizeKey(b.pokemon) !== targetKey &&
-                (b.format || 'Singles').toLowerCase() === targetFormat
+                (b.format || 'Singles').toLowerCase() === targetFormatKey
             );
 
             const bestBySpecies = new Map();
             candidatePool.forEach(build => {
-                const cBuildParsed = parseCandidateBuild(build.build, targetData);
-                const candidateData = getEffectivePokemonData(build.pokemon, cBuildParsed.item);
+                const candSlot = buildSlotFromPaste(build.build, build.pokemon);
+                const candidateData = getEffectivePokemonData(candSlot.species || build.pokemon, candSlot.item);
                 if (!candidateData) return;
 
-                const cStats = calculateCandidateStats(cBuildParsed, candidateData);
                 let score = 0;
                 const points = [];
                 let dead = false;
@@ -971,106 +967,54 @@
                 let outspeeds = false;
                 let offenseKo = '';
 
-                if (hasCalc) {
-                    const candSlot = {
-                        species: candidateData.Name || candidateData.name || build.pokemon,
-                        item: cBuildParsed.item || '',
-                        ability: cBuildParsed.ability || '',
-                        level: 50,
-                        nature: cBuildParsed.nature || 'Hardy',
-                        evs: { ...cBuildParsed.evs },
-                        ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-                        moves: [...cBuildParsed.moves],
-                        tera: 'Normal'
-                    };
-                    const candAttacker = buildCalcStateFromSlot(candSlot, 1, candidateData, movesDB);
-                    const candDefender = buildCalcStateFromSlot(candSlot, 2, candidateData, movesDB);
-                    const offense = findBestDamage(candAttacker, targetDefender, field);
-                    const defense = findBestDamage(targetAttacker, candDefender, field);
+                const candAttacker = buildCalcStateFromSlot(candSlot, 1, candidateData, movesDB);
+                const candDefender = buildCalcStateFromSlot(candSlot, 2, candidateData, movesDB);
+                const offense = findBestDamage(candAttacker, targetDefender, field);
+                const defense = findBestDamage(targetAttacker, candDefender, field);
 
-                    if (offense && parseFloat(offense.maxPercent) > 0) {
-                        bestDealt = parseFloat(offense.maxPercent);
-                        offenseKo = offense.koLabel || '';
-                        if (bestDealt >= 100) {
-                            score += 50;
-                            points.push(`Calc OHKO: ${offense.move} (${offense.maxPercent}%).`);
-                            verdict = 'ohko';
-                        } else if (bestDealt >= 75) {
-                            score += 35;
-                            points.push(`Heavy calc pressure: ${offense.move} (${offense.minPercent}–${offense.maxPercent}%).`);
-                            verdict = verdict || 'pressure';
-                        } else if (bestDealt >= 50) {
-                            score += 22;
-                            points.push(`Solid damage: ${offense.move} (${offense.maxPercent}%).`);
-                        }
-                        if (typeof isStrongAnswer === 'function' && isStrongAnswer(offense.koLabel)) {
-                            score += 12;
-                            points.push(`KO outlook: ${offense.koLabel}.`);
-                        }
+                if (offense && parseFloat(offense.maxPercent) > 0) {
+                    bestDealt = parseFloat(offense.maxPercent);
+                    offenseKo = offense.koLabel || '';
+                    if (bestDealt >= 100) {
+                        score += 50;
+                        points.push(`Calc OHKO: ${offense.move} (${offense.minPercent}–${offense.maxPercent}%, ${offense.koLabel || 'OHKO'}).`);
+                        verdict = 'ohko';
+                    } else if (bestDealt >= 75) {
+                        score += 35;
+                        points.push(`Heavy calc pressure: ${offense.move} (${offense.minPercent}–${offense.maxPercent}%, ${offense.koLabel || 'pressure'}).`);
+                        verdict = verdict || 'pressure';
+                    } else if (bestDealt >= 50) {
+                        score += 22;
+                        points.push(`Solid damage: ${offense.move} (${offense.maxPercent}%, ${offense.koLabel || '2HKO+'}).`);
                     }
-
-                    if (defense && parseFloat(defense.maxPercent) > 0) {
-                        maxTook = parseFloat(defense.maxPercent);
-                        if (maxTook >= 100) {
-                            dead = true;
-                            points.push(`OHKO'd by target: ${defense.move} (${defense.maxPercent}%).`);
-                        } else if (maxTook < 45) {
-                            score += 28;
-                            points.push(`Tanks target hits (${defense.move}: ${defense.maxPercent}% max).`);
-                            verdict = verdict || 'tank';
-                        } else if (maxTook < 70) {
-                            score += 14;
-                            points.push(`Survives key hits (${defense.maxPercent}% max from target).`);
-                        }
-                    }
-
-                    const candSpeed = getEffectiveSpeed(candAttacker, field);
-                    const targetSpeed = getEffectiveSpeed(targetAttacker, field);
-                    outspeeds = candSpeed > targetSpeed;
-                    if (outspeeds) {
+                    if (typeof isStrongAnswer === 'function' && isStrongAnswer(offense.koLabel)) {
                         score += 12;
-                        points.push(`Outspeeds (${candSpeed} vs ${targetSpeed}).`);
-                    } else if (candSpeed < targetSpeed) {
-                        score -= 6;
                     }
-                } else {
-                    const targetMoves = targetBuild.moves.map(mName => movesDB.find(m => normalizeKey(m.name) === normalizeKey(mName))).filter(m => m);
-                    targetMoves.forEach(m => {
-                        const moveType = m.type.toLowerCase();
-                        const isSpecial = m.damage_class === 'Special';
-                        const targetAtk = isSpecial ? targetStats.spa : targetStats.atk;
-                        const candidateDef = isSpecial ? cStats.spd : cStats.def;
-                        let typeMult = 1;
-                        [candidateData.Type_1, candidateData.Type_2].filter(t => t && t !== 'None').forEach(ct => {
-                            const eff = typeChart[moveType]?.[ct.toLowerCase()];
-                            if (eff !== undefined) typeMult *= eff;
-                        });
-                        const stab = [targetData.Type_1, targetData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                        const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * targetAtk / candidateDef) / 50) + 2) * stab * typeMult;
-                        maxTook = Math.max(maxTook, (estDmg / cStats.hp) * 100);
-                    });
-                    if (maxTook >= 100) dead = true;
-                    if (maxTook < 50) { score += 35; points.push(`Takes max ${Math.round(maxTook)}% from target moves.`); verdict = 'tank'; }
-                    else if (maxTook < 85) { score += 18; points.push(`Can tank hits (${Math.round(maxTook)}% max).`); }
+                }
 
-                    cBuildParsed.moves.map(mName => movesDB.find(m => normalizeKey(m.name) === normalizeKey(mName))).filter(m => m).forEach(m => {
-                        const moveType = m.type.toLowerCase();
-                        const isSpecial = m.damage_class === 'Special';
-                        const candAtk = isSpecial ? cStats.spa : cStats.atk;
-                        const targetDef = isSpecial ? targetStats.spd : targetStats.def;
-                        let typeMult = 1;
-                        [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None').forEach(tt => {
-                            const eff = typeChart[moveType]?.[tt.toLowerCase()];
-                            if (eff !== undefined) typeMult *= eff;
-                        });
-                        const stab = [candidateData.Type_1, candidateData.Type_2].includes(m.type) ? 1.5 : 1.0;
-                        const estDmg = ((((2 * 50 / 5 + 2) * (m.power || 40) * candAtk / targetDef) / 50) + 2) * stab * typeMult;
-                        bestDealt = Math.max(bestDealt, (estDmg / targetStats.hp) * 100);
-                    });
-                    if (bestDealt >= 100) { score += 40; points.push(`OHKO pressure (${Math.round(bestDealt)}%).`); verdict = 'ohko'; }
-                    else if (bestDealt >= 50) { score += 22; points.push(`2HKO range (${Math.round(bestDealt)}%).`); }
-                    outspeeds = cStats.spe > targetStats.spe;
-                    if (outspeeds) { score += 12; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
+                if (defense && parseFloat(defense.maxPercent) > 0) {
+                    maxTook = parseFloat(defense.maxPercent);
+                    if (maxTook >= 100) {
+                        dead = true;
+                        points.push(`OHKO'd by target: ${defense.move} (${defense.minPercent}–${defense.maxPercent}%, ${defense.koLabel || 'OHKO'}).`);
+                    } else if (maxTook < 45) {
+                        score += 28;
+                        points.push(`Tanks target hits (${defense.move}: ${defense.maxPercent}% max, ${defense.koLabel || 'survives'}).`);
+                        verdict = verdict || 'tank';
+                    } else if (maxTook < 70) {
+                        score += 14;
+                        points.push(`Survives key hits (${defense.maxPercent}% max from target, ${defense.koLabel || ''}).`);
+                    }
+                }
+
+                const candSpeed = getEffectiveSpeed(candAttacker, field);
+                const targetSpeed = getEffectiveSpeed(targetAttacker, field);
+                outspeeds = candSpeed > targetSpeed;
+                if (outspeeds) {
+                    score += 12;
+                    points.push(`Outspeeds (${candSpeed} vs ${targetSpeed}).`);
+                } else if (candSpeed < targetSpeed) {
+                    score -= 6;
                 }
 
                 const targetTypes = [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None');
@@ -1102,8 +1046,8 @@
                         score: Math.min(100, Math.round(score)),
                         points: [...new Set(points)].slice(0, 6),
                         verdict,
-                        item: cBuildParsed.item || build.item || '',
-                        ability: cBuildParsed.ability || ''
+                        item: candSlot.item || build.item || '',
+                        ability: candSlot.ability || ''
                     };
                     const prev = bestBySpecies.get(speciesKey);
                     if (!prev || entry.score > prev.score) bestBySpecies.set(speciesKey, entry);
@@ -1117,50 +1061,56 @@
             renderResults(counters);
         }
 
-        function parseCandidateBuild(buildStr, pData) {
-            const build = { types: [pData.Type_1, pData.Type_2 || 'None'], moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, nature: 'Hardy', item: '', ability: '' };
-            buildStr.split('\n').forEach(l => {
-                const line = l.trim();
-                if (line.includes('@')) build.item = line.split('@')[1].trim();
-                if (line.startsWith('Ability:')) build.ability = line.replace('Ability:', '').trim();
-                if (line.startsWith('Ability:')) build.ability = line.replace('Ability:', '').trim();
-                if (line.match(/Nature$/)) build.nature = line.replace('Nature', '').trim();
-                if (line.startsWith('- ')) build.moves.push(line.replace('- ', '').trim());
-                if (line.startsWith('EVs:')) {
-                    line.replace('EVs:', '').trim().split('/').forEach(p => {
-                        const s = p.trim().split(/\s+/);
-                        const val = parseInt(s[0]);
-                        const stat = mapEvStatKey(s.slice(1).join(''));
-                        if (stat && build.evs.hasOwnProperty(stat)) build.evs[stat] = val;
+        function parseBuildPaste(text) {
+            const lines = (text || '').trim().split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            const slot = {
+                species: '', item: '', ability: '', level: 50, shiny: false,
+                tera: 'Normal', evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+                ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+                nature: 'Hardy', moves: [], nickname: '', gender: ''
+            };
+            if (lines.length === 0) return slot;
+
+            const head = lines[0];
+            const itemSplit = head.split('@');
+            if (itemSplit[1]) slot.item = itemSplit[1].trim();
+            const speciesPart = itemSplit[0].trim();
+            slot.species = speciesPart.includes('(') ? speciesPart.split('(')[1].split(')')[0].trim() : speciesPart;
+
+            lines.slice(1).forEach(line => {
+                if (line.match(/^Ability\s*:/i)) slot.ability = line.split(':')[1].trim();
+                else if (line.match(/^Level\s*:/i)) slot.level = parseInt(line.split(':')[1].trim()) || 50;
+                else if (line.match(/^Tera Type\s*:/i)) slot.tera = line.split(':')[1].trim();
+                else if (line.match(/^EVs\s*:/i)) {
+                    line.split(':')[1].split('/').forEach(p => {
+                        const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                        if (match) {
+                            const stat = mapEvStatKey(match[2]);
+                            if (stat && slot.evs[stat] !== undefined) slot.evs[stat] = parseInt(match[1]);
+                        }
                     });
+                } else if (line.match(/^IVs\s*:/i)) {
+                    line.split(':')[1].split('/').forEach(p => {
+                        const match = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                        if (match) {
+                            const stat = mapEvStatKey(match[2]);
+                            if (stat && slot.ivs[stat] !== undefined) slot.ivs[stat] = parseInt(match[1]);
+                        }
+                    });
+                } else if (line.toLowerCase().endsWith('nature')) {
+                    slot.nature = line.substring(0, line.length - 6).trim();
+                } else if (line.startsWith('-')) {
+                    slot.moves.push(line.substring(1).trim());
                 }
             });
-            return build;
+            while (slot.moves.length < 4) slot.moves.push('');
+            return slot;
         }
 
-        function calculateCandidateStats(build, pData) {
-            const stats = {
-                hp: getStat(parseInt(pData.HP), 31, build.evs.hp, 50, build.nature, 'hp'),
-                atk: getStat(parseInt(pData.Attack), 31, build.evs.atk, 50, build.nature, 'atk'),
-                def: getStat(parseInt(pData.Defense), 31, build.evs.def, 50, build.nature, 'def'),
-                spa: getStat(parseInt(pData['Sp.Atk']), 31, build.evs.spa, 50, build.nature, 'spa'),
-                spd: getStat(parseInt(pData['Sp.Def']), 31, build.evs.spd, 50, build.nature, 'spd'),
-                spe: getStat(parseInt(pData.Speed), 31, build.evs.spe, 50, build.nature, 'spe'),
-            };
-
-            // Competitive Item Modifiers
-            if (build.item === 'Choice Scarf') stats.spe = Math.floor(stats.spe * 1.5);
-            if (build.item === 'Choice Band') stats.atk = Math.floor(stats.atk * 1.5);
-            if (build.item === 'Choice Specs') stats.spa = Math.floor(stats.spa * 1.5);
-            if (build.item === 'Assault Vest') stats.spd = Math.floor(stats.spd * 1.5);
-
-            const itemKey = (build.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (itemKey === 'choicescarf') stats.spe = Math.floor(stats.spe * 1.5);
-            if (itemKey === 'choiceband') stats.atk = Math.floor(stats.atk * 1.5);
-            if (itemKey === 'choicespecs') stats.spa = Math.floor(stats.spa * 1.5);
-            if (itemKey === 'assaultvest') stats.spd = Math.floor(stats.spd * 1.5);
-
-            return stats;
+        function buildSlotFromPaste(buildStr, fallbackSpecies) {
+            const slot = parseBuildPaste(buildStr);
+            if (!slot.species && fallbackSpecies) slot.species = fallbackSpecies;
+            return slot;
         }
 
         function renderResults(counters) {
