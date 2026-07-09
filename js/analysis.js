@@ -2065,6 +2065,9 @@ function updateAnalysisFormatToggle(format, singlesBtnId, doublesBtnId) {
 function setTeamAnalysisFormat(format) {
     _teamAnalysisFormat = format;
     updateAnalysisFormatToggle(format, 'analysis-toggle-singles', 'analysis-toggle-doubles');
+    if (typeof setOpponentPrepFormat === 'function') {
+        setOpponentPrepFormat(format);
+    }
     const view = document.getElementById('analysis-view');
     if (view && view.style.display !== 'none' && _builderTeamGetter) {
         runTeamBuilderAnalysis(_builderTeamGetter());

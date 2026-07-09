@@ -1069,6 +1069,61 @@
                 </div>
             </div>
 
+            <!-- Opponent Prep / Matchup Section -->
+            <div id="opponent-prep-view" style="display: none; margin-top: 20px;">
+                <div class="opp-prep-header">
+                    <div>
+                        <h2>OPPONENT PREP</h2>
+                        <p class="opp-prep-sub">Scout a 6-Pokémon opponent roster, predict their bring set, and get lead + counter recommendations using calc damage.</p>
+                    </div>
+                    <div class="format-toggle-wrapper"
+                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
+                        <button id="opponent-toggle-singles" class="toggle-btn active"
+                            onclick="setOpponentPrepFormat('Singles')">SINGLES</button>
+                        <button id="opponent-toggle-doubles" class="toggle-btn"
+                            onclick="setOpponentPrepFormat('Doubles')">DOUBLES</button>
+                    </div>
+                </div>
+
+                <div id="opponent-prep-gate">
+                    Complete all <strong>6 slots</strong> on your team before running matchup analysis. Singles brings <strong>3</strong> of 6; Doubles brings <strong>4</strong> of 6.
+                </div>
+
+                <div class="opp-roster-section">
+                    <div class="opp-roster-head">
+                        <h3 class="opp-section-title">Opponent Roster (6)</h3>
+                        <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
+                            style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR ALL</button>
+                    </div>
+                    <div id="opponent-roster-grid"></div>
+                </div>
+
+                <div id="opponent-prep-results">
+                    <div class="opp-analysis-card">
+                        <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds</h3>
+                        <div id="opponent-team-preview"></div>
+                    </div>
+
+                    <div class="opp-analysis-card">
+                        <h3 class="opp-section-title" style="color: #4caf50; margin-bottom: 1rem;">Recommended Bring Sets</h3>
+                        <div id="opp-bring-panel"></div>
+                    </div>
+
+                    <div class="opp-analysis-card">
+                        <h3 class="opp-section-title" style="color: #2196f3; margin-bottom: 1rem;">Lead Analysis</h3>
+                        <div id="opp-lead-panel"></div>
+                    </div>
+
+                    <div class="opp-analysis-card opp-summary-card" id="opp-matchup-summary"></div>
+
+                    <div class="opp-analysis-card">
+                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">Counter Matrix</h3>
+                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Which of your Pokémon check each opponent threat — damage %, KO chance, and speed tier from the calc engine.</p>
+                        <div id="opp-counter-matrix"></div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="builder-main" id="builder-view">
 
@@ -1233,6 +1288,18 @@
         </div>
     </section>
 
+    <!-- Opponent Search Overlay -->
+    <div class="overlay" id="opponent-search-overlay" style="display: none;">
+        <div class="overlay-content">
+            <h2>Select Opponent Pokémon</h2>
+            <input type="text" id="opponent-overlay-search" class="builder-input" style="margin-top: 15px;"
+                placeholder="Search species...">
+            <div class="search-results" id="opponent-search-results"></div>
+            <button type="button" class="analyze-btn" style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+                onclick="document.getElementById('opponent-search-overlay').style.display='none'">CANCEL</button>
+        </div>
+    </div>
+
     <!-- Overlay for Search -->
     <div class="overlay" id="search-overlay">
         <div class="overlay-content">
@@ -1305,6 +1372,7 @@
     <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js?v=5"></script>
     <script src="../js/build-narrative.js?v=5"></script>
+    <script src="../js/opponent-analysis.js?v=1"></script>
 
     <script>
 
@@ -1347,6 +1415,12 @@
         }));
 
         registerTeamBuilderSource(() => team);
+        registerOpponentPrep(() => team);
+
+        const opponentSearchInput = document.getElementById('opponent-overlay-search');
+        if (opponentSearchInput) {
+            opponentSearchInput.oninput = (e) => updateOpponentSearchResults(e.target.value);
+        }
 
 
 
@@ -1523,6 +1597,20 @@
                 </div>
             `;
             container.appendChild(analysisTab);
+
+            // Opponent Prep Tab
+            const oppTab = document.createElement('div');
+            oppTab.className = `team-tab ${currentSlot === -3 ? 'active' : ''}`;
+            oppTab.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            oppTab.onclick = () => switchSlot(-3);
+            oppTab.innerHTML = `
+                <div class="tab-sprite">⚔️</div>
+                <div class="tab-info">
+                    <span class="tab-name">OPP PREP</span>
+                    <span class="tab-role">MATCHUP</span>
+                </div>
+            `;
+            container.appendChild(oppTab);
         }
 
         function switchSlot(idx) {
@@ -1533,16 +1621,25 @@
                 document.getElementById('builder-view').style.display = 'none';
                 document.getElementById('team-view').style.display = 'block';
                 document.getElementById('analysis-view').style.display = 'none';
+                document.getElementById('opponent-prep-view').style.display = 'none';
                 renderTeamPreview();
             } else if (idx === -2) {
                 document.getElementById('builder-view').style.display = 'none';
                 document.getElementById('team-view').style.display = 'none';
                 document.getElementById('analysis-view').style.display = 'block';
+                document.getElementById('opponent-prep-view').style.display = 'none';
                 runTeamBuilderAnalysis(team);
+            } else if (idx === -3) {
+                document.getElementById('builder-view').style.display = 'none';
+                document.getElementById('team-view').style.display = 'none';
+                document.getElementById('analysis-view').style.display = 'none';
+                document.getElementById('opponent-prep-view').style.display = 'block';
+                showOpponentPrepView();
             } else {
                 document.getElementById('builder-view').style.display = 'grid';
                 document.getElementById('team-view').style.display = 'none';
                 document.getElementById('analysis-view').style.display = 'none';
+                document.getElementById('opponent-prep-view').style.display = 'none';
                 syncUI();
             }
             function renderTeamPreview() {
