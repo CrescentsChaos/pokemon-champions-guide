@@ -981,3 +981,230 @@
     color: #ffcc80;
 }
 
+/* Battle intel panel */
+.opp-intel-intro {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+}
+
+.opp-intel-block {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.opp-intel-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.opp-intel-block__title {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #e040fb;
+    margin: 0 0 0.65rem;
+}
+
+.opp-intel-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #ddd;
+}
+
+.opp-intel-list li {
+    margin-bottom: 0.45rem;
+}
+
+.opp-intel-list li::marker {
+    color: #e040fb;
+}
+
+.opp-mega-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.opp-mega-card {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.opp-mega-card--opponent {
+    background: rgba(244, 67, 54, 0.06);
+    border-color: rgba(244, 67, 54, 0.2);
+}
+
+.opp-mega-card--you {
+    background: rgba(76, 175, 80, 0.06);
+    border-color: rgba(76, 175, 80, 0.2);
+}
+
+.opp-mega-card__side {
+    font-size: 0.58rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    opacity: 0.5;
+}
+
+.opp-mega-card__name {
+    font-weight: 900;
+    font-size: 0.88rem;
+    color: #fff;
+}
+
+.opp-mega-card__item {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.opp-mega-card__speed {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #ffcc80;
+    font-family: monospace;
+}
+
+.opp-mega-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: rgba(255, 51, 51, 0.15);
+    border: 1px solid rgba(255, 51, 51, 0.35);
+    color: #ff8a80;
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+}
+
+.opp-mega-badge--sm {
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    margin-bottom: 0;
+}
+
+.opp-mega-calc-note {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 6px 0 0;
+    line-height: 1.45;
+}
+
+/* Search — Champions + meta */
+.opp-search-section-head {
+    grid-column: 1 / -1;
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 12px 4px 6px;
+    margin-top: 4px;
+}
+
+#opponent-search-overlay .search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+#opponent-search-overlay .search-card--top {
+    border-color: rgba(255, 215, 0, 0.25);
+    background: rgba(255, 215, 0, 0.04);
+}
+
+.opp-search-rank {
+    display: block;
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: #ffd700;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+}
+
+.opp-search-rank--champ {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.opp-intel-block--warn {
+    border: 1px solid rgba(255, 152, 0, 0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: rgba(255, 152, 0, 0.04);
+}
+
+.opp-warn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.opp-warn-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border-left: 3px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.opp-warn-item--high {
+    border-left-color: #ff9800;
+}
+
+.opp-warn-item--scout {
+    border-left-color: rgba(255, 255, 255, 0.25);
+    opacity: 0.85;
+}
+
+.opp-warn-item__head {
+    display: block;
+    font-weight: 900;
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+    color: #fff;
+}
+
+.opp-warn-item p {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.opp-warn-item strong {
+    color: #ffcc80;
+}
+
+.opp-preview-int-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 6px;
+}
+
+.opp-int-tag {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(100, 181, 246, 0.15);
+    color: #90caf9;
+    border: 1px solid rgba(100, 181, 246, 0.25);
+}
+
+.opp-preview-card--bench .opp-int-tag {
+    opacity: 0.65;
+}
+
