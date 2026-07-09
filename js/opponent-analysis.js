@@ -76,6 +76,71 @@ function compareSpeedLabels(ourSpeed, oppSpeed) {
     return 'tie';
 }
 
+function weatherSimToFieldWeather(sim) {
+    if (!sim?.activeWeather) return null;
+    return { sun: 'Sun', rain: 'Rain', sand: 'Sand', snow: 'Snow' }[sim.activeWeather] || null;
+}
+
+function buildMatchupField(format, weatherSim) {
+    const field = typeof getDefaultField === 'function' ? getDefaultField(format) : { format, weather: 'None' };
+    const w = weatherSimToFieldWeather(weatherSim);
+    if (w) field.weather = w;
+    return field;
+}
+
+function canAddMegaToPick(idx, picked, mons) {
+    if (!isMegaCapable(mons[idx])) return true;
+    return !picked.some(i => isMegaCapable(mons[i]));
+}
+
+function filterDisplayRoles(roles, intTags) {
+    const tagSet = new Set((intTags || []).map(t => t.toLowerCase()));
+    const redundant = new Set();
+    if (tagSet.has('fake out')) redundant.add('Fake Out Pressure');
+    if (tagSet.has('trick room')) redundant.add('Trick Room Setter');
+    if (tagSet.has('tailwind')) redundant.add('Speed Control');
+    if (tagSet.has('auto-rain') || tagSet.has('auto-sun') || tagSet.has('rain dance flex') || tagSet.has('sunny day flex')) {
+        redundant.add('Weather Setter');
+    }
+    if (tagSet.has('burn') || tagSet.has('encore') || tagSet.has('prankster encore') || tagSet.has('taunt')) {
+        redundant.add('Disruptor');
+    }
+    if (tagSet.has('screens')) redundant.add('Screener');
+    if (tagSet.has('haze')) redundant.add('Phazer/Hazer');
+
+    let filtered = (roles || []).filter(r => !redundant.has(r));
+    if (filtered.includes('Hazard Setter') && filtered.includes('Hazard Control')) {
+        filtered = filtered.filter(r => r !== 'Hazard Control');
+    }
+    return filtered.slice(0, 2);
+}
+
+function buildOpponentTeammateRankMap(excludeSlot) {
+    const recommendedTeammates = new Map();
+    const currentlySelected = new Set(
+        _opponentTeam.map((p, i) => (i === excludeSlot ? '' : normalizeSpeciesKey(p?.species || ''))).filter(Boolean)
+    );
+
+    _opponentTeam.forEach((slot, idx) => {
+        if (idx === excludeSlot || !slot?.species) return;
+        const dbSlot = (allPokemon || []).find(x => normalizeSpeciesKey(x.Name) === normalizeSpeciesKey(slot.species)) || {};
+        (dbSlot.Teammates || []).forEach(t => {
+            const tKey = normalizeSpeciesKey(t);
+            if (!currentlySelected.has(tKey)) recommendedTeammates.set(tKey, (recommendedTeammates.get(tKey) || 0) + 1);
+        });
+    });
+
+    const curSpec = _opponentTeam[excludeSlot]?.species;
+    if (curSpec) {
+        const curDb = (allPokemon || []).find(x => normalizeSpeciesKey(x.Name) === normalizeSpeciesKey(curSpec)) || {};
+        (curDb.Teammates || []).forEach(t => {
+            const tKey = normalizeSpeciesKey(t);
+            if (!currentlySelected.has(tKey)) recommendedTeammates.set(tKey, (recommendedTeammates.get(tKey) || 0) + 1);
+        });
+    }
+    return recommendedTeammates;
+}
+
 let _opponentTeam = Array(6).fill(null).map(createEmptyOpponentSlot);
 let _opponentSearchSlot = 0;
 let _opponentFormat = 'Singles';
@@ -473,10 +538,12 @@ function predictOpponentBringSet(mons, format, ourMons) {
 
     const picked = [];
     scored.filter(s => coreBring.has(s.i)).sort((a, b) => b.score - a.score).forEach(s => {
-        if (picked.length < bringCount && !picked.includes(s.i)) picked.push(s.i);
+        if (picked.length < bringCount && !picked.includes(s.i) && canAddMegaToPick(s.i, picked, mons)) {
+            picked.push(s.i);
+        }
     });
     scored.filter(s => !picked.includes(s.i)).sort((a, b) => b.score - a.score).forEach(s => {
-        if (picked.length < bringCount) picked.push(s.i);
+        if (picked.length < bringCount && canAddMegaToPick(s.i, picked, mons)) picked.push(s.i);
     });
 
     const benchIndices = mons.map((_, i) => i).filter(i => !picked.includes(i));
@@ -513,6 +580,15 @@ function predictOpponentBringSet(mons, format, ourMons) {
         }
     });
 
+    const megaOnRoster = mons.map((m, i) => ({ i, m })).filter(x => isMegaCapable(x.m));
+    if (megaOnRoster.length > 1) {
+        const megaInBring = picked.filter(i => isMegaCapable(mons[i]));
+        const benchedMegas = megaOnRoster.filter(x => !picked.includes(x.i));
+        if (megaInBring.length === 1 && benchedMegas.length) {
+            reasoning.push(`Only one Mega per battle — ${mons[megaInBring[0]].species} in; ${benchedMegas.map(x => x.m.species).join(', ')} likely benched.`);
+        }
+    }
+
     if (!reasoning.length) {
         reasoning.push(`Team reads as ${archetypeInfo.label} — bring tuned to your roster threats.`);
     }
@@ -541,10 +617,14 @@ function pickBestBringCombination(ourMons, format, bringCount) {
     combos.forEach(combo => {
         let score = 0;
         const bring = combo.map(i => ourMons[i]);
+        const comboWeatherSim = typeof simulateTurn1Weather === 'function'
+            ? simulateTurn1Weather(bring, oppBring.mons, format)
+            : null;
+        const comboField = buildMatchupField(format, comboWeatherSim);
         oppBring.mons.forEach(opp => {
             let bestVs = -Infinity;
             bring.forEach(our => {
-                const m = computeMatchupPair(our, opp, format);
+                const m = computeMatchupPair(our, opp, format, comboField);
                 bestVs = Math.max(bestVs, m.netScore);
             });
             score += bestVs;
@@ -591,9 +671,9 @@ function pickBestBringCombination(ourMons, format, bringCount) {
     };
 }
 
-function computeMatchupPair(ourMon, oppMon, format) {
+function computeMatchupPair(ourMon, oppMon, format, fieldOverride) {
     const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
-    const field = typeof getDefaultField === 'function' ? getDefaultField(format) : null;
+    const field = fieldOverride || (typeof getDefaultField === 'function' ? getDefaultField(format) : null);
     const hasCalc = typeof buildCalcStateFromSlot === 'function'
         && typeof findBestDamage === 'function'
         && field && movesDb.length;
@@ -773,13 +853,17 @@ function buildMirrorMatchAdvice(ourMon, oppMon, format, ourBringMons) {
     return lines.join(' ');
 }
 
-function buildCounterMatrix(ourMons, oppMons, format, oppBring, ourBring) {
+function buildCounterMatrix(ourMons, oppMons, format, oppBring, ourBring, fieldOverride) {
     const broughtSpecies = new Set((oppBring?.mons || []).map(m => m.species));
     const ourBringMons = ourBring?.mons || ourMons;
     const ourBringSpecies = new Set(ourBringMons.map(m => m.species));
     const megaInBring = ourBringMons.filter(isMegaCapable).map(m => m.species);
     const hasMegaInBring = megaInBring.length > 0;
     const matrix = [];
+    const matchupField = fieldOverride || buildMatchupField(format,
+        typeof simulateTurn1Weather === 'function'
+            ? simulateTurn1Weather(ourBringMons, oppBring?.mons || [], format)
+            : null);
 
     const sortedOpp = [...oppMons].sort((a, b) => {
         const aIn = broughtSpecies.has(a.species) ? 0 : 1;
@@ -799,7 +883,7 @@ function buildCounterMatrix(ourMons, oppMons, format, oppBring, ourBring) {
         };
 
         ourMons.forEach(our => {
-            const m = computeMatchupPair(our, opp, format);
+            const m = computeMatchupPair(our, opp, format, matchupField);
             const mirror = isMirrorMatchup(our, opp);
             const inBring = ourBringSpecies.has(our.species);
             const extraMega = hasMegaInBring && isMegaCapable(our) && !megaInBring.includes(our.species);
@@ -1050,6 +1134,129 @@ function renderBattleIntelPanel(plan, speedChart, megaIntel, format, interaction
         ${planHtml || '<p class="opp-empty-note">Add opponent Pokémon for a full battle plan.</p>'}`;
 }
 
+function explainMatchupLeadReason(mon, monRoles, oppLeads, format, field) {
+    const base = typeof explainLeadReason === 'function'
+        ? explainLeadReason(mon, monRoles, { utils: {}, format }, format)
+        : '';
+    if (!oppLeads?.length) return base;
+
+    const bestVs = oppLeads.map(opp => ({
+        species: opp.species,
+        m: computeMatchupPair(mon, opp, format, field)
+    })).sort((a, b) => b.m.netScore - a.m.netScore)[0];
+
+    if (bestVs && bestVs.m.netScore >= 15 && bestVs.m.offense?.maxPercent) {
+        return `${base.split('.')[0]} — threatens ${bestVs.species} (${bestVs.m.offense.move}, ${bestVs.m.offense.maxPercent}%).`;
+    }
+    if (bestVs && bestVs.m.netScore <= -10) {
+        return `Support lead — keeps ${mon.species} safe from ${bestVs.species} while partner pressures.`;
+    }
+    return base;
+}
+
+function scoreLeadPairMatchup(monA, monB, rolesA, rolesB, oppLeads, format, ctx, field) {
+    let score = 0;
+    if (typeof scoreLeadFitness === 'function') {
+        score += scoreLeadFitness(monA, rolesA, ctx, format) + scoreLeadFitness(monB, rolesB, ctx, format);
+    }
+
+    const supportRoles = ['Speed Control', 'Redirection', 'Fake Out Pressure', 'Trick Room Setter', 'Screener', 'Damage Mitigation'];
+    const offenseRoles = ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'];
+    const aSupport = rolesA.some(r => supportRoles.includes(r));
+    const bSupport = rolesB.some(r => supportRoles.includes(r));
+    const aOffense = rolesA.some(r => offenseRoles.includes(r));
+    const bOffense = rolesB.some(r => offenseRoles.includes(r));
+
+    if (aSupport && bSupport && !aOffense && !bOffense) score -= 35;
+    if (rolesA.includes('Setup Sweeper') && rolesB.includes('Setup Sweeper')) score -= 30;
+    if (rolesA.includes('Restricted Legendary') && rolesB.includes('Restricted Legendary')) score -= 40;
+    if ((rolesA.includes('Restricted Legendary') || rolesB.includes('Restricted Legendary'))
+        && !rolesA.includes('Fake Out Pressure') && !rolesB.includes('Fake Out Pressure')
+        && !rolesA.includes('Redirection') && !rolesB.includes('Redirection')) {
+        score -= 22;
+    }
+
+    let totalMatchup = 0;
+    oppLeads.forEach(oppLead => {
+        const mA = computeMatchupPair(monA, oppLead, format, field);
+        const mB = computeMatchupPair(monB, oppLead, format, field);
+        totalMatchup += mA.netScore + mB.netScore;
+        if (Math.max(mA.netScore, mB.netScore) >= 15) score += 10;
+        if (Math.min(mA.netScore, mB.netScore) <= -15) score -= 12;
+
+        const oppKey = normalizeSpeciesKey(oppLead.species);
+        if (oppKey === normalizeSpeciesKey(monA.species) && aSupport) score -= 18;
+        if (oppKey === normalizeSpeciesKey(monB.species) && bSupport) score -= 18;
+    });
+    score += totalMatchup;
+
+    const mainThreat = oppLeads.reduce((best, opp) => {
+        const threat = scoreMonThreatLevel(opp, format);
+        return !best || threat > best.threat ? { opp, threat } : best;
+    }, null)?.opp;
+    if (mainThreat) {
+        const vsThreat = Math.max(
+            computeMatchupPair(monA, mainThreat, format, field).netScore,
+            computeMatchupPair(monB, mainThreat, format, field).netScore
+        );
+        if (vsThreat < -5) score -= 28;
+        else if (vsThreat >= 10) score += 14;
+    }
+
+    return score;
+}
+
+function predictMatchupAwareLineup(ourBring, ourRoles, oppLeads, format, ctx, field) {
+    if (!ourBring.length) {
+        return { leadIndices: [], backIndices: [], leads: [], backMons: [], leadReasons: [] };
+    }
+
+    if (format === 'Doubles' && ourBring.length >= 2) {
+        const pairCombos = ourBring.length === 2
+            ? [[0, 1]]
+            : combinations(ourBring.map((_, i) => i), 2);
+
+        let best = { score: -Infinity, indices: [0, Math.min(1, ourBring.length - 1)] };
+        pairCombos.forEach(combo => {
+            const [i, j] = combo;
+            const pairScore = scoreLeadPairMatchup(
+                ourBring[i], ourBring[j],
+                ourRoles[i] || [], ourRoles[j] || [],
+                oppLeads || [], format, ctx, field
+            );
+            if (pairScore > best.score) best = { score: pairScore, indices: combo };
+        });
+
+        const leadIndices = best.indices;
+        const backIndices = ourBring.map((_, idx) => idx).filter(idx => !leadIndices.includes(idx));
+        return {
+            leadIndices,
+            backIndices,
+            leads: leadIndices.map(i => ourBring[i]),
+            backMons: backIndices.map(i => ourBring[i]),
+            leadReasons: leadIndices.map(i => explainMatchupLeadReason(ourBring[i], ourRoles[i] || [], oppLeads, format, field))
+        };
+    }
+
+    let bestIdx = 0;
+    let bestScore = -Infinity;
+    const oppLead = oppLeads?.[0];
+    ourBring.forEach((mon, i) => {
+        let score = typeof scoreLeadFitness === 'function'
+            ? scoreLeadFitness(mon, ourRoles[i] || [], ctx, format) : 0;
+        if (oppLead) score += computeMatchupPair(mon, oppLead, format, field).netScore * 1.5;
+        if (score > bestScore) { bestScore = score; bestIdx = i; }
+    });
+    const backIndices = ourBring.map((_, i) => i).filter(i => i !== bestIdx);
+    return {
+        leadIndices: [bestIdx],
+        backIndices,
+        leads: [ourBring[bestIdx]],
+        backMons: backIndices.map(i => ourBring[i]),
+        leadReasons: [explainMatchupLeadReason(ourBring[bestIdx], ourRoles[bestIdx] || [], oppLeads, format, field)]
+    };
+}
+
 function analyzeLeadRecommendation(ourBring, oppBring, format, oppArchetype) {
     if (!ourBring.length || !oppBring.length) {
         return { ourLeads: [], oppLeads: [], reasoning: [], leadMatchups: [] };
@@ -1065,20 +1272,29 @@ function analyzeLeadRecommendation(ourBring, oppBring, format, oppArchetype) {
         ? buildTeamContext(oppBring, format, {}, {}, {}, oppRoles)
         : { utils: {} };
 
+    const weatherSim = typeof simulateTurn1Weather === 'function'
+        ? simulateTurn1Weather(ourBring, oppBring, format)
+        : null;
+    const matchupField = buildMatchupField(format, weatherSim);
+    const weatherNote = weatherSim?.activeWeather
+        ? (typeof weatherLabel === 'function'
+            ? `Calcs use **${weatherLabel(weatherSim.activeWeather)}** Turn 1 (${weatherSim.lastSetter?.species || 'last setter'} wins).`
+            : `Calcs use active weather Turn 1.`)
+        : null;
+
     const oppLineup = typeof predictLineup === 'function'
         ? predictLineup(oppBring, oppRoles, format, oppCtx)
         : { leads: oppBring.slice(0, format === 'Doubles' ? 2 : 1), leadReasons: [] };
 
-    const ourLineup = typeof predictLineup === 'function'
-        ? predictLineup(ourBring, ourRoles, format, ourCtx)
-        : { leads: ourBring.slice(0, format === 'Doubles' ? 2 : 1), leadReasons: [] };
+    const ourLineup = predictMatchupAwareLineup(ourBring, ourRoles, oppLineup.leads, format, ourCtx, matchupField);
 
     const leadMatchups = [];
     const reasoning = [];
+    if (weatherNote) reasoning.push(weatherNote);
 
     ourLineup.leads.forEach((ourLead, li) => {
         oppLineup.leads.forEach((oppLead, oi) => {
-            const m = computeMatchupPair(ourLead, oppLead, format);
+            const m = computeMatchupPair(ourLead, oppLead, format, matchupField);
             leadMatchups.push({
                 ourLead: ourLead.species,
                 oppLead: oppLead.species,
@@ -1087,7 +1303,8 @@ function analyzeLeadRecommendation(ourBring, oppBring, format, oppArchetype) {
                 speedTier: m.speedTier,
                 netScore: m.netScore,
                 ourReason: ourLineup.leadReasons?.[li] || '',
-                oppReason: oppLineup.leadReasons?.[oi] || ''
+                oppReason: oppLineup.leadReasons?.[oi] || '',
+                weather: weatherSim?.activeWeather || null
             });
         });
     });
@@ -1154,7 +1371,9 @@ function analyzeLeadRecommendation(ourBring, oppBring, format, oppArchetype) {
         ourLeadReasons: ourLineup.leadReasons || [],
         oppLeadReasons: oppLineup.leadReasons || [],
         reasoning,
-        leadMatchups
+        leadMatchups,
+        weatherSim,
+        weatherNote
     };
 }
 
@@ -1227,6 +1446,7 @@ function updateOpponentSearchResults(q) {
         if (requestId !== _opponentSearchRequestId) return;
 
         const topRank = new Map((topList || []).map((name, i) => [normalizeSpeciesKey(name), i]));
+        const teammateRank = buildOpponentTeammateRankMap(_opponentSearchSlot);
         const query = (q || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         const selected = new Set(_opponentTeam.map((p, i) => i === _opponentSearchSlot ? '' : normalizeSpeciesKey(p.species)).filter(Boolean));
 
@@ -1240,11 +1460,16 @@ function updateOpponentSearchResults(q) {
             return key.includes(query) || n.toLowerCase().includes(q.toLowerCase());
         }).map(pk => {
             const key = normalizeSpeciesKey(pk.Name);
-            const rank = topRank.has(key) ? topRank.get(key) : 999;
-            return { pk, rank, isTop: rank < 999 };
+            const metaRank = topRank.has(key) ? topRank.get(key) : 999;
+            const recCount = teammateRank.get(key) || 0;
+            const isRec = recCount > 0;
+            let sortRank = Infinity;
+            if (isRec) sortRank = -recCount - 10000;
+            else if (metaRank < 999) sortRank = metaRank;
+            else sortRank = 5000;
+            return { pk, sortRank, isRec, isTop: metaRank < 999, metaRank, recCount };
         }).sort((a, b) => {
-            if (a.isTop !== b.isTop) return a.isTop ? -1 : 1;
-            if (a.isTop) return a.rank - b.rank;
+            if (a.sortRank !== b.sortRank) return a.sortRank - b.sortRank;
             return (a.pk.Name || '').localeCompare(b.pk.Name || '');
         });
 
@@ -1260,22 +1485,26 @@ function updateOpponentSearchResults(q) {
             head.className = 'opp-search-section-head';
             head.textContent = title;
             box.appendChild(head);
-            items.forEach(({ pk }) => appendCard(pk));
+            items.forEach(({ pk, isRec, isTop, recCount }) => appendCard(pk, { isRec, isTop, recCount }));
         };
 
-        const appendCard = (pk) => {
+        const appendCard = (pk, opts = {}) => {
             const name = pk.Name;
             const card = document.createElement('div');
-            card.className = 'search-card' + (topRank.has(normalizeSpeciesKey(name)) ? ' search-card--top' : '');
+            card.className = 'search-card' + (opts.isTop ? ' search-card--top' : '') + (opts.isRec ? ' search-card--synergy' : '');
             const t1 = (pk.Type_1 || '').toLowerCase();
             const t2 = (pk.Type_2 || '').toLowerCase();
-            const rank = topRank.get(normalizeSpeciesKey(name));
+            const metaRank = topRank.get(normalizeSpeciesKey(name));
             const spr = getOpponentSpriteUrl(name);
+            let badge = '';
+            if (opts.isRec) badge = `<span class="opp-search-rank opp-search-rank--synergy">+${opts.recCount} synergy</span>`;
+            else if (metaRank != null && metaRank < 999) badge = `<span class="opp-search-rank">#${metaRank + 1} meta</span>`;
+            else badge = '<span class="opp-search-rank opp-search-rank--champ">🏆</span>';
             card.innerHTML = `
                 <img src="${spr}" style="width:48px;height:48px;object-fit:contain" onerror="this.style.display='none'">
                 <div style="font-weight:900;font-size:0.85rem;color:#ffd700">${escapeAnalysisHtml(name)}</div>
                 <div>${t1 ? `<img src="${typeIconSrc(t1)}" height="12">` : ''}${t2 ? `<img src="${typeIconSrc(t2)}" height="12">` : ''}</div>
-                ${rank != null && rank < 999 ? `<span class="opp-search-rank">#${rank + 1} meta</span>` : '<span class="opp-search-rank opp-search-rank--champ">🏆</span>'}`;
+                ${badge}`;
             card.onclick = () => {
                 setOpponentSpecies(_opponentSearchSlot, name);
                 document.getElementById('opponent-search-overlay').style.display = 'none';
@@ -1284,10 +1513,11 @@ function updateOpponentSearchResults(q) {
         };
 
         if (!query) {
-            appendSection(`Top ${escapeAnalysisHtml(_opponentFormat)} Meta`, data.filter(d => d.isTop).slice(0, 24));
-            appendSection('Other Champions Pokémon', data.filter(d => !d.isTop).slice(0, 40));
+            appendSection('Synergy picks', data.filter(d => d.isRec).slice(0, 24));
+            appendSection(`Top ${escapeAnalysisHtml(_opponentFormat)} Meta`, data.filter(d => d.isTop && !d.isRec).slice(0, 24));
+            appendSection('Other Champions Pokémon', data.filter(d => !d.isTop && !d.isRec).slice(0, 40));
         } else {
-            data.slice(0, 60).forEach(({ pk }) => appendCard(pk));
+            data.slice(0, 60).forEach(({ pk, isRec, isTop, recCount }) => appendCard(pk, { isRec, isTop, recCount }));
         }
     };
 
@@ -1327,6 +1557,7 @@ function renderOpponentTeamPreview(oppMons, oppBring) {
         const intTags = typeof getInteractionTagsForMon === 'function'
             ? getInteractionTagsForMon(p, archetype, idx)
             : [];
+        const displayRoles = filterDisplayRoles(roles, intTags);
         const intTagHtml = intTags.length
             ? `<div class="opp-preview-int-tags">${intTags.map(t => `<span class="opp-int-tag">${escapeAnalysisHtml(t)}</span>`).join('')}</div>`
             : '';
@@ -1342,7 +1573,7 @@ function renderOpponentTeamPreview(oppMons, oppBring) {
                     ${megaBadge}
                     ${intTagHtml}
                     ${p.item ? `<div class="opp-preview-item-line">@${escapeAnalysisHtml(p.item)} · ${escapeAnalysisHtml(p.nature)}</div>` : `<div class="opp-preview-item-line">${escapeAnalysisHtml(p.nature)}</div>`}
-                    <div class="opp-preview-roles">${roles.slice(0, 2).map(r => `<span class="role-badge">${r}</span>`).join('')}</div>
+                    <div class="opp-preview-roles">${displayRoles.map(r => `<span class="role-badge">${r}</span>`).join('')}</div>
                     <div class="opp-preview-moves-label">Moves</div>
                     <div class="opp-preview-moves">${renderMovePills(p.moves, !isBring)}</div>
                     <div class="opp-preview-actions">
@@ -1435,6 +1666,7 @@ function renderLeadPanel(leadAnalysis, format) {
     }).join('');
 
     el.innerHTML = `
+        ${leadAnalysis.weatherNote ? `<p class="opp-lead-weather">${leadAnalysis.weatherNote.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>` : ''}
         <div class="opp-lead-grid">
             <div>
                 <h4 class="opp-section-label">Your recommended lead${format === 'Doubles' ? ' pair' : ''}</h4>
@@ -1591,7 +1823,11 @@ function runOpponentPrepAnalysis() {
 
     const oppBring = predictOpponentBringSet(oppActive, format, ourActive);
     const ourBring = pickBestBringCombination(ourActive, format, bringCount);
-    const matrix = buildCounterMatrix(ourActive, oppActive, format, oppBring, ourBring);
+    const weatherSim = typeof simulateTurn1Weather === 'function'
+        ? simulateTurn1Weather(ourBring.mons, oppBring.mons, format)
+        : null;
+    const matchupField = buildMatchupField(format, weatherSim);
+    const matrix = buildCounterMatrix(ourActive, oppActive, format, oppBring, ourBring, matchupField);
     const leadAnalysis = analyzeLeadRecommendation(ourBring.mons, oppBring.mons, format, oppBring.archetype);
     const interactionWarnings = typeof buildInteractionWarnings === 'function'
         ? buildInteractionWarnings(ourActive, oppActive, oppBring) : [];

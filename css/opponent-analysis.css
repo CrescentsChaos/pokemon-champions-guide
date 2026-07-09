@@ -1124,6 +1124,11 @@
     background: rgba(255, 215, 0, 0.04);
 }
 
+#opponent-search-overlay .search-card--synergy {
+    border-color: rgba(76, 175, 80, 0.35);
+    background: rgba(76, 175, 80, 0.06);
+}
+
 .opp-search-rank {
     display: block;
     font-size: 0.55rem;
@@ -1133,8 +1138,22 @@
     letter-spacing: 0.04em;
 }
 
+.opp-search-rank--synergy {
+    color: #81c784;
+}
+
 .opp-search-rank--champ {
     color: rgba(255, 255, 255, 0.35);
+}
+
+.opp-lead-weather {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 193, 7, 0.08);
+    border: 1px solid rgba(255, 193, 7, 0.25);
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .opp-intel-block--critical {
