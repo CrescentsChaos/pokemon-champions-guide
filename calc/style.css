@@ -370,6 +370,152 @@ input:hover {
     text-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
 }
 
+.meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.select-group label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.select-group select {
+    width: 100%;
+}
+
+.item-select-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.item-sprite {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: none;
+}
+
+.hp-row {
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1rem;
+}
+
+.hp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hp-header label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hp-max-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.hp-slider {
+    width: 100%;
+    margin-bottom: 10px;
+    accent-color: var(--primary-blue);
+}
+
+.hp-inputs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.hp-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.hp-input-group label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    min-width: 24px;
+}
+
+.hp-input-group input {
+    flex: 1;
+    min-width: 0;
+}
+
+.move-row {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.move-edit-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.move-edit-row label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.move-edit-row input,
+.move-edit-row select {
+    width: 100%;
+    padding: 5px 8px;
+    font-size: 0.72rem;
+}
+
+.move-meta-readout {
+    font-size: 0.65rem;
+    color: #888;
+    font-weight: 600;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .meta-row {
+        grid-template-columns: 1fr;
+    }
+
+    .move-edit-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 .boost-select {
     width: 55px;
     background: rgba(0, 0, 0, 0.2) !important;

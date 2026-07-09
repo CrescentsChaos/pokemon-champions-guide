@@ -94,16 +94,14 @@
                         </div>
                         <div class="select-group">
                             <label>Ability</label>
-                            <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose Ability...">
-                            <datalist id="p1-abilities-list"></datalist>
+                            <select id="p1-ability"></select>
                         </div>
                         <div class="select-group">
                             <label>Item</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p1-item-sprite"
-                                    style="width: 24px; height: 24px; object-fit: contain; display: none;"
+                            <div class="item-select-wrap">
+                                <img src="" id="p1-item-sprite" class="item-sprite" alt=""
                                     onerror="handleItemError(this, window.p1?.item)">
-                                <input type="text" id="p1-item" list="items-list" placeholder="Choose Item...">
+                                <select id="p1-item"></select>
                             </div>
                         </div>
                         <div class="select-group">
@@ -127,13 +125,22 @@
                         </div>
                     </div>
 
-                    <div class="hp-row"
-                        style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label>Current HP (%)</label>
-
+                    <div class="hp-row">
+                        <div class="hp-header">
+                            <label>Current HP</label>
+                            <span class="hp-max-label"><span id="p1-hp-raw">0</span> / <span id="p1-hp-max">0</span> HP</span>
                         </div>
-                        <input type="number" id="p1-hp-percent" value="100" min="0" max="100">
+                        <input type="range" id="p1-hp-slider" class="hp-slider" value="100" min="0" max="100" step="1">
+                        <div class="hp-inputs">
+                            <div class="hp-input-group">
+                                <label for="p1-hp-percent">%</label>
+                                <input type="number" id="p1-hp-percent" value="100" min="0" max="100" step="1">
+                            </div>
+                            <div class="hp-input-group">
+                                <label for="p1-hp-raw-input">HP</label>
+                                <input type="number" id="p1-hp-raw-input" value="0" min="0" step="1">
+                            </div>
+                        </div>
                         <div class="hp-bar-wrap">
                             <div id="p1-hp-bar" class="hp-bar" style="width: 100%;"></div>
                         </div>
@@ -275,16 +282,14 @@
                         </div>
                         <div class="select-group">
                             <label>Ability</label>
-                            <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose Ability...">
-                            <datalist id="p2-abilities-list"></datalist>
+                            <select id="p2-ability"></select>
                         </div>
                         <div class="select-group">
                             <label>Item</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="" id="p2-item-sprite"
-                                    style="width: 24px; height: 24px; object-fit: contain; display: none;"
+                            <div class="item-select-wrap">
+                                <img src="" id="p2-item-sprite" class="item-sprite" alt=""
                                     onerror="handleItemError(this, window.p2?.item)">
-                                <input type="text" id="p2-item" list="items-list" placeholder="Choose Item...">
+                                <select id="p2-item"></select>
                             </div>
                         </div>
                         <div class="select-group">
@@ -308,13 +313,22 @@
                         </div>
                     </div>
 
-                    <div class="hp-row"
-                        style="margin-top: 1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label>Current HP (%)</label>
-
+                    <div class="hp-row">
+                        <div class="hp-header">
+                            <label>Current HP</label>
+                            <span class="hp-max-label"><span id="p2-hp-raw">0</span> / <span id="p2-hp-max">0</span> HP</span>
                         </div>
-                        <input type="number" id="p2-hp-percent" value="100" min="0" max="100">
+                        <input type="range" id="p2-hp-slider" class="hp-slider" value="100" min="0" max="100" step="1">
+                        <div class="hp-inputs">
+                            <div class="hp-input-group">
+                                <label for="p2-hp-percent">%</label>
+                                <input type="number" id="p2-hp-percent" value="100" min="0" max="100" step="1">
+                            </div>
+                            <div class="hp-input-group">
+                                <label for="p2-hp-raw-input">HP</label>
+                                <input type="number" id="p2-hp-raw-input" value="0" min="0" step="1">
+                            </div>
+                        </div>
                         <div class="hp-bar-wrap">
                             <div id="p2-hp-bar" class="hp-bar" style="width: 100%;"></div>
                         </div>
@@ -338,8 +352,6 @@
     </div>
 
     <div id="toast" class="toast">Calculation Error!</div>
-
-    <datalist id="items-list"></datalist>
 
     <script src="../js/utils.js"></script>
     <script src="../js/battle/type-chart.js"></script>

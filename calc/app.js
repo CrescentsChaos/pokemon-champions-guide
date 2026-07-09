@@ -127,6 +127,100 @@ const natures = {
     'Calm': [0.9, 1, 1, 1.1, 1], 'Gentle': [1, 0.9, 1, 1.1, 1], 'Sassy': [1, 1, 1, 1.1, 0.9], 'Careful': [1, 1, 0.9, 1.1, 1], 'Quirky': [1, 1, 1, 1, 1]
 };
 
+const TYPE_LIST = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy', 'Stellar'];
+
+function getMaxHp(pk) {
+    return pk?.stats?.hp || 0;
+}
+
+function getCurrentHp(pk) {
+    return Math.max(0, Math.round(getMaxHp(pk) * ((pk.hpPercent ?? 100) / 100)));
+}
+
+function syncHpUI(pk) {
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const max = getMaxHp(pk);
+    const raw = getCurrentHp(pk);
+    const percent = Math.round((pk.hpPercent ?? 100) * 10) / 10;
+
+    const percentEl = document.getElementById(`${p}-hp-percent`);
+    const sliderEl = document.getElementById(`${p}-hp-slider`);
+    const rawInputEl = document.getElementById(`${p}-hp-raw-input`);
+    const rawDisplayEl = document.getElementById(`${p}-hp-raw`);
+    const maxDisplayEl = document.getElementById(`${p}-hp-max`);
+
+    if (percentEl) percentEl.value = percent;
+    if (sliderEl) sliderEl.value = percent;
+    if (rawInputEl) {
+        rawInputEl.max = max;
+        rawInputEl.value = raw;
+    }
+    if (rawDisplayEl) rawDisplayEl.textContent = raw;
+    if (maxDisplayEl) maxDisplayEl.textContent = max;
+    updateHPBar(pk.id, percent);
+}
+
+function setHpPercent(pk, percent) {
+    pk.hpPercent = Math.max(0, Math.min(100, parseFloat(percent) || 0));
+    syncHpUI(pk);
+    recalculate();
+}
+
+function setHpRaw(pk, raw) {
+    const max = getMaxHp(pk);
+    if (!max) return;
+    const clamped = Math.max(0, Math.min(max, parseInt(raw, 10) || 0));
+    pk.hpPercent = (clamped / max) * 100;
+    syncHpUI(pk);
+    recalculate();
+}
+
+function populateAbilitySelect(pk, recAbilities = []) {
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const select = document.getElementById(`${p}-ability`);
+    if (!select) return;
+
+    const pkData = pokemonDB.find(x => x.Name === pk.name);
+    let abilities = pkData ? getPokemonAbilities(pkData) : ['None'];
+    if (pk.ability && !abilities.includes(pk.ability)) abilities = [pk.ability, ...abilities];
+
+    abilities.sort((a, b) => {
+        const rankA = recAbilities.indexOf(a) !== -1 ? recAbilities.indexOf(a) : Infinity;
+        const rankB = recAbilities.indexOf(b) !== -1 ? recAbilities.indexOf(b) : Infinity;
+        return rankA - rankB;
+    });
+
+    select.innerHTML = abilities.map(a => {
+        const label = recAbilities.includes(a) ? `⭐ ${a}` : a;
+        return `<option value="${a}" ${pk.ability === a ? 'selected' : ''}>${label}</option>`;
+    }).join('');
+}
+
+function populateItemSelects() {
+    const sortedItems = [...itemsDB].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    ['p1-item', 'p2-item'].forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const pk = id === 'p1-item' ? p1 : p2;
+        select.innerHTML = `<option value="None">None</option>` +
+            sortedItems.map(i => `<option value="${i.name}" ${pk?.item === i.name ? 'selected' : ''}>${i.name}</option>`).join('');
+    });
+}
+
+function updateItemSprite(pk) {
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const itemSprite = document.getElementById(`${p}-item-sprite`);
+    if (!itemSprite) return;
+    if (pk.item && pk.item !== 'None') {
+        itemSprite.src = getItemSpriteUrl(pk.item);
+        itemSprite.style.display = 'block';
+        itemSprite.dataset.fallback = '';
+    } else {
+        itemSprite.style.display = 'none';
+        itemSprite.src = '';
+    }
+}
+
 
 // Initialize
 async function init() {
@@ -210,37 +304,29 @@ function setupEventListeners() {
         });
 
         document.getElementById(`${p}-hp-percent`).addEventListener('input', (e) => {
-            const val = parseInt(e.target.value) || 0;
-            pk.hpPercent = val;
-            updateHPBar(id, val);
-            recalculate();
+            setHpPercent(pk, e.target.value);
+        });
+
+        document.getElementById(`${p}-hp-slider`).addEventListener('input', (e) => {
+            setHpPercent(pk, e.target.value);
+        });
+
+        document.getElementById(`${p}-hp-raw-input`).addEventListener('input', (e) => {
+            setHpRaw(pk, e.target.value);
         });
 
         ['nature', 'ability', 'item', 'status'].forEach(field => {
             const el = document.getElementById(`${p}-${field}`);
-            const eventType = (field === 'ability' || field === 'item') ? 'input' : 'change';
-            el.addEventListener(eventType, (e) => {
+            el.addEventListener('change', (e) => {
                 pk[field] = e.target.value;
 
-                // Handle Form Changes (Item-based)
                 if (field === 'item') {
                     const nextForm = getPermanentForm(pk);
                     if (nextForm && nextForm !== pk.name) {
                         loadPokemon(id, nextForm);
                         return;
                     }
-
-                    // Update Item Sprite specifically
-                    const itemSprite = document.getElementById(`${p}-item-sprite`);
-                    if (itemSprite) {
-                        if (pk.item && pk.item !== 'None') {
-                            itemSprite.src = getItemSpriteUrl(pk.item);
-                            itemSprite.style.display = 'block';
-                        } else {
-                            itemSprite.style.display = 'none';
-                            itemSprite.src = '';
-                        }
-                    }
+                    updateItemSprite(pk);
                 }
 
                 if (field === 'ability' || field === 'item' || field === 'nature') updateStatsUI(pk);
@@ -547,29 +633,23 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-type2`).value = pk.type2;
     document.getElementById(`${p}-level`).value = pk.level;
     document.getElementById(`${p}-nature`).value = pk.nature;
-    document.getElementById(`${p}-ability`).value = pk.ability;
-    document.getElementById(`${p}-item`).value = pk.item;
-    document.getElementById(`${p}-hp-percent`).value = pk.hpPercent;
-
-    // Tera UI Sync
+    document.getElementById(`${p}-status`).value = pk.status || 'Healthy';
     document.getElementById(`${p}-tera`).checked = pk.tera || false;
     if (pk.teraType) document.getElementById(`${p}-tera-type`).value = pk.teraType;
-
-    updateHPBar(pk.id, pk.hpPercent);
 
     let recAbilities = [];
     let recMoves = [];
     const pkData = pokemonDB.find(x => x.Name === pk.name);
-    
+
     if (pkData && buildsDB) {
-        const speciesBuilds = buildsDB.filter(b => 
+        const speciesBuilds = buildsDB.filter(b =>
             (b.pokemon || '').toLowerCase() === pk.name.toLowerCase() &&
             (b.format || 'Singles').toLowerCase() === (field.format || 'Singles').toLowerCase()
         );
-        
+
         const abilityFreq = new Map();
         const moveFreq = new Map();
-        
+
         speciesBuilds.forEach(b => {
             if (!b.build) return;
             const lines = b.build.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -583,35 +663,18 @@ function populatePokemonUI(pk) {
                 }
             });
         });
-        
-        recAbilities = Array.from(abilityFreq.entries()).sort((a,b) => b[1] - a[1]).map(x => x[0]);
-        recMoves = Array.from(moveFreq.entries()).sort((a,b) => b[1] - a[1]).map(x => x[0]);
+
+        recAbilities = Array.from(abilityFreq.entries()).sort((a, b) => b[1] - a[1]).map(x => x[0]);
+        recMoves = Array.from(moveFreq.entries()).sort((a, b) => b[1] - a[1]).map(x => x[0]);
     }
 
-    if (pkData) {
-        let abilities = getPokemonAbilities(pkData);
-        abilities.sort((a, b) => {
-            const rankA = recAbilities.indexOf(a) !== -1 ? recAbilities.indexOf(a) : Infinity;
-            const rankB = recAbilities.indexOf(b) !== -1 ? recAbilities.indexOf(b) : Infinity;
-            return rankA - rankB;
-        });
-        // We do not prepend ⭐ to ability values to prevent breaking the input datalist value matching,
-        // but they are now sorted by priority.
-        document.getElementById(`${p}-abilities-list`).innerHTML = abilities.map(a => `<option value="${a}">`).join('');
-    }
+    populateAbilitySelect(pk, recAbilities);
+    populateItemSelects();
+    document.getElementById(`${p}-ability`).value = pk.ability;
+    document.getElementById(`${p}-item`).value = pk.item || 'None';
+    updateItemSprite(pk);
+    syncHpUI(pk);
 
-    // Item Sprite Sync
-    const itemSprite = document.getElementById(`${p}-item-sprite`);
-    if (itemSprite) {
-        if (pk.item && pk.item !== 'None') {
-            itemSprite.src = getItemSpriteUrl(pk.item);
-            itemSprite.style.display = 'block';
-        } else {
-            itemSprite.style.display = 'none';
-        }
-    }
-
-    // Sprite Sync
     const spriteImg = document.getElementById(`${p}-sprite`);
     if (spriteImg) {
         const clean = pk.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
@@ -658,46 +721,81 @@ function populatePokemonUI(pk) {
     const moveContainer = document.getElementById(`${p}-moves`);
     moveContainer.innerHTML = Array(4).fill().map((_, i) => {
         const move = pk.moves[i];
-        const mData = movesDB.find(m => m.name === move.name);
-        const multiInfo = isMultiHitMove(move.name);
+        const mData = BattleCalc.MoveIndex.findInArray(movesDB, move.name);
+        const multiInfo = BattleCalc.MoveIndex.getMultiHitInfo(move.name);
         const hitOptions = multiInfo
             ? (multiInfo.variable
                 ? Array.from({ length: multiInfo.max - multiInfo.min + 1 }, (_, n) => multiInfo.min + n)
                 : [multiInfo.min])
             : [];
+        const hasMove = move.name && move.name !== 'None';
+        const accuracy = mData?.accuracy;
 
         return `
-        <div class="move-row" style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div class="move-row">
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)" style="width: 100%; margin-bottom: 6px;">
                 <option value="None">None</option>
                 ${sortedMoves.map(mName => {
-                    const mDB = movesDB.find(x => x.name === mName) || {name: mName};
+                    const mDB = movesDB.find(x => x.name === mName) || { name: mName };
                     const isRec = recMoves.find(m => m.toLowerCase() === mName.toLowerCase());
                     const label = (isRec ? '⭐ ' : '') + mDB.name;
                     return `<option value="${mDB.name}" ${move.name === mDB.name ? 'selected' : ''}>${label}</option>`;
                 }).join('')}
             </select>
-            <div class="move-configs" style="display: flex; align-items: center; gap: 8px;">
-                ${mData && mData.name !== 'None' ? `
-                    <span class="type-tag type-${mData.type.toLowerCase()}" style="font-size: 0.6rem; padding: 2px 6px;">${mData.type}</span>
-                    <span style="font-size: 0.65rem; color: #888; font-weight: 600; margin-right: auto;">${mData.damage_class || mData.category || ''} ${mData.power ? '| ' + mData.power + ' BP' : ''} ${mData.accuracy ? '| ' + mData.accuracy + '%' : ''}</span>
+            ${hasMove ? `
+            <div class="move-edit-row">
+                <label>BP
+                    <input type="number" min="0" max="250" value="${move.basePower ?? 0}"
+                        onchange="updateMoveField(${pk.id}, ${i}, 'basePower', this.value)">
+                </label>
+                <label>Type
+                    <select onchange="updateMoveField(${pk.id}, ${i}, 'type', this.value)">
+                        ${TYPE_LIST.map(t => `<option value="${t}" ${move.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                    </select>
+                </label>
+                <label>Class
+                    <select onchange="updateMoveField(${pk.id}, ${i}, 'category', this.value)">
+                        ${['Physical', 'Special', 'Status'].map(c => `<option value="${c}" ${move.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                    </select>
+                </label>
+            </div>` : ''}
+            <div class="move-configs">
+                ${hasMove ? `
+                    <span class="type-tag type-${(move.type || 'normal').toLowerCase()}" style="font-size: 0.6rem; padding: 2px 6px;">${move.type}</span>
+                    <span class="move-meta-readout">${move.category || ''}${accuracy ? ' | ' + accuracy + '% acc' : ''}</span>
                 ` : '<div style="margin-right: auto;"></div>'}
                 ${multiInfo ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${hitOptions.map(h => `<option value="${h}" ${(move.hits || getDefaultHitCount(move.name, pk)) == h ? 'selected' : ''}>${h} hit${h > 1 ? 's' : ''}</option>`).join('')}
                 </select>` : ''}
                 <label class="crit-label">
-                    <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}> 
+                    <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}>
                     <span class="crit-text">CRIT</span>
                 </label>
             </div>
-        </div>
-    `}).join('');
+        </div>`;
+    }).join('');
 }
 
 function updateHits(pId, idx, hits) {
     const pk = pId === 1 ? p1 : p2;
-    pk.moves[idx].hits = parseInt(hits);
+    pk.moves[idx].hits = parseInt(hits, 10);
+    recalculate();
+}
+
+function updateMoveField(pId, idx, field, value) {
+    const pk = pId === 1 ? p1 : p2;
+    const move = pk.moves[idx];
+    if (!move || move.name === 'None') return;
+
+    if (field === 'basePower') {
+        move.basePower = Math.max(0, parseInt(value, 10) || 0);
+    } else if (field === 'type') {
+        move.type = value;
+    } else if (field === 'category') {
+        move.category = value;
+    }
+    move.customized = true;
     recalculate();
 }
 
@@ -782,6 +880,7 @@ function updateMove(pId, idx, moveName) {
             type: rec.type,
             category: rec.category,
             crit: prevCrit,
+            customized: false,
             ...(hits ? { hits } : {})
         });
     } else {
@@ -860,6 +959,8 @@ function updateStatsUI(pk) {
             </tr>
         `;
     }).join('');
+
+    syncHpUI(pk);
 }
 
 
@@ -1111,7 +1212,7 @@ function importPokePaste(id, paste) {
 }
 
 function populateDropdowns() {
-    const typeList = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy', 'Stellar'];
+    const typeList = TYPE_LIST;
     ['p1-type1', 'p1-type2', 'p1-tera-type', 'p2-type1', 'p2-type2', 'p2-tera-type'].forEach(s => {
         document.getElementById(s).innerHTML = typeList.map(t => `<option value="${t}">${t}</option>`).join('');
     });
@@ -1121,8 +1222,7 @@ function populateDropdowns() {
         document.getElementById(s).innerHTML = natureList.map(n => `<option value="${n}">${n}</option>`).join('');
     });
 
-    const itemsList = document.getElementById('items-list');
-    itemsList.innerHTML = `<option value="None">` + itemsDB.map(i => `<option value="${i.name}">`).join('');
+    populateItemSelects();
 }
 
 function showToast(msg) {
@@ -1134,6 +1234,11 @@ function showToast(msg) {
 }
 
 window.toggleChampionsMode = toggleChampionsMode;
+window.updateMove = updateMove;
+window.updateMoveField = updateMoveField;
+window.updateHits = updateHits;
+window.toggleCrit = toggleCrit;
+window.selectMove = selectMove;
 window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 
