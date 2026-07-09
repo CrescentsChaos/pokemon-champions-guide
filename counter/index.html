@@ -526,10 +526,18 @@
             'Eruption', 'Water Spout', 'Hyper Voice', 'Snarl', 'Origin Pulse', 'Precipice Blades', 'Glacial Lance', 'Astral Barrage'
         ];
 
-        let targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+        let targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: 'Singles', moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
 
         function normalizeKey(value) {
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
         }
 
         function findPokemonByName(name) {
@@ -606,6 +614,7 @@
         function loadPremadeBuild(buildId) {
             const build = buildsDB.find(b => String(b.id) === String(buildId));
             if (!build) return;
+            targetBuild.format = build.format || 'Singles';
             document.getElementById('paste-input').value = build.build;
             parsePaste(build.build);
             analyze();
@@ -711,7 +720,7 @@
             // UI Mode Toggles
             document.getElementById('new-import-btn').addEventListener('click', () => {
                 document.getElementById('paste-input').value = '';
-                targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+                targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: 'Singles', moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
                 document.getElementById('counter-results').innerHTML = `<div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;"><div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>Import a build on the left to begin strategic analysis.</div>`;
                 document.getElementById('results-count').innerText = '0 RESULTS FOUND';
                 showImportView();
@@ -940,10 +949,14 @@
             };
             if (normalizeKey(targetBuild.item).includes('choicescarf')) targetStats.spe = Math.floor(targetStats.spe * 1.5);
 
-            const counters = [];
-            buildsDB.forEach(build => {
-                if (normalizeKey(build.pokemon) === targetKey) return;
+            const targetFormat = (targetBuild.format || 'Singles').toLowerCase();
+            const candidatePool = buildsDB.filter(b =>
+                normalizeKey(b.pokemon) !== targetKey &&
+                (b.format || 'Singles').toLowerCase() === targetFormat
+            );
 
+            const bestBySpecies = new Map();
+            candidatePool.forEach(build => {
                 const cBuildParsed = parseCandidateBuild(build.build, targetData);
                 const candidateData = getEffectivePokemonData(build.pokemon, cBuildParsed.item);
                 if (!candidateData) return;
@@ -955,6 +968,8 @@
                 let maxTook = 0;
                 let bestDealt = 0;
                 let verdict = '';
+                let outspeeds = false;
+                let offenseKo = '';
 
                 if (hasCalc) {
                     const candSlot = {
@@ -975,6 +990,7 @@
 
                     if (offense && parseFloat(offense.maxPercent) > 0) {
                         bestDealt = parseFloat(offense.maxPercent);
+                        offenseKo = offense.koLabel || '';
                         if (bestDealt >= 100) {
                             score += 50;
                             points.push(`Calc OHKO: ${offense.move} (${offense.maxPercent}%).`);
@@ -986,6 +1002,10 @@
                         } else if (bestDealt >= 50) {
                             score += 22;
                             points.push(`Solid damage: ${offense.move} (${offense.maxPercent}%).`);
+                        }
+                        if (typeof isStrongAnswer === 'function' && isStrongAnswer(offense.koLabel)) {
+                            score += 12;
+                            points.push(`KO outlook: ${offense.koLabel}.`);
                         }
                     }
 
@@ -1006,7 +1026,8 @@
 
                     const candSpeed = getEffectiveSpeed(candAttacker, field);
                     const targetSpeed = getEffectiveSpeed(targetAttacker, field);
-                    if (candSpeed > targetSpeed) {
+                    outspeeds = candSpeed > targetSpeed;
+                    if (outspeeds) {
                         score += 12;
                         points.push(`Outspeeds (${candSpeed} vs ${targetSpeed}).`);
                     } else if (candSpeed < targetSpeed) {
@@ -1048,7 +1069,8 @@
                     });
                     if (bestDealt >= 100) { score += 40; points.push(`OHKO pressure (${Math.round(bestDealt)}%).`); verdict = 'ohko'; }
                     else if (bestDealt >= 50) { score += 22; points.push(`2HKO range (${Math.round(bestDealt)}%).`); }
-                    if (cStats.spe > targetStats.spe) { score += 12; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
+                    outspeeds = cStats.spe > targetStats.spe;
+                    if (outspeeds) { score += 12; points.push(`Outspeeds (${cStats.spe} > ${targetStats.spe}).`); }
                 }
 
                 const targetTypes = [targetData.Type_1, targetData.Type_2].filter(t => t && t !== 'None');
@@ -1066,22 +1088,33 @@
                     points.push('Strong defensive typing vs target STAB.');
                 }
 
-                if (score > 30 && !dead) {
-                    counters.push({
+                const threatens = bestDealt >= 40 ||
+                    (typeof isStrongAnswer === 'function' && isStrongAnswer(offenseKo));
+                const tanks = !dead && maxTook > 0 && maxTook < 80;
+                const revengeKill = dead && outspeeds && bestDealt >= 100;
+                const qualifies = (threatens || tanks) && (!dead || revengeKill);
+
+                if (qualifies && score > 30) {
+                    const speciesKey = normalizeKey(build.pokemon);
+                    const entry = {
                         ...build,
                         pokemon: candidateData.Name || candidateData.name,
                         score: Math.min(100, Math.round(score)),
-                        points: points.slice(0, 5),
-                        verdict
-                    });
+                        points: [...new Set(points)].slice(0, 6),
+                        verdict,
+                        item: cBuildParsed.item || build.item || '',
+                        ability: cBuildParsed.ability || ''
+                    };
+                    const prev = bestBySpecies.get(speciesKey);
+                    if (!prev || entry.score > prev.score) bestBySpecies.set(speciesKey, entry);
                 }
             });
 
-            counters.sort((a, b) => b.score - a.score);
+            const counters = Array.from(bestBySpecies.values()).sort((a, b) => b.score - a.score);
             loader.style.display = 'none'; btn.disabled = false;
             resultsContainer.style.opacity = '1';
             showPreviewView();
-            renderResults(counters.slice(0, 15));
+            renderResults(counters);
         }
 
         function parseCandidateBuild(buildStr, pData) {
@@ -1132,7 +1165,7 @@
 
         function renderResults(counters) {
             const container = document.getElementById('counter-results');
-            document.getElementById('results-count').innerText = `${counters.length} RESULTS FOUND`;
+            document.getElementById('results-count').innerText = `${counters.length} COUNTER${counters.length === 1 ? '' : 'S'} FOUND`;
 
             if (counters.length === 0) {
                 container.innerHTML = '<div class="placeholder-text">No strong counters found for this specific build.</div>';
@@ -1141,16 +1174,18 @@
 
             container.innerHTML = counters.map((c, i) => {
                 const clean = c.pokemon.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+                const buildId = `build-${c.id}`;
+                const itemLine = c.item ? ` · ${escapeHtml(c.item)}` : '';
                 return `
-                <div class="counter-card-premium fade-in" style="animation-delay: ${i * 0.05}s">
+                <div class="counter-card-premium counter-card-visible">
                     <div class="counter-score-badge">${c.score}% EFFECTIVE</div>
                     
                     <div class="counter-header-premium">
-                        <img src="https://play.pokemonshowdown.com/sprites/ani/${clean}.gif" class="counter-sprite-premium">
+                        <img src="https://play.pokemonshowdown.com/sprites/ani/${clean}.gif" class="counter-sprite-premium" alt="">
                         <div class="counter-meta-premium">
-                            <h4>${c.pokemon}</h4>
+                            <h4>${escapeHtml(c.pokemon)}</h4>
                             <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 800; letter-spacing: 0.5px;">
-                                ${(c.format || 'Singles').toUpperCase()} · BUILD #${c.id}
+                                ${escapeHtml((c.format || 'Singles').toUpperCase())} · BUILD #${c.id}${itemLine}
                             </div>
                             ${c.verdict ? `<div class="counter-verdict counter-verdict--${c.verdict}">${c.verdict === 'ohko' ? '● OHKO Threat' : c.verdict === 'tank' ? '● Defensive Answer' : '● Offensive Pressure'}</div>` : ''}
                         </div>
@@ -1160,27 +1195,28 @@
                         ${c.points.map(p => `
                             <div class="rationale-item-premium">
                                 <span class="rationale-icon">✓</span>
-                                <span>${p}</span>
+                                <span>${escapeHtml(p)}</span>
                             </div>
                         `).join('')}
                     </div>
 
-                    <div id="build-${i}" class="build-raw-premium">${c.build}</div>
+                    <div id="${buildId}" class="build-raw-premium">${escapeHtml(c.build)}</div>
                     <div style="display:flex;gap:8px;margin-top:1rem;">
-                        <button class="build-btn-premium" style="margin-top:0;flex:1;" onclick="toggleBuild(${i})">View Build Paste</button>
-                        <button class="build-btn-premium" style="margin-top:0;flex:1;background:rgba(74,144,226,0.2);border-color:rgba(74,144,226,0.4);" onclick="copyCounterPaste(${i})">Copy Paste</button>
+                        <button class="build-btn-premium" style="margin-top:0;flex:1;" onclick="toggleBuild('${buildId}')">View Build Paste</button>
+                        <button class="build-btn-premium" style="margin-top:0;flex:1;background:rgba(74,144,226,0.2);border-color:rgba(74,144,226,0.4);" onclick="copyCounterPaste('${buildId}')">Copy Paste</button>
                     </div>
                 </div>
             `}).join('');
         }
 
         function toggleBuild(id) {
-            const el = document.getElementById(`build-${id}`);
+            const el = document.getElementById(id);
+            if (!el) return;
             el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
 
         function copyCounterPaste(id) {
-            const el = document.getElementById(`build-${id}`);
+            const el = document.getElementById(id);
             if (!el) return;
             navigator.clipboard.writeText(el.textContent || '').catch(() => {});
         }

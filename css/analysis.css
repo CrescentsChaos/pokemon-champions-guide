@@ -591,7 +591,25 @@
 }
 
 .build-prose-section {
-    margin-bottom: 1.35rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.build-prose-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+#analysis-dashboard.synergy-analysis-active #strategy-overview-card,
+#analysis-dashboard.synergy-analysis-active .analysis-dashboard-grid,
+#analysis-dashboard.synergy-analysis-active > .analysis-card:last-of-type {
+    display: none !important;
+}
+
+#analysis-dashboard.synergy-analysis-active .build-prose-panel {
+    margin-bottom: 1.25rem;
 }
 
 .build-prose-section:last-child {

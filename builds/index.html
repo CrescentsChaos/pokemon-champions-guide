@@ -152,6 +152,30 @@
             gap: 3px;
             flex-shrink: 0;
         }
+
+        /* Synergy view: prose-first layout, hide duplicate dashboard blocks */
+        #analysis-dashboard.synergy-analysis-active #strategy-overview-card,
+        #analysis-dashboard.synergy-analysis-active .analysis-dashboard-grid,
+        #analysis-dashboard.synergy-analysis-active > .analysis-card:last-of-type {
+            display: none !important;
+        }
+
+        #analysis-dashboard.synergy-analysis-active .build-prose-panel {
+            display: block !important;
+            margin-bottom: 1.5rem;
+        }
+
+        #build-prose-panel .build-prose-section {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        #build-prose-panel .build-prose-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
     </style>
 </head>
 
@@ -183,27 +207,27 @@
                         <h3 class="build-prose-panel__title">Build Analysis</h3>
                         <span class="build-prose-panel__format" id="build-prose-format"></span>
                     </div>
-                    <section class="build-prose-section">
+                    <section class="build-prose-section" id="build-prose-section-overview">
                         <h4 class="build-prose-section__title">Overview</h4>
                         <div id="build-prose-overview" class="build-prose-body"></div>
                     </section>
-                    <section class="build-prose-section">
+                    <section class="build-prose-section" id="build-prose-section-set">
                         <h4 class="build-prose-section__title" id="build-prose-set-title">Set</h4>
                         <div id="build-prose-set" class="build-prose-body"></div>
                     </section>
-                    <section class="build-prose-section">
-                        <h4 class="build-prose-section__title">Checks &amp; Counters</h4>
-                        <div id="build-prose-checks" class="build-prose-body"></div>
-                    </section>
-                    <section class="build-prose-section">
+                    <section class="build-prose-section" id="build-prose-section-teammates">
                         <h4 class="build-prose-section__title">Teammates &amp; Synergy</h4>
                         <div id="build-prose-teammates" class="build-prose-body"></div>
                     </section>
-                    <section class="build-prose-section">
+                    <section class="build-prose-section" id="build-prose-section-checks">
+                        <h4 class="build-prose-section__title">Checks &amp; Counters</h4>
+                        <div id="build-prose-checks" class="build-prose-body"></div>
+                    </section>
+                    <section class="build-prose-section" id="build-prose-section-meta">
                         <h4 class="build-prose-section__title">Meta Matchups</h4>
                         <div id="build-prose-meta" class="build-prose-body"></div>
                     </section>
-                    <section class="build-prose-section build-prose-section--compact">
+                    <section class="build-prose-section build-prose-section--compact" id="build-prose-section-alternates" style="display:none;">
                         <h4 class="build-prose-section__title">Other Options</h4>
                         <div id="build-prose-alternates" class="build-prose-body"></div>
                     </section>
@@ -401,8 +425,8 @@
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
-    <script src="../js/analysis.js"></script>
-    <script src="../js/build-narrative.js"></script>
+    <script src="../js/analysis.js?v=3"></script>
+    <script src="../js/build-narrative.js?v=3"></script>
     <script>
         let allPokemon = [];
         let pokemonMap = {};
@@ -1838,6 +1862,8 @@
             selectedBuildId = null;
             document.querySelectorAll('.build-card-wrapper').forEach(el => el.classList.remove('selected'));
             document.getElementById('synergy-container').style.display = 'none';
+            const dashboard = document.getElementById('analysis-dashboard');
+            if (dashboard) dashboard.classList.remove('synergy-analysis-active');
         }
 
         function renderSynergy(mainBuild, scoredBuilds) {

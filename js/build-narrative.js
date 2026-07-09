@@ -191,6 +191,9 @@
         else if (ab === 'levitate') hook = `${link(ability)} grants Ground immunity — watch for Gravity, Mold Breaker, and Thousand Arrows.`;
         else if (ab === 'supreme overlord') hook = `${link(ability)} scales with fainted allies — ${link(mon.species)} grows more dangerous as the game progresses.`;
         else if (ab === 'huge power' || ab === 'pure power') hook = `${link(ability)} doubles effective Attack — even resisted hits can threaten bulky targets.`;
+        else if (ab === 'snow warning') hook = `${link(ability)} sets snow on switch-in, boosting Ice-type Defense by 50% on physical hits and enabling perfect-accuracy ${link('Blizzard')} while the weather is active.`;
+        else if (ab === 'drizzle') hook = `${link(ability)} sets rain, powering Water moves and enabling Thunder's perfect accuracy — pair with Swift Swim or rain abusers.`;
+        else if (ab === 'drought') hook = `${link(ability)} sets sun, weakening Water and boosting Fire — Chlorophyll and Protosynthesis partners benefit immediately.`;
 
         const body = desc ? `${desc.charAt(0).toUpperCase() + desc.slice(1)}` : `${link(ability)} shapes how ${link(mon.species)} interacts with common archetypes.`;
         return hook ? `${body} ${hook}` : body;
@@ -275,6 +278,125 @@
         ).slice(0, 4);
     }
 
+    function safeCompose(label, fn, fallback) {
+        try {
+            return fn();
+        } catch (err) {
+            console.warn('BuildNarrative.' + label + ':', err);
+            return fallback;
+        }
+    }
+
+    function getRoleDesc(role) {
+        if (typeof roleDescriptions !== 'undefined' && roleDescriptions[role]) return roleDescriptions[role];
+        return role;
+    }
+
+    function getDamageBenchmarks(mainMon, db, format) {
+        if (typeof findBestDamage !== 'function' || typeof buildCalcStateFromSlot !== 'function' || !db) return [];
+        const movesDb = (typeof allMoves !== 'undefined') ? allMoves : [];
+        const field = (typeof getDefaultField === 'function') ? getDefaultField(format) : { format };
+        const attacker = buildCalcStateFromSlot(mainMon, 1, db, movesDb);
+        const targets = ['Garchomp', 'Incineroar', 'Rillaboom', 'Kingambit', 'Landorus-Therian', 'Flutter Mane'];
+        const results = [];
+
+        targets.forEach(name => {
+            let tDb = null;
+            if (typeof allPokemon !== 'undefined') {
+                tDb = allPokemon.find(p => normKey(p.Name) === normKey(name));
+            }
+            if (!tDb) return;
+            const defender = buildCalcStateFromSlot({ species: name, level: mainMon.level || 50, evs: { hp: 252, def: 4, spd: 4, atk: 0, spa: 0, spe: 0 }, ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }, nature: 'Bold', moves: ['Protect'], ability: 'None', item: 'None' }, 2, tDb, movesDb);
+            const best = findBestDamage(attacker, defender, field);
+            if (best && parseFloat(best.maxPercent) > 0) {
+                results.push({ target: name, move: best.move, min: best.minPercent, max: best.maxPercent, ko: best.koLabel });
+            }
+        });
+        return results.sort((a, b) => parseFloat(b.max) - parseFloat(a.max)).slice(0, 4);
+    }
+
+    function composeFormatGameplay(mainMon, mainRoles, format, ctx) {
+        const u = ctx.utils || {};
+        const moves = (mainMon.moves || []).map(m => normKey(m));
+        const paras = [];
+        const isDoubles = (format || '').toLowerCase() === 'doubles';
+
+        if (isDoubles) {
+            paras.push(`In ${link('Doubles')}, ${link(mainMon.species)} competes for a slot on a six-Pokémon roster where every turn involves two active attackers. Your win condition is usually securing a double KO, setting speed control, or removing both opposing threats before they remove yours. Lead with this set when its tools immediately pressure the opponent's structure; bring it in the back when you need a late-game cleaner or a specific matchup answer.`);
+            if (moves.includes('protect')) {
+                paras.push(`Protect is central to doubles sequencing: scout whether the opponent double-targets your partner, stall out opposing Tailwind turns, and punish predictable Fake Out leads. A common line is Protect plus an aggressive partner move to guarantee one hit connects while ${link(mainMon.species)} stays healthy.`);
+            }
+            if (u.tailwind || moves.includes('tailwind')) {
+                paras.push(`Tailwind flips speed for four turns — commit to it when the opponent lacks their own speed control and your team has spread or multi-hit options to capitalize. Do not set Tailwind into an opposing Tailwind or Trick Room without a plan to overwrite or underspeed them.`);
+            }
+            if (moves.includes('fakeout')) {
+                paras.push(`Fake Out creates a one-turn window where only your partner acts at full speed. Pair it with setup (Swords Dance, Quiver Dance), a spread attack, or a second support move like Tailwind or Trick Room.`);
+            }
+            if (moves.includes('auroraveil') || moves.includes('reflect') || moves.includes('lightscreen')) {
+                paras.push(`Screen support defines many doubles teams: Aurora Veil halves both physical and special damage for five turns in snow, letting bulkier partners or setup sweepers survive hits they otherwise could not. Set screens before committing your restricted attacker.`);
+            }
+            if (u.intimidate || (ctx.hasSpecies && ctx.hasSpecies(['incineroar', 'landorustherian']))) {
+                paras.push(`Intimidate cycling in doubles repeatedly drops opposing Attack — stack switches with ${link('Incineroar')} or ${link('Landorus-Therian')} to make physical KOs mathematically impossible for weakened sweepers.`);
+            }
+        } else {
+            paras.push(`In ${link('Singles')}, ${link(mainMon.species)} must win a 1v1 war of attrition against the entire opposing team. Every switch costs momentum, so this set should either force switches with offensive pressure, pivot safely with U-turn or Volt Switch, or stay in and absorb hits while status or hazards wear the opponent down.`);
+            if (mainRoles.includes('Wallbreaker') || (mainMon.item || '').toLowerCase().includes('choice')) {
+                paras.push(`Choice items demand perfect prediction: click the move that KOs or heavily pressures the switch-in, because locking into a resisted attack often gives a free turn. Scout with team preview and prior turns before committing a lock.`);
+            }
+            if (mainRoles.includes('Setup Sweeper')) {
+                paras.push(`Setup moves require safe opportunities — force out a passive Pokémon, punish a slow pivot, or use a teammate's disruption in doubles-style formats. Once boosted, prioritize speed control answers before they revenge kill.`);
+            }
+            if (moves.includes('stealthrock') || moves.includes('spikes')) {
+                paras.push(`Hazards compound over switches: Stealth Rock and Spikes turn neutral matchups into 2HKO ranges and punish opposing pivots. Set them early when the opponent lacks a Magic Bounce or Rapid Spin answer.`);
+            }
+        }
+        return paras;
+    }
+
+    function composeDeepSetProse(mainMon, db, mainRoles, format, ctx, benchmarks) {
+        const moves = (mainMon.moves || []).filter(Boolean);
+        const moveKeys = moves.map(m => normKey(m));
+        const item = mainMon.item && mainMon.item.toLowerCase() !== 'none' ? mainMon.item : '';
+        const evLine = formatEvSpread(mainMon.evs);
+        const paras = [];
+
+        if (moves.length >= 2) {
+            const stab = moves.filter(m => {
+                const ref = getMoveRef(m);
+                const types = getMonTypes(db, mainMon);
+                return ref && types.some(t => t && t.toLowerCase() === (ref.type || '').toLowerCase());
+            });
+            const coverage = moves.filter(m => !stab.includes(m) && (getMoveRef(m)?.power || 0) > 0);
+            paras.push(`${link(mainMon.species)} carries ${moves.map(m => link(m)).join(', ')}. ${stab.length ? `Primary STAB comes from ${stab.map(m => link(m)).join(' and ')}` : 'This set leans on coverage rather than STAB'}${coverage.length ? `, while ${coverage.map(m => link(m)).join(' and ')} hit types the base typing cannot` : ''}. In team preview, identify which move threatens the opponent's restricted Pokémon or common switch-ins, and avoid revealing your Tera line too early.`);
+        }
+
+        if (moveKeys.includes('blizzard') || moveKeys.includes('thunder') || moveKeys.includes('hurricane')) {
+            paras.push(`Weather-dependent moves like ${moveKeys.includes('blizzard') ? link('Blizzard') : 'this spread'} reach full accuracy under the right conditions — ${link(mainMon.ability) || 'weather support'} or manual weather from a teammate makes these moves reliable finishers instead of risky 70% gambles.`);
+        }
+        if (moveKeys.includes('icywind') || moveKeys.includes('electroweb') || moveKeys.includes('bulldoze')) {
+            paras.push(`${link('Icy Wind')} and similar spread speed drops punish both opponents in doubles while chipping HP — use them to put slower sweepers in range of a follow-up KO from your partner, not as primary damage.`);
+        }
+
+        paras.push(`The ${evLine} spread with a ${mainMon.nature || 'Serious'} nature targets ${evIntent(mainMon.evs, mainRoles).join(' and ') || 'standard benchmarks'}. ${natureAnalysis(mainMon.nature, mainMon.evs)} Every leftover EV should answer a specific calc: surviving a hit, outspeeding a tier, or guaranteeing an OHKO on a meta threat.`);
+
+        if (item) {
+            paras.push(describeItem(item, mainMon, mainRoles, moves, format));
+        }
+
+        if (benchmarks.length) {
+            paras.push('Damage benchmarks against common targets (neutral spreads, level ' + (mainMon.level || 50) + '): ' +
+                benchmarks.map(b => `${link(b.move)} vs ${link(b.target)} (${b.min}–${b.max}%${b.ko ? ', ' + b.ko.toLowerCase() : ''})`).join('; ') + '. Treat these as planning numbers — real games add screens, Intimidate, and Tera.');
+        }
+
+        if (mainMon.tera && mainMon.tera !== 'Normal') {
+            paras.push(describeTera(mainMon, mainRoles));
+        } else if (mainRoles.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker'].includes(r))) {
+            paras.push(`Terastallization is your emergency button: offensive Tera turns a resisted STAB into neutral or super-effective damage, while defensive Tera removes a fatal weakness for one turn. Save Tera until it guarantees a knockout or keeps ${link(mainMon.species)} alive against a known calc.`);
+        }
+
+        return paras.map(p => '<p>' + p + '</p>').join('');
+    }
+
     function inferArchetype(ctx, mainRoles) {
         const u = ctx.utils || {};
         if (u.tr && mainRoles.includes('Trick Room Abuser')) return 'Trick Room offense';
@@ -288,36 +410,53 @@
         return `${(mainRoles[0] || 'flex').toLowerCase()} archetype`;
     }
 
-    function composeOverview(mainMon, db, mainRoles, format, ctx) {
+    function composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons) {
         const types = getMonTypes(db, mainMon).join('/') || 'Unknown';
         const speed = typeof getMonSpeed === 'function' ? getMonSpeed(mainMon, db) : null;
         const roleText = mainRoles.slice(0, 4).join(', ') || 'generalist';
         const archetype = inferArchetype(ctx, mainRoles);
         const weak = getWeaknessList(db, mainMon);
         const resist = getResistanceList(db, mainMon);
+        const teammates = (activeMons || []).slice(1);
         const paras = [];
+        const isDoubles = (format || '').toLowerCase() === 'doubles';
+        const bst = parseInt(db?.Total_Stats, 10) || 0;
 
-        const roleBlurbs = mainRoles.slice(0, 2).map(r => roleDescriptions?.[r] || r).filter(Boolean);
-        paras.push(`<p>${link(mainMon.species)} is a ${link(types)} ${format.toLowerCase()} Pokémon positioned as a <strong>${archetype}</strong> within the current Champions meta. This spread emphasizes <strong>${roleText.toLowerCase()}</strong>${roleBlurbs.length ? ' — ' + roleBlurbs.join(' ') : ''}.</p>`);
+        paras.push(`<p>${link(mainMon.species)} is a ${link(types)} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread packages <strong>${roleText.toLowerCase()}</strong> into a single set: ${mainRoles.slice(0, 3).map(r => getRoleDesc(r)).join(' ')}</p>`);
+
+        if (bst >= 600) {
+            paras.push(`<p>With a ${bst} base stat total, ${link(mainMon.species)} carries real bulk or power compared to standard Pokémon — respect its staying power and plan KOs with calc-backed lines rather than chip damage alone.</p>`);
+        } else if (bst > 0 && bst < 480) {
+            paras.push(`<p>${link(mainMon.species)} is statistically frail (BST ${bst}), so positioning and Protect matter more than raw trades. Avoid leaving it in on super-effective hits unless you have a KO calc or a Tera escape.</p>`);
+        }
 
         if (mainMon.ability) {
             paras.push(`<p>${describeAbility(mainMon.ability, mainMon, mainRoles, format)}</p>`);
         }
 
         if (speed != null) {
-            paras.push(`<p>${speedTierNote(speed, format)}</p>`);
+            paras.push(`<p>${speedTierNote(speed, format)} In practice, compare this number to common ${format} benchmarks — Choice Scarf users near 200+, base 100s near 150–170, and Trick Room abusers below 50.</p>`);
         }
 
         if (weak.length || resist.length) {
-            let def = '<p>Defensively, ';
-            if (resist.length) def += `it resists or ignores ${resist.slice(0, 4).map(t => link(t)).join(', ')}`;
-            if (weak.length && resist.length) def += '; however, ';
-            else if (weak.length) def += 'it ';
-            if (weak.length) def += `watch for ${weak.slice(0, 4).map(t => link(t)).join(', ')} — pair with teammates that switch into those typings or use Tera to flip a bad matchup.`;
-            else def += '.';
+            let def = '<p>Typing defines your defensive ceiling: ';
+            if (resist.length) def += `${link(mainMon.species)} resists or ignores ${resist.slice(0, 5).map(t => link(t)).join(', ')}`;
+            if (weak.length && resist.length) def += ', but ';
+            else if (weak.length) def += `${link(mainMon.species)} is vulnerable to `;
+            if (weak.length) def += `${weak.slice(0, 5).map(t => link(t)).join(', ')}. ${teammates.length ? 'Your recommended teammates partially cover these gaps — see Team Options below.' : 'Add teammates that switch into these typings before queueing.'}`;
+            else def += ' — a relatively safe defensive profile if you avoid unknown coverage moves.';
             def += '</p>';
             paras.push(def);
         }
+
+        composeFormatGameplay(mainMon, mainRoles, format, ctx).forEach(p => paras.push('<p>' + p + '</p>'));
+
+        if (teammates.length) {
+            paras.push(`<p>Team preview should highlight how ${link(mainMon.species)} fits with ${teammates.slice(0, 4).map(t => link(t.species)).join(', ')}. ${isDoubles ? 'Doubles rewards explicit speed-control and redirection plans — declare whether this Pokémon leads or cleans late before the game starts.' : 'Singles rewards knowing which opposing Pokémon this set forces out and what you switch into afterward.'}</p>`);
+        }
+
+        const primaryRole = mainRoles[0] || 'Generalist';
+        paras.push(`<p><strong>Win condition:</strong> ${getRoleDesc(primaryRole)} Execute that plan by ${isDoubles ? 'coordinating with your partner each turn — double targets, Protect reads, and Tera timing decide games more than raw damage.' : 'preserving HP until your speed or setup advantage is active, then trading aggressively into weakened teams.'}</p>`);
 
         return paras.join('');
     }
@@ -326,8 +465,7 @@
         const item = mainMon.item && mainMon.item.toLowerCase() !== 'none' ? mainMon.item : '';
         const setName = item || 'Standard';
         const moves = (mainMon.moves || []).filter(Boolean);
-        const evLine = formatEvSpread(mainMon.evs);
-        const intents = evIntent(mainMon.evs, mainRoles);
+        const benchmarks = safeCompose('benchmarks', () => getDamageBenchmarks(mainMon, db, format), []);
 
         const setCard = `
         <div class="build-prose-set-card">
@@ -341,7 +479,7 @@
                     <li><strong>Item:</strong> ${item ? link(item) : 'None'}</li>
                     <li><strong>Ability:</strong> ${mainMon.ability ? link(mainMon.ability) : '—'}</li>
                     <li><strong>Nature:</strong> ${mainMon.nature || 'Serious'}</li>
-                    <li><strong>EVs:</strong> ${evLine}</li>
+                    <li><strong>EVs:</strong> ${formatEvSpread(mainMon.evs)}</li>
                     ${mainMon.tera && mainMon.tera !== 'Normal' ? `<li><strong>Tera Type:</strong> ${link(mainMon.tera)}</li>` : ''}
                 </ul>
             </div>
@@ -353,19 +491,9 @@
             ).join('')}</div>`
             : '';
 
-        const spreadBlock = `
-        <div class="build-prose-subblock">
-            <h5 class="build-prose-subtitle">EV spread &amp; nature</h5>
-            <p><strong>${mainMon.nature || 'Serious'}</strong> nature — ${natureAnalysis(mainMon.nature, mainMon.evs)} The ${evLine} spread targets ${intents.join(', ') || 'balanced benchmarks'}.</p>
-        </div>`;
+        const deepProse = composeDeepSetProse(mainMon, db, mainRoles, format, ctx, benchmarks);
 
-        const itemBlock = `<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Item</h5><p>${describeItem(item, mainMon, mainRoles, moves, format)}</p></div>`;
-
-        const teraBlock = mainMon.tera && mainMon.tera !== 'Normal'
-            ? `<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Terastallization</h5><p>${describeTera(mainMon, mainRoles)}</p></div>`
-            : '';
-
-        return { setName, html: setCard + moveAnalysis + spreadBlock + itemBlock + teraBlock };
+        return { setName, html: setCard + deepProse + moveAnalysis };
     }
 
     function composeTeamSection(mainMon, teammates, roles, ctx, format, matchedSynergy) {
@@ -375,7 +503,9 @@
 
         const mainRoles = roles[0] || [];
         const leadPair = typeof describeLeadPair === 'function' ? describeLeadPair(ctx, [mainMon, ...teammates], roles) : { summary: '' };
-        let html = `<p><strong>Recommended core:</strong> ${teammates.map(t => link(t.species)).join(', ')} complement ${link(mainMon.species)} in the library team builder. ${leadPair.summary}</p>`;
+        let html = `<p><strong>Recommended core:</strong> ${teammates.map(t => link(t.species)).join(', ')} round out this ${format} team around ${link(mainMon.species)}. ${leadPair.summary}</p>`;
+
+        html += `<p>In ${format}, team synergy is not just type coverage — it is turn order, redirection, and speed control working together. ${link(mainMon.species)} should know which partner sets snow, Tailwind, or Trick Room before you click moves, because this set's damage moves assume those conditions when applicable.</p>`;
 
         if (matchedSynergy?.length) {
             html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Team archetypes detected</h5><ul class="build-prose-bullet-list">';
@@ -405,33 +535,55 @@
 
     function composeChecksSection(mainMon, db, mainRoles, threatResults) {
         const weak = getWeaknessList(db, mainMon);
-        let html = '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Defensive profile</h5>';
-        html += `<p>${link(mainMon.species)} is pressured by ${weak.length ? weak.map(t => link(t)).join(', ') : 'common coverage types'}. `;
+        const moves = (mainMon.moves || []).map(m => normKey(m));
+        let html = '';
+
+        html += '<p><strong>What threatens this set:</strong> ';
+        html += `${link(mainMon.species)} is pressured by ${weak.length ? weak.map(t => link(t)).join(', ') : 'common coverage types'}. `;
         if (mainRoles.includes('Physical Sweeper') || mainRoles.includes('Wallbreaker')) {
-            html += 'Intimidate, priority (Sucker Punch, Extreme Speed), and bulky pivots often end a sweep before it starts.';
+            html += 'Intimidate users, Will-O-Wisp, and priority (Sucker Punch, Extreme Speed, Bullet Punch) often stop a sweep before it starts. Faster Choice Scarf revenge killers capitalize on a locked or boosted position.';
         } else if (mainRoles.includes('Special Sweeper')) {
-            html += 'Assault Vest tanks, priority, and faster special attackers can revenge kill after a lock or setup turn.';
+            html += 'Assault Vest tanks, faster special attackers, and priority revenge kills punish a failed prediction. Status — especially paralysis — permanently reduces the value of a speed-invested spread.';
         } else if (mainRoles.includes('Redirection') || mainRoles.includes('Fake Out Pressure')) {
-            html += 'Once redirection is gone, Ghost-, Dark-, or spread attackers can target your back line freely.';
+            html += 'Once redirection or Fake Out pressure is spent, spread Ghost-, Dark-, or Fairy attacks can hit your back line freely. Taunt and Imprison shut down support before it activates.';
+        } else if (moves.includes('auroraveil') || mainRoles.includes('Screener')) {
+            html += 'Taunt, Defog, and Brick Break remove screens; a fast attacker that OHKOs before Aurora Veil goes up ends the strategy immediately.';
         } else {
-            html += 'Status, hazards, and super-effective coverage remain the primary ways to force it out.';
+            html += 'Residual damage, status, and super-effective coverage from common meta types force switches — never assume a neutral turn is safe.';
         }
-        html += '</p></div>';
+        html += '</p>';
+
+        html += '<p><strong>Common counters to respect:</strong> ';
+        const counterHints = [];
+        weak.forEach(w => {
+            if (w === 'fire') counterHints.push(`${link('Fire')}-type wallbreakers and Sun teams`);
+            if (w === 'fighting') counterHints.push(`${link('Fighting')}-type attackers and Close Combat users`);
+            if (w === 'rock') counterHints.push(`${link('Rock')}-type priority and Stealth Rock chip`);
+            if (w === 'steel') counterHints.push(`${link('Steel')}-types that resist STAB`);
+            if (w === 'steel' || w === 'fairy') counterHints.push('Poison and Steel coverage');
+        });
+        if ((mainMon.item || '').toLowerCase().includes('choice')) {
+            counterHints.push('Protect scouting and pivoting into a resist while locked');
+        }
+        html += (counterHints.length ? [...new Set(counterHints)].slice(0, 4).join('; ') : 'Bulky pivots and faster sweepers in the current meta') + '.</p>';
 
         if (threatResults?.length) {
             const pressures = [];
             threatResults.forEach(t => {
-                const hit = t.defensiveHits?.find(d => d.species === mainMon.species && parseFloat(d.maxPercent) >= 50);
-                if (hit) pressures.push({ threat: t.name, hit });
+                const hit = t.defensiveHits?.find(d => d.species === mainMon.species && parseFloat(d.maxPercent) >= 40);
+                if (hit) pressures.push({ threat: t.name, hit, rank: t.rank });
             });
             if (pressures.length) {
-                html += '<p><strong>Meta pressure:</strong> ';
-                html += pressures.slice(0, 4).map(p =>
-                    `${link(p.threat)} threatens with ${link(p.hit.move)} (${p.hit.maxPercent}% on ${link(mainMon.species)})`
+                html += '<p><strong>Calc-backed meta pressure:</strong> ';
+                html += pressures.sort((a, b) => a.rank - b.rank).slice(0, 5).map(p =>
+                    `${link(p.threat)} (#${p.rank}) — ${link(p.hit.move)} for ${p.hit.maxPercent}%`
                 ).join('; ');
-                html += '.</p>';
+                html += '. Position around these threats or preserve Tera to survive a calculated hit.</p>';
             }
         }
+
+        html += '<p><strong>How teammates cover you:</strong> Pair with Pokémon that resist your weaknesses and offer speed control or redirection so ' + link(mainMon.species) + ' can attack without taking a fatal hit. If the team lacks a hard answer to a top meta threat, treat that as a team-building gap rather than a single-set flaw.</p>';
+
         return html;
     }
 
@@ -514,11 +666,21 @@
         return html;
     };
 
+    function setProseSection(sectionId, bodyId, html) {
+        const body = document.getElementById(bodyId);
+        const section = document.getElementById(sectionId) || body?.closest('.build-prose-section');
+        if (body) body.innerHTML = html || '';
+        if (section) section.style.display = (html && String(html).trim()) ? '' : 'none';
+    }
+
     BN.renderFullAnalysis = function (mainMon, activeMons, format, ctx, roles, options = {}) {
         const panel = document.getElementById('build-prose-panel');
         if (!panel || !mainMon?.species) return;
 
         panel.style.display = 'block';
+        const dashboard = document.getElementById('analysis-dashboard');
+        if (dashboard) dashboard.classList.add('synergy-analysis-active');
+
         const db = typeof getMonDb === 'function' ? getMonDb(mainMon) : null;
         const mainRoles = roles[0] || [];
         const teammates = activeMons.slice(1);
@@ -527,28 +689,21 @@
         const fmtEl = document.getElementById('build-prose-format');
         if (fmtEl) fmtEl.textContent = format;
 
-        const setSection = composeSetSection(mainMon, db, mainRoles, format, ctx);
+        const setSection = safeCompose('set', () => composeSetSection(mainMon, db, mainRoles, format, ctx), { setName: 'Standard', html: '<p>Set analysis unavailable.</p>' });
         const setTitleEl = document.getElementById('build-prose-set-title');
         if (setTitleEl) setTitleEl.textContent = `${setSection.setName} Set`;
 
-        const sections = {
-            'build-prose-overview': composeOverview(mainMon, db, mainRoles, format, ctx),
-            'build-prose-set': setSection.html,
-            'build-prose-teammates': composeTeamSection(mainMon, teammates, roles, ctx, format, matchedSynergy),
-            'build-prose-checks': composeChecksSection(mainMon, db, mainRoles, options.threatResults || null),
-            'build-prose-alternates': composeAlternates(mainMon.species, format, options.buildId),
-            'build-prose-meta': '<p class="analysis-section-note">Calculating meta matchup summary…</p>'
-        };
+        setProseSection('build-prose-section-overview', 'build-prose-overview',
+            safeCompose('overview', () => composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons), `<p>${link(mainMon.species)} — analysis loading.</p>`));
+        setProseSection('build-prose-section-set', 'build-prose-set', setSection.html);
+        setProseSection('build-prose-section-checks', 'build-prose-checks',
+            safeCompose('checks', () => composeChecksSection(mainMon, db, mainRoles, options.threatResults || null), '<p>Checks analysis loading.</p>'));
+        setProseSection('build-prose-section-teammates', 'build-prose-teammates',
+            safeCompose('teammates', () => composeTeamSection(mainMon, teammates, roles, ctx, format, matchedSynergy), '<p>Add teammates for synergy analysis.</p>'));
+        setProseSection('build-prose-section-meta', 'build-prose-meta', '<p class="analysis-section-note">Calculating meta matchup summary…</p>');
 
-        Object.entries(sections).forEach(([id, html]) => {
-            const el = document.getElementById(id);
-            if (el) el.innerHTML = html;
-        });
-
-        const altSection = document.querySelector('.build-prose-section--compact');
-        if (altSection) {
-            altSection.style.display = sections['build-prose-alternates'] ? '' : 'none';
-        }
+        const altHtml = safeCompose('alternates', () => composeAlternates(mainMon.species, format, options.buildId), '');
+        setProseSection('build-prose-section-alternates', 'build-prose-alternates', altHtml);
     };
 
     BN.updateMetaSection = function (threatResults, format, mainMon, activeMons, roles) {

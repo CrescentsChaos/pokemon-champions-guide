@@ -822,6 +822,8 @@ function clearAnalysisUI(message = 'Add Pokemon to see analysis.') {
     if (strategyText) strategyText.innerHTML = '';
     const prosePanel = document.getElementById('build-prose-panel');
     if (prosePanel) prosePanel.style.display = 'none';
+    const dashboard = document.getElementById('analysis-dashboard');
+    if (dashboard) dashboard.classList.remove('synergy-analysis-active');
 }
 
 function sharedAnalyzeTeam(activeMons, format = 'Singles') {

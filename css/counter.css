@@ -302,6 +302,12 @@ body.counter-page {
     gap: 1.25rem;
 }
 
+.counter-card-premium.fade-in.appear,
+.counter-card-premium.counter-card-visible {
+    opacity: 1;
+    transform: none;
+}
+
 .counter-card-premium {
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.45));
     border: 1px solid var(--glass-border);
