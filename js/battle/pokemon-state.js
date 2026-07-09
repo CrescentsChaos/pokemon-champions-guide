@@ -27,8 +27,9 @@
             gravity: false,
             magicRoom: false,
             wonderRoom: false,
-            side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false },
-            side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false }
+            ruins: { tablets: false, vessel: false, sword: false, beads: false },
+            side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false },
+            side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false }
         };
     }
 

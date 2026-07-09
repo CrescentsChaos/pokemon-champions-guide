@@ -12,7 +12,7 @@
 
     function applyParadoxBoost(pk, rawStat, statKey, field, side) {
         let active = false;
-        if (pk.ability === 'Protosynthesis' && (field.weather === 'Sun' || side.protosynthesis)) active = true;
+        if (pk.ability === 'Protosynthesis' && (['Sun', 'Harsh Sun'].includes(field.weather) || side.protosynthesis)) active = true;
         if (pk.ability === 'Quark Drive' && (field.terrain === 'Electric' || side.quarkDrive)) active = true;
         if (!active) return rawStat;
 
@@ -42,6 +42,7 @@
         if (item === 'choice scarf') spe = Math.floor(spe * 1.5);
         if ((calcState.status || '').toLowerCase() === 'paralyzed') spe = Math.floor(spe * 0.5);
         const side = calcState.id === 1 ? field.side1 : field.side2;
+        if (side?.tailwind) spe = Math.floor(spe * 2);
         return applyParadoxBoost(calcState, spe, 'spe', field, side);
     }
 

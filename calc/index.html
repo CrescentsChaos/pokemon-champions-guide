@@ -53,6 +53,12 @@
 
                 <div class="panel-body">
                     <div class="config-row">
+                        <select id="p1-build" class="build-select" title="Load saved build">
+                            <option value="">Custom Set</option>
+                        </select>
+                        <select id="p1-forme" class="forme-select" title="Forme">
+                            <option value="">Forme</option>
+                        </select>
                         <select id="p1-type1" class="type-select"></select>
                         <select id="p1-type2" class="type-select"></select>
                         <label class="tera-toggle">
@@ -163,11 +169,22 @@
                 </div>
 
                 <div class="field-section">
+                    <h4>Level</h4>
+                    <div class="btn-group level-presets">
+                        <button class="field-btn level-preset" data-level="100">100</button>
+                        <button class="field-btn level-preset active" data-level="50">50</button>
+                        <button class="field-btn level-preset" data-level="5">5</button>
+                    </div>
+                </div>
+
+                <div class="field-section">
                     <h4>Weather</h4>
                     <div class="btn-grid">
                         <button class="field-btn active" data-weather="None">None</button>
                         <button class="field-btn" data-weather="Sun">Sun</button>
+                        <button class="field-btn" data-weather="Harsh Sun">Harsh Sun</button>
                         <button class="field-btn" data-weather="Rain">Rain</button>
+                        <button class="field-btn" data-weather="Heavy Rain">Heavy Rain</button>
                         <button class="field-btn" data-weather="Sand">Sand</button>
                         <button class="field-btn" data-weather="Snow">Snow</button>
                     </div>
@@ -196,7 +213,15 @@
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
-                            <button class="field-btn cycle-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn toggle-btn" data-effect="Leech Seed">Leech Seed</button>
+                            <button class="field-btn toggle-btn" data-effect="Tailwind">Tailwind</button>
+                            <div class="spikes-group">
+                                <span class="spikes-label">Spikes</span>
+                                <button class="field-btn spikes-btn active" data-effect="Spikes" data-count="0">0</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="1">1</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="2">2</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="3">3</button>
+                            </div>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
                         <div class="side-controls">
@@ -208,7 +233,15 @@
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
-                            <button class="field-btn cycle-btn" data-effect="Spikes" data-count="0">Spikes (0)</button>
+                            <button class="field-btn toggle-btn" data-effect="Leech Seed">Leech Seed</button>
+                            <button class="field-btn toggle-btn" data-effect="Tailwind">Tailwind</button>
+                            <div class="spikes-group">
+                                <span class="spikes-label">Spikes</span>
+                                <button class="field-btn spikes-btn active" data-effect="Spikes" data-count="0">0</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="1">1</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="2">2</button>
+                                <button class="field-btn spikes-btn" data-effect="Spikes" data-count="3">3</button>
+                            </div>
                             <button class="field-btn toggle-btn" data-effect="Stealth Rock">Stealth Rock</button>
                         </div>
 
@@ -216,6 +249,16 @@
                 </div>
 
                 <div class="field-section">
+                    <h4>Ruin Abilities</h4>
+                    <div class="btn-grid ruin-grid">
+                        <button class="field-btn toggle-btn" data-ruin="tablets">Tablets of Ruin</button>
+                        <button class="field-btn toggle-btn" data-ruin="vessel">Vessel of Ruin</button>
+                        <button class="field-btn toggle-btn" data-ruin="sword">Sword of Ruin</button>
+                        <button class="field-btn toggle-btn" data-ruin="beads">Beads of Ruin</button>
+                    </div>
+                </div>
+
+                <div class="field-section field-section-mechanics">
                     <h4>Game Mechanics</h4>
                     <div class="btn-grid">
                         <button class="field-btn toggle-btn" data-effect="Gravity">Gravity</button>
@@ -245,6 +288,12 @@
 
                 <div class="panel-body">
                     <div class="config-row">
+                        <select id="p2-build" class="build-select" title="Load saved build">
+                            <option value="">Custom Set</option>
+                        </select>
+                        <select id="p2-forme" class="forme-select" title="Forme">
+                            <option value="">Forme</option>
+                        </select>
                         <select id="p2-type1" class="type-select"></select>
                         <select id="p2-type2" class="type-select"></select>
                         <label class="tera-toggle">
@@ -379,6 +428,7 @@
     <script src="../js/battle/move-index.js"></script>
     <script src="../js/battle/stat-modifiers.js"></script>
     <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/field-effects.js"></script>
     <script src="../js/battle/damage-core.js"></script>
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>

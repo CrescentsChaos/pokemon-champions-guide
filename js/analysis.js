@@ -1077,100 +1077,36 @@ function formatEvLine(evs) {
 }
 
 function renderBuildProseAnalysis(mainMon, activeMons, format, ctx, roles) {
+    const matchedSynergy = SYNERGY_RULES.filter(r => r.check(ctx));
+    const buildId = typeof window !== 'undefined' ? window._currentMainBuildId : null;
+
+    if (typeof BuildNarrative !== 'undefined' && BuildNarrative.renderFullAnalysis) {
+        BuildNarrative.renderFullAnalysis(mainMon, activeMons, format, ctx, roles, {
+            matchedSynergy,
+            buildId
+        });
+        window._lastProseRoles = roles;
+        return;
+    }
+
     const panel = document.getElementById('build-prose-panel');
     if (!panel || !mainMon?.species) return;
-
     panel.style.display = 'block';
-    const mainRoles = roles[0] || [];
-    const db = getMonDb(mainMon);
-    const types = [db?.Type_1, db?.Type_2].filter(Boolean).join('/') || 'Unknown';
-    const speed = getMonSpeed(mainMon, db);
-    const teammates = activeMons.slice(1);
-    const item = mainMon.item && mainMon.item.toLowerCase() !== 'none' ? mainMon.item : '';
-    const setName = item || 'Standard';
-    const moves = (mainMon.moves || []).filter(Boolean);
-    const moveKeys = moves.map(m => normalizeMoveKey(m));
-
-    const fmtEl = document.getElementById('build-prose-format');
-    const setTitleEl = document.getElementById('build-prose-set-title');
-    if (fmtEl) fmtEl.textContent = format;
-    if (setTitleEl) setTitleEl.textContent = `${setName} Set`;
-
-    const roleSummary = mainRoles.slice(0, 3).join(', ') || 'generalist';
-    const overview = `<p><strong>${linkMon(mainMon.species)}</strong> is a ${types} ${format.toLowerCase()} pick built around <strong>${roleSummary.toLowerCase()}</strong> duties. ${mainMon.ability ? `${linkMon(mainMon.ability)} defines its interaction with common archetypes.` : ''} ${speed != null ? `At <strong>${speed} Speed</strong>, this spread ${speed >= 100 ? 'outspeeds most unboosted threats' : speed < 60 ? 'relies on Trick Room or Tailwind to flip turn order' : 'sits in a contested mid-speed tier where speed control decides games'}.` : ''}</p>`;
-
-    let setDesc = '';
-    const itemL = item.toLowerCase();
-    if (itemL.includes('choice specs')) {
-        setDesc = `${setName} turns ${mainMon.species} into a special wallbreaker — pick the correct STAB or coverage move each turn because switching out is costly.`;
-    } else if (itemL.includes('choice band')) {
-        setDesc = `${setName} maximizes physical output. Commit to a KO calc before clicking; a wrong locked move often costs the game.`;
-    } else if (itemL.includes('choice scarf')) {
-        setDesc = `${setName} buys crucial Speed control, letting ${mainMon.species} revenge kill or pivot into favorable matchups — but watch for priority and Trick Room.`;
-    } else if (itemL.includes('focus sash')) {
-        setDesc = `Focus Sash guarantees survival from full HP, enabling a guaranteed Aurora Veil, Tailwind, or Trick Room turn if played carefully.`;
-    } else if (moveKeys.includes('protect')) {
-        setDesc = `Protect is the backbone of this set — scout double-targets, stall Tailwind turns, and punish predictable opponents.`;
-    } else if (moveKeys.includes('auroraveil') || moveKeys.includes('reflect')) {
-        setDesc = `Screen support is the win condition: set Aurora Veil or dual screens, then let bulkier partners or sweepers close the game.`;
-    } else if (format === 'Doubles' && moveKeys.includes('fakeout')) {
-        setDesc = `Fake Out buys a free turn for your partner — flinch the fastest threat while setting Tailwind, attacking, or setting Trick Room.`;
-    } else if (moveKeys.includes('tailwind')) {
-        setDesc = `Tailwind doubles team Speed for four turns — pair with spread attackers or Protect users to maximize the window.`;
-    } else if (moveKeys.includes('trickroom')) {
-        setDesc = `Trick Room reverses speed — lead with the setter and a bulky partner, then sweep with slow restricted Pokémon.`;
-    } else {
-        setDesc = `${mainMon.nature} nature with ${formatEvLine(mainMon.evs)} targets key ${format.toLowerCase()} benchmarks. Primary pressure comes from ${moves.slice(0, 2).map(m => linkMon(m)).join(' and ') || 'its coverage moves'}.`;
+    if (document.getElementById('build-prose-overview')) {
+        document.getElementById('build-prose-overview').innerHTML = `<p>${linkMon(mainMon.species)} analysis loading…</p>`;
     }
-
-    const setCard = `
-        <div class="build-prose-set-card">
-            <div>
-                <div class="build-prose-set-card__label">Moves</div>
-                <ul>${moves.map((m, i) => `<li>Move ${i + 1}: ${m}</li>`).join('') || '<li>No moves parsed</li>'}</ul>
-            </div>
-            <div>
-                <div class="build-prose-set-card__label">Set details</div>
-                <ul>
-                    <li>Item: ${item || 'None'}</li>
-                    <li>Ability: ${mainMon.ability || '—'}</li>
-                    <li>Nature: ${mainMon.nature || 'Serious'}</li>
-                    <li>EVs: ${formatEvLine(mainMon.evs)}</li>
-                    ${mainMon.tera && mainMon.tera !== 'Normal' ? `<li>Tera Type: ${mainMon.tera}</li>` : ''}
-                </ul>
-            </div>
-        </div>
-        <p>${setDesc}</p>`;
-
-    const leadPair = describeLeadPair(ctx, activeMons, roles);
-    let teamPara = '';
-    if (teammates.length) {
-        teamPara = `<p>Library teammates ${teammates.map(t => linkMon(t.species)).join(', ')} round out this core. ${leadPair.summary}</p>`;
-        teammates.forEach((t, i) => {
-            const tRoles = roles[i + 1] || [];
-            const tMoves = (t.moves || []).filter(Boolean).slice(0, 2).join(', ');
-            if (tRoles.includes('Redirection') || tRoles.includes('Fake Out Pressure') || tRoles.includes('Speed Control')) {
-                teamPara += `<p>${linkMon(t.species)} (${tRoles[0]}) covers ${mainMon.species} with ${tMoves || 'support tools'} — ${tRoles.includes('Redirection') ? 'redirecting both attacks' : tRoles.includes('Fake Out Pressure') ? 'buying a free turn' : 'controlling speed tiers'} so your ace can stay on the field.</p>`;
-            }
-        });
-        if (ctx.utils.intimidate) {
-            teamPara += `<p>Intimidate support on the roster softens physical hits into ${linkMon(mainMon.species)}, extending its longevity against common physical meta.</p>`;
-        }
-    } else {
-        teamPara = '<p>Shuffle or accept recommended teammates to populate full synergy and meta matchup analysis.</p>';
-    }
-
-    const overviewEl = document.getElementById('build-prose-overview');
-    const setEl = document.getElementById('build-prose-set');
-    const teamEl = document.getElementById('build-prose-teammates');
-    const metaEl = document.getElementById('build-prose-meta');
-    if (overviewEl) overviewEl.innerHTML = overview;
-    if (setEl) setEl.innerHTML = setCard;
-    if (teamEl) teamEl.innerHTML = teamPara;
-    if (metaEl) metaEl.innerHTML = '<p class="analysis-section-note">Calculating meta matchup summary…</p>';
 }
 
 function updateBuildProseMeta(threatResults, format) {
+    const mainMon = window._lastProseMainMon;
+    const activeMons = window._lastProseActiveMons;
+    const roles = window._lastProseRoles || [];
+
+    if (typeof BuildNarrative !== 'undefined' && BuildNarrative.updateMetaSection) {
+        BuildNarrative.updateMetaSection(threatResults, format, mainMon, activeMons, roles);
+        return;
+    }
+
     const metaEl = document.getElementById('build-prose-meta');
     if (!metaEl) return;
     if (!threatResults?.length) {
@@ -1230,6 +1166,8 @@ function renderAnalysis(coverage, weaknesses, resistances, roles, activeMons, fo
     renderScoreboard(ctx, activeMons);
     renderVgcAnalysis(ctx, activeMons, roles);
     renderBuildProseAnalysis(activeMons[0], activeMons, format, ctx, roles);
+    window._lastProseMainMon = activeMons[0];
+    window._lastProseActiveMons = activeMons;
 
     // Offensive coverage
     Object.entries(coverage).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
@@ -2154,5 +2092,6 @@ function buildsToActiveMons(buildEntries) {
 }
 
 function analyzeLibraryTeam(mainBuild, synergyBuilds, format = 'Singles') {
+    window._currentMainBuildId = mainBuild?.id || null;
     sharedAnalyzeTeam(buildsToActiveMons([mainBuild, ...(synergyBuilds || [])]), format);
 }

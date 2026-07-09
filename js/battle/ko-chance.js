@@ -79,12 +79,15 @@
             const maxPct = parseFloat(res.maxPercent);
             if (maxPct <= 0) return;
             if (!best || maxPct > parseFloat(best.maxPercent)) {
+                const effHp = BC.getEffectiveDefenderHp
+                    ? BC.getEffectiveDefenderHp(defender, field)
+                    : Math.floor(defender.stats.hp * ((defender.hpPercent ?? 100) / 100));
                 best = {
                     move: move.name,
                     minPercent: res.minPercent,
                     maxPercent: res.maxPercent,
                     rolls: res.rolls,
-                    koLabel: getKOChance(res.rolls, defender.stats.hp)
+                    koLabel: getKOChance(res.rolls, effHp)
                 };
             }
         });

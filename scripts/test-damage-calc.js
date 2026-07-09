@@ -24,6 +24,7 @@ function loadScript(relativePath) {
     'js/battle/move-index.js',
     'js/battle/stat-modifiers.js',
     'js/battle/move-power.js',
+    'js/battle/field-effects.js',
     'js/battle/damage-core.js',
     'js/battle/ko-chance.js',
     'js/battle/pokemon-state.js',

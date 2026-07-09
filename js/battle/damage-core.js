@@ -56,11 +56,11 @@
         return stab;
     }
 
-    function checkAbilityImmunity(attacker, defender, moveType, typeMod) {
+    function checkAbilityImmunity(attacker, defender, moveType, typeMod, field) {
         const isMoldBreaker = attacker.ability === 'Mold Breaker';
         if (isMoldBreaker) return false;
         if (defender.ability === 'Wonder Guard' && typeMod <= 1 && moveType !== 'None') return true;
-        if (defender.ability === 'Levitate' && moveType === 'Ground') return true;
+        if (defender.ability === 'Levitate' && moveType === 'Ground' && !field.gravity) return true;
         if (defender.ability === 'Flash Fire' && moveType === 'Fire') return true;
         if ((defender.ability === 'Water Absorb' || defender.ability === 'Storm Drain') && moveType === 'Water') return true;
         if ((defender.ability === 'Volt Absorb' || defender.ability === 'Lightning Rod') && moveType === 'Electric') return true;
@@ -79,7 +79,10 @@
         const isSpecial = move.category === 'Special';
 
         let atkBoost = isSpecial ? attacker.boosts.spa : attacker.boosts.atk;
-        let defBoost = isSpecial ? defender.boosts.spd : defender.boosts.def;
+        const defStatKey = field.wonderRoom
+            ? (isSpecial ? 'def' : 'spd')
+            : (isSpecial ? 'spd' : 'def');
+        let defBoost = defender.boosts[defStatKey];
 
         if (move.crit) {
             if (atkBoost < 0) atkBoost = 0;
@@ -87,13 +90,13 @@
         }
 
         let rawAtk = isSpecial ? attacker.stats.spa : attacker.stats.atk;
-        let rawDef = isSpecial ? defender.stats.spd : defender.stats.def;
+        let rawDef = defender.stats[defStatKey];
 
         const attackerSide = attacker.id === 1 ? field.side1 : field.side2;
         const defenderSide = defender.id === 1 ? field.side1 : field.side2;
 
         rawAtk = applyParadoxBoost(attacker, rawAtk, isSpecial ? 'spa' : 'atk', field, attackerSide);
-        rawDef = applyParadoxBoost(defender, rawDef, isSpecial ? 'spd' : 'def', field, defenderSide);
+        rawDef = applyParadoxBoost(defender, rawDef, defStatKey, field, defenderSide);
 
         const variablePower = moveRecord?.battle?.variablePower || MoveIndex.getVariablePower(move.name);
         if (variablePower === 'foul_play') {
@@ -116,12 +119,15 @@
             if (!isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
         }
 
-        const item = (attacker.item || '').toLowerCase();
+        const itemsActive = !field.magicRoom;
+        const item = itemsActive ? (attacker.item || '').toLowerCase() : '';
+        const defenderItem = itemsActive ? (defender.item || '').toLowerCase() : '';
         if (item === 'choice band' && !isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
         if (item === 'choice specs' && isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
-        if (item === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5);
+        if (defenderItem === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5);
 
-        const typeResult = resolveMoveType(attacker, move, moveRecord, item, field);
+        const typeItem = itemsActive ? item : '';
+        const typeResult = resolveMoveType(attacker, move, moveRecord, typeItem, field);
         let moveType = typeResult.moveType;
         let abilityBoost = typeResult.abilityBoost;
 
@@ -131,6 +137,12 @@
 
         let atk = getBoostValue(rawAtk, atkBoost);
         let def = getBoostValue(rawDef, defBoost);
+
+        if (BC.applyRuinModifiers) {
+            const ruin = BC.applyRuinModifiers(atk, def, attacker, defender, isSpecial, field);
+            atk = ruin.atk;
+            def = ruin.def;
+        }
 
         let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * atk / def) / 50) + 2;
 
@@ -166,9 +178,12 @@
             typeMod = defender.tera ? 2.0 : 1.0;
         } else {
             typeMod = getTypeModifier(moveType, defTypes);
+            if (field.gravity && moveType === 'Ground' && typeMod === 0) {
+                typeMod = 1.0;
+            }
         }
 
-        if (checkAbilityImmunity(attacker, defender, moveType, typeMod)) return res;
+        if (checkAbilityImmunity(attacker, defender, moveType, typeMod, field)) return res;
 
         if (typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock') && attacker.ability !== 'Mold Breaker') {
             modifier *= 0.75;
@@ -195,6 +210,8 @@
 
         if (attackerSide.helpingHand) modifier *= 1.5;
 
+        if (BC.getTerrainModifier) modifier *= BC.getTerrainModifier(moveType, field);
+
         let rolls = [];
         for (let i = 85; i <= 100; i++) {
             let r = Math.floor(baseDamage * i / 100);
@@ -216,6 +233,10 @@
         }
 
         const defHp = defender.stats.hp;
+        const effHp = BC.getEffectiveDefenderHp ? BC.getEffectiveDefenderHp(defender, field) : Math.floor(defHp * (defender.hpPercent ?? 100) / 100);
+        res.minDmg = rolls[0];
+        res.maxDmg = rolls[rolls.length - 1];
+        res.effectiveHp = effHp;
         res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
         res.maxPercent = (rolls[rolls.length - 1] / defHp * 100).toFixed(1);
         res.rolls = rolls;

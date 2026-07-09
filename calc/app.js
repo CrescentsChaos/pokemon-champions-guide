@@ -78,8 +78,9 @@ let field = {
     gravity: false,
     magicRoom: false,
     wonderRoom: false,
-    side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false },
-    side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false }
+    ruins: { tablets: false, vessel: false, sword: false, beads: false },
+    side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false },
+    side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false }
 };
 
 const natures = {
@@ -91,6 +92,77 @@ const natures = {
 };
 
 const TYPE_LIST = ['Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy', 'Stellar'];
+
+function getHazardDamageFor(pk) {
+    return BattleCalc.getHazardDamage ? BattleCalc.getHazardDamage(pk, field) : 0;
+}
+
+function getEffectiveHp(pk) {
+    if (BattleCalc.getEffectiveDefenderHp) return BattleCalc.getEffectiveDefenderHp(pk, field);
+    return getCurrentHp(pk);
+}
+
+function getAvailableFormes(name) {
+    if (!name) return [];
+    const data = pokemonDB.find(x => x.Name === name);
+    const base = data ? data.Name.split('-')[0] : name.split('-')[0];
+    return pokemonDB
+        .filter(p => p.Name === base || p.Name.startsWith(base + '-'))
+        .map(p => p.Name)
+        .filter((n, i, arr) => arr.indexOf(n) === i)
+        .sort((a, b) => a.localeCompare(b));
+}
+
+function populateBuildSelect(pk) {
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const select = document.getElementById(`${p}-build`);
+    if (!select || !pk.name) return;
+
+    const fmt = (field.format || 'Singles').toLowerCase();
+    const builds = buildsDB.filter(b =>
+        (b.pokemon || '').toLowerCase() === pk.name.toLowerCase() &&
+        (b.format || 'Singles').toLowerCase() === fmt
+    );
+
+    select.innerHTML = `<option value="">Custom Set</option>` +
+        builds.map(b => {
+            const role = inferBuildRole(b.build);
+            const item = extractItemFromBuild(b.build);
+            const label = item ? `${role} (${item})` : role;
+            return `<option value="${b.id}">Build #${b.id}: ${label}</option>`;
+        }).join('');
+    select.value = '';
+}
+
+function populateFormeSelect(pk) {
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const select = document.getElementById(`${p}-forme`);
+    if (!select) return;
+
+    const formes = getAvailableFormes(pk.name);
+    if (formes.length <= 1) {
+        select.style.display = 'none';
+        select.innerHTML = '';
+        return;
+    }
+    select.style.display = '';
+    select.innerHTML = formes.map(f => `<option value="${f}" ${f === pk.name ? 'selected' : ''}>${f}</option>`).join('');
+}
+
+function applyLevelPreset(level) {
+    [p1, p2].forEach(pk => {
+        if (!pk) return;
+        pk.level = level;
+        const p = pk.id === 1 ? 'p1' : 'p2';
+        const levelInput = document.getElementById(`${p}-level`);
+        if (levelInput) levelInput.value = level;
+        updateStatsUI(pk);
+    });
+    document.querySelectorAll('.level-preset').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.getAttribute('data-level'), 10) === level);
+    });
+    recalculate();
+}
 
 function getMaxHp(pk) {
     return pk?.stats?.hp || 0;
@@ -118,7 +190,11 @@ function syncHpUI(pk) {
         rawInputEl.max = max;
         rawInputEl.value = raw;
     }
-    if (rawDisplayEl) rawDisplayEl.textContent = raw;
+    if (rawDisplayEl) {
+        const hazard = getHazardDamageFor(pk);
+        rawDisplayEl.textContent = hazard > 0 ? `${Math.max(1, raw - hazard)}` : raw;
+        rawDisplayEl.title = hazard > 0 ? `${raw} HP before ${hazard} hazard damage` : '';
+    }
     if (maxDisplayEl) maxDisplayEl.textContent = max;
     updateHPBar(pk.id, percent);
 }
@@ -209,6 +285,7 @@ async function init() {
         updateStatsUI(p1);
         updateStatsUI(p2);
         setupEventListeners();
+        updateFieldState();
         populateDropdowns();
         try {
             await refreshTopMetaList();
@@ -265,6 +342,31 @@ function setupEventListeners() {
             updateStatsUI(pk);
             recalculate();
         });
+
+        ['type1', 'type2'].forEach(tKey => {
+            document.getElementById(`${p}-${tKey}`).addEventListener('change', (e) => {
+                pk[tKey] = e.target.value;
+                recalculate();
+            });
+        });
+
+        const buildSelect = document.getElementById(`${p}-build`);
+        if (buildSelect) {
+            buildSelect.addEventListener('change', (e) => {
+                const buildId = e.target.value;
+                if (!buildId) return;
+                const bData = buildsDB.find(b => String(b.id) === String(buildId));
+                if (bData?.build) importPokePaste(id, bData.build);
+            });
+        }
+
+        const formeSelect = document.getElementById(`${p}-forme`);
+        if (formeSelect) {
+            formeSelect.addEventListener('change', (e) => {
+                const forme = e.target.value;
+                if (forme && forme !== pk.name) loadPokemon(id, forme);
+            });
+        }
 
         document.getElementById(`${p}-hp-percent`).addEventListener('input', (e) => {
             setHpPercent(pk, e.target.value);
@@ -346,16 +448,23 @@ function setupEventListeners() {
 
     document.querySelectorAll('.field-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            if (btn.getAttribute('data-effect') === 'Spikes') {
-                let count = parseInt(btn.getAttribute('data-count') || '0', 10);
-                count = (count + 1) % 4;
-                btn.setAttribute('data-count', count);
-                btn.textContent = `Spikes (${count})`;
-                btn.classList.toggle('active', count > 0);
+            if (btn.classList.contains('spikes-btn')) {
+                const group = btn.closest('.spikes-group');
+                if (group) {
+                    group.querySelectorAll('.spikes-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
                 updateFieldState();
                 if (p1) updateStatsUI(p1);
                 if (p2) updateStatsUI(p2);
                 recalculate();
+                return;
+            }
+
+            if (btn.classList.contains('level-preset')) {
+                document.querySelectorAll('.level-preset').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyLevelPreset(parseInt(btn.getAttribute('data-level'), 10) || 50);
                 return;
             }
 
@@ -647,6 +756,8 @@ function populatePokemonUI(pk) {
 
     populateAbilitySelect(pk, recAbilities);
     populateItemSelects();
+    populateBuildSelect(pk);
+    populateFormeSelect(pk);
     document.getElementById(`${p}-ability`).value = pk.ability;
     document.getElementById(`${p}-item`).value = pk.item || 'None';
     updateItemSprite(pk);
@@ -982,29 +1093,58 @@ function recalculate() {
     renderMoveResults(p1Results, p2Results);
 
     let res = null;
-    if (selectedMoveIdx1 >= 0) res = p1Results[selectedMoveIdx1];
-    if (!res && selectedMoveIdx2 >= 0) res = p2Results[selectedMoveIdx2];
-    if (!res) res = p1Results.find(Boolean) || p2Results.find(Boolean);
+    let moveIdx = -1;
+    let attackerSide = 1;
+    if (selectedMoveIdx1 >= 0 && p1Results[selectedMoveIdx1]) {
+        res = p1Results[selectedMoveIdx1];
+        moveIdx = selectedMoveIdx1;
+        attackerSide = 1;
+    } else if (selectedMoveIdx2 >= 0 && p2Results[selectedMoveIdx2]) {
+        res = p2Results[selectedMoveIdx2];
+        moveIdx = selectedMoveIdx2;
+        attackerSide = 2;
+    } else {
+        const p1Hit = p1Results.findIndex(Boolean);
+        if (p1Hit >= 0) {
+            res = p1Results[p1Hit];
+            moveIdx = p1Hit;
+            attackerSide = 1;
+        } else {
+            const p2Hit = p2Results.findIndex(Boolean);
+            if (p2Hit >= 0) {
+                res = p2Results[p2Hit];
+                moveIdx = p2Hit;
+                attackerSide = 2;
+            }
+        }
+    }
+
     const banner = document.getElementById('main-result');
     const subBanner = document.getElementById('sub-result');
+    const koResult = document.getElementById('ko-result');
 
     if (!res) {
         banner.innerText = "Select moves to see damage results";
         subBanner.innerText = "Damage rolls: (0)";
-        document.getElementById('ko-result').innerText = '';
+        koResult.innerText = '';
         return;
     }
 
-    const attacker = res.attackerId === 1 ? p1 : p2;
-    const defender = res.attackerId === 1 ? p2 : p1;
-    const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
-    banner.innerText = `${attacker.name} ${res.move}${hitLabel} vs. ${defender.name}: ${res.minPercent}% - ${res.maxPercent}%`;
+    const attacker = attackerSide === 1 ? p1 : p2;
+    const defender = attackerSide === 1 ? p2 : p1;
+    const move = attacker.moves[moveIdx];
+    const effHp = res.effectiveHp ?? getEffectiveHp(defender);
+    const hazardNote = getHazardDamageFor(defender) > 0 ? ` (${effHp} HP after hazards)` : '';
+
+    if (BattleCalc.formatShowdownLine && move) {
+        banner.innerText = BattleCalc.formatShowdownLine(attacker, defender, move, res, field) + hazardNote;
+    } else {
+        const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
+        banner.innerText = `${attacker.name} ${res.move}${hitLabel} vs. ${defender.name}: ${res.minDmg ?? res.minPercent}-${res.maxDmg ?? res.maxPercent}%`;
+    }
     subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
 
-    // KO Probability
-    const koResult = document.getElementById('ko-result');
-    const hp = defender.stats.hp * (defender.hpPercent / 100);
-    koResult.innerText = getKOChance(res.rolls, hp);
+    koResult.innerText = getKOChance(res.rolls, effHp);
 }
 
 
@@ -1015,10 +1155,11 @@ function renderMoveResults(p1Results, p2Results) {
     p1Container.innerHTML = `<h4>${p1.name}'s Moves</h4>` + p1Results.map((res, i) => {
         if (!res) return '';
         const active = selectedMoveIdx1 === i ? 'active' : '';
+        const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
         return `
             <div class="result-move-box ${active}" onclick="selectMove(1, ${i})">
                 <span class="move-name-summary">${res.move}</span>
-                <span class="move-damage-summary">${res.minPercent}% - ${res.maxPercent}%</span>
+                <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
             </div>
         `;
     }).join('');
@@ -1026,10 +1167,11 @@ function renderMoveResults(p1Results, p2Results) {
     p2Container.innerHTML = `<h4>${p2.name}'s Moves</h4>` + p2Results.map((res, i) => {
         if (!res) return '';
         const active = selectedMoveIdx2 === i ? 'active' : '';
+        const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
         return `
             <div class="result-move-box ${active}" onclick="selectMove(2, ${i})">
                 <span class="move-name-summary">${res.move}</span>
-                <span class="move-damage-summary">${res.minPercent}% - ${res.maxPercent}%</span>
+                <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
             </div>
         `;
     }).join('');
@@ -1055,11 +1197,25 @@ function updateFieldState() {
     const activeTerrain = document.querySelector('[data-terrain].active');
     field.terrain = activeTerrain ? activeTerrain.getAttribute('data-terrain') : 'None';
 
-    // Side Effects
+    const fieldPanel = document.getElementById('field-panel');
+    if (fieldPanel) {
+        field.gravity = fieldPanel.querySelector('[data-effect="Gravity"]')?.classList.contains('active') || false;
+        field.magicRoom = fieldPanel.querySelector('[data-effect="Magic Room"]')?.classList.contains('active') || false;
+        field.wonderRoom = fieldPanel.querySelector('[data-effect="Wonder Room"]')?.classList.contains('active') || false;
+
+        field.ruins = {
+            tablets: fieldPanel.querySelector('[data-ruin="tablets"]')?.classList.contains('active') || false,
+            vessel: fieldPanel.querySelector('[data-ruin="vessel"]')?.classList.contains('active') || false,
+            sword: fieldPanel.querySelector('[data-ruin="sword"]')?.classList.contains('active') || false,
+            beads: fieldPanel.querySelector('[data-ruin="beads"]')?.classList.contains('active') || false
+        };
+    }
+
     ['side1', 'side2'].forEach((side, i) => {
         const panel = document.querySelectorAll('.sides-row .side-controls')[i];
         if (panel) {
             const btns = panel.querySelectorAll('.field-btn.active');
+            const activeSpikes = panel.querySelector('.spikes-btn.active');
             field[side] = {
                 reflect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Reflect'),
                 lightScreen: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Light Screen'),
@@ -1068,10 +1224,16 @@ function updateFieldState() {
                 helpingHand: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Helping Hand'),
                 protosynthesis: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protosynthesis'),
                 quarkDrive: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Quark Drive'),
-                spikes: parseInt(panel.querySelector('[data-effect="Spikes"]')?.getAttribute('data-count') || 0, 10)
+                leechSeed: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Leech Seed'),
+                tailwind: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Tailwind'),
+                stealthRock: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Stealth Rock'),
+                spikes: parseInt(activeSpikes?.getAttribute('data-count') || '0', 10)
             };
         }
     });
+
+    if (p1?.name) populateBuildSelect(p1);
+    if (p2?.name) populateBuildSelect(p2);
 }
 
 function updateHPBar(id, percent) {

@@ -19,7 +19,8 @@
         'calculateDamage', 'getEffectiveSpeed', 'compareSpeedTier', 'getDefaultField',
         'buildCalcStateFromSlot', 'findBestDamage', 'isStrongAnswer',
         'getMoveMultiHitInfo', 'isMultiHitMove', 'getDefaultHitCount',
-        'combineMultiHitRolls', 'resolveHitCount', 'initMoveIndex'
+        'combineMultiHitRolls', 'resolveHitCount', 'initMoveIndex',
+        'getHazardDamage', 'getEffectiveDefenderHp', 'formatShowdownLine', 'getTerrainModifier'
     ];
 
     exports.forEach(exportGlobal);

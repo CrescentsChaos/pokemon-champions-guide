@@ -141,7 +141,7 @@ function normalizeChampionsEvs(evs, targetTotal = CHAMPIONS_EV_TOTAL, maxPerStat
 function convertEvsToChampions(evs) {
     const converted = {};
     EV_STAT_KEYS.forEach(k => {
-        converted[k] = Math.min(CHAMPIONS_EV_MAX_STAT, Math.floor((parseInt(evs?.[k], 10) || 0) / 8));
+        converted[k] = Math.min(CHAMPIONS_EV_MAX_STAT, Math.round((parseInt(evs?.[k], 10) || 0) / 8));
     });
     return normalizeChampionsEvs(converted);
 }
