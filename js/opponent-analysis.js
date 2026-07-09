@@ -560,6 +560,11 @@ function pickBestBringCombination(ourMons, format, bringCount) {
             if (ctx.utils.protect) score += 4;
         }
 
+        if (typeof scoreWeatherWarPenalty === 'function') {
+            const ww = scoreWeatherWarPenalty(ourMons, bring, oppBring, format);
+            score -= ww.penalty;
+        }
+
         const typeSet = new Set();
         bring.forEach(m => {
             const db = getMonDb(m);
@@ -570,10 +575,16 @@ function pickBestBringCombination(ourMons, format, bringCount) {
         if (score > best.score) best = { indices: combo, score };
     });
 
+    const ourBringMons = best.indices.map(i => ourMons[i]);
+    const matchupGaps = typeof analyzeMatchupGaps === 'function'
+        ? analyzeMatchupGaps(ourMons, ourBringMons, oppMons, oppBring, format)
+        : [];
+
     return {
         indices: best.indices,
-        mons: best.indices.map(i => ourMons[i]),
-        scores: best.indices.map(i => scoreMonThreatLevel(ourMons[i], format))
+        mons: ourBringMons,
+        scores: best.indices.map(i => scoreMonThreatLevel(ourMons[i], format)),
+        matchupGaps
     };
 }
 
@@ -811,7 +822,7 @@ function buildDetailedBattlePlan(opts) {
     });
 
     if (oppBringMeta?.archetypes?.includes('rain')) {
-        turn1.push('**Rain Turn 1:** Taunt / KO the setter before Drizzle goes up, or accept rain and bring your own weather / Swift Swim answer immediately.');
+        turn1.push('**Rain Turn 1:** If they have backup Rain Dance (e.g. Sableye), **last weather wins** — your faster Sunny Day can still lose to their slower Rain Dance. KO or Taunt the setter before committing Solar Beam / Sun.');
     }
     if (leadAnalysis.leadMatchups?.length) {
         const best = leadAnalysis.leadMatchups.reduce((a, b) => (b.netScore > (a?.netScore || -99) ? b : a), null);
@@ -860,9 +871,23 @@ function buildDetailedBattlePlan(opts) {
     return sections;
 }
 
-function renderBattleIntelPanel(plan, speedChart, megaIntel, format, interactionWarnings, interactionPlays) {
+function renderBattleIntelPanel(plan, speedChart, megaIntel, format, interactionWarnings, interactionPlays, matchupGaps) {
     const el = document.getElementById('opp-battle-intel');
     if (!el) return;
+
+    const criticalGaps = (matchupGaps || []).filter(g => g.severity === 'critical');
+    const gapHtml = criticalGaps.length ? `
+        <div class="opp-intel-block opp-intel-block--critical">
+            <h4 class="opp-intel-block__title">Critical Matchup Gaps</h4>
+            <div class="opp-warn-list">
+                ${criticalGaps.map(g => `
+                    <div class="opp-warn-item opp-warn-item--critical">
+                        <span class="opp-warn-item__head">${escapeAnalysisHtml(g.title)}</span>
+                        <p>${g.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
+                        ${g.fix ? `<p class="opp-warn-item__fix"><strong>Fix:</strong> ${escapeAnalysisHtml(g.fix)}</p>` : ''}
+                    </div>`).join('')}
+            </div>
+        </div>` : '';
 
     const warnHtml = (interactionWarnings || []).length ? `
         <div class="opp-intel-block opp-intel-block--warn">
@@ -911,6 +936,7 @@ function renderBattleIntelPanel(plan, speedChart, megaIntel, format, interaction
 
     el.innerHTML = `
         <p class="opp-intel-intro">Battle-ready reads for <strong>${format}</strong> — weather wars, Encore/Taunt traps, Mega timing, and turn-by-turn plays.</p>
+        ${gapHtml}
         ${warnHtml}
         ${interactPlaysHtml}
         ${megaHtml}
@@ -1174,7 +1200,15 @@ function renderOpponentTeamPreview(oppMons, oppBring) {
     const broughtSpecies = new Set((oppBring?.mons || []).map(m => m.species));
     const archetype = oppBring?.archetype;
 
-    el.innerHTML = oppMons.map((p, idx) => {
+    const sortedMons = [...oppMons].sort((a, b) => {
+        const aBring = broughtSpecies.has(a.species) ? 0 : 1;
+        const bBring = broughtSpecies.has(b.species) ? 0 : 1;
+        if (aBring !== bBring) return aBring - bBring;
+        return oppMons.indexOf(a) - oppMons.indexOf(b);
+    });
+
+    el.innerHTML = sortedMons.map((p) => {
+        const idx = oppMons.indexOf(p);
         const slotIdx = _opponentTeam.indexOf(p);
         const db = getMonDb(p);
         const roles = typeof detectRole === 'function' ? detectRole(p, db) : [];
@@ -1233,6 +1267,11 @@ function renderBringPanel(ourBring, oppBring, format) {
     const archetype = oppBring.archetype;
 
     const oppReasoning = (oppBring.reasoning || []).map(r => `<li>${escapeAnalysisHtml(r)}</li>`).join('');
+    const ourGaps = (ourBring.matchupGaps || []).filter(g => g.severity === 'critical');
+    const ourGapHtml = ourGaps.length ? `
+        <ul class="opp-bring-reasoning opp-bring-reasoning--warn">
+            ${ourGaps.map(g => `<li><strong>${escapeAnalysisHtml(g.title)}:</strong> ${escapeAnalysisHtml(g.text)}</li>`).join('')}
+        </ul>` : '';
 
     el.innerHTML = `
         ${archetype?.label ? `<div class="opp-archetype-banner"><span class="opp-archetype-label">Detected:</span> ${escapeAnalysisHtml(archetype.label)}</div>` : ''}
@@ -1248,6 +1287,7 @@ function renderBringPanel(ourBring, oppBring, format) {
             <div class="opp-bring-col opp-bring-col--you">
                 <h4>Your recommended bring <span class="opp-bring-count">(${count} of 6)</span></h4>
                 <div class="opp-bring-list">${(ourBring.mons || []).map(p => renderBringMonCard(p, true)).join('')}</div>
+                ${ourGapHtml}
             </div>
         </div>`;
 }
@@ -1439,11 +1479,14 @@ function runOpponentPrepAnalysis() {
     const interactionWarnings = typeof buildInteractionWarnings === 'function'
         ? buildInteractionWarnings(ourActive, oppActive, oppBring) : [];
     const interactionPlays = typeof buildInteractionPlaybook === 'function'
-        ? buildInteractionPlaybook(ourActive, oppActive, oppBring, oppBring.ourThreats, oppBring.oppProfile) : [];
+        ? buildInteractionPlaybook(ourActive, oppActive, oppBring, oppBring.ourThreats, oppBring.oppProfile, ourBring.mons, format) : [];
+    const matchupGaps = typeof analyzeMatchupGaps === 'function'
+        ? analyzeMatchupGaps(ourActive, ourBring.mons, oppActive, oppBring, format)
+        : (ourBring.matchupGaps || []);
     const battlePlan = buildDetailedBattlePlan({
         format, ourBring, oppBring, ourTeam: ourActive, oppTeam: oppActive,
         leadAnalysis, matrix, oppBringMeta: oppBring.archetype,
-        interactionWarnings, interactionPlays
+        interactionWarnings, interactionPlays, matchupGaps
     });
     const speedChart = buildSpeedChart(ourActive, oppActive, format);
     const megaIntel = buildMegaIntel(ourActive, oppActive);
@@ -1451,7 +1494,7 @@ function runOpponentPrepAnalysis() {
     renderOpponentTeamPreview(oppActive, oppBring);
     renderBringPanel(ourBring, oppBring, format);
     renderLeadPanel(leadAnalysis, format);
-    renderBattleIntelPanel(battlePlan, speedChart, megaIntel, format, interactionWarnings, interactionPlays);
+    renderBattleIntelPanel(battlePlan, speedChart, megaIntel, format, interactionWarnings, interactionPlays, matchupGaps);
     renderCounterMatrix(matrix, ourActive, oppActive, format);
     renderMatchupSummary(ourActive, oppActive, matrix, format);
 }

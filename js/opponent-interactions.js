@@ -299,7 +299,7 @@ function scanOurThreatProfile(ourMons) {
         hasHazards: false, hasScreens: false, spreadMoves: false,
         setupUsers: [], choiceUsers: [], protectUsers: [], statusMoveUsers: [],
         trSetters: [], fastSweepers: [], physicalSweepers: [], specialSweepers: [],
-        priorityUsers: [], weatherAbusers: [], megaUsers: []
+        priorityUsers: [], weatherAbusers: [], megaUsers: [], solarBeamUsers: []
     };
 
     ourMons.forEach(mon => {
@@ -335,6 +335,7 @@ function scanOurThreatProfile(ourMons) {
         if (roles.includes('Special Sweeper')) profile.specialSweepers.push(mon);
         if (moves.some(m => ['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'grassyglide', 'fakeout'].includes(m))) profile.priorityUsers.push(mon);
         if (roles.includes('Weather Abuser')) profile.weatherAbusers.push(mon);
+        if (moves.includes('solarbeam') || moves.includes('solarblade')) profile.solarBeamUsers.push(mon);
         if (typeof isMegaCapable === 'function' && isMegaCapable(mon)) {
             profile.megaUsers.push(mon);
             const megaAb = getEffectiveAbilityKey(mon);
@@ -647,9 +648,10 @@ function buildInteractionWarnings(ourMons, oppMons, oppBring) {
     });
 }
 
-function buildInteractionPlaybook(ourMons, oppMons, oppBring, ourThreats, oppProfile) {
+function buildInteractionPlaybook(ourMons, oppMons, oppBring, ourThreats, oppProfile, ourBringMons, format) {
     const plays = [];
     const brought = (oppBring?.mons || []);
+    const ourBring = ourBringMons || ourMons;
 
     const backupRain = oppProfile.weather.rain.filter(x => x.role === 'backup');
     const primaryRain = oppProfile.weather.rain.filter(x => x.role === 'primary');
@@ -665,11 +667,30 @@ function buildInteractionPlaybook(ourMons, oppMons, oppBring, ourThreats, oppPro
         const pIn = brought.some(m => m.species === p.species);
         const bIn = brought.some(m => m.species === b.species);
         if (bIn && !pIn) {
-            plays.push(`**Read:** They benched **${p.species}** and brought **${b.species}** — full rainless flex with Encore/screens/backup Rain. Your Sun may stay active longer than expected.`);
+            plays.push(`**Read:** They benched **${p.species}** and brought **${b.species}** — rainless flex with backup Rain Dance, Encore, and screens. Vs your Sun team this is often **better** than auto-Drizzle.`);
         } else if (pIn && bIn) {
-            plays.push(`**Read:** Both **${p.species}** and **${b.species}** in — double weather layer. KO one setter or override with your own weather.`);
+            plays.push(`**Read:** Both **${p.species}** and **${b.species}** in — layered weather. Remember **last weather wins** on Turn 1; backup Rain Dance after your Sunny Day still leaves Rain up.`);
         }
     }
+
+    if (format === 'Doubles' && ourBring.length && brought.length) {
+        const sim = simulateTurn1Weather(ourBring, brought, format);
+        if (sim?.slowerOppRainWins) {
+            const ourSunAll = [...sim.ourSunMoves, ...sim.ourActors.filter(a => a.weather === 'sun' && a.phase === 'switchin')];
+            const fastSun = ourSunAll.reduce((a, b) => (a.speed > b.speed ? a : b));
+            const slowRain = sim.oppRainMoves.reduce((a, b) => (a.speed < b.speed ? a : b));
+            plays.unshift(`**Critical:** ${fastSun.species} (${fastSun.speed} Spe) outspeeds ${slowRain.species} (${slowRain.speed} Spe), but **${slowRain.species} Rain Dance goes last** — Rain stays, Solar Beam charges, and your Sun plan fails Turn 1.`);
+        } else if (sim?.contested && sim.lastSetter) {
+            plays.push(`**Turn 1 weather:** ends as **${weatherLabel(sim.activeWeather)}** after ${sim.lastSetter.species} (${sim.lastSetter.source}). Last setter wins — plan around that, not who is faster.`);
+        }
+    }
+
+    const gaps = analyzeMatchupGaps(ourMons, ourBring, oppMons, oppBring, format || 'Doubles');
+    gaps.filter(g => g.severity === 'critical').slice(0, 3).forEach(g => {
+        if (!plays.some(p => p.includes(g.title))) {
+            plays.unshift(`**${g.title}:** ${g.text}${g.fix ? ` *Fix:* ${g.fix}` : ''}`);
+        }
+    });
 
     oppProfile.disruption.filter(d => d.move === 'encore').forEach(d => {
         if (!brought.some(m => m.species === d.species)) return;
@@ -708,6 +729,232 @@ function getInteractionTagsForMon(mon, archetypeInfo, idx) {
     return tags;
 }
 
+function getMonBattleSpeed(mon, format) {
+    if (typeof getSpeedSnapshot === 'function') {
+        const snap = getSpeedSnapshot(mon, format);
+        return snap.battleSpeed ?? snap.baseSpeed ?? 0;
+    }
+    const db = typeof getMonDb === 'function' ? getMonDb(mon) : null;
+    if (typeof getMonSpeed === 'function') return getMonSpeed(mon, db, format) ?? 0;
+    return parseInt(db?.Speed, 10) || 0;
+}
+
+function collectWeatherActors(mons, format) {
+    const actors = [];
+    (mons || []).forEach(mon => {
+        const moves = getMonMoveKeys(mon);
+        const ab = getEffectiveAbilityKey(mon);
+        const speed = getMonBattleSpeed(mon, format);
+        const key = normalizeSpeciesKey(mon.species);
+
+        if (moves.includes('sunnyday')) {
+            actors.push({ mon, species: mon.species, weather: 'sun', source: 'Sunny Day', speed, phase: 'move' });
+        }
+        if (moves.includes('raindance')) {
+            actors.push({ mon, species: mon.species, weather: 'rain', source: 'Rain Dance', speed, phase: 'move' });
+        }
+        if (moves.includes('sandstorm')) {
+            actors.push({ mon, species: mon.species, weather: 'sand', source: 'Sandstorm', speed, phase: 'move' });
+        }
+        if (moves.includes('snowscape') || moves.includes('hail')) {
+            actors.push({ mon, species: mon.species, weather: 'snow', source: 'Snowscape', speed, phase: 'move' });
+        }
+
+        if (ab === 'drought' || ab === 'desolateland') {
+            actors.push({ mon, species: mon.species, weather: 'sun', source: ab === 'desolateland' ? 'Desolate Land' : 'Drought', speed, phase: 'switchin' });
+        }
+        if (ab === 'drizzle' || ab === 'primordialsea') {
+            actors.push({ mon, species: mon.species, weather: 'rain', source: ab === 'primordialsea' ? 'Primordial Sea' : 'Drizzle', speed, phase: 'switchin' });
+        }
+        if (['pelipper', 'politoed', 'kyogre'].includes(key) && !actors.some(a => a.mon === mon && a.weather === 'rain')) {
+            actors.push({ mon, species: mon.species, weather: 'rain', source: 'Drizzle', speed, phase: 'switchin' });
+        }
+        if (['torkoal', 'ninetalesalola'].includes(key) && !actors.some(a => a.mon === mon && a.weather === 'sun')) {
+            actors.push({ mon, species: mon.species, weather: 'sun', source: 'Drought', speed, phase: 'switchin' });
+        }
+    });
+    return actors;
+}
+
+function simulateTurn1Weather(ourBringMons, oppBringMons, format) {
+    const ourActors = collectWeatherActors(ourBringMons, format);
+    const oppActors = collectWeatherActors(oppBringMons, format);
+    if (!ourActors.length && !oppActors.length) return null;
+
+    const events = [
+        ...ourActors.map(a => ({ ...a, side: 'you' })),
+        ...oppActors.map(a => ({ ...a, side: 'opp' }))
+    ];
+
+    const switchIns = events.filter(e => e.phase === 'switchin').sort((a, b) => a.speed - b.speed);
+    const moves = events.filter(e => e.phase === 'move').sort((a, b) => a.speed - b.speed);
+    const timeline = [...switchIns, ...moves];
+
+    let activeWeather = null;
+    let lastSetter = null;
+    timeline.forEach(e => {
+        activeWeather = e.weather;
+        lastSetter = e;
+    });
+
+    const ourSunMoves = ourActors.filter(a => a.weather === 'sun' && a.phase === 'move');
+    const ourSunSwitch = ourActors.filter(a => a.weather === 'sun' && a.phase === 'switchin');
+    const oppRainMoves = oppActors.filter(a => a.weather === 'rain' && a.phase === 'move');
+    const ourSunAll = [...ourSunMoves, ...ourSunSwitch];
+    const slowerOppRainWins = oppRainMoves.length && ourSunAll.length && (() => {
+        const slowestOppRain = oppRainMoves.reduce((a, b) => (a.speed < b.speed ? a : b));
+        const fastestOurSun = ourSunAll.reduce((a, b) => (a.speed > b.speed ? a : b));
+        return fastestOurSun.speed > slowestOppRain.speed && activeWeather === 'rain';
+    })();
+
+    const ourWeatherTypes = new Set(ourActors.map(a => a.weather));
+    const oppWeatherTypes = new Set(oppActors.map(a => a.weather));
+    const contested = ourWeatherTypes.size > 0 && oppWeatherTypes.size > 0 &&
+        ((ourWeatherTypes.has('sun') && oppWeatherTypes.has('rain')) ||
+         (ourWeatherTypes.has('rain') && oppWeatherTypes.has('sun')));
+
+    return {
+        activeWeather,
+        lastSetter,
+        timeline,
+        contested,
+        slowerOppRainWins,
+        ourActors,
+        oppActors,
+        ourSunMoves,
+        ourSunSwitch,
+        oppRainMoves
+    };
+}
+
+function weatherLabel(w) {
+    return { sun: 'Sun', rain: 'Rain', sand: 'Sand', snow: 'Snow' }[w] || w;
+}
+
+function analyzeMatchupGaps(ourMons, ourBringMons, oppMons, oppBring, format) {
+    const gaps = [];
+    const ourThreats = scanOurThreatProfile(ourMons);
+    const oppBringMons = oppBring?.mons || [];
+    const sim = simulateTurn1Weather(ourBringMons, oppBringMons, format);
+
+    if (sim?.contested && sim.activeWeather) {
+        const weWantSun = ourThreats.hasSun || ourThreats.hasDrought || sim.ourActors.some(a => a.weather === 'sun');
+        const weWantRain = ourThreats.hasRain || ourThreats.hasDrizzle || sim.ourActors.some(a => a.weather === 'rain');
+        const rainBeatsOurSun = sim.activeWeather === 'rain' && weWantSun;
+        const sunBeatsOurRain = sim.activeWeather === 'sun' && weWantRain;
+
+        if (rainBeatsOurSun || sunBeatsOurRain) {
+            const seq = sim.timeline.map(e =>
+                `${e.species} (${e.source}, ${e.speed} Spe)`
+            ).join(' → ');
+            const last = sim.lastSetter;
+            const ourSunAll = [...sim.ourSunMoves, ...sim.ourActors.filter(a => a.weather === 'sun' && a.phase === 'switchin')];
+            const fasterOurSun = ourSunAll.length
+                ? ourSunAll.reduce((a, b) => (a.speed > b.speed ? a : b))
+                : null;
+            const slowerOppRain = sim.oppRainMoves.length
+                ? sim.oppRainMoves.reduce((a, b) => (a.speed < b.speed ? a : b))
+                : null;
+
+            let detail = `Turn 1 weather resolves **${weatherLabel(sim.activeWeather)}** (${last?.species}, ${last?.source}).`;
+            if (sim.slowerOppRainWins && fasterOurSun && slowerOppRain) {
+                detail += ` **${fasterOurSun.species}** is faster than **${slowerOppRain.species}** but **last weather wins** — ${slowerOppRain.species} Rain Dances after your ${fasterOurSun.source}, so you **cannot** hold Sun Turn 1.`;
+            } else if (fasterOurSun && slowerOppRain && fasterOurSun.speed > slowerOppRain.speed) {
+                detail += ` Even though your ${fasterOurSun.species} outspeeds their ${slowerOppRain.species}, their Rain Dance goes **second** and overwrites your weather.`;
+            }
+
+            gaps.push({
+                severity: 'critical',
+                title: 'Weather war lost on Turn 1',
+                text: `${detail} Sequence: ${seq}.`,
+                fix: 'KO their rain setter before it moves, Taunt it, or stop relying on Sun/Solar Beam this game. Leading manual Sun into backup Rain Dance is often a trap.'
+            });
+        }
+    }
+
+    if (sim?.activeWeather === 'rain') {
+        const solarInBring = ourThreats.solarBeamUsers.filter(m =>
+            ourBringMons.some(b => b.species === m.species)
+        );
+        solarInBring.forEach(m => {
+            gaps.push({
+                severity: 'critical',
+                title: `${m.species} — Solar Beam disabled`,
+                text: `Rain stays up Turn 1, so **Solar Beam** needs a charge turn. ${m.species} cannot threaten a same-turn Grass hit and becomes setup bait for their rain abusers.`,
+                fix: `Drop ${m.species}, swap Solar Beam for a rain-neutral attack, or guarantee Sun before ${m.species} acts (usually impossible if their backup Rain is slower).`
+            });
+        });
+
+        const droughtMons = ourBringMons.filter(m => {
+            const ab = getEffectiveAbilityKey(m);
+            return ab === 'drought' || ab === 'desolateland';
+        });
+        droughtMons.forEach(m => {
+            gaps.push({
+                severity: 'high',
+                title: `${m.species} Drought neutralized`,
+                text: `Mega ${m.species} Drought is **overwritten by Rain** — Fire moves are weakened, Solar Power chip is gone, and your sun-reliant gameplan stalls.`,
+                fix: 'Win without weather, or remove their rain setter Turn 1 with a double-target or priority.'
+            });
+        });
+    }
+
+    const oppRainBackupInBring = oppBringMons.filter(m => {
+        const mv = getMonMoveKeys(m);
+        return mv.includes('raindance') && getEffectiveAbilityKey(m) !== 'drizzle' && getEffectiveAbilityKey(m) !== 'primordialsea';
+    });
+    const ourDroughtInBring = ourBringMons.filter(m => {
+        const ab = getEffectiveAbilityKey(m);
+        return ab === 'drought' || ab === 'desolateland';
+    });
+    const ourSolarInBring = ourBringMons.filter(m => getMonMoveKeys(m).includes('solarbeam') || getMonMoveKeys(m).includes('solarblade'));
+
+    oppRainBackupInBring.forEach(setter => {
+        const setterMoves = getMonMoveKeys(setter);
+        const hasScreens = setterMoves.includes('lightscreen') || setterMoves.includes('reflect');
+        const hasEncore = setterMoves.includes('encore');
+        ourDroughtInBring.concat(ourSolarInBring).forEach(target => {
+            if (gaps.some(g => g.title.includes(setter.species) && g.title.includes(target.species))) return;
+            let line = `**${setter.species}** can Rain Dance to kill your ${target.species} gameplan`;
+            const parts = [];
+            if (ourSolarInBring.some(m => m.species === target.species)) parts.push('Solar Beam charges in rain');
+            if (ourDroughtInBring.some(m => m.species === target.species)) parts.push('Drought/Sun never sticks');
+            if (hasScreens) parts.push('screens blunt your burst');
+            if (hasEncore) parts.push('Encore punishes Protect/Sun repeats');
+            gaps.push({
+                severity: 'critical',
+                title: `${setter.species} hard-counters ${target.species}`,
+                text: `${line}: ${parts.join('; ')}. Their rain abusers (e.g. Swift Swim) then force a KO.`,
+                fix: `Do not assume ${target.species} wins this matchup — double-target ${setter.species} Turn 1, or bench ${target.species}.`
+            });
+        });
+    });
+
+    const encoreInBring = oppBringMons.filter(m => getMonMoveKeys(m).includes('encore'));
+    if (encoreInBring.length && (ourThreats.protectUsers.length || ourThreats.setupUsers.length)) {
+        const setter = encoreInBring[0];
+        const prank = getEffectiveAbilityKey(setter) === 'prankster';
+        gaps.push({
+            severity: 'high',
+            title: 'Encore trap on weather turns',
+            text: `${setter.species}${prank ? ' (Prankster)' : ''} can Encore after you use Sunny Day / Protect — you are locked into a non-threatening move while rain stays up.`,
+            fix: 'Stagger weather moves across turns only if you outspeed and KO; otherwise KO Encore user first.'
+        });
+    }
+
+    return gaps;
+}
+
+function scoreWeatherWarPenalty(ourMons, ourBringMons, oppBring, format) {
+    const gaps = analyzeMatchupGaps(ourMons, ourBringMons, [], oppBring, format);
+    let penalty = 0;
+    gaps.forEach(g => {
+        if (g.severity === 'critical') penalty += 40;
+        else if (g.severity === 'high') penalty += 18;
+    });
+    return { penalty, gaps };
+}
+
 if (typeof globalThis !== 'undefined') {
     globalThis.getMonAbilityKey = getMonAbilityKey;
     globalThis.getEffectiveAbilityKey = getEffectiveAbilityKey;
@@ -719,4 +966,7 @@ if (typeof globalThis !== 'undefined') {
     globalThis.buildInteractionWarnings = buildInteractionWarnings;
     globalThis.buildInteractionPlaybook = buildInteractionPlaybook;
     globalThis.getInteractionTagsForMon = getInteractionTagsForMon;
+    globalThis.analyzeMatchupGaps = analyzeMatchupGaps;
+    globalThis.simulateTurn1Weather = simulateTurn1Weather;
+    globalThis.scoreWeatherWarPenalty = scoreWeatherWarPenalty;
 }

@@ -1137,6 +1137,32 @@
     color: rgba(255, 255, 255, 0.35);
 }
 
+.opp-intel-block--critical {
+    border: 1px solid rgba(244, 67, 54, 0.35);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: rgba(244, 67, 54, 0.06);
+}
+
+.opp-warn-item--critical {
+    border-left-color: #f44336;
+}
+
+.opp-warn-item__fix {
+    margin: 6px 0 0;
+    font-size: 0.76rem;
+    color: rgba(255, 183, 77, 0.9);
+}
+
+.opp-bring-reasoning--warn {
+    border-left: 3px solid #f44336;
+    background: rgba(244, 67, 54, 0.06);
+}
+
+.opp-bring-reasoning--warn li {
+    color: rgba(255, 200, 200, 0.85);
+}
+
 .opp-intel-block--warn {
     border: 1px solid rgba(255, 152, 0, 0.2);
     border-radius: 12px;
