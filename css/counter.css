@@ -269,6 +269,47 @@ body.counter-page {
     border-radius: 14px;
 }
 
+/* Shared polished selects (counter page does not load dex.css) */
+.counter-page .dex-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 0.55rem 2.1rem 0.55rem 0.85rem;
+    background-color: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    line-height: 1.3;
+    min-height: 2.35rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffffaa' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px 6px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.counter-page .dex-select:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.counter-page .dex-select:focus {
+    outline: none;
+    border-color: rgba(230, 57, 70, 0.85);
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.18);
+}
+
+.counter-page .dex-select option {
+    background: #16161f;
+    color: #fff;
+    font-weight: 600;
+}
+
 .counter-format-bar__label {
     font-size: 0.68rem;
     font-weight: 800;
@@ -278,9 +319,18 @@ body.counter-page {
 }
 
 .counter-format-bar .dex-select {
-    min-width: 140px;
+    min-width: 148px;
     font-size: 0.78rem;
-    padding: 0.45rem 1.75rem 0.45rem 0.7rem;
+}
+
+.results-toolbar__field .dex-select {
+    font-size: 0.75rem;
+    padding: 0.45rem 1.9rem 0.45rem 0.7rem;
+    min-height: 2.15rem;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+    min-width: 11.5rem;
 }
 
 .target-species-row {
@@ -392,14 +442,6 @@ body.counter-page {
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-muted);
-}
-
-.results-toolbar__field .dex-select {
-    font-size: 0.72rem;
-    padding: 0.4rem 1.5rem 0.4rem 0.65rem;
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 700;
 }
 
 .moves-preview-grid {

@@ -535,42 +535,14 @@
         let buildsDB = [];
         let topPokemons = { Singles: [], Doubles: [] };
 
-        function handleSpriteError(img, species, shiny) {
-            if (!species || img.dataset.fallbackState === 'dead') return;
-
-            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
-
-            if (!img.dataset.fallbackState && isMegaURL) {
-                img.dataset.fallbackState = 'mega-local';
-                let suffix = 'mega';
-                if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
-                else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
-                else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
-                else if (img.src.includes('primal')) suffix = 'primal';
-
-                const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
-                const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
-                img.src = `../assets/mega-sprites/${fileName}.gif`;
-                return;
-            }
-
-            if (!img.dataset.fallbackState) {
-                img.dataset.fallbackState = 'smogon';
-                const folder = shiny ? 'xy-shiny' : 'xy';
-                img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
-                return;
-            }
-
-            img.dataset.fallbackState = 'dead';
-            img.dataset.fallback = 'true';
-            img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
-        }
-        window.handleSpriteError = handleSpriteError;
-
         function getSpriteUrl(species, shiny) {
             if (!species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
-            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            let clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            // Showdown uses megax/megay/megaz (no hyphen before the letter)
+            clean = clean
+                .replace(/-mega-x$/, '-megax')
+                .replace(/-mega-y$/, '-megay')
+                .replace(/-mega-z$/, '-megaz');
             const base = shiny ? 'ani-shiny' : 'ani';
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
         }
@@ -583,6 +555,63 @@
             img.onerror = function () { handleSpriteError(img, species, !!shiny); };
             img.src = getSpriteUrl(species, shiny);
         }
+
+        function handleSpriteError(img, species, shiny) {
+            if (!species || img.dataset.fallbackState === 'dead') return;
+
+            let clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+
+            // Wrong Showdown mega hyphenation → retry correct megax/megay/megaz URL
+            if (!img.dataset.fallbackState && isMegaURL && /mega-[xyz]/.test(img.src)) {
+                img.dataset.fallbackState = 'showdown-mega';
+                const fixed = img.src
+                    .replace(/-mega-x(\.gif)?$/i, '-megax$1')
+                    .replace(/-mega-y(\.gif)?$/i, '-megay$1')
+                    .replace(/-mega-z(\.gif)?$/i, '-megaz$1');
+                if (img.classList.contains('form-toggle')) img.dataset.mega = fixed;
+                img.src = fixed;
+                return;
+            }
+
+            if ((!img.dataset.fallbackState || img.dataset.fallbackState === 'showdown-mega') && isMegaURL) {
+                img.dataset.fallbackState = 'mega-local';
+                let suffix = 'mega';
+                if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
+                else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+                else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
+                else if (img.src.includes('primal')) suffix = 'primal';
+
+                const baseName = clean.replace(/-mega-[xyz]$/, '').replace(/-megax$|-megay$|-megaz$|-mega$/, '');
+                const fileName = `${baseName}-${suffix}`;
+                const localUrl = `../assets/mega-sprites/${fileName}.gif`;
+                if (img.classList.contains('form-toggle')) img.dataset.mega = localUrl;
+                img.src = localUrl;
+                return;
+            }
+
+            if (img.dataset.fallbackState === 'mega-local' || !img.dataset.fallbackState) {
+                img.dataset.fallbackState = 'smogon';
+                const folder = shiny ? 'xy-shiny' : 'xy';
+                // Smogon keeps the hyphenated mega-x / mega-y form
+                const smogonName = clean
+                    .replace(/-megax$/, '-mega-x')
+                    .replace(/-megay$/, '-mega-y')
+                    .replace(/-megaz$/, '-mega-z');
+                img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${smogonName}.gif`;
+                if (img.classList.contains('form-toggle') && img.dataset.currentSrc === 'base') {
+                    img.dataset.base = img.src;
+                } else if (img.classList.contains('form-toggle') && img.dataset.currentSrc === 'mega') {
+                    img.dataset.mega = img.src;
+                }
+                return;
+            }
+
+            img.dataset.fallbackState = 'dead';
+            img.dataset.fallback = 'true';
+            img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+        }
+        window.handleSpriteError = handleSpriteError;
 
         function getMetaListForFormat(format) {
             const key = (format || 'Singles').toLowerCase() === 'doubles' ? 'Doubles' : 'Singles';
@@ -843,6 +872,7 @@
             if (sprite && sprite.dataset.base && sprite.dataset.mega) {
                 const next = isAltered ? sprite.dataset.mega : sprite.dataset.base;
                 delete sprite.dataset.fallbackState;
+                delete sprite.dataset.fallback;
                 sprite.dataset.currentSrc = isAltered ? 'mega' : 'base';
                 if (next) sprite.src = next;
             }
