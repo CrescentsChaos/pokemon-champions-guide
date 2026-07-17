@@ -84,16 +84,14 @@ function parseSpeciesFromHeader(header) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [pkmnRes, movesRes, itemsRes, buildsRes] = await Promise.all([
+        const [pkmnRes, movesRes, itemsRes] = await Promise.all([
             fetch('../assets/pokemon.json'),
             fetch('../assets/moves.json'),
-            fetch('../assets/items.json'),
-            fetch('../assets/builds.json')
+            fetch('../assets/items.json')
         ]);
         pokemonData = await pkmnRes.json();
         movesData = await movesRes.json();
         itemsData = await itemsRes.json();
-        buildsData = await buildsRes.json();
 
         initMetaSelects();
         populateItemsList();
@@ -101,12 +99,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupInputListeners();
         setupImportTabs();
         setupLibraryFilters();
+        setupImportConfirm();
 
         renderStatsEditor(1);
         renderStatsEditor(2);
         renderMoves(1);
         renderMoves(2);
         updateComparison();
+
+        // Load curated builds.json separately so search still works if it fails
+        try {
+            const buildsRes = await fetch('../assets/builds.json');
+            buildsData = await buildsRes.json();
+            const libHint = document.getElementById('library-hint');
+            if (libHint) libHint.textContent = `${buildsData.length.toLocaleString()} curated builds from builds.json`;
+        } catch (buildErr) {
+            console.warn('builds.json failed to load', buildErr);
+            buildsData = [];
+        }
 
         const params = new URLSearchParams(window.location.search);
         const buildA = params.get('buildA') || params.get('a');
@@ -115,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (buildB) loadLibraryBuild(2, buildB, false);
 
     } catch (e) {
-        showToast("Error loading data");
+        showToast('Error loading data');
         console.error(e);
     }
 });
@@ -148,48 +158,107 @@ function setupSearchListeners() {
         const results = document.getElementById(`p${num}-search-results`);
         if (!input || !results) return;
 
-        input.addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase().trim();
+        let activeIndex = -1;
+
+        const hideResults = () => {
             results.innerHTML = '';
-            if (q.length < 2) {
-                results.classList.remove('active');
-                return;
-            }
+            results.classList.remove('active');
+            activeIndex = -1;
+        };
 
-            const filtered = pokemonData
-                .filter(x => (x.Name || '').toLowerCase().includes(q))
-                .slice(0, 12);
-
+        const renderResults = (filtered) => {
             if (!filtered.length) {
-                results.classList.remove('active');
+                hideResults();
                 return;
             }
-
-            results.innerHTML = filtered.map(x => `
-                <div class="search-item" data-name="${x.Name}">
+            results.innerHTML = filtered.map((x, i) => `
+                <div class="search-item${i === 0 ? ' is-active' : ''}" data-name="${x.Name}" data-index="${i}" role="option">
                     <span class="search-item-name">${x.Name}</span>
                     <span class="search-item-types">${x.Type_1}${x.Type_2 && x.Type_2 !== 'None' ? ' / ' + x.Type_2 : ''}</span>
                 </div>
             `).join('');
             results.classList.add('active');
+            activeIndex = 0;
+        };
+
+        const pick = (name) => {
+            if (!name) return;
+            input.value = name;
+            hideResults();
+            selectPokemon(num, name);
+        };
+
+        input.addEventListener('input', () => {
+            const q = input.value.toLowerCase().trim();
+            if (q.length < 1) {
+                hideResults();
+                return;
+            }
+            if (!pokemonData.length) {
+                results.innerHTML = '<div class="search-item"><span class="search-item-name">Pokémon data still loading…</span></div>';
+                results.classList.add('active');
+                return;
+            }
+
+            const filtered = pokemonData
+                .filter(x => (x.Name || '').toLowerCase().includes(q))
+                .sort((a, b) => {
+                    const an = a.Name.toLowerCase();
+                    const bn = b.Name.toLowerCase();
+                    const aStarts = an.startsWith(q) ? 0 : 1;
+                    const bStarts = bn.startsWith(q) ? 0 : 1;
+                    if (aStarts !== bStarts) return aStarts - bStarts;
+                    return an.localeCompare(bn);
+                })
+                .slice(0, 14);
+
+            renderResults(filtered);
         });
 
-        results.addEventListener('click', (e) => {
+        input.addEventListener('keydown', (e) => {
+            const items = [...results.querySelectorAll('.search-item')];
+            if (!results.classList.contains('active') || !items.length) {
+                if (e.key === 'Enter' && input.value.trim()) {
+                    const exact = findPokemonByName(input.value.trim());
+                    if (exact) pick(exact.Name);
+                }
+                return;
+            }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = Math.min(items.length - 1, activeIndex + 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = Math.max(0, activeIndex - 1);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const target = items[activeIndex] || items[0];
+                if (target) pick(target.getAttribute('data-name'));
+                return;
+            } else if (e.key === 'Escape') {
+                hideResults();
+                return;
+            } else {
+                return;
+            }
+            items.forEach((el, i) => el.classList.toggle('is-active', i === activeIndex));
+            items[activeIndex]?.scrollIntoView({ block: 'nearest' });
+        });
+
+        results.addEventListener('mousedown', (e) => {
+            // mousedown fires before blur/click-away and reliably selects
             const item = e.target.closest('.search-item');
             if (item) {
-                const name = item.getAttribute('data-name');
-                input.value = name;
-                results.innerHTML = '';
-                results.classList.remove('active');
-                selectPokemon(num, name);
+                e.preventDefault();
+                pick(item.getAttribute('data-name'));
             }
         });
 
-        document.addEventListener('click', (e) => {
-            if (e.target !== input && !results.contains(e.target)) {
-                results.innerHTML = '';
-                results.classList.remove('active');
-            }
+        input.addEventListener('blur', () => {
+            // Delay so mousedown on item can run first
+            setTimeout(() => {
+                if (!results.contains(document.activeElement)) hideResults();
+            }, 150);
         });
     });
 }
@@ -204,6 +273,7 @@ function selectPokemon(num, species) {
     if (!pd) return;
 
     const p = num === 1 ? p1 : p2;
+    const keepSpread = p.species === pd.Name;
 
     p.species = pd.Name;
     p.base = {
@@ -229,10 +299,23 @@ function selectPokemon(num, species) {
         opt.value = ab;
         abList.appendChild(opt);
     });
-    if (!p.ability && abilities.length > 0) {
+
+    if (!keepSpread) {
+        p.ability = abilities[0] || '';
+        p.item = '';
+        p.moves = [];
+        p.nature = 'Serious';
+        p.level = 50;
+        p.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        p.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
+        document.getElementById(`p${num}-level`).value = p.level;
+        document.getElementById(`p${num}-nature`).value = p.nature;
+        document.getElementById(`p${num}-item`).value = '';
+    } else if (!p.ability && abilities.length > 0) {
         p.ability = abilities[0];
-        document.getElementById(`p${num}-ability`).value = p.ability;
     }
+
+    document.getElementById(`p${num}-ability`).value = p.ability;
 
     updateSprite(num, p.species);
     recalcStats(num);
@@ -341,7 +424,7 @@ function updatePokemonForm(num, species) {
     };
     p.type1 = pd.Type_1;
     p.type2 = pd.Type_2 || '';
-    p.ability = pd.Ability_1 || '';
+    p.ability = (getPokemonAbilities(pd)[0]) || '';
 
     // Update UI
     const searchInput = document.getElementById(`p${num}-search`);
@@ -518,7 +601,7 @@ function updateComparison() {
 
 // ------ MODAL / POKEPASTE IMPORTER ------
 let currentImportNum = 1;
-let currentImportTab = 'paste';
+let currentImportTab = 'library';
 
 function setupImportTabs() {
     document.querySelectorAll('.import-tab').forEach(tab => {
@@ -555,7 +638,7 @@ function populateLibraryList() {
     const list = document.getElementById('library-build-list');
     if (!list) return;
     if (!buildsData.length) {
-        list.innerHTML = '<div class="compare-move-empty">No builds loaded.</div>';
+        list.innerHTML = '<div class="compare-move-empty">Could not load builds.json. Refresh and try again.</div>';
         return;
     }
 
@@ -572,7 +655,19 @@ function populateLibraryList() {
         );
     }
 
-    const shown = pool.slice(0, 40);
+    // Prefer exact species prefix matches first
+    if (q) {
+        pool = [...pool].sort((a, b) => {
+            const an = (a.pokemon || '').toLowerCase();
+            const bn = (b.pokemon || '').toLowerCase();
+            const aStarts = an.startsWith(q) ? 0 : 1;
+            const bStarts = bn.startsWith(q) ? 0 : 1;
+            if (aStarts !== bStarts) return aStarts - bStarts;
+            return an.localeCompare(bn);
+        });
+    }
+
+    const shown = pool.slice(0, 60);
     if (!shown.length) {
         list.innerHTML = '<div class="compare-move-empty">No builds match your filters.</div>';
         return;
@@ -581,8 +676,11 @@ function populateLibraryList() {
     list.innerHTML = shown.map(b => {
         const itemMatch = (b.build || '').split('\n')[0]?.split('@')[1]?.trim() || '';
         return `<button type="button" class="library-build-item" data-build-id="${b.id}">
-            <span class="library-build-item__name">${b.pokemon}${itemMatch ? ` · ${itemMatch}` : ''}</span>
-            <span class="library-build-item__meta">${b.format || 'Singles'} #${b.id}</span>
+            <span>
+                <span class="library-build-item__name">${b.pokemon}</span>
+                ${itemMatch ? `<span class="library-build-item__item">${itemMatch}</span>` : ''}
+            </span>
+            <span class="library-build-item__meta">${b.format || 'Singles'} · #${b.id}</span>
         </button>`;
     }).join('');
 
@@ -596,12 +694,12 @@ function populateLibraryList() {
 
 function loadLibraryBuild(num, buildId, toast) {
     const build = buildsData.find(b => String(b.id) === String(buildId));
-    if (!build) {
-        if (toast !== false) showToast('Build not found');
+    if (!build || !build.build) {
+        if (toast !== false) showToast('Build not found in builds.json');
         return;
     }
     importFromText(num, build.build);
-    if (toast !== false) showToast(`Build ${num === 1 ? 'A' : 'B'}: ${build.pokemon} #${build.id}`);
+    if (toast !== false) showToast(`Build ${num === 1 ? 'A' : 'B'}: ${build.pokemon} (#${build.id})`);
 }
 
 window.openImportModal = function(num, tab) {
@@ -610,10 +708,12 @@ window.openImportModal = function(num, tab) {
     const modal = document.getElementById('import-modal');
     modal.style.display = 'flex';
     modal.classList.add('active');
-    setImportTab(tab || 'paste');
+    setImportTab(tab || 'library');
     if (currentImportTab === 'paste') {
         document.getElementById('paste-input').value = '';
         document.getElementById('paste-input').focus();
+    } else {
+        document.getElementById('library-search')?.focus();
     }
 };
 
@@ -623,36 +723,40 @@ window.closeImportModal = function() {
     modal.classList.remove('active');
 };
 
-document.getElementById('confirm-import').addEventListener('click', async () => {
-    const text = document.getElementById('paste-input').value.trim();
-    if (!text) return;
+function setupImportConfirm() {
+    const btn = document.getElementById('confirm-import');
+    if (!btn || btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', async () => {
+        const text = document.getElementById('paste-input').value.trim();
+        if (!text) return;
 
-    let pasteText = text;
-    if (text.startsWith('http')) {
-        const btn = document.getElementById('confirm-import');
-        btn.textContent = 'Fetching...';
-        btn.disabled = true;
-        try {
-            const pasteId = text.split('/').filter(Boolean).pop();
-            if (!pasteId) throw new Error('Invalid Pokepaste URL');
-            const res = await fetch(`https://pokepast.es/${pasteId}/json`);
-            if (!res.ok) throw new Error('Could not load from pokepast.es');
-            const data = await res.json();
-            pasteText = data.paste || '';
-        } catch (e) {
-            console.error(e);
-            showToast('Failed to fetch paste. Try pasting raw text.');
+        let pasteText = text;
+        if (text.startsWith('http')) {
+            btn.textContent = 'Fetching...';
+            btn.disabled = true;
+            try {
+                const pasteId = text.split('/').filter(Boolean).pop();
+                if (!pasteId) throw new Error('Invalid Pokepaste URL');
+                const res = await fetch(`https://pokepast.es/${pasteId}/json`);
+                if (!res.ok) throw new Error('Could not load from pokepast.es');
+                const data = await res.json();
+                pasteText = data.paste || '';
+            } catch (e) {
+                console.error(e);
+                showToast('Failed to fetch paste. Try pasting raw text.');
+                btn.textContent = 'Import';
+                btn.disabled = false;
+                return;
+            }
             btn.textContent = 'Import';
             btn.disabled = false;
-            return;
         }
-        btn.textContent = 'Import';
-        btn.disabled = false;
-    }
 
-    importFromText(currentImportNum, pasteText);
-    closeImportModal();
-});
+        importFromText(currentImportNum, pasteText);
+        closeImportModal();
+    });
+}
 
 function importFromText(num, text) {
     const lines = text.trim().split('\n').map(l => l.trim()).filter(l => l);
@@ -665,20 +769,20 @@ function importFromText(num, text) {
         const speciesName = parseSpeciesFromHeader(line1);
         const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : '';
 
-        // Reset spread before applying paste
-        p.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-        p.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
-        p.moves = [];
-        p.ability = '';
-        p.nature = 'Serious';
-        p.level = 50;
-        p.item = itemPart && itemPart.toLowerCase() !== 'none' ? itemPart : '';
-
+        // Resolve species first (resets spread for a new Pokémon)
         selectPokemon(num, speciesName);
         if (!p.species) {
             showToast(`Could not resolve species: ${speciesName}`);
             return;
         }
+
+        p.item = itemPart && itemPart.toLowerCase() !== 'none' ? itemPart : '';
+        p.moves = [];
+        p.ability = '';
+        p.nature = 'Serious';
+        p.level = 50;
+        p.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        p.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
 
         lines.slice(1).forEach(line => {
             if (/^Ability\s*:/i.test(line)) p.ability = line.split(':').slice(1).join(':').trim();
@@ -705,6 +809,11 @@ function importFromText(num, text) {
             }
         });
 
+        if (!p.ability) {
+            const pd = findPokemonByName(p.species);
+            p.ability = (pd && getPokemonAbilities(pd)[0]) || '';
+        }
+
         document.getElementById(`p${num}-search`).value = p.species;
         document.getElementById(`p${num}-level`).value = p.level;
         document.getElementById(`p${num}-nature`).value = p.nature;
@@ -722,11 +831,13 @@ function importFromText(num, text) {
 
 function showToast(msg) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
     toast.textContent = msg;
     toast.style.display = 'block';
-    toast.style.animation = 'fadeIn 0.3s ease forwards';
-    setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s ease forwards';
-        setTimeout(() => toast.style.display = 'none', 300);
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(120px)';
+        setTimeout(() => { toast.style.display = 'none'; }, 300);
     }, 2500);
 }

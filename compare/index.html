@@ -45,7 +45,7 @@
 
                 <!-- Sprite -->
                 <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
-                    <img src="" id="p1-sprite" alt="Build A Sprite"
+                    <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p1-sprite" alt="Build A Sprite"
                          style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(255,62,62,0.25));"
                          onerror="handleSpriteError(this, p1 && p1.species || '', false, p1 && p1.item || '')">
                 </div>
@@ -128,7 +128,7 @@
 
                 <!-- Sprite -->
                 <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
-                    <img src="" id="p2-sprite" alt="Build B Sprite"
+                    <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p2-sprite" alt="Build B Sprite"
                          style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(33,150,243,0.25));"
                          onerror="handleSpriteError(this, p2 && p2.species || '', false, p2 && p2.item || '')">
                 </div>
@@ -231,21 +231,14 @@
             <p id="import-target-label" style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">Importing for Build A</p>
 
             <div class="import-tabs" role="tablist">
-                <button type="button" class="import-tab is-active" data-import-tab="paste" role="tab" aria-selected="true">Paste / URL</button>
-                <button type="button" class="import-tab" data-import-tab="library" role="tab" aria-selected="false">Build Library</button>
+                <button type="button" class="import-tab is-active" data-import-tab="library" role="tab" aria-selected="true">builds.json Library</button>
+                <button type="button" class="import-tab" data-import-tab="paste" role="tab" aria-selected="false">Paste / URL</button>
             </div>
 
-            <div id="import-paste-pane" class="import-pane is-active">
-                <textarea id="paste-input" placeholder="Paste a Showdown set, or a pokepast.es URL..."></textarea>
-                <div class="modal-actions">
-                    <button type="button" onclick="closeImportModal()">Cancel</button>
-                    <button type="button" id="confirm-import">Import</button>
-                </div>
-            </div>
-
-            <div id="import-library-pane" class="import-pane" hidden>
+            <div id="import-library-pane" class="import-pane is-active">
+                <p id="library-hint" class="library-hint">Loading curated builds from builds.json…</p>
                 <div class="library-filters">
-                    <input type="search" id="library-search" placeholder="Search Pokémon or item…" autocomplete="off">
+                    <input type="search" id="library-search" placeholder="Search Pokémon, item, or build ID…" autocomplete="off">
                     <select id="library-format">
                         <option value="">All formats</option>
                         <option value="singles">Singles</option>
@@ -255,6 +248,14 @@
                 <div id="library-build-list" class="library-build-list">Loading builds…</div>
                 <div class="modal-actions">
                     <button type="button" onclick="closeImportModal()">Close</button>
+                </div>
+            </div>
+
+            <div id="import-paste-pane" class="import-pane" hidden>
+                <textarea id="paste-input" placeholder="Paste a Showdown set, or a pokepast.es URL..."></textarea>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeImportModal()">Cancel</button>
+                    <button type="button" id="confirm-import">Import</button>
                 </div>
             </div>
         </div>

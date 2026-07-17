@@ -152,6 +152,21 @@
 .library-build-item__name {
     font-weight: 700;
     font-size: 0.9rem;
+    display: block;
+}
+
+.library-build-item__item {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+.library-hint {
+    margin: 0 0 0.75rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .library-build-item__meta {
@@ -260,13 +275,53 @@
 
 .search-results {
     position: absolute;
-    width: calc(100% - 60px);
-    background: #111;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #0e0e14;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    z-index: 100;
-    max-height: 250px;
+    z-index: 9999;
+    max-height: 280px;
     overflow-y: auto;
+    display: none;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #fff;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover,
+.search-item.is-active {
+    background: rgba(255, 62, 62, 0.12);
+}
+
+.search-item-name {
+    font-weight: 800;
+    color: #fff;
+}
+
+.search-item-types {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
 }
 
 /* Compare Table Improvements */
@@ -345,34 +400,95 @@
     text-transform: uppercase;
 }
 
-select, input[type="text"] {
+.compare-page select,
+.compare-page input[type="text"],
+.compare-page input[type="number"],
+.compare-page input[type="search"],
+.compare-page .type-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: #16161c;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
-    color: white;
+    color: #fff;
     padding: 10px;
     font-weight: 700;
+    font: inherit;
+}
+
+.compare-page select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffffcc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    padding-right: 2.2rem;
+    cursor: pointer;
+}
+
+.compare-page select option,
+.compare-page select optgroup {
+    background-color: #15151a;
+    color: #fff;
+}
+
+.compare-page select:focus,
+.compare-page input:focus {
+    outline: none;
+    border-color: rgba(255, 62, 62, 0.7);
+    box-shadow: 0 0 0 3px rgba(255, 62, 62, 0.15);
+}
+
+.library-filters select option {
+    background-color: #15151a;
+    color: #fff;
+}
+
+.level-row input[type="number"] {
+    width: 72px;
 }
 
 .import-btn {
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px;
+    width: auto;
+    margin-top: 0;
+    padding: 0.55rem 0.9rem;
     background: transparent;
     border: 1px solid var(--primary-red);
     color: var(--primary-red);
-    border-radius: 12px;
-    font-weight: 900;
+    border-radius: 10px;
+    font-weight: 800;
     text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
     cursor: pointer;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .import-btn:hover {
     background: var(--primary-red);
     color: white;
     box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
+}
+
+.calc-panel {
+    overflow: visible;
+}
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: rgba(255, 62, 62, 0.92);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.88rem;
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(255, 62, 62, 0.35);
+    display: none;
+    pointer-events: none;
 }
 
 /* Banner */
