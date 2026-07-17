@@ -345,6 +345,13 @@
 
         <div class="counter-container">
             <div class="counter-sidebar">
+                <div class="counter-format-bar glass fade-in appear">
+                    <span class="counter-format-bar__label">Format</span>
+                    <select id="target-format" class="dex-select" title="Battle format for counter analysis">
+                        <option value="Singles" selected>Singles</option>
+                        <option value="Doubles">Doubles</option>
+                    </select>
+                </div>
                 <div id="import-view" class="import-box glass counter-import-card fade-in appear">
                     <h3 class="counter-import-card__title">Import Championship Build</h3>
                     <textarea id="paste-input" class="import-area"
@@ -362,19 +369,25 @@
                 <div id="target-preview" class="target-preview-card">
                     <div class="target-badge">TARGET BUILD</div>
                     <div class="target-main-info">
-                        <img id="preview-sprite" src="" class="target-sprite-large" alt="">
+                        <img id="preview-sprite" src="" class="target-sprite-large" alt="" title="">
                         <div class="target-details">
-                            <h3 id="preview-species">POKEMON</h3>
+                            <div class="target-species-row">
+                                <h3 id="preview-species">POKEMON</h3>
+                                <span id="preview-format-badge" class="format-badge">SINGLES</span>
+                            </div>
                             <div id="preview-types" class="target-type-tags"></div>
                             <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted); font-weight: 600;"
                                 id="preview-item">Item: None</div>
+                            <div id="preview-form-hint" class="preview-form-hint" hidden>Click sprite to toggle form</div>
                         </div>
                     </div>
                     <div class="stat-rows-mini" id="preview-stats"></div>
                     <div class="moves-preview-grid" id="preview-moves"></div>
                     <div class="manage-controls">
-                        <button id="edit-build-btn" class="secondary-btn">EDIT BUILD</button>
-                        <button id="new-import-btn" class="secondary-btn">NEW IMPORT</button>
+                        <button id="edit-build-btn" class="secondary-btn">EDIT</button>
+                        <button id="new-import-btn" class="secondary-btn">NEW</button>
+                        <a id="open-calc-btn" class="secondary-btn" href="../calc/" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">CALC</a>
+                        <a id="open-builds-btn" class="secondary-btn" href="../builds/" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">BUILDS</a>
                     </div>
                 </div>
 
@@ -455,7 +468,14 @@
                             <option value="Doubles">Doubles</option>
                         </select>
                     </div>
-                    <input type="search" id="premade-search" class="premade-search" placeholder="Search builds by Pokémon…" autocomplete="off">
+                    <div id="premade-counts" class="premade-counts" aria-live="polite"></div>
+                    <div class="premade-filters-row">
+                        <input type="search" id="premade-search" class="premade-search" placeholder="Search builds by Pokémon…" autocomplete="off">
+                        <label class="premade-meta-check" title="Show only Pokémon ranked in top_pokemons for the selected format, or tagged isMeta">
+                            <input type="checkbox" id="premade-meta-only">
+                            <span>Meta Pokémon</span>
+                        </label>
+                    </div>
                     <div id="premade-build-list" class="premade-build-list premade-build-list--loading">Loading builds…</div>
                 </div>
             </div>
@@ -464,6 +484,26 @@
                 <div class="results-header">
                     <h3>Optimal Counter Measures</h3>
                     <span id="results-count" class="badge">0 RESULTS FOUND</span>
+                </div>
+                <div class="results-toolbar">
+                    <label class="results-toolbar__field">
+                        <span>Show</span>
+                        <select id="results-filter" class="dex-select">
+                            <option value="all">All counters</option>
+                            <option value="meta">Meta Pokémon</option>
+                            <option value="ohko">OHKO threats</option>
+                            <option value="tank">Defensive answers</option>
+                            <option value="pressure">Offensive pressure</option>
+                        </select>
+                    </label>
+                    <label class="results-toolbar__field">
+                        <span>Sort</span>
+                        <select id="results-sort" class="dex-select">
+                            <option value="score">Score</option>
+                            <option value="meta">Meta rank</option>
+                            <option value="name">Name</option>
+                        </select>
+                    </label>
                 </div>
 
                 <div id="counter-results" class="counter-grid">
@@ -591,6 +631,60 @@
         ];
 
         let targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: 'Singles', moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+        let lastCounters = [];
+        let previewFormAltered = false;
+
+        function syncFormatFromUI() {
+            const el = document.getElementById('target-format');
+            const fmt = (el?.value || targetBuild.format || 'Singles');
+            targetBuild.format = fmt === 'Doubles' ? 'Doubles' : 'Singles';
+            if (el && el.value !== targetBuild.format) el.value = targetBuild.format;
+            return targetBuild.format;
+        }
+
+        function setTargetFormat(fmt, { syncPremade = true } = {}) {
+            targetBuild.format = (fmt || '').toLowerCase() === 'doubles' ? 'Doubles' : 'Singles';
+            const el = document.getElementById('target-format');
+            if (el) el.value = targetBuild.format;
+            if (syncPremade) {
+                const pf = document.getElementById('premade-format-filter');
+                if (pf && (pf.value === '' || pf.value === 'Singles' || pf.value === 'Doubles')) {
+                    // Keep All Formats as-is unless user already filtered; prefer matching when empty selection
+                    if (!pf.value) {/* leave All */}
+                    else pf.value = targetBuild.format;
+                }
+            }
+            updateFormatBadge();
+        }
+
+        function updateFormatBadge() {
+            const badge = document.getElementById('preview-format-badge');
+            if (!badge) return;
+            const fmt = targetBuild.format || 'Singles';
+            badge.textContent = fmt.toUpperCase();
+            badge.classList.toggle('is-doubles', fmt === 'Doubles');
+        }
+
+        function isMetaPokemon(species, format) {
+            if (getMetaRank(species, format) >= 0) return true;
+            return false;
+        }
+
+        function updatePremadeCounts() {
+            const el = document.getElementById('premade-counts');
+            if (!el || !buildsDB.length) return;
+            const singles = buildsDB.filter(b => (b.format || 'Singles').toLowerCase() === 'singles').length;
+            const doubles = buildsDB.filter(b => (b.format || 'Singles').toLowerCase() === 'doubles').length;
+            const metaTagged = buildsDB.filter(b => typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true).length;
+            const metaSpeciesS = getMetaListForFormat('Singles').length;
+            const metaSpeciesD = getMetaListForFormat('Doubles').length;
+            el.innerHTML = `
+                <span>Singles ${singles}</span>
+                <span>Doubles ${doubles}</span>
+                <span class="is-meta">Meta species ${metaSpeciesS}S / ${metaSpeciesD}D</span>
+                <span class="is-meta">isMeta sets ${metaTagged}</span>
+            `;
+        }
 
         function normalizeKey(value) {
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -639,6 +733,7 @@
             const list = document.getElementById('premade-build-list');
             const query = (document.getElementById('premade-search')?.value || '').toLowerCase().trim();
             const fmt = (document.getElementById('premade-format-filter')?.value || '').toLowerCase();
+            const metaOnly = document.getElementById('premade-meta-only')?.checked;
             if (!list) return;
 
             if (!buildsDB.length) {
@@ -648,9 +743,17 @@
             }
 
             list.className = 'premade-build-list';
+            updatePremadeCounts();
 
             let pool = buildsDB;
             if (fmt) pool = pool.filter(b => (b.format || 'Singles').toLowerCase() === fmt);
+            if (metaOnly) {
+                pool = pool.filter(b => {
+                    const bFmt = b.format || 'Singles';
+                    return isMetaPokemon(b.pokemon, bFmt)
+                        || (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
+                });
+            }
             if (query) {
                 pool = pool.filter(b =>
                     (b.pokemon || '').toLowerCase().includes(query) ||
@@ -659,24 +762,36 @@
             }
 
             pool = [...pool].sort((a, b) => {
-                const am = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(a) : a.isMeta === true) ? 0 : 1;
-                const bm = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true) ? 0 : 1;
-                if (am !== bm) return am - bm;
+                const aFmt = a.format || 'Singles';
+                const bFmt = b.format || 'Singles';
+                const aMeta = getMetaRank(a.pokemon, aFmt);
+                const bMeta = getMetaRank(b.pokemon, bFmt);
+                const aTagged = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(a) : a.isMeta === true) ? 0 : 1;
+                const bTagged = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true) ? 0 : 1;
+                if (aTagged !== bTagged) return aTagged - bTagged;
+                const aRank = aMeta >= 0 ? aMeta : 999;
+                const bRank = bMeta >= 0 ? bMeta : 999;
+                if (aRank !== bRank) return aRank - bRank;
                 return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
             });
 
-            const shown = pool.slice(0, 32);
+            const shown = pool.slice(0, 40);
             if (!shown.length) {
                 list.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.45);padding:0.5rem;">No premade builds match.</div>';
                 return;
             }
 
             list.innerHTML = shown.map(b => {
-                const meta = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
+                const bFmt = b.format || 'Singles';
+                const tagged = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
+                const rank = getMetaRank(b.pokemon, bFmt);
+                const metaLabel = tagged
+                    ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META SET</span>'
+                    : (rank >= 0 ? ` <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META #${rank + 1}</span>` : '');
                 return `
                 <button type="button" class="premade-build-item" data-build-id="${b.id}">
-                    <span>${b.pokemon}${meta ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META</span>' : ''}</span>
-                    <span class="premade-build-item__meta">${(b.format || 'Singles')} #${b.id}</span>
+                    <span>${b.pokemon}${metaLabel}</span>
+                    <span class="premade-build-item__meta">${bFmt} #${b.id}</span>
                 </button>`;
             }).join('');
 
@@ -688,10 +803,64 @@
         function loadPremadeBuild(buildId) {
             const build = buildsDB.find(b => String(b.id) === String(buildId));
             if (!build) return;
-            targetBuild.format = build.format || 'Singles';
+            setTargetFormat(build.format || 'Singles', { syncPremade: false });
             document.getElementById('paste-input').value = build.build;
             parsePaste(build.build);
             analyze();
+        }
+
+        function getMegaOrFormSpriteUrl(name, item) {
+            if (!name || !item) return null;
+            const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const perm = getPermanentForm(name, item);
+            if (perm) {
+                const showdownName = String(perm)
+                    .replace('zaciancrowned', 'zacian-crowned')
+                    .replace('zamazentacrowned', 'zamazenta-crowned')
+                    .replace('dialgaorigin', 'dialga-origin')
+                    .replace('palkiaorigin', 'palkia-origin')
+                    .replace('giratinaorigin', 'giratina-origin')
+                    .replace('ogerponwellspring', 'ogerpon-wellspring')
+                    .replace('ogerponhearthflame', 'ogerpon-hearthflame')
+                    .replace('ogerponcornerstone', 'ogerpon-cornerstone');
+                return `https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`;
+            }
+            if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+                let suffix = '-mega';
+                if (it.endsWith('itex')) suffix = '-megax';
+                else if (it.endsWith('itey')) suffix = '-megay';
+                return `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+            }
+            return null;
+        }
+
+        function applyPreviewFormState(isAltered) {
+            const sprite = document.getElementById('preview-sprite');
+            const statsContainer = document.getElementById('preview-stats');
+            const typeContainer = document.getElementById('preview-types');
+            previewFormAltered = !!isAltered;
+            if (sprite && sprite.dataset.base && sprite.dataset.mega) {
+                const next = isAltered ? sprite.dataset.mega : sprite.dataset.base;
+                delete sprite.dataset.fallbackState;
+                sprite.dataset.currentSrc = isAltered ? 'mega' : 'base';
+                if (next) sprite.src = next;
+            }
+            if (statsContainer) {
+                statsContainer.querySelectorAll('.stat-fill-mini[data-base-width]').forEach(el => {
+                    el.style.width = isAltered ? el.dataset.megaWidth : el.dataset.baseWidth;
+                });
+                statsContainer.querySelectorAll('.stat-val-mini[data-base-val]').forEach(el => {
+                    el.textContent = isAltered ? el.dataset.megaVal : el.dataset.baseVal;
+                });
+            }
+            if (typeContainer) {
+                const types = (isAltered ? typeContainer.dataset.megaTypes : typeContainer.dataset.baseTypes) || '';
+                const list = types.split(',').filter(Boolean);
+                typeContainer.innerHTML = list.map(t =>
+                    `<img src="../assets/type-icons/${t.toLowerCase()}_type.png" class="type-icon" alt="${t}">`
+                ).join('');
+            }
         }
 
         /* Form Handling Helpers */
@@ -761,15 +930,28 @@
                 initMoveIndex(movesDB);
                 populateNatures();
                 setupEventListeners();
-                populatePremadeBuilds();
 
                 const params = new URLSearchParams(window.location.search);
+                const formatParam = params.get('format');
+                if (formatParam) setTargetFormat(formatParam, { syncPremade: true });
+                else syncFormatFromUI();
+
+                const pf = document.getElementById('premade-format-filter');
+                if (pf && !pf.value) pf.value = targetBuild.format;
+                populatePremadeBuilds();
+
                 const buildParam = params.get('build');
                 const speciesParam = params.get('species');
                 if (buildParam) {
                     loadPremadeBuild(buildParam);
                 } else if (speciesParam) {
-                    const match = buildsDB.find(b => normalizeKey(b.pokemon) === normalizeKey(speciesParam));
+                    const pickMeta = typeof findMetaBuildForSpecies === 'function' ? findMetaBuildForSpecies : null;
+                    const match = pickMeta
+                        ? pickMeta(speciesParam, targetBuild.format, buildsDB)
+                        : buildsDB.find(b =>
+                            normalizeKey(b.pokemon) === normalizeKey(speciesParam) &&
+                            (b.format || 'Singles').toLowerCase() === targetBuild.format.toLowerCase()
+                        );
                     if (match) loadPremadeBuild(match.id);
                     else showImportView();
                 } else {
@@ -795,13 +977,41 @@
             });
             document.getElementById('premade-search')?.addEventListener('input', populatePremadeBuilds);
             document.getElementById('premade-format-filter')?.addEventListener('change', populatePremadeBuilds);
+            document.getElementById('premade-meta-only')?.addEventListener('change', populatePremadeBuilds);
+            document.getElementById('results-filter')?.addEventListener('change', applyResultsView);
+            document.getElementById('results-sort')?.addEventListener('change', applyResultsView);
+
+            document.getElementById('target-format')?.addEventListener('change', () => {
+                syncFormatFromUI();
+                updateFormatBadge();
+                const pf = document.getElementById('premade-format-filter');
+                if (pf && (pf.value === 'Singles' || pf.value === 'Doubles' || pf.value === '')) {
+                    // Prefer matching the analysis format when browsing premades
+                    if (pf.value === 'Singles' || pf.value === 'Doubles') pf.value = targetBuild.format;
+                }
+                populatePremadeBuilds();
+                if (targetBuild.name) analyze();
+            });
+
+            document.getElementById('preview-sprite')?.addEventListener('click', () => {
+                const sprite = document.getElementById('preview-sprite');
+                if (!sprite?.classList.contains('form-toggle') || !sprite.dataset.mega) return;
+                applyPreviewFormState(!previewFormAltered);
+            });
 
             // UI Mode Toggles
             document.getElementById('new-import-btn').addEventListener('click', () => {
+                const keepFormat = syncFormatFromUI();
                 document.getElementById('paste-input').value = '';
-                targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: 'Singles', moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+                targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: keepFormat, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
+                lastCounters = [];
                 document.getElementById('counter-results').innerHTML = `<div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;"><div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>Import a build on the left to begin strategic analysis.</div>`;
                 document.getElementById('results-count').innerText = '0 RESULTS FOUND';
+                const rf = document.getElementById('results-filter');
+                const rs = document.getElementById('results-sort');
+                if (rf) rf.value = 'all';
+                if (rs) rs.value = 'score';
+                updateFormatBadge();
                 showImportView();
             });
             document.getElementById('edit-build-btn').addEventListener('click', showEditorView);
@@ -859,53 +1069,92 @@
         }
 
         function updatePreviewCard() {
-            const data = pokemonDB.find(p => (p.Name || p.name) === targetBuild.name);
+            const baseData = getBasePokemonData(targetBuild.name);
+            const alteredData = getEffectivePokemonData(targetBuild.name, targetBuild.item) || baseData;
+            const canFormCycle = !!(baseData && alteredData && alteredData !== baseData);
+            const level = targetBuild.level || 50;
+
             document.getElementById('preview-species').innerText = targetBuild.name.toUpperCase();
             document.getElementById('preview-item').innerText = `Item: ${targetBuild.item || 'None'}`;
+            updateFormatBadge();
 
             const previewSprite = document.getElementById('preview-sprite');
-            const effPreview = getEffectivePokemonData(targetBuild.name, targetBuild.item);
-            setPokemonSprite(previewSprite, (effPreview && (effPreview.Name || effPreview.name)) || targetBuild.name, false);
+            const baseSprite = getSpriteUrl(targetBuild.name, false);
+            const alteredSprite = getMegaOrFormSpriteUrl(targetBuild.name, targetBuild.item) || getSpriteUrl((alteredData && (alteredData.Name || alteredData.name)) || targetBuild.name, false);
+            const formHint = document.getElementById('preview-form-hint');
+
+            if (canFormCycle || (alteredSprite && alteredSprite !== baseSprite)) {
+                previewSprite.classList.add('form-toggle');
+                previewSprite.dataset.base = baseSprite;
+                previewSprite.dataset.mega = alteredSprite;
+                previewSprite.dataset.currentSrc = 'base';
+                previewSprite.title = 'Click to toggle base / battle form';
+                if (formHint) formHint.hidden = false;
+                setPokemonSprite(previewSprite, targetBuild.name, false);
+                previewSprite.dataset.base = baseSprite;
+                previewSprite.dataset.mega = alteredSprite;
+            } else {
+                previewSprite.classList.remove('form-toggle');
+                delete previewSprite.dataset.base;
+                delete previewSprite.dataset.mega;
+                previewSprite.title = '';
+                if (formHint) formHint.hidden = true;
+                setPokemonSprite(previewSprite, (alteredData && (alteredData.Name || alteredData.name)) || targetBuild.name, false);
+            }
 
             const typeContainer = document.getElementById('preview-types');
-            typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t =>
+            const baseTypes = [baseData?.Type_1, baseData?.Type_2].filter(t => t && t !== 'None');
+            const alteredTypes = [alteredData?.Type_1, alteredData?.Type_2].filter(t => t && t !== 'None');
+            typeContainer.dataset.baseTypes = baseTypes.join(',');
+            typeContainer.dataset.megaTypes = alteredTypes.join(',');
+            typeContainer.innerHTML = baseTypes.map(t =>
                 `<img src="../assets/type-icons/${t.toLowerCase()}_type.png" class="type-icon" alt="${t}">`
             ).join('');
 
-            // Stats
             const statsContainer = document.getElementById('preview-stats');
-            const statLabels = { hp: 'HP', atk: 'ATK', def: 'DEF', spa: 'SPA', spd: 'SPD', spe: 'SPE' };
+            const statKeys = [
+                { key: 'hp', label: 'HP', baseKey: 'HP' },
+                { key: 'atk', label: 'ATK', baseKey: 'Attack' },
+                { key: 'def', label: 'DEF', baseKey: 'Defense' },
+                { key: 'spa', label: 'SPA', baseKey: 'Sp.Atk' },
+                { key: 'spd', label: 'SPD', baseKey: 'Sp.Def' },
+                { key: 'spe', label: 'SPE', baseKey: 'Speed' }
+            ];
 
-            // Calculate actual stats for display
-            if (data) {
-                const stats = {
-                    hp: getStat(parseInt(data.HP), 31, targetBuild.evs.hp, 50, targetBuild.nature, 'hp'),
-                    atk: getStat(parseInt(data.Attack), 31, targetBuild.evs.atk, 50, targetBuild.nature, 'atk'),
-                    def: getStat(parseInt(data.Defense), 31, targetBuild.evs.def, 50, targetBuild.nature, 'def'),
-                    spa: getStat(parseInt(data['Sp.Atk']), 31, targetBuild.evs.spa, 50, targetBuild.nature, 'spa'),
-                    spd: getStat(parseInt(data['Sp.Def']), 31, targetBuild.evs.spd, 50, targetBuild.nature, 'spd'),
-                    spe: getStat(parseInt(data.Speed), 31, targetBuild.evs.spe, 50, targetBuild.nature, 'spe')
-                };
-
-                statsContainer.innerHTML = Object.entries(statLabels).map(([key, label]) => {
-                    const val = stats[key];
-                    const percent = Math.min(100, (val / 250) * 100);
+            if (baseData) {
+                statsContainer.innerHTML = statKeys.map(({ key, label, baseKey }) => {
+                    const baseRaw = parseInt(baseData[baseKey], 10) || 0;
+                    const altRaw = parseInt((alteredData || baseData)[baseKey], 10) || 0;
+                    const valBase = getStat(baseRaw, 31, targetBuild.evs[key], level, targetBuild.nature, key);
+                    const valAlt = getStat(altRaw, 31, targetBuild.evs[key], level, targetBuild.nature, key);
+                    const pctBase = Math.min(100, (valBase / 250) * 100);
+                    const pctAlt = Math.min(100, (valAlt / 250) * 100);
                     return `
                         <div class="stat-row-mini">
                             <span class="stat-label-mini">${label}</span>
-                            <div class="stat-bar-mini"><div class="stat-fill-mini" style="width: ${percent}%;"></div></div>
-                            <span class="stat-val-mini">${val}</span>
+                            <div class="stat-bar-mini"><div class="stat-fill-mini stat-${key}" style="width: ${pctBase}%;" ${canFormCycle ? `data-base-width="${pctBase}%" data-mega-width="${pctAlt}%"` : ''}></div></div>
+                            <span class="stat-val-mini" ${canFormCycle ? `data-base-val="${valBase}" data-mega-val="${valAlt}"` : ''}>${valBase}</span>
                         </div>
                     `;
                 }).join('');
             }
 
-            // Moves
             const movesContainer = document.getElementById('preview-moves');
             movesContainer.innerHTML = targetBuild.moves.map(m => `<div class="move-tag-mini">${m}</div>`).join('');
             for (let i = targetBuild.moves.length; i < 4; i++) {
                 movesContainer.innerHTML += `<div class="move-tag-mini" style="opacity: 0.2;">-</div>`;
             }
+
+            const calcBtn = document.getElementById('open-calc-btn');
+            const buildsBtn = document.getElementById('open-builds-btn');
+            if (calcBtn) calcBtn.href = `../calc/`;
+            if (buildsBtn) {
+                buildsBtn.href = targetBuild.name
+                    ? `../builds/?search=${encodeURIComponent(targetBuild.name)}`
+                    : '../builds/';
+            }
+
+            previewFormAltered = false;
         }
 
         function loadPokemon(name) {
@@ -923,6 +1172,7 @@
         }
 
         function parsePaste(text) {
+            syncFormatFromUI();
             const lines = text.split('\n'); if (lines.length < 1) return false;
             const nameLine = lines[0].split('@');
             let name = nameLine[0].trim();
@@ -966,6 +1216,7 @@
         }
 
         function updateTargetFromUI() {
+            syncFormatFromUI();
             targetBuild.name = document.getElementById('target-name').value;
             targetBuild.item = document.getElementById('target-item').value;
             targetBuild.ability = document.getElementById('target-ability').value;
@@ -993,6 +1244,7 @@
             const btn = document.getElementById('analyze-btn');
             const loader = document.getElementById('analyze-loader');
             const resultsContainer = document.getElementById('counter-results');
+            syncFormatFromUI();
             updateTargetFromUI();
             if (!targetBuild.name) return;
 
@@ -1025,6 +1277,9 @@
             targetDefender = buildCalcStateFromSlot(targetSlot, 2, targetData, movesDB);
 
             const targetFormatKey = targetFormat.toLowerCase();
+            const pf = document.getElementById('premade-format-filter');
+            if (pf && (pf.value === 'Singles' || pf.value === 'Doubles')) pf.value = targetFormat;
+
             // One representative build per species: isMeta tagged set, else highest id
             const speciesNames = new Map();
             buildsDB.forEach(b => {
@@ -1130,12 +1385,18 @@
                 const qualifies = (threatens || tanks) && (!dead || revengeKill);
 
                 const metaRank = getMetaRank(build.pokemon, targetFormat);
-                const isMeta = metaRank >= 0;
+                const taggedMeta = typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(build) : build.isMeta === true;
+                const isMeta = metaRank >= 0 || taggedMeta;
+                const effectiveMetaRank = metaRank >= 0 ? metaRank : (taggedMeta ? 50 : 999);
 
                 // Only boost meta Pokémon that are already viable answers
                 if (qualifies && isMeta) {
-                    score += Math.max(8, 24 - metaRank);
-                    if (metaRank < 10) points.push(`Current ${targetFormat} meta threat (#${metaRank + 1}).`);
+                    score += Math.max(8, 24 - Math.min(effectiveMetaRank, 23));
+                    if (metaRank >= 0 && metaRank < 10) {
+                        points.push(`Current ${targetFormat} meta threat (#${metaRank + 1}).`);
+                    } else if (taggedMeta) {
+                        points.push(`Tagged meta set for ${targetFormat}.`);
+                    }
                 }
 
                 if (qualifies && score > 30) {
@@ -1148,7 +1409,7 @@
                         verdict,
                         item: candSlot.item || build.item || '',
                         ability: candSlot.ability || '',
-                        metaRank: isMeta ? metaRank : 999,
+                        metaRank: effectiveMetaRank,
                         isMeta
                     };
                     const prev = bestBySpecies.get(speciesKey);
@@ -1166,7 +1427,8 @@
             loader.style.display = 'none'; btn.disabled = false;
             resultsContainer.style.opacity = '1';
             showPreviewView();
-            renderResults(counters);
+            lastCounters = counters;
+            applyResultsView();
         }
 
         function parseBuildPaste(text) {
@@ -1221,22 +1483,52 @@
             return slot;
         }
 
-        function renderResults(counters) {
+        function applyResultsView() {
+            const filter = document.getElementById('results-filter')?.value || 'all';
+            const sort = document.getElementById('results-sort')?.value || 'score';
+            let list = [...lastCounters];
+
+            if (filter === 'meta') list = list.filter(c => c.isMeta);
+            else if (filter === 'ohko') list = list.filter(c => c.verdict === 'ohko');
+            else if (filter === 'tank') list = list.filter(c => c.verdict === 'tank');
+            else if (filter === 'pressure') list = list.filter(c => c.verdict === 'pressure');
+
+            list.sort((a, b) => {
+                if (sort === 'meta') {
+                    if (a.metaRank !== b.metaRank) return a.metaRank - b.metaRank;
+                    return b.score - a.score;
+                }
+                if (sort === 'name') return String(a.pokemon).localeCompare(String(b.pokemon));
+                if (b.score !== a.score) return b.score - a.score;
+                if (a.metaRank !== b.metaRank) return a.metaRank - b.metaRank;
+                return String(a.pokemon).localeCompare(String(b.pokemon));
+            });
+
+            renderResults(list, lastCounters.length);
+        }
+
+        function renderResults(counters, totalFound = counters.length) {
             const container = document.getElementById('counter-results');
-            document.getElementById('results-count').innerText = `${counters.length} COUNTER${counters.length === 1 ? '' : 'S'} FOUND`;
+            const filter = document.getElementById('results-filter')?.value || 'all';
+            const countLabel = filter === 'all'
+                ? `${counters.length} COUNTER${counters.length === 1 ? '' : 'S'} FOUND`
+                : `${counters.length} OF ${totalFound} SHOWN`;
+            document.getElementById('results-count').innerText = countLabel;
 
             if (counters.length === 0) {
-                container.innerHTML = '<div class="placeholder-text">No strong counters found for this specific build.</div>';
+                container.innerHTML = '<div class="placeholder-text">No counters match the current filters. Try another format or filter.</div>';
                 return;
             }
 
-            container.innerHTML = counters.map((c, i) => {
+            container.innerHTML = counters.map((c) => {
                 const spriteSpecies = c.pokemon;
                 const safeSpecies = String(spriteSpecies).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
                 const buildId = `build-${c.id}`;
                 const itemLine = c.item ? ` · ${escapeHtml(c.item)}` : '';
                 const metaBadge = c.isMeta
-                    ? `<span class="counter-meta-pill">META #${c.metaRank + 1}</span>`
+                    ? (c.metaRank < 50
+                        ? `<span class="counter-meta-pill">META #${c.metaRank + 1}</span>`
+                        : `<span class="counter-meta-pill">META SET</span>`)
                     : '';
                 return `
                 <div class="counter-card-premium counter-card-visible${c.isMeta ? ' counter-card--meta' : ''}">

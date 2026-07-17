@@ -1998,7 +1998,13 @@
         "id": "250",
         "pokemon": "Charizard",
         "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 SpA / 4 SpD / 252 Spe  \nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Solar Beam  \n- Weather Ball  \n- Protect",
-        "synergy": [],
+        "synergy": [
+            "250",
+            "570",
+            "415",
+            "356",
+            "327"
+        ],
         "format": "Doubles",
         "isMeta": true
     },
@@ -3347,7 +3353,8 @@
         "pokemon": "Basculegion",
         "build": "Basculegion @ Choice Scarf\nLevel: 50\nAbility: Adaptability\nEVs: 4 HP / 252 Atk / 252 Spe\nTera Type: Water\nJolly Nature\n- Wave Crash\n- Last Respects\n- Flip Turn\n- Aqua Jet",
         "synergy": [
-            "523"
+            "523",
+            "250"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -4697,7 +4704,8 @@
         "synergy": [
             "569",
             "568",
-            "535"
+            "535",
+            "250"
         ],
         "format": "Doubles",
         "isMeta": true
