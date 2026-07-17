@@ -492,6 +492,68 @@
         let pokemonDB = [];
         let movesDB = [];
         let buildsDB = [];
+        let topPokemons = { Singles: [], Doubles: [] };
+
+        function handleSpriteError(img, species, shiny) {
+            if (!species || img.dataset.fallbackState === 'dead') return;
+
+            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+
+            if (!img.dataset.fallbackState && isMegaURL) {
+                img.dataset.fallbackState = 'mega-local';
+                let suffix = 'mega';
+                if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
+                else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+                else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
+                else if (img.src.includes('primal')) suffix = 'primal';
+
+                const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
+                const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
+                img.src = `../assets/mega-sprites/${fileName}.gif`;
+                return;
+            }
+
+            if (!img.dataset.fallbackState) {
+                img.dataset.fallbackState = 'smogon';
+                const folder = shiny ? 'xy-shiny' : 'xy';
+                img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+                return;
+            }
+
+            img.dataset.fallbackState = 'dead';
+            img.dataset.fallback = 'true';
+            img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+        }
+        window.handleSpriteError = handleSpriteError;
+
+        function getSpriteUrl(species, shiny) {
+            if (!species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+            const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+            const base = shiny ? 'ani-shiny' : 'ani';
+            return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
+        }
+
+        function setPokemonSprite(img, species, shiny) {
+            if (!img) return;
+            delete img.dataset.fallbackState;
+            delete img.dataset.fallback;
+            img.alt = species || '';
+            img.onerror = function () { handleSpriteError(img, species, !!shiny); };
+            img.src = getSpriteUrl(species, shiny);
+        }
+
+        function getMetaListForFormat(format) {
+            const key = (format || 'Singles').toLowerCase() === 'doubles' ? 'Doubles' : 'Singles';
+            return topPokemons[key] || [];
+        }
+
+        function getMetaRank(species, format) {
+            const list = getMetaListForFormat(format);
+            const key = normalizeKey(species);
+            const idx = list.findIndex(n => normalizeKey(n) === key);
+            return idx;
+        }
 
         const natureMap = {
             'Hardy': [1, 1, 1, 1, 1], 'Lonely': [1.1, 0.9, 1, 1, 1], 'Brave': [1.1, 1, 1, 1, 0.9], 'Adamant': [1.1, 1, 0.9, 1, 1], 'Naughty': [1.1, 1, 1, 0.9, 1],
@@ -674,12 +736,17 @@
                 .forEach(el => el.classList.add('appear'));
 
             try {
-                const [pkmn, mvs, blds] = await Promise.all([
+                const [pkmn, mvs, blds, topMeta] = await Promise.all([
                     fetch('../assets/pokemon.json').then(res => res.json()),
                     fetch('../assets/moves.json').then(res => res.json()),
-                    fetch('../assets/builds.json').then(res => res.json())
+                    fetch('../assets/builds.json').then(res => res.json()),
+                    fetch('../assets/top_pokemons.json').then(res => res.json()).catch(() => ({ Singles: [], Doubles: [] }))
                 ]);
                 pokemonDB = pkmn; movesDB = mvs; buildsDB = blds;
+                topPokemons = {
+                    Singles: Array.isArray(topMeta.Singles) ? topMeta.Singles : [],
+                    Doubles: Array.isArray(topMeta.Doubles) ? topMeta.Doubles : []
+                };
                 initMoveIndex(movesDB);
                 populateNatures();
                 setupEventListeners();
@@ -785,8 +852,9 @@
             document.getElementById('preview-species').innerText = targetBuild.name.toUpperCase();
             document.getElementById('preview-item').innerText = `Item: ${targetBuild.item || 'None'}`;
 
-            const clean = targetBuild.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            document.getElementById('preview-sprite').src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+            const previewSprite = document.getElementById('preview-sprite');
+            const effPreview = getEffectivePokemonData(targetBuild.name, targetBuild.item);
+            setPokemonSprite(previewSprite, (effPreview && (effPreview.Name || effPreview.name)) || targetBuild.name, false);
 
             const typeContainer = document.getElementById('preview-types');
             typeContainer.innerHTML = targetBuild.types.filter(t => t && t !== 'None').map(t =>
@@ -840,8 +908,7 @@
         }
 
         function updateSprite(name) {
-            const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            document.getElementById('target-sprite').src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+            setPokemonSprite(document.getElementById('target-sprite'), name, false);
         }
 
         function parsePaste(text) {
@@ -1038,6 +1105,15 @@
                 const revengeKill = dead && outspeeds && bestDealt >= 100;
                 const qualifies = (threatens || tanks) && (!dead || revengeKill);
 
+                const metaRank = getMetaRank(build.pokemon, targetFormat);
+                const isMeta = metaRank >= 0;
+
+                // Only boost meta Pokémon that are already viable answers
+                if (qualifies && isMeta) {
+                    score += Math.max(8, 24 - metaRank);
+                    if (metaRank < 10) points.push(`Current ${targetFormat} meta threat (#${metaRank + 1}).`);
+                }
+
                 if (qualifies && score > 30) {
                     const speciesKey = normalizeKey(build.pokemon);
                     const entry = {
@@ -1047,14 +1123,22 @@
                         points: [...new Set(points)].slice(0, 6),
                         verdict,
                         item: candSlot.item || build.item || '',
-                        ability: candSlot.ability || ''
+                        ability: candSlot.ability || '',
+                        metaRank: isMeta ? metaRank : 999,
+                        isMeta
                     };
                     const prev = bestBySpecies.get(speciesKey);
-                    if (!prev || entry.score > prev.score) bestBySpecies.set(speciesKey, entry);
+                    if (!prev || entry.score > prev.score || (entry.score === prev.score && entry.metaRank < prev.metaRank)) {
+                        bestBySpecies.set(speciesKey, entry);
+                    }
                 }
             });
 
-            const counters = Array.from(bestBySpecies.values()).sort((a, b) => b.score - a.score);
+            const counters = Array.from(bestBySpecies.values()).sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if (a.metaRank !== b.metaRank) return a.metaRank - b.metaRank;
+                return String(a.pokemon).localeCompare(String(b.pokemon));
+            });
             loader.style.display = 'none'; btn.disabled = false;
             resultsContainer.style.opacity = '1';
             showPreviewView();
@@ -1123,17 +1207,21 @@
             }
 
             container.innerHTML = counters.map((c, i) => {
-                const clean = c.pokemon.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+                const spriteSpecies = c.pokemon;
+                const safeSpecies = String(spriteSpecies).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
                 const buildId = `build-${c.id}`;
                 const itemLine = c.item ? ` · ${escapeHtml(c.item)}` : '';
+                const metaBadge = c.isMeta
+                    ? `<span class="counter-meta-pill">META #${c.metaRank + 1}</span>`
+                    : '';
                 return `
-                <div class="counter-card-premium counter-card-visible">
+                <div class="counter-card-premium counter-card-visible${c.isMeta ? ' counter-card--meta' : ''}">
                     <div class="counter-score-badge">${c.score}% EFFECTIVE</div>
                     
                     <div class="counter-header-premium">
-                        <img src="https://play.pokemonshowdown.com/sprites/ani/${clean}.gif" class="counter-sprite-premium" alt="">
+                        <img src="${getSpriteUrl(spriteSpecies, false)}" class="counter-sprite-premium" alt="${escapeHtml(c.pokemon)}" onerror="handleSpriteError(this, '${safeSpecies}', false)">
                         <div class="counter-meta-premium">
-                            <h4>${escapeHtml(c.pokemon)}</h4>
+                            <h4>${escapeHtml(c.pokemon)} ${metaBadge}</h4>
                             <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 800; letter-spacing: 0.5px;">
                                 ${escapeHtml((c.format || 'Singles').toUpperCase())} · BUILD #${c.id}${itemLine}
                             </div>

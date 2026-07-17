@@ -1,6 +1,7 @@
 let pokemonData = [];  // array of pokemon objects
 let movesData = {};
 let itemsData = [];
+let buildsData = [];
 
 let p1 = {
     species: '',
@@ -13,7 +14,8 @@ let p1 = {
     stats: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     base: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
     type1: '',
-    type2: ''
+    type2: '',
+    moves: []
 };
 
 let p2 = JSON.parse(JSON.stringify(p1)); // deep clone copy
@@ -51,26 +53,66 @@ const NATURES = {
     Quirky:  { plus: 'None', minus: 'None' }
 };
 
+function normalizeKey(value) {
+    return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function mapEvStatKey(raw) {
+    const s = (raw || '').toLowerCase().replace(/[^a-z.]/g, '');
+    if (s === 'hp') return 'hp';
+    if (s === 'atk' || s === 'attack') return 'atk';
+    if (s === 'def' || s === 'defense') return 'def';
+    if (s === 'spa' || s === 'spatk' || s === 'sp.atk') return 'spa';
+    if (s === 'spd' || s === 'spdef' || s === 'sp.def') return 'spd';
+    if (s === 'spe' || s === 'speed') return 'spe';
+    return null;
+}
+
+function parseSpeciesFromHeader(header) {
+    let speciesPart = (header || '').split('@')[0].trim();
+    const paren = speciesPart.match(/\(([^)]+)\)/);
+    if (paren) {
+        const inside = paren[1].trim();
+        if (/^[MF]$/i.test(inside)) {
+            speciesPart = speciesPart.replace(/\s*\([^)]+\)\s*/, ' ').trim();
+        } else {
+            speciesPart = inside;
+        }
+    }
+    return speciesPart.trim();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [pkmnRes, movesRes, itemsRes] = await Promise.all([
+        const [pkmnRes, movesRes, itemsRes, buildsRes] = await Promise.all([
             fetch('../assets/pokemon.json'),
             fetch('../assets/moves.json'),
-            fetch('../assets/items.json')
+            fetch('../assets/items.json'),
+            fetch('../assets/builds.json')
         ]);
         pokemonData = await pkmnRes.json();
         movesData = await movesRes.json();
         itemsData = await itemsRes.json();
+        buildsData = await buildsRes.json();
 
         initMetaSelects();
         populateItemsList();
         setupSearchListeners();
         setupInputListeners();
-        
-        // Initial Empty Render
+        setupImportTabs();
+        setupLibraryFilters();
+
         renderStatsEditor(1);
         renderStatsEditor(2);
+        renderMoves(1);
+        renderMoves(2);
         updateComparison();
+
+        const params = new URLSearchParams(window.location.search);
+        const buildA = params.get('buildA') || params.get('a');
+        const buildB = params.get('buildB') || params.get('b');
+        if (buildA) loadLibraryBuild(1, buildA, false);
+        if (buildB) loadLibraryBuild(2, buildB, false);
 
     } catch (e) {
         showToast("Error loading data");
@@ -104,22 +146,34 @@ function setupSearchListeners() {
     [1, 2].forEach(num => {
         const input = document.getElementById(`p${num}-search`);
         const results = document.getElementById(`p${num}-search-results`);
+        if (!input || !results) return;
 
         input.addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
+            const q = e.target.value.toLowerCase().trim();
             results.innerHTML = '';
-            if (q.length < 2) return;
+            if (q.length < 2) {
+                results.classList.remove('active');
+                return;
+            }
+
+            const filtered = pokemonData
+                .filter(x => (x.Name || '').toLowerCase().includes(q))
+                .slice(0, 12);
+
+            if (!filtered.length) {
+                results.classList.remove('active');
+                return;
+            }
 
             results.innerHTML = filtered.map(x => `
                 <div class="search-item" data-name="${x.Name}">
                     <span class="search-item-name">${x.Name}</span>
-                    <span class="search-item-types">${x.Type_1}${x.Type_2 ? ' / ' + x.Type_2 : ''}</span>
+                    <span class="search-item-types">${x.Type_1}${x.Type_2 && x.Type_2 !== 'None' ? ' / ' + x.Type_2 : ''}</span>
                 </div>
             `).join('');
             results.classList.add('active');
         });
 
-        // Search Selection via Delegation
         results.addEventListener('click', (e) => {
             const item = e.target.closest('.search-item');
             if (item) {
@@ -131,20 +185,27 @@ function setupSearchListeners() {
             }
         });
 
-        // Close on outside click
         document.addEventListener('click', (e) => {
-            if (e.target !== input) results.innerHTML = '';
+            if (e.target !== input && !results.contains(e.target)) {
+                results.innerHTML = '';
+                results.classList.remove('active');
+            }
         });
     });
 }
 
+function findPokemonByName(name) {
+    const key = normalizeKey(name);
+    return pokemonData.find(p => normalizeKey(p.Name) === key);
+}
+
 function selectPokemon(num, species) {
-    const pd = pokemonData.find(p => p.Name === species);
+    const pd = findPokemonByName(species);
     if (!pd) return;
 
     const p = num === 1 ? p1 : p2;
 
-    p.species = species;
+    p.species = pd.Name;
     p.base = {
         hp:  pd.HP   || 0,
         atk: pd.Attack  || 0,
@@ -154,14 +215,12 @@ function selectPokemon(num, species) {
         spe: pd.Speed   || 0
     };
     p.type1 = pd.Type_1;
-    p.type2 = pd.Type_2 || '';
+    p.type2 = (pd.Type_2 && pd.Type_2 !== 'None') ? pd.Type_2 : '';
 
-    // Update UI headers
-    document.getElementById(`p${num}-search`).value = species;
+    document.getElementById(`p${num}-search`).value = p.species;
     document.getElementById(`p${num}-type1`).value = p.type1;
     document.getElementById(`p${num}-type2`).value = p.type2 || '-';
-    
-    // Ability datalist
+
     const abList = document.getElementById(`p${num}-abilities-list`);
     abList.innerHTML = '';
     const abilities = getPokemonAbilities(pd);
@@ -170,54 +229,57 @@ function selectPokemon(num, species) {
         opt.value = ab;
         abList.appendChild(opt);
     });
-    // Set first ability by default if none
     if (!p.ability && abilities.length > 0) {
         p.ability = abilities[0];
         document.getElementById(`p${num}-ability`).value = p.ability;
     }
 
-    // Set sprite
-    const img = document.getElementById(`p${num}-sprite`);
-    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-    img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
-    img.dataset.fallbackState = '0'; // reset error state
-
+    updateSprite(num, p.species);
     recalcStats(num);
+    renderMoves(num);
 }
 
-// Ensure the requested fallback for mega sprites
+// Builder-matching sprite fallback chain
 window.handleSpriteError = function(img, species, shiny, item) {
-    if (!species || img.dataset.fallbackState === 'final') return;
-    
+    if (!species || img.dataset.fallbackState === 'dead') return;
+
     item = item || '';
     const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
 
-    // The user requested extra fallback for mega sprites located in assets/mega-sprites/{name}-{mega/megax/megay/megaz}.gif
-    let isMega = false;
-    let suffix = 'mega';
-    const it = item.toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
-        isMega = true;
-        if (it.endsWith('itex')) suffix = 'megax';
-        else if (it.endsWith('itey')) suffix = 'megay';
+    if (!img.dataset.fallbackState && isMegaURL) {
+        img.dataset.fallbackState = 'mega-local';
+        let suffix = 'mega';
+        if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
+        else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
+        else if (img.src.includes('mega-z') || img.src.includes('megaz')) suffix = 'mega-z';
+        else if (img.src.includes('primal')) suffix = 'primal';
+        const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
+        const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
+        img.src = `../assets/mega-sprites/${fileName}.gif`;
+        return;
     }
 
-    if (!img.dataset.fallbackState || img.dataset.fallbackState === '0') {
-        img.dataset.fallbackState = '1';
-        if (isMega) {
-            // First fallback if Mega Item is present: check local mega-sprites folder
+    if (!img.dataset.fallbackState) {
+        const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+            img.dataset.fallbackState = 'mega-local';
+            let suffix = 'mega';
+            if (it.endsWith('itex')) suffix = 'mega-x';
+            else if (it.endsWith('itey')) suffix = 'mega-y';
             img.src = `../assets/mega-sprites/${clean}-${suffix}.gif`;
             return;
         }
-    }
-
-    if (img.dataset.fallbackState === '1') {
-        img.dataset.fallbackState = 'final';
-        // Second fallback: Smogon XY static sprites
+        img.dataset.fallbackState = 'smogon';
         const folder = shiny ? 'xy-shiny' : 'xy';
         img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+        return;
     }
-}
+
+    img.dataset.fallbackState = 'dead';
+    img.dataset.fallback = 'true';
+    img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+};
 
 
 function setupInputListeners() {
@@ -297,8 +359,21 @@ function updateSprite(num, species, suffix = '') {
     const img = document.getElementById(`p${num}-sprite`);
     if (!img) return;
     const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-    img.dataset.fallbackState = '0';
+    delete img.dataset.fallbackState;
+    delete img.dataset.fallback;
     img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+}
+
+function renderMoves(num) {
+    const el = document.getElementById(`p${num}-moves`);
+    if (!el) return;
+    const p = num === 1 ? p1 : p2;
+    const moves = (p.moves || []).filter(Boolean);
+    if (!moves.length) {
+        el.innerHTML = '<span class="compare-move-empty">Import a build to see moves</span>';
+        return;
+    }
+    el.innerHTML = moves.map(m => `<span class="compare-move-chip">${m}</span>`).join('');
 }
 
 function toggleMega(num) {
@@ -443,43 +518,130 @@ function updateComparison() {
 
 // ------ MODAL / POKEPASTE IMPORTER ------
 let currentImportNum = 1;
+let currentImportTab = 'paste';
 
-window.openImportModal = function(num) {
+function setupImportTabs() {
+    document.querySelectorAll('.import-tab').forEach(tab => {
+        tab.addEventListener('click', () => setImportTab(tab.dataset.importTab));
+    });
+}
+
+function setImportTab(tab) {
+    currentImportTab = tab === 'library' ? 'library' : 'paste';
+    document.querySelectorAll('.import-tab').forEach(btn => {
+        const on = btn.dataset.importTab === currentImportTab;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    const pastePane = document.getElementById('import-paste-pane');
+    const libPane = document.getElementById('import-library-pane');
+    if (pastePane) {
+        pastePane.classList.toggle('is-active', currentImportTab === 'paste');
+        pastePane.hidden = currentImportTab !== 'paste';
+    }
+    if (libPane) {
+        libPane.classList.toggle('is-active', currentImportTab === 'library');
+        libPane.hidden = currentImportTab !== 'library';
+    }
+    if (currentImportTab === 'library') populateLibraryList();
+}
+
+function setupLibraryFilters() {
+    document.getElementById('library-search')?.addEventListener('input', populateLibraryList);
+    document.getElementById('library-format')?.addEventListener('change', populateLibraryList);
+}
+
+function populateLibraryList() {
+    const list = document.getElementById('library-build-list');
+    if (!list) return;
+    if (!buildsData.length) {
+        list.innerHTML = '<div class="compare-move-empty">No builds loaded.</div>';
+        return;
+    }
+
+    const q = (document.getElementById('library-search')?.value || '').toLowerCase().trim();
+    const fmt = (document.getElementById('library-format')?.value || '').toLowerCase();
+
+    let pool = buildsData;
+    if (fmt) pool = pool.filter(b => (b.format || 'Singles').toLowerCase() === fmt);
+    if (q) {
+        pool = pool.filter(b =>
+            (b.pokemon || '').toLowerCase().includes(q) ||
+            (b.build || '').toLowerCase().includes(q) ||
+            String(b.id).includes(q)
+        );
+    }
+
+    const shown = pool.slice(0, 40);
+    if (!shown.length) {
+        list.innerHTML = '<div class="compare-move-empty">No builds match your filters.</div>';
+        return;
+    }
+
+    list.innerHTML = shown.map(b => {
+        const itemMatch = (b.build || '').split('\n')[0]?.split('@')[1]?.trim() || '';
+        return `<button type="button" class="library-build-item" data-build-id="${b.id}">
+            <span class="library-build-item__name">${b.pokemon}${itemMatch ? ` · ${itemMatch}` : ''}</span>
+            <span class="library-build-item__meta">${b.format || 'Singles'} #${b.id}</span>
+        </button>`;
+    }).join('');
+
+    list.querySelectorAll('.library-build-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            loadLibraryBuild(currentImportNum, btn.dataset.buildId, true);
+            closeImportModal();
+        });
+    });
+}
+
+function loadLibraryBuild(num, buildId, toast) {
+    const build = buildsData.find(b => String(b.id) === String(buildId));
+    if (!build) {
+        if (toast !== false) showToast('Build not found');
+        return;
+    }
+    importFromText(num, build.build);
+    if (toast !== false) showToast(`Build ${num === 1 ? 'A' : 'B'}: ${build.pokemon} #${build.id}`);
+}
+
+window.openImportModal = function(num, tab) {
     currentImportNum = num;
     document.getElementById('import-target-label').textContent = `Importing for Build ${num === 1 ? 'A' : 'B'}`;
     const modal = document.getElementById('import-modal');
     modal.style.display = 'flex';
     modal.classList.add('active');
-    document.getElementById('paste-input').value = '';
-    document.getElementById('paste-input').focus();
-}
+    setImportTab(tab || 'paste');
+    if (currentImportTab === 'paste') {
+        document.getElementById('paste-input').value = '';
+        document.getElementById('paste-input').focus();
+    }
+};
 
 window.closeImportModal = function() {
     const modal = document.getElementById('import-modal');
     modal.style.display = 'none';
     modal.classList.remove('active');
-}
+};
 
 document.getElementById('confirm-import').addEventListener('click', async () => {
     const text = document.getElementById('paste-input').value.trim();
     if (!text) return;
-    
+
     let pasteText = text;
-    // Check if URL
     if (text.startsWith('http')) {
         const btn = document.getElementById('confirm-import');
         btn.textContent = 'Fetching...';
         btn.disabled = true;
         try {
-            const pasteId = text.split('/').pop().toUpperCase();
-            if(!pasteId) throw new Error("Invalid Pokepaste URL");
+            const pasteId = text.split('/').filter(Boolean).pop();
+            if (!pasteId) throw new Error('Invalid Pokepaste URL');
             const res = await fetch(`https://pokepast.es/${pasteId}/json`);
-            if(!res.ok) throw new Error("Could not load from pokepast.es");
+            if (!res.ok) throw new Error('Could not load from pokepast.es');
             const data = await res.json();
             pasteText = data.paste || '';
         } catch (e) {
             console.error(e);
-            showToast("Failed to fetch paste. Try pasting raw text.");
+            showToast('Failed to fetch paste. Try pasting raw text.');
             btn.textContent = 'Import';
             btn.disabled = false;
             return;
@@ -497,51 +659,64 @@ function importFromText(num, text) {
     if (lines.length === 0) return;
 
     const p = num === 1 ? p1 : p2;
-    
+
     try {
-        // Line 1: Name @ Item
         const line1 = lines[0];
-        const namePart = line1.split('@')[0].split('(')[0].trim();
-        const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : 'None';
-        
-        selectPokemon(num, namePart);
-        p.item = itemPart;
+        const speciesName = parseSpeciesFromHeader(line1);
+        const itemPart = line1.includes('@') ? line1.split('@')[1].trim() : '';
+
+        // Reset spread before applying paste
+        p.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        p.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
+        p.moves = [];
+        p.ability = '';
+        p.nature = 'Serious';
+        p.level = 50;
+        p.item = itemPart && itemPart.toLowerCase() !== 'none' ? itemPart : '';
+
+        selectPokemon(num, speciesName);
+        if (!p.species) {
+            showToast(`Could not resolve species: ${speciesName}`);
+            return;
+        }
 
         lines.slice(1).forEach(line => {
-            if (line.startsWith('Ability:')) p.ability = line.replace('Ability:', '').trim();
-            else if (line.startsWith('Level:')) p.level = parseInt(line.replace('Level:', '')) || 50;
-            else if (line.startsWith('EVs:')) {
-                const evs = line.replace('EVs:', '').split('/');
-                evs.forEach(ev => {
-                    const [val, stat] = ev.trim().split(' ');
-                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
-                    if (p.evs[key] !== undefined) p.evs[key] = parseInt(val) || 0;
+            if (/^Ability\s*:/i.test(line)) p.ability = line.split(':').slice(1).join(':').trim();
+            else if (/^Level\s*:/i.test(line)) p.level = parseInt(line.split(':')[1].trim(), 10) || 50;
+            else if (/^EVs\s*:/i.test(line)) {
+                line.split(':').slice(1).join(':').split('/').forEach(part => {
+                    const match = part.trim().match(/(\d+)\s+([A-Za-z.]+)/);
+                    if (!match) return;
+                    const key = mapEvStatKey(match[2]);
+                    if (key) p.evs[key] = parseInt(match[1], 10) || 0;
                 });
-            }
-            else if (line.endsWith('Nature')) p.nature = line.replace('Nature', '').trim();
-            else if (line.startsWith('IVs:')) {
-                const ivs = line.replace('IVs:', '').split('/');
-                ivs.forEach(iv => {
-                    const [val, stat] = iv.trim().split(' ');
-                    const key = stat.toLowerCase().replace('sp.atk', 'spa').replace('sp.def', 'spd').replace('spe', 'spe').replace('spd', 'spd').replace('atk', 'atk').replace('def', 'def').replace('hp', 'hp');
-                    if (p.ivs[key] !== undefined) p.ivs[key] = parseInt(val) || 0;
+            } else if (/^IVs\s*:/i.test(line)) {
+                line.split(':').slice(1).join(':').split('/').forEach(part => {
+                    const match = part.trim().match(/(\d+)\s+([A-Za-z.]+)/);
+                    if (!match) return;
+                    const key = mapEvStatKey(match[2]);
+                    if (key) p.ivs[key] = parseInt(match[1], 10) || 0;
                 });
+            } else if (/nature$/i.test(line)) {
+                p.nature = line.replace(/nature$/i, '').trim();
+            } else if (line.startsWith('-')) {
+                const move = line.replace(/^-+\s*/, '').trim();
+                if (move) p.moves.push(move);
             }
         });
 
-        // Update UI headers
-        const searchInput = document.getElementById(`p${num}-search`);
-        if (searchInput) searchInput.value = p.species;
+        document.getElementById(`p${num}-search`).value = p.species;
         document.getElementById(`p${num}-level`).value = p.level;
         document.getElementById(`p${num}-nature`).value = p.nature;
         document.getElementById(`p${num}-ability`).value = p.ability;
         document.getElementById(`p${num}-item`).value = p.item;
 
         recalcStats(num);
-        showToast(`Build ${num === 1 ? 'A' : 'B'} Imported!`);
+        renderMoves(num);
+        showToast(`Build ${num === 1 ? 'A' : 'B'} imported`);
     } catch (e) {
-        console.error("Import error", e);
-        showToast("Failed to parse PokePaste!");
+        console.error('Import error', e);
+        showToast('Failed to parse build paste');
     }
 }
 

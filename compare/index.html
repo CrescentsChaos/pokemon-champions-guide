@@ -20,7 +20,7 @@
         <div id="compare-banner" class="glass fade-in">
             <h1>COMPARE <span style="color: var(--primary-red);">BUILDS</span></h1>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">
-                Import two Pokepastes to compare stats, speed tiers, and bulk side-by-side.
+                Import curated library builds or Poképastes to compare stats, speed tiers, bulk, and moves side-by-side.
             </p>
         </div>
 
@@ -29,9 +29,12 @@
 
             <!-- ============ BUILD A ============ -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
-                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem;">
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem; gap:0.5rem; flex-wrap:wrap;">
                     <h2 style="margin:0; color:var(--primary-red); font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD A</h2>
-                    <button class="import-btn" onclick="openImportModal(1)">📥 Import Paste</button>
+                    <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+                        <button class="import-btn" type="button" onclick="openImportModal(1, 'library')">Library</button>
+                        <button class="import-btn" type="button" onclick="openImportModal(1, 'paste')">Import Paste</button>
+                    </div>
                 </div>
 
                 <!-- Search -->
@@ -78,6 +81,13 @@
                         <input type="text" id="p1-item" list="items-list" placeholder="Choose..." style="flex:1;">
                     </div>
                 </div>
+
+                <div class="compare-moves-block">
+                    <div class="compare-moves-label">Moves</div>
+                    <div id="p1-moves" class="compare-moves-list">
+                        <span class="compare-move-empty">Import a build to see moves</span>
+                    </div>
+                </div>
             </div>
 
             <!-- ============ MIDDLE: STAT COMPARISON ============ -->
@@ -102,9 +112,12 @@
 
             <!-- ============ BUILD B ============ -->
             <div class="calc-panel glass defender-panel" id="p2-panel">
-                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem;">
+                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem; gap:0.5rem; flex-wrap:wrap;">
                     <h2 style="margin:0; color:#2196F3; font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD B</h2>
-                    <button class="import-btn" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2)">📥 Import Paste</button>
+                    <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+                        <button class="import-btn" type="button" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2, 'library')">Library</button>
+                        <button class="import-btn" type="button" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2, 'paste')">Import Paste</button>
+                    </div>
                 </div>
 
                 <!-- Search -->
@@ -149,6 +162,13 @@
                     <div class="select-group">
                         <label>Item</label>
                         <input type="text" id="p2-item" list="items-list" placeholder="Choose..." style="flex:1;">
+                    </div>
+                </div>
+
+                <div class="compare-moves-block">
+                    <div class="compare-moves-label">Moves</div>
+                    <div id="p2-moves" class="compare-moves-list">
+                        <span class="compare-move-empty">Import a build to see moves</span>
                     </div>
                 </div>
             </div>
@@ -207,12 +227,35 @@
     <!-- ============ IMPORT MODAL ============ -->
     <div id="import-modal">
         <div class="modal-content glass" onclick="event.stopPropagation()">
-            <h3>Import PokéPaste</h3>
+            <h3>Import Build</h3>
             <p id="import-target-label" style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">Importing for Build A</p>
-            <textarea id="paste-input" placeholder="Paste your Pokémon set here, or paste a pokepast.es URL..."></textarea>
-            <div class="modal-actions">
-                <button onclick="closeImportModal()">Cancel</button>
-                <button id="confirm-import">Import</button>
+
+            <div class="import-tabs" role="tablist">
+                <button type="button" class="import-tab is-active" data-import-tab="paste" role="tab" aria-selected="true">Paste / URL</button>
+                <button type="button" class="import-tab" data-import-tab="library" role="tab" aria-selected="false">Build Library</button>
+            </div>
+
+            <div id="import-paste-pane" class="import-pane is-active">
+                <textarea id="paste-input" placeholder="Paste a Showdown set, or a pokepast.es URL..."></textarea>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeImportModal()">Cancel</button>
+                    <button type="button" id="confirm-import">Import</button>
+                </div>
+            </div>
+
+            <div id="import-library-pane" class="import-pane" hidden>
+                <div class="library-filters">
+                    <input type="search" id="library-search" placeholder="Search Pokémon or item…" autocomplete="off">
+                    <select id="library-format">
+                        <option value="">All formats</option>
+                        <option value="singles">Singles</option>
+                        <option value="doubles">Doubles</option>
+                    </select>
+                </div>
+                <div id="library-build-list" class="library-build-list">Loading builds…</div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeImportModal()">Close</button>
+                </div>
             </div>
         </div>
     </div>
