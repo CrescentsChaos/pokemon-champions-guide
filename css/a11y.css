@@ -499,6 +499,41 @@ html[data-theme="light"] .home-hero__points li {
     color: rgba(21, 21, 28, 0.78);
 }
 
+html[data-theme="light"] .dex-detail-modal .pkd-modal-content {
+    background: linear-gradient(180deg, #ffffff, #f3f4f8) !important;
+    border-color: rgba(20, 20, 30, 0.12) !important;
+}
+
+html[data-theme="light"] .pkd-hero__name,
+html[data-theme="light"] .pkd-fact strong,
+html[data-theme="light"] .pkd-ability h4,
+html[data-theme="light"] .pkd-move__title h4,
+html[data-theme="light"] .pkd-stat__val,
+html[data-theme="light"] .pkd-hero__bst strong,
+html[data-theme="light"] .pkd-item,
+html[data-theme="light"] .pkd-teammate,
+html[data-theme="light"] .pkd-action:not(.pkd-action--primary) {
+    color: #15151c;
+}
+
+html[data-theme="light"] .pkd-panel,
+html[data-theme="light"] .pkd-fact,
+html[data-theme="light"] .pkd-ability,
+html[data-theme="light"] .pkd-move,
+html[data-theme="light"] .pkd-hero__sprite,
+html[data-theme="light"] .pkd-hero__bst {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(20, 20, 30, 0.1) !important;
+}
+
+html[data-theme="light"] .pkd-ability p,
+html[data-theme="light"] .pkd-move__desc,
+html[data-theme="light"] .pkd-panel__meta,
+html[data-theme="light"] .pkd-hero__id,
+html[data-theme="light"] .pkd-fact span {
+    color: #5a5a68;
+}
+
 html[data-a11y-motion="reduce"] *,
 html[data-a11y-motion="reduce"] *::before,
 html[data-a11y-motion="reduce"] *::after {

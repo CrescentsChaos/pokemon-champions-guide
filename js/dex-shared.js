@@ -170,6 +170,72 @@ const DexShared = (() => {
             </div>`;
     }
 
+    const TYPE_COLORS = {
+        Normal: '#A8A878', Fire: '#F08030', Water: '#6890F0', Grass: '#78C850', Electric: '#F8D030',
+        Ice: '#98D8D8', Fighting: '#C03028', Poison: '#A040A0', Ground: '#E0C068', Flying: '#A890F0',
+        Psychic: '#F85888', Bug: '#A8B820', Rock: '#B8A038', Ghost: '#705898', Dragon: '#7038F8',
+        Dark: '#705848', Steel: '#B8B8D0', Fairy: '#EE99AC'
+    };
+
+    /** Attack-type → defender-type multipliers (Gen 6+) */
+    const TYPE_CHART = {
+        Normal: { Rock: 0.5, Ghost: 0, Steel: 0.5 },
+        Fire: { Fire: 0.5, Water: 0.5, Grass: 2, Ice: 2, Bug: 2, Rock: 0.5, Dragon: 0.5, Steel: 2 },
+        Water: { Fire: 2, Water: 0.5, Grass: 0.5, Ground: 2, Rock: 2, Dragon: 0.5 },
+        Electric: { Water: 2, Electric: 0.5, Grass: 0.5, Ground: 0, Flying: 2, Dragon: 0.5 },
+        Grass: { Fire: 0.5, Water: 2, Grass: 0.5, Poison: 0.5, Ground: 2, Flying: 0.5, Bug: 0.5, Rock: 2, Dragon: 0.5, Steel: 0.5 },
+        Ice: { Fire: 0.5, Water: 0.5, Grass: 2, Ice: 0.5, Ground: 2, Flying: 2, Dragon: 2, Steel: 0.5 },
+        Fighting: { Normal: 2, Ice: 2, Poison: 0.5, Flying: 0.5, Psychic: 0.5, Bug: 0.5, Rock: 2, Ghost: 0, Dark: 2, Steel: 2, Fairy: 0.5 },
+        Poison: { Grass: 2, Poison: 0.5, Ground: 0.5, Rock: 0.5, Ghost: 0.5, Steel: 0, Fairy: 2 },
+        Ground: { Fire: 2, Electric: 2, Grass: 0.5, Poison: 2, Flying: 0, Bug: 0.5, Rock: 2, Steel: 2 },
+        Flying: { Electric: 0.5, Grass: 2, Fighting: 2, Bug: 2, Rock: 0.5, Steel: 0.5 },
+        Psychic: { Fighting: 2, Poison: 2, Psychic: 0.5, Dark: 0, Steel: 0.5 },
+        Bug: { Fire: 0.5, Grass: 2, Fighting: 0.5, Poison: 0.5, Flying: 0.5, Psychic: 2, Ghost: 0.5, Dark: 2, Steel: 0.5, Fairy: 0.5 },
+        Rock: { Fire: 2, Ice: 2, Fighting: 0.5, Ground: 0.5, Flying: 2, Bug: 2, Steel: 0.5 },
+        Ghost: { Normal: 0, Psychic: 2, Ghost: 2, Dark: 0.5 },
+        Dragon: { Dragon: 2, Steel: 0.5, Fairy: 0 },
+        Dark: { Fighting: 0.5, Psychic: 2, Ghost: 2, Dark: 0.5, Fairy: 0.5 },
+        Steel: { Fire: 0.5, Water: 0.5, Electric: 0.5, Ice: 2, Rock: 2, Steel: 0.5, Fairy: 2 },
+        Fairy: { Fighting: 2, Poison: 0.5, Dragon: 2, Dark: 2, Steel: 0.5 }
+    };
+
+    function capitalizeType(t) {
+        if (!t) return '';
+        return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+    }
+
+    function getTypeEffectiveness(attackType, defenseTypes) {
+        let mult = 1;
+        (defenseTypes || []).forEach((t) => {
+            if (!t || t === 'None') return;
+            const chart = TYPE_CHART[capitalizeType(attackType)];
+            const key = capitalizeType(t);
+            if (chart && chart[key] !== undefined) mult *= chart[key];
+        });
+        return mult;
+    }
+
+    function getDefensiveMatchups(types) {
+        const buckets = { immune: [], quarter: [], half: [], neutral: [], double: [], quad: [] };
+        POKEMON_TYPES.forEach((atk) => {
+            const m = getTypeEffectiveness(atk, types);
+            const entry = { type: atk, mult: m };
+            if (m === 0) buckets.immune.push(entry);
+            else if (m === 0.25) buckets.quarter.push(entry);
+            else if (m === 0.5) buckets.half.push(entry);
+            else if (m === 1) buckets.neutral.push(entry);
+            else if (m === 2) buckets.double.push(entry);
+            else if (m >= 4) buckets.quad.push(entry);
+            else if (m > 1) buckets.double.push(entry);
+            else buckets.half.push(entry);
+        });
+        return buckets;
+    }
+
+    function typeColor(type) {
+        return TYPE_COLORS[capitalizeType(type)] || '#888';
+    }
+
     function compareValues(a, b, dir) {
         const d = dir === 'asc' ? 1 : -1;
         if (typeof a === 'string' && typeof b === 'string') return a.localeCompare(b) * d;
@@ -209,6 +275,7 @@ const DexShared = (() => {
 
         const close = () => {
             overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
         };
         closeBtn.onclick = close;
@@ -216,7 +283,15 @@ const DexShared = (() => {
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && overlay.classList.contains('active')) close();
         });
-        return { open: () => { overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }, close };
+        return {
+            open: () => {
+                overlay.classList.add('active');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                closeBtn.focus();
+            },
+            close
+        };
     }
 
     function openModal(overlayId) {
@@ -245,12 +320,13 @@ const DexShared = (() => {
     }
 
     window.DexShared = {
-        ASSET_PREFIX, POKEMON_TYPES, MOVE_TAGS, DAMAGE_CLASSES,
+        ASSET_PREFIX, POKEMON_TYPES, MOVE_TAGS, DAMAGE_CLASSES, TYPE_COLORS,
         normalizeKey, escapeHtml, escapeJs,
         normalizeSpriteName, getSpriteUrl, handleSpriteError,
         getItemSpriteUrl, handleItemError,
         typeIconHtml, dmgClassBadge, dmgClassIconHtml, dmgClassIconOnlyHtml, dmgClassHtml, moveTagsHtml,
         spriteImgHtml, spriteCellHtml, statBarHtml,
+        getTypeEffectiveness, getDefensiveMatchups, typeColor, capitalizeType,
         compareValues, sortList, groupList,
         renderNav, bindModal, openModal, closeModal,
         updateResultCount, setupInfiniteScroll
