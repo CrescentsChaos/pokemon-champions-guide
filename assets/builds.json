@@ -2016,7 +2016,7 @@
             "250"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "252",
@@ -2052,7 +2052,7 @@
         "build": "Incineroar @ Sitrus Berry  \nAbility: Intimidate  \nLevel: 50  \nTera Type: Fire  \nEVs: 252 HP / 252 Atk / 4 SpD  \nAdamant Nature  \n- Flare Blitz  \n- Darkest Lariat  \n- Parting Shot  \n- Fake Out",
         "synergy": [],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "256",
@@ -2882,7 +2882,7 @@
         "build": "Kingambit @ Black Glasses  \nAbility: Defiant  \nLevel: 50  \nTera Type: Dark  \nEVs: 252 HP / 244 Atk / 4 SpD / 4 Spe  \nAdamant Nature  \n- Kowtow Cleave  \n- Sucker Punch  \n- Protect  \n- Swords Dance",
         "synergy": [],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "357",
@@ -4234,7 +4234,7 @@
             "518"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "522",
@@ -4844,7 +4844,7 @@
             "583"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "583",
@@ -5085,12 +5085,12 @@
     {
         "id": "607",
         "pokemon": "Sylveon",
-        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 88 HP / 252 Def / 168 SpA  \nModest Nature  \n- Hyper Voice  \n- Moonblast  \n- Quick Attack  \n- Detect",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 88 HP / 252 Def / 168 SpA  \nModest Nature  \n- Hyper Voice  \n- Hyper Beam  \n- Quick Attack  \n- Detect",
         "synergy": [
             "606"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "608",
@@ -5153,12 +5153,12 @@
     {
         "id": "614",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 252 HP / 96 Def / 160 SpD  \nIVs: 0 Atk  \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 252 HP / 96 Def / 160 SpD  \nIVs: 0 Atk  \nBold Nature \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
         "synergy": [
             "613"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "615",
@@ -5724,7 +5724,7 @@
             "250"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "675",

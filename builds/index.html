@@ -1079,6 +1079,31 @@
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
+        /** True mega stones only (not Eviolite/Meteorite). */
+        function isMegaStoneItem(item) {
+            const it = normalizeString(item);
+            if (!it || it === 'eviolite' || it === 'meteorite') return false;
+            return it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez') || it.endsWith('ite');
+        }
+
+        /** Red/Blue Orb only on the correct legendary — never Life Orb / Flame Orb. */
+        function isPrimalOrbItem(item, species) {
+            const it = normalizeString(item);
+            const sp = normalizeString(species);
+            if (it === 'redorb' && sp === 'groudon') return true;
+            if (it === 'blueorb' && sp === 'kyogre') return true;
+            return false;
+        }
+
+        function getMegaFormSuffix(item) {
+            const it = normalizeString(item);
+            if (it.endsWith('itex')) return '-Mega-X';
+            if (it.endsWith('itey')) return '-Mega-Y';
+            if (it.endsWith('itez')) return '-Mega-Z';
+            if (isMegaStoneItem(item)) return '-Mega';
+            return null;
+        }
+
         function getPermanentForm(p) {
             if (!p || !p.item) return null;
             const item = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1139,8 +1164,6 @@
             if (!dbRef) return null;
 
             if (p.item) {
-                const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
-
                 // Priority 1: Permanent Form Changes
                 const permSearch = getPermanentForm(p);
                 if (permSearch) {
@@ -1148,16 +1171,17 @@
                     if (permDbRef) return permDbRef;
                 }
 
-                // Priority 2: Mega Evolutions
-                if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || (it.endsWith('dorb')) || (it.endsWith('eorb'))) && it !== 'eviolite' && it !== 'meteorite') {
-                    let suffix = '-Mega';
-                    if (it.endsWith('itex')) suffix = '-Mega-X';
-                    else if (it.endsWith('itey')) suffix = '-Mega-Y';
-                    else if (it.endsWith('itez')) suffix = '-Mega-Z';
-                    else if (it.endsWith('dorb')) suffix = '-Primal';
-                    else if (it.endsWith('eorb')) suffix = '-Primal';
+                // Priority 2: Primal (Red/Blue Orb only on Groudon/Kyogre)
+                if (isPrimalOrbItem(p.item, p.species)) {
+                    const primalSearch = (p.species + '-Primal').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const primalDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === primalSearch);
+                    if (primalDbRef) return primalDbRef;
+                }
 
-                    const megaSearch = (p.species + suffix).toLowerCase().replace(/[^a-z0-9]/g, '');
+                // Priority 3: Mega Evolutions (actual mega stones only)
+                const megaSuffix = getMegaFormSuffix(p.item);
+                if (megaSuffix) {
+                    const megaSearch = (p.species + megaSuffix).toLowerCase().replace(/[^a-z0-9]/g, '');
                     const megaDbRef = pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === megaSearch);
                     if (megaDbRef) return megaDbRef;
                 }
@@ -1245,18 +1269,21 @@
             // Exclude permanent forms from Mega toggling
             if (getPermanentForm(p)) return null;
 
-            const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
+            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
 
-            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey') && !it.endsWith('dorb') && !it.endsWith('eorb')) return null;
-            if (it === 'eviolite' || it === 'meteorite') return null;
+            if (isPrimalOrbItem(p.item, p.species)) {
+                return `https://play.pokemonshowdown.com/sprites/${base}/${clean}-primal.gif`;
+            }
+
+            const megaSuffix = getMegaFormSuffix(p.item);
+            if (!megaSuffix) return null;
 
             let suffix = '-mega';
-            if (it.endsWith('itex')) suffix = '-megax';
-            else if (it.endsWith('itey')) suffix = '-megay';
-            else if (it.endsWith('dorb') || it.endsWith('eorb')) suffix = '-primal';
+            if (megaSuffix === '-Mega-X') suffix = '-megax';
+            else if (megaSuffix === '-Mega-Y') suffix = '-megay';
+            else if (megaSuffix === '-Mega-Z') suffix = '-megaz';
 
-            const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
         }
 
@@ -1593,7 +1620,13 @@
             const baseAbilityDisplay = (p.ability && p.ability.trim())
                 ? p.ability.trim()
                 : (getPokemonAbilities(dbBase)[0] || 'Unknown');
-            const alteredAbilityDisplay = getPokemonAbilities(dbAltered)[0] || baseAbilityDisplay;
+            // Only swap ability when the form actually changes it (mega / permanent form)
+            const alteredAbilityFromForm = canFormCycle
+                ? (getPokemonAbilities(dbAltered)[0] || baseAbilityDisplay)
+                : baseAbilityDisplay;
+            const alteredAbilityDisplay = alteredAbilityFromForm;
+            const abilityCycles = canFormCycle
+                && normalizeString(alteredAbilityDisplay) !== normalizeString(baseAbilityDisplay);
             const baseAbilityKey = normalizeString(baseAbilityDisplay);
             const alteredAbilityKey = normalizeString(alteredAbilityDisplay);
             const baseAbilityDesc = (abilitiesMap[baseAbilityKey]?.description || '').replace(/"/g, '&quot;');
@@ -1637,9 +1670,9 @@
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
                             <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
-                            ABILITY: <span class="${isFormActive ? 'mega-ability-text' : ''}" 
-                                           title="${baseAbilityDesc}" 
-                                           ${isFormActive ? `data-base-ability="${baseAbilityDisplay.replace(/"/g, '&quot;')}" data-mega-ability="${alteredAbilityDisplay.replace(/"/g, '&quot;')}" data-base-ability-desc="${baseAbilityDesc}" data-mega-ability-desc="${alteredAbilityDesc}"` : ''} 
+                            ABILITY: <span class="${abilityCycles ? 'mega-ability-text' : ''}" 
+                                           title="${baseAbilityDesc}"
+                                           ${abilityCycles ? `data-base-ability="${baseAbilityDisplay.replace(/"/g, '&quot;')}" data-mega-ability="${alteredAbilityDisplay.replace(/"/g, '&quot;')}" data-base-ability-desc="${baseAbilityDesc}" data-mega-ability-desc="${alteredAbilityDesc}"` : ''} 
                                            style="color: rgba(255, 255, 255, 0.8)">
                                 ${baseAbilityDisplay.toUpperCase()}
                             </span>
