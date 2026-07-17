@@ -185,7 +185,10 @@ function syncHpUI(pk) {
     const maxDisplayEl = document.getElementById(`${p}-hp-max`);
 
     if (percentEl) percentEl.value = percent;
-    if (sliderEl) sliderEl.value = percent;
+    if (sliderEl) {
+        sliderEl.value = percent;
+        sliderEl.style.setProperty('--hp-fill', `${percent}%`);
+    }
     if (rawInputEl) {
         rawInputEl.max = max;
         rawInputEl.value = raw;

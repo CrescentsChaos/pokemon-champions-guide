@@ -520,8 +520,6 @@
                         <option value="desc">High → Low</option>
                         <option value="asc">Low → High</option>
                     </select>
-                    <button id="champions-only-btn" class="secondary-btn"
-                        style="max-width: 220px; white-space: nowrap;">SHOW CHAMPIONS ELIGIBLE</button>
                     <label
                         style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
                         <input type="checkbox" id="champions-eligible-filter"
@@ -2189,17 +2187,6 @@
         document.getElementById('build-sort-select').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('build-sort-dir').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('clear-filters-btn')?.addEventListener('click', clearAllFilters);
-        const champsBtn = document.getElementById('champions-only-btn');
-        if (champsBtn) {
-            champsBtn.addEventListener('click', () => {
-                const cb = document.getElementById('champions-eligible-filter');
-                if (!cb) return;
-                cb.checked = !cb.checked;
-                champsBtn.textContent = cb.checked ? 'SHOW ALL BUILDS' : 'SHOW CHAMPIONS ELIGIBLE';
-                if (cb.checked) champsBtn.style.background = 'var(--primary-red)'; else champsBtn.style.background = 'rgba(255,255,255,0.05)';
-                renderBuilds();
-            });
-        }
 
         // Mega preview: toggle on sprite click only (avoids global interval lag)
         document.addEventListener('click', (e) => {

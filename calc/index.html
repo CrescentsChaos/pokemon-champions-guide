@@ -53,23 +53,28 @@
 
                 <div class="panel-body">
                     <div class="config-row">
-                        <select id="p1-build" class="build-select" title="Load saved build">
-                            <option value="">Custom Set</option>
-                        </select>
-                        <select id="p1-forme" class="forme-select" title="Forme">
-                            <option value="">Forme</option>
-                        </select>
-                        <select id="p1-type1" class="type-select"></select>
-                        <select id="p1-type2" class="type-select"></select>
-                        <label class="tera-toggle">
-                            <input type="checkbox" id="p1-tera"> Tera
-                            <select id="p1-tera-type" class="type-select"></select>
-                        </label>
-                        <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle"
-                            onclick="toggleMega(1)" style="display:none;">MEGA</button>
-                        <button class="field-btn toggle-btn forme-btn" id="p1-forme-toggle" onclick="toggleForme(1)"
-                            style="display:none; margin-left: 5px;">FORME</button>
-
+                        <div class="config-sets">
+                            <select id="p1-build" class="build-select" title="Load saved build">
+                                <option value="">Custom Set</option>
+                            </select>
+                            <select id="p1-forme" class="forme-select" title="Forme">
+                                <option value="">Forme</option>
+                            </select>
+                        </div>
+                        <div class="config-types">
+                            <select id="p1-type1" class="type-select"></select>
+                            <select id="p1-type2" class="type-select"></select>
+                        </div>
+                        <div class="config-extra">
+                            <label class="tera-toggle">
+                                <input type="checkbox" id="p1-tera"> Tera
+                                <select id="p1-tera-type" class="type-select"></select>
+                            </label>
+                            <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle"
+                                onclick="toggleMega(1)" style="display:none;">MEGA</button>
+                            <button class="field-btn toggle-btn forme-btn" id="p1-forme-toggle" onclick="toggleForme(1)"
+                                style="display:none;">FORME</button>
+                        </div>
                     </div>
 
                     <div class="level-row">
@@ -288,23 +293,28 @@
 
                 <div class="panel-body">
                     <div class="config-row">
-                        <select id="p2-build" class="build-select" title="Load saved build">
-                            <option value="">Custom Set</option>
-                        </select>
-                        <select id="p2-forme" class="forme-select" title="Forme">
-                            <option value="">Forme</option>
-                        </select>
-                        <select id="p2-type1" class="type-select"></select>
-                        <select id="p2-type2" class="type-select"></select>
-                        <label class="tera-toggle">
-                            <input type="checkbox" id="p2-tera"> Tera
-                            <select id="p2-tera-type" class="type-select"></select>
-                        </label>
-                        <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle"
-                            onclick="toggleMega(2)" style="display:none;">MEGA</button>
-                        <button class="field-btn toggle-btn forme-btn" id="p2-forme-toggle" onclick="toggleForme(2)"
-                            style="display:none; margin-left: 5px;">FORME</button>
-
+                        <div class="config-sets">
+                            <select id="p2-build" class="build-select" title="Load saved build">
+                                <option value="">Custom Set</option>
+                            </select>
+                            <select id="p2-forme" class="forme-select" title="Forme">
+                                <option value="">Forme</option>
+                            </select>
+                        </div>
+                        <div class="config-types">
+                            <select id="p2-type1" class="type-select"></select>
+                            <select id="p2-type2" class="type-select"></select>
+                        </div>
+                        <div class="config-extra">
+                            <label class="tera-toggle">
+                                <input type="checkbox" id="p2-tera"> Tera
+                                <select id="p2-tera-type" class="type-select"></select>
+                            </label>
+                            <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle"
+                                onclick="toggleMega(2)" style="display:none;">MEGA</button>
+                            <button class="field-btn toggle-btn forme-btn" id="p2-forme-toggle" onclick="toggleForme(2)"
+                                style="display:none;">FORME</button>
+                        </div>
                     </div>
 
                     <div class="level-row">

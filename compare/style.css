@@ -505,3 +505,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+.champions-ev-btn.active {
+    background: var(--primary-red) !important;
+    color: #fff !important;
+    border-color: var(--primary-red) !important;
+    box-shadow: 0 0 20px rgba(255, 62, 62, 0.35);
+}

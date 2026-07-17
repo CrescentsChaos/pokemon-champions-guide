@@ -3,6 +3,8 @@ let movesData = {};
 let itemsData = [];
 let buildsData = [];
 
+let isChampionsMode = false;
+
 let p1 = {
     species: '',
     level: 50,
@@ -105,6 +107,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderStatsEditor(2);
         renderMoves(1);
         renderMoves(2);
+        updateSprite(1, '');
+        updateSprite(2, '');
         updateComparison();
 
         // Load curated builds.json separately so search still works if it fails
@@ -441,10 +445,29 @@ function updatePokemonForm(num, species) {
 function updateSprite(num, species, suffix = '') {
     const img = document.getElementById(`p${num}-sprite`);
     if (!img) return;
-    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     delete img.dataset.fallbackState;
     delete img.dataset.fallback;
+    if (!species) {
+        img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+        return;
+    }
+    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+}
+
+function toggleChampionsMode() {
+    isChampionsMode = !isChampionsMode;
+    [p1, p2].forEach(pk => {
+        if (!pk) return;
+        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
+    });
+    const btn = document.getElementById('champions-ev-toggle');
+    if (btn) {
+        btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('active', isChampionsMode);
+    }
+    recalcStats(1);
+    recalcStats(2);
 }
 
 function renderMoves(num) {
@@ -489,6 +512,8 @@ function renderStatsEditor(num) {
     if (!tbody) return;
     tbody.innerHTML = '';
     const p = num === 1 ? p1 : p2;
+    const evMax = isChampionsMode ? 32 : 252;
+    const evStep = isChampionsMode ? 1 : 4;
 
     STATS.forEach(stat => {
         const row = document.createElement('tr');
@@ -497,7 +522,7 @@ function renderStatsEditor(num) {
             <td style="font-weight: bold; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">${STAT_NAMES[stat]}</td>
             <td style="text-align: center;">${p.base[stat] || 0}</td>
             <td style="text-align: center;">
-                <input type="number" class="type-input" style="width: 60px; text-align: center; padding: 4px;" id="p${num}-ev-${stat}" value="${p.evs[stat]}" min="0" max="252" step="4">
+                <input type="number" class="type-input" style="width: 60px; text-align: center; padding: 4px;" id="p${num}-ev-${stat}" value="${p.evs[stat]}" min="0" max="${evMax}" step="${evStep}">
             </td>
             <td style="text-align: center;">
                 <input type="number" class="type-input" style="width: 50px; text-align: center; padding: 4px;" id="p${num}-iv-${stat}" value="${p.ivs[stat]}" min="0" max="31">
@@ -509,10 +534,15 @@ function renderStatsEditor(num) {
         // Add Listeners
         document.getElementById(`p${num}-ev-${stat}`).addEventListener('change', (e) => {
             let val = parseInt(e.target.value) || 0;
-            if (val > 252) val = 252;
+            if (val > evMax) val = evMax;
             if (val < 0) val = 0;
             p.evs[stat] = val;
-            e.target.value = val;
+            if (isChampionsMode) {
+                p.evs = normalizeChampionsEvs(p.evs);
+            } else {
+                p.evs = clampEvsForMode(p.evs, false);
+            }
+            e.target.value = p.evs[stat];
             recalcStats(num);
         });
         document.getElementById(`p${num}-iv-${stat}`).addEventListener('change', (e) => {
@@ -528,25 +558,24 @@ function renderStatsEditor(num) {
 
 function recalcStats(num) {
     const p = num === 1 ? p1 : p2;
-    if (!p.species) return;
+    if (!p.species) {
+        renderStatsEditor(num);
+        updateComparison();
+        return;
+    }
 
     const level = p.level || 50;
-    const nature = NATURES[p.nature] || NATURES['Serious'];
 
     STATS.forEach(stat => {
-        const base = p.base[stat];
-        const iv = p.ivs[stat];
-        const ev = p.evs[stat];
-
-        if (stat === 'hp') {
-            if (base === 1) p.stats.hp = 1; // Shedinja
-            else p.stats.hp = Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
-        } else {
-            let val = Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + 5;
-            if (nature.plus === stat) val = Math.floor(val * 1.1);
-            if (nature.minus === stat) val = Math.floor(val * 0.9);
-            p.stats[stat] = val;
-        }
+        p.stats[stat] = calculateStat(
+            p.base[stat],
+            p.ivs[stat],
+            p.evs[stat],
+            level,
+            p.nature,
+            stat,
+            isChampionsMode
+        );
     });
 
     renderStatsEditor(num);
@@ -812,6 +841,10 @@ function importFromText(num, text) {
         if (!p.ability) {
             const pd = findPokemonByName(p.species);
             p.ability = (pd && getPokemonAbilities(pd)[0]) || '';
+        }
+
+        if (isChampionsMode) {
+            p.evs = convertEvsToChampions(p.evs);
         }
 
         document.getElementById(`p${num}-search`).value = p.species;
