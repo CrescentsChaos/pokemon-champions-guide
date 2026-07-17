@@ -42,6 +42,13 @@ const DexShared = (() => {
     }
 
     function getSpriteUrl(name, shiny = false) {
+        if (typeof MegaSprites !== 'undefined') {
+            const formSuffix = MegaSprites.megaFormSuffixFromSpecies(name);
+            if (formSuffix) {
+                const local = MegaSprites.getLocalMegaSpriteUrl(name, formSuffix);
+                if (local) return local;
+            }
+        }
         const clean = normalizeSpriteName(name);
         const base = shiny ? 'ani-shiny' : 'ani';
         return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
@@ -51,10 +58,13 @@ const DexShared = (() => {
         if (!species || img.dataset.fallbackState === 'dead') return;
 
         const clean = normalizeSpriteName(species);
-        const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+        const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
         if (!img.dataset.fallbackState && isMegaURL) {
             img.dataset.fallbackState = 'mega-local';
+            if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species)) {
+                return;
+            }
             let suffix = 'mega';
             if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
             else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -75,6 +85,14 @@ const DexShared = (() => {
         }
 
         if (!img.dataset.fallbackState) {
+            if (typeof MegaSprites !== 'undefined') {
+                const formSuffix = MegaSprites.megaFormSuffixFromSpecies(species) || 'mega';
+                if (MegaSprites.hasLocalMegaSprite(species, formSuffix)
+                    && MegaSprites.applyLocalMegaFallback(img, species, formSuffix)) {
+                    img.dataset.fallbackState = 'mega-local';
+                    return;
+                }
+            }
             img.dataset.fallbackState = 'smogon';
             const folder = shiny ? 'xy-shiny' : 'xy';
             img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;

@@ -351,10 +351,13 @@ window.handleSpriteError = function(img, species, shiny, item) {
 
     item = item || '';
     const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-    const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+    const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
     if (!img.dataset.fallbackState && isMegaURL) {
         img.dataset.fallbackState = 'mega-local';
+        if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species)) {
+            return;
+        }
         let suffix = 'mega';
         if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
         else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -368,11 +371,15 @@ window.handleSpriteError = function(img, species, shiny, item) {
 
     if (!img.dataset.fallbackState) {
         const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+        if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez')) && it !== 'eviolite' && it !== 'meteorite') {
             img.dataset.fallbackState = 'mega-local';
+            if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species, MegaSprites.megaFormSuffixFromItem(item))) {
+                return;
+            }
             let suffix = 'mega';
             if (it.endsWith('itex')) suffix = 'mega-x';
             else if (it.endsWith('itey')) suffix = 'mega-y';
+            else if (it.endsWith('itez')) suffix = 'mega-z';
             img.src = `../assets/mega-sprites/${clean}-${suffix}.gif`;
             return;
         }
@@ -470,6 +477,25 @@ function updateSprite(num, species, suffix = '') {
         img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
         return;
     }
+
+    // Prefer local mega GIFs when available (Champions megas missing/broken on Showdown)
+    if (typeof MegaSprites !== 'undefined') {
+        let formSuffix = null;
+        if (suffix === '-megax' || suffix === '-mega-x') formSuffix = 'mega-x';
+        else if (suffix === '-megay' || suffix === '-mega-y') formSuffix = 'mega-y';
+        else if (suffix === '-megaz' || suffix === '-mega-z') formSuffix = 'mega-z';
+        else if (suffix === '-mega' || suffix === '-primal') formSuffix = suffix.slice(1);
+        else formSuffix = MegaSprites.megaFormSuffixFromSpecies(species + (suffix || ''));
+
+        if (formSuffix) {
+            const local = MegaSprites.getLocalMegaSpriteUrl(species, formSuffix);
+            if (local) {
+                img.src = local;
+                return;
+            }
+        }
+    }
+
     const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
 }

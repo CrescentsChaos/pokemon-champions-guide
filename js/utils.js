@@ -213,6 +213,38 @@ function normalizeBuildSpeciesKey(name) {
     return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+/** Returns Singles/Doubles lists from cached top_pokemons.json (if loaded). */
+function getTopPokemonsCache() {
+    const cache = (typeof globalThis !== 'undefined' && globalThis._topPokemonsCache)
+        || (typeof window !== 'undefined' && window._topPokemonsCache)
+        || null;
+    if (!cache) return { Singles: [], Doubles: [] };
+    return {
+        Singles: Array.isArray(cache.Singles) ? cache.Singles : [],
+        Doubles: Array.isArray(cache.Doubles) ? cache.Doubles : []
+    };
+}
+
+function getTopPokemonsList(format) {
+    const key = (format || 'Singles').toLowerCase() === 'doubles' ? 'Doubles' : 'Singles';
+    return getTopPokemonsCache()[key] || [];
+}
+
+/**
+ * 0-based meta rank from top_pokemons.json, or -1 if unlisted.
+ */
+function getMetaRankFromTop(speciesName, format) {
+    const list = getTopPokemonsList(format);
+    const key = normalizeBuildSpeciesKey(speciesName);
+    return list.findIndex(n => normalizeBuildSpeciesKey(n) === key);
+}
+
+/** 1-based meta number for display, or null if unlisted. */
+function getMetaNumberFromTop(speciesName, format) {
+    const rank = getMetaRankFromTop(speciesName, format);
+    return rank >= 0 ? rank + 1 : null;
+}
+
 /** True when a builds.json entry is explicitly tagged as the current meta set. */
 function isBuildMarkedMeta(build) {
     return build?.isMeta === true || build?.isMeta === 1 || build?.isMeta === 'true';
@@ -251,7 +283,8 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPokemonAbilities, calculateStat, getPermanentForm,
         normalizeChampionsEvs, convertEvsToChampions, convertEvsFromChampions, clampEvsForMode,
-        isBuildMarkedMeta, findMetaBuildForSpecies, findLatestBuildForSpecies, normalizeBuildSpeciesKey
+        isBuildMarkedMeta, findMetaBuildForSpecies, findLatestBuildForSpecies, normalizeBuildSpeciesKey,
+        getTopPokemonsCache, getTopPokemonsList, getMetaRankFromTop, getMetaNumberFromTop
     };
 }
 

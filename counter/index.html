@@ -518,6 +518,7 @@
     </main>
 
     <script src="../js/main.js"></script>
+    <script src="../js/mega-sprites.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/battle/type-chart.js"></script>
     <script src="../js/battle/move-index.js"></script>
@@ -537,6 +538,13 @@
 
         function getSpriteUrl(species, shiny) {
             if (!species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+            if (typeof MegaSprites !== 'undefined') {
+                const formSuffix = MegaSprites.megaFormSuffixFromSpecies(species);
+                if (formSuffix) {
+                    const local = MegaSprites.getLocalMegaSpriteUrl(species, formSuffix);
+                    if (local) return local;
+                }
+            }
             let clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             // Showdown uses megax/megay/megaz (no hyphen before the letter)
             clean = clean
@@ -560,7 +568,18 @@
             if (!species || img.dataset.fallbackState === 'dead') return;
 
             let clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+            const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
+
+        // Prefer local mega GIF before Showdown hyphen retry for known Champions megas
+            if (!img.dataset.fallbackState && isMegaURL) {
+                if (typeof MegaSprites !== 'undefined' && MegaSprites.hasLocalMegaSprite(
+                    species,
+                    MegaSprites.megaFormSuffixFromUrl(img.src) || MegaSprites.megaFormSuffixFromSpecies(species) || 'mega'
+                )) {
+                    img.dataset.fallbackState = 'mega-local';
+                    if (MegaSprites.applyLocalMegaFallback(img, species)) return;
+                }
+            }
 
             // Wrong Showdown mega hyphenation → retry correct megax/megay/megaz URL
             if (!img.dataset.fallbackState && isMegaURL && /mega-[xyz]/.test(img.src)) {
@@ -576,6 +595,9 @@
 
             if ((!img.dataset.fallbackState || img.dataset.fallbackState === 'showdown-mega') && isMegaURL) {
                 img.dataset.fallbackState = 'mega-local';
+                if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species)) {
+                    return;
+                }
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -619,6 +641,9 @@
         }
 
         function getMetaRank(species, format) {
+            if (typeof getMetaRankFromTop === 'function') {
+                return getMetaRankFromTop(species, format);
+            }
             const list = getMetaListForFormat(format);
             const key = normalizeKey(species);
             const idx = list.findIndex(n => normalizeKey(n) === key);
@@ -814,9 +839,9 @@
                 const bFmt = b.format || 'Singles';
                 const tagged = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
                 const rank = getMetaRank(b.pokemon, bFmt);
-                const metaLabel = tagged
-                    ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META SET</span>'
-                    : (rank >= 0 ? ` <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META #${rank + 1}</span>` : '');
+                const metaLabel = rank >= 0
+                    ? ` <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META #${rank + 1}</span>`
+                    : (tagged ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META SET</span>' : '');
                 return `
                 <button type="button" class="premade-build-item" data-build-id="${b.id}">
                     <span>${b.pokemon}${metaLabel}</span>
@@ -855,10 +880,15 @@
                     .replace('ogerponcornerstone', 'ogerpon-cornerstone');
                 return `https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`;
             }
-            if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey')) && it !== 'eviolite' && it !== 'meteorite') {
+            if (typeof MegaSprites !== 'undefined') {
+                const localOrRemote = MegaSprites.resolveMegaSpriteUrl(name, item, { preferLocal: true });
+                if (localOrRemote) return localOrRemote;
+            }
+            if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez')) && it !== 'eviolite' && it !== 'meteorite') {
                 let suffix = '-mega';
                 if (it.endsWith('itex')) suffix = '-megax';
                 else if (it.endsWith('itey')) suffix = '-megay';
+                else if (it.endsWith('itez')) suffix = '-megaz';
                 return `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
             }
             return null;
@@ -957,6 +987,7 @@
                     Singles: Array.isArray(topMeta.Singles) ? topMeta.Singles : [],
                     Doubles: Array.isArray(topMeta.Doubles) ? topMeta.Doubles : []
                 };
+                globalThis._topPokemonsCache = topPokemons;
                 initMoveIndex(movesDB);
                 populateNatures();
                 setupEventListeners();
@@ -1525,6 +1556,7 @@
 
             list.sort((a, b) => {
                 if (sort === 'meta') {
+                    // Serial meta order from top_pokemons (#1 first)
                     if (a.metaRank !== b.metaRank) return a.metaRank - b.metaRank;
                     return b.score - a.score;
                 }
@@ -1555,11 +1587,13 @@
                 const safeSpecies = String(spriteSpecies).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
                 const buildId = `build-${c.id}`;
                 const itemLine = c.item ? ` · ${escapeHtml(c.item)}` : '';
-                const metaBadge = c.isMeta
-                    ? (c.metaRank < 50
-                        ? `<span class="counter-meta-pill">META #${c.metaRank + 1}</span>`
-                        : `<span class="counter-meta-pill">META SET</span>`)
-                    : '';
+                const metaBadge = (() => {
+                    if (typeof c.metaRank === 'number' && c.metaRank >= 0 && c.metaRank < 900) {
+                        return `<span class="counter-meta-pill">META #${c.metaRank + 1}</span>`;
+                    }
+                    if (c.isMeta) return `<span class="counter-meta-pill">META SET</span>`;
+                    return '';
+                })();
                 return `
                 <div class="counter-card-premium counter-card-visible${c.isMeta ? ' counter-card--meta' : ''}">
                     <div class="counter-score-badge">${c.score}% EFFECTIVE</div>

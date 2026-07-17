@@ -1377,6 +1377,7 @@
     </div>
 
     <script src="../js/main.js"></script>
+    <script src="../js/mega-sprites.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/battle/type-chart.js"></script>
     <script src="../js/battle/move-index.js"></script>
@@ -2337,10 +2338,13 @@
             if (!species || img.dataset.fallbackState === 'mega_only') return;
 
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+            const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
             if (!img.dataset.fallbackState && isMegaURL) {
                 img.dataset.fallbackState = '1';
+                if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species)) {
+                    return;
+                }
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -2408,12 +2412,18 @@
                 return `https://play.pokemonshowdown.com/sprites/${base}/zamazenta-crowned.gif`;
             }
 
-            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+            if (typeof MegaSprites !== 'undefined') {
+                const resolved = MegaSprites.resolveMegaSpriteUrl(p.species, p.item, { shiny: !!p.shiny, preferLocal: true });
+                if (resolved) return resolved;
+            }
+
+            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey') && !it.endsWith('itez')) return null;
             if (it === 'eviolite' || it === 'meteorite') return null;
 
             let suffix = '-mega';
             if (it.endsWith('itex')) suffix = '-megax';
             else if (it.endsWith('itey')) suffix = '-megay';
+            else if (it.endsWith('itez')) suffix = '-megaz';
 
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
@@ -2471,6 +2481,13 @@
 
         function getSpriteUrl(p) {
             if (!p.species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+            if (typeof MegaSprites !== 'undefined') {
+                const formSuffix = MegaSprites.megaFormSuffixFromSpecies(p.species);
+                if (formSuffix) {
+                    const local = MegaSprites.getLocalMegaSpriteUrl(p.species, formSuffix);
+                    if (local) return local;
+                }
+            }
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;

@@ -635,6 +635,7 @@
                     <input type="text" id="move-filter" class="filter-text-input" placeholder="Filter by Move...">
                     <select id="build-sort-select" class="filter-select" style="max-width:160px;">
                         <option value="pokemon">Sort: Pokemon</option>
+                        <option value="meta">Meta Rank</option>
                         <option value="total">Total BST</option>
                         <option value="hp">HP</option>
                         <option value="atk">Attack</option>
@@ -644,8 +645,8 @@
                         <option value="spe">Speed</option>
                     </select>
                     <select id="build-sort-dir" class="filter-select" style="max-width:120px;">
-                        <option value="desc">High → Low</option>
-                        <option value="asc">Low → High</option>
+                        <option value="asc" selected>Low → High / A → Z</option>
+                        <option value="desc">High → Low / Z → A</option>
                     </select>
                     <label
                         style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 160px;">
@@ -686,6 +687,7 @@
     <button type="button" id="go-top-btn" class="go-top-btn" aria-label="Back to top" title="Back to top">↑</button>
 
     <script src="../js/main.js"></script>
+    <script src="../js/mega-sprites.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/battle/type-chart.js"></script>
     <script src="../js/battle/move-index.js"></script>
@@ -796,7 +798,7 @@
             const sort = document.getElementById('build-sort-select');
             if (sort) sort.value = 'pokemon';
             const dir = document.getElementById('build-sort-dir');
-            if (dir) dir.value = 'desc';
+            if (dir) dir.value = 'asc';
             filteredBuildsCache = null;
             scheduleRenderBuilds();
         }
@@ -812,7 +814,7 @@
                 document.getElementById('meta-builds-filter')?.checked || false,
                 document.getElementById('champions-eligible-filter')?.checked || false,
                 document.getElementById('build-sort-select')?.value || 'pokemon',
-                document.getElementById('build-sort-dir')?.value || 'desc'
+                document.getElementById('build-sort-dir')?.value || 'asc'
             ].join('|');
         }
 
@@ -838,6 +840,11 @@
                 const p = getParsedBuild(build);
                 const baseDb = getBasePokemonData(p, allPokemon);
                 const dbRef = getEffectivePokemonData(p, allPokemon) || baseDb;
+                const format = build.format || 'Singles';
+                const metaRankFn = typeof getMetaRankFromTop === 'function'
+                    ? getMetaRankFromTop
+                    : () => -1;
+                const metaRank = metaRankFn(p.species || build.pokemon, format);
                 return {
                     build,
                     parsed: p,
@@ -845,11 +852,13 @@
                     pokemonL: (build.pokemon || '').toLowerCase(),
                     abilityL: (p.ability || '').toLowerCase(),
                     movesL: (p.moves || []).map(m => (m || '').toLowerCase()),
-                    formatL: (build.format || 'Singles').toLowerCase(),
+                    formatL: format.toLowerCase(),
                     t1: (dbRef?.Type_1 || '').toLowerCase(),
                     t2: (dbRef?.Type_2 || '').toLowerCase(),
                     roles: detectRole(p, dbRef),
                     meta: typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(build) : build.isMeta === true,
+                    metaRank: metaRank >= 0 ? metaRank : 9999,
+                    metaNumber: metaRank >= 0 ? metaRank + 1 : null,
                     champs: computeChampionsEligibleFromParsed(p, baseDb, dbRef),
                     total: parseInt(dbRef?.Total_Stats, 10) || 0,
                     hp: parseInt(dbRef?.HP, 10) || 0,
@@ -879,7 +888,7 @@
             const metaBuildsOnly = document.getElementById('meta-builds-filter')?.checked;
             const championsEligibleOnly = document.getElementById('champions-eligible-filter').checked;
             const sortKey = document.getElementById('build-sort-select')?.value || 'pokemon';
-            const sortDir = document.getElementById('build-sort-dir')?.value || 'desc';
+            const sortDir = document.getElementById('build-sort-dir')?.value || 'asc';
 
             const filteredRows = buildFilterIndex.filter(row => {
                 if (search) {
@@ -891,7 +900,7 @@
                 if (formatFilter && row.formatL !== formatFilter) return false;
                 if (abilityFilter && !row.abilityL.includes(abilityFilter)) return false;
                 if (moveFilter && !row.movesL.some(m => m.includes(moveFilter))) return false;
-                if (metaBuildsOnly && !row.meta) return false;
+                if (metaBuildsOnly && !(row.meta || row.metaNumber != null)) return false;
                 if (championsEligibleOnly && !row.champs) return false;
                 return true;
             });
@@ -903,6 +912,14 @@
                     av = a.speciesL || a.pokemonL;
                     bv = b.speciesL || b.pokemonL;
                     return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+                }
+                if (sortKey === 'meta') {
+                    av = a.metaRank;
+                    bv = b.metaRank;
+                    if (av !== bv) return sortDir === 'asc' ? av - bv : bv - av;
+                    // Tie-break: tagged meta sets first, then name
+                    if (a.meta !== b.meta) return a.meta ? -1 : 1;
+                    return (a.speciesL || '').localeCompare(b.speciesL || '');
                 }
                 av = a[sortKey] || 0;
                 bv = b[sortKey] || 0;
@@ -1285,10 +1302,13 @@
             if (!species || img.dataset.fallbackState === 'dead') return;
 
             const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-            const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+            const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
             if (!img.dataset.fallbackState && isMegaURL) {
                 img.dataset.fallbackState = 'mega-local';
+                if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species)) {
+                    return;
+                }
                 let suffix = 'mega';
                 if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
                 else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -1323,6 +1343,14 @@
 
             // Exclude permanent forms from Mega toggling
             if (getPermanentForm(p)) return null;
+
+            if (typeof MegaSprites !== 'undefined') {
+                if (isPrimalOrbItem && isPrimalOrbItem(p.item, p.species)) {
+                    return MegaSprites.resolveMegaSpriteUrl(p.species, 'primal', { shiny: !!p.shiny, preferLocal: true });
+                }
+                const resolved = MegaSprites.resolveMegaSpriteUrl(p.species, p.item, { shiny: !!p.shiny, preferLocal: true });
+                if (resolved) return resolved;
+            }
 
             const base = p.shiny ? 'ani-shiny' : 'ani';
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
@@ -1484,6 +1512,13 @@
 
         function getSpriteUrl(p) {
             if (!p || !p.species) return 'https://play.pokemonshowdown.com/sprites/ani/unown-interrogation.gif';
+            if (typeof MegaSprites !== 'undefined') {
+                const formSuffix = MegaSprites.megaFormSuffixFromSpecies(p.species);
+                if (formSuffix) {
+                    const local = MegaSprites.getLocalMegaSpriteUrl(p.species, formSuffix);
+                    if (local) return local;
+                }
+            }
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
@@ -1673,7 +1708,15 @@
             const isMetaBuild = typeof isBuildMarkedMeta === 'function'
                 ? isBuildMarkedMeta(rawBuild)
                 : rawBuild?.isMeta === true;
-            card.className = 'pokemon-card-premium' + (isMetaBuild ? ' pokemon-card-premium--meta' : '');
+            const metaNumber = typeof getMetaNumberFromTop === 'function'
+                ? getMetaNumberFromTop(p.species || rawBuild.pokemon, format)
+                : null;
+            const showMetaPill = isMetaBuild || metaNumber != null;
+            const metaPillLabel = metaNumber != null ? `META #${metaNumber}` : 'META';
+            const metaPillTitle = metaNumber != null
+                ? `#${metaNumber} in ${format} meta (top_pokemons)`
+                : 'Tagged meta set';
+            card.className = 'pokemon-card-premium' + (isMetaBuild || metaNumber != null ? ' pokemon-card-premium--meta' : '');
 
             const baseAbilityDisplay = (p.ability && p.ability.trim())
                 ? p.ability.trim()
@@ -1699,7 +1742,7 @@
                     </div>
                     <div class="header-info">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 8px; min-width:0;">
-                            <h3 class="build-card-species">${p.species}${isMetaBuild ? ' <span class="meta-build-pill" title="Current meta set">META</span>' : ''}</h3>
+                            <h3 class="build-card-species">${p.species}${showMetaPill ? ` <span class="meta-build-pill" title="${metaPillTitle}">${metaPillLabel}</span>` : ''}</h3>
                             <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
@@ -1773,8 +1816,11 @@
                 const isMetaBuild = typeof isBuildMarkedMeta === 'function'
                     ? isBuildMarkedMeta(build)
                     : build?.isMeta === true;
+                const metaNumber = typeof getMetaNumberFromTop === 'function'
+                    ? getMetaNumberFromTop(p.species || build.pokemon, build.format || 'Singles')
+                    : null;
                 const wrapper = document.createElement('div');
-                wrapper.className = `build-card-wrapper${isMetaBuild ? ' is-meta' : ''}${String(selectedBuildId) === String(build.id) ? ' selected' : ''}`;
+                wrapper.className = `build-card-wrapper${(isMetaBuild || metaNumber != null) ? ' is-meta' : ''}${String(selectedBuildId) === String(build.id) ? ' selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;

@@ -1483,10 +1483,13 @@ window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 
     const clean = name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-    const isMegaURL = img.src && img.src.includes('mega') && !img.src.includes('assets/');
+    const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
     if (!img.dataset.fallbackState && isMegaURL) {
         img.dataset.fallbackState = '1';
+        if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, name)) {
+            return;
+        }
         let suffix = 'mega';
         if (img.src.includes('mega-x') || img.src.includes('megax')) suffix = 'mega-x';
         else if (img.src.includes('mega-y') || img.src.includes('megay')) suffix = 'mega-y';
@@ -1511,6 +1514,11 @@ window.handleSpriteError = function (img, name, shiny) {
 
 function getMegaSpriteUrl(p) {
     if (!p || !p.name || !p.item) return null;
+
+    if (typeof MegaSprites !== 'undefined') {
+        const resolved = MegaSprites.resolveMegaSpriteUrl(p.name, p.item, { shiny: !!p.shiny, preferLocal: true });
+        if (resolved) return resolved;
+    }
 
     const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
     const base = p.shiny ? 'ani-shiny' : 'ani';
