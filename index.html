@@ -14,6 +14,7 @@
 
 <body class="home-page">
 
+    <main id="main-content" tabindex="-1">
     <section class="home-hero" aria-labelledby="hero-title">
         <div class="home-hero__bg" aria-hidden="true">
             <img src="assets/hero_bg.png" alt="">
@@ -245,6 +246,8 @@
         </div>
     </section>
 
+    </main>
+
     <script src="js/main.js"></script>
     <script>
         (async function loadHomeData() {
@@ -252,6 +255,12 @@
 
             function animateStat(el, target) {
                 if (!el || !Number.isFinite(target)) return;
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                    || document.documentElement.getAttribute('data-a11y-motion') === 'reduce';
+                if (reduce) {
+                    el.textContent = fmt(target);
+                    return;
+                }
                 const duration = 900;
                 const start = performance.now();
                 function frame(now) {

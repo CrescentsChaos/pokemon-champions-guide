@@ -7853,7 +7853,7 @@
     "priority": 2,
     "type": "Normal",
     "generation": "Generation Iv",
-    "short_descripton": "Hits through Protect and Detect.",
+    "short_descripton": "This move can hit a target using a move such as Protect or Detect and removes the effects of those moves.",
     "damage_class": "Physical",
     "battle": {
       "spread": false,

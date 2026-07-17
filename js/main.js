@@ -1,7 +1,32 @@
-(function injectMobileStylesheet() {
+(function injectSharedAssets() {
     const subDirs = ['/guides/', '/pokedex/', '/abilitydex/', '/movedex/', '/itemdex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
     const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
+
+    // Apply saved a11y prefs ASAP to reduce theme flash
+    try {
+        const raw = localStorage.getItem('pcg_a11y_prefs_v1');
+        if (raw) {
+            const prefs = JSON.parse(raw);
+            const root = document.documentElement;
+            const mq = (q) => (typeof window.matchMedia === 'function' ? window.matchMedia(q) : { matches: false });
+            let theme = prefs.theme || 'dark';
+            if (theme === 'auto') {
+                theme = mq('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            root.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+            if (prefs.text === 'large' || prefs.text === 'xlarge') root.setAttribute('data-a11y-text', prefs.text);
+            if (prefs.contrast) root.setAttribute('data-a11y-contrast', 'true');
+            if (prefs.readable) root.setAttribute('data-a11y-readable', 'true');
+            if (prefs.underline) root.setAttribute('data-a11y-underline', 'true');
+            let motion = prefs.motion || 'system';
+            if (motion === 'system') {
+                motion = mq('(prefers-reduced-motion: reduce)').matches ? 'reduce' : 'full';
+            }
+            if (motion === 'reduce') root.setAttribute('data-a11y-motion', 'reduce');
+        }
+    } catch (_) { /* ignore */ }
+
     if (!document.getElementById('mobile-css')) {
         const mobileLink = document.createElement('link');
         mobileLink.id = 'mobile-css';
@@ -9,30 +34,57 @@
         mobileLink.href = prefix + 'css/mobile.css';
         document.head.appendChild(mobileLink);
     }
+
+    if (!document.getElementById('a11y-css')) {
+        const a11yCss = document.createElement('link');
+        a11yCss.id = 'a11y-css';
+        a11yCss.rel = 'stylesheet';
+        a11yCss.href = prefix + 'css/a11y.css';
+        document.head.appendChild(a11yCss);
+    }
+
+    if (!document.getElementById('a11y-js')) {
+        const a11yScript = document.createElement('script');
+        a11yScript.id = 'a11y-js';
+        a11yScript.src = prefix + 'js/a11y.js';
+        document.head.appendChild(a11yScript);
+    }
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('page-enter');
-    // Determine path prefix (more robust for file:// URLs)
+    const reduceMotion = (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        || document.documentElement.getAttribute('data-a11y-motion') === 'reduce';
+
+    if (!reduceMotion) {
+        document.body.classList.add('page-enter');
+    }
+
     const subDirs = ['/guides/', '/pokedex/', '/abilitydex/', '/movedex/', '/itemdex/', '/teambuilder/', '/builds/', '/calc/', '/compare/', '/counter/'];
-    // Check if the current pathname contains any of the subdirectories preceded by a slash
     const isSub = subDirs.some(dir => window.location.pathname.toLowerCase().includes(dir));
     const prefix = isSub ? '../' : '';
 
-    // Header Injection
+    if (!document.getElementById('skip-to-content')) {
+        const skip = document.createElement('a');
+        skip.id = 'skip-to-content';
+        skip.className = 'skip-link';
+        skip.href = '#main-content';
+        skip.textContent = 'Skip to main content';
+        document.body.insertAdjacentElement('afterbegin', skip);
+    }
+
     const headerHTML = `
         <header id="main-header">
             <div class="container nav-container">
-                <a href="${prefix}" class="logo">
-                    <img src="${prefix}assets/champions-logo.png" alt="Logo" style="height: 32px; width: auto; filter: drop-shadow(0 0 10px rgba(255, 62, 62, 0.3));">
-                    <span style="color:white; margin-left: 10px;">CHAMPIONS</span><span style="color:var(--primary-red)">GUIDE</span>
+                <a href="${prefix}" class="logo" aria-label="Champions Guide home">
+                    <img src="${prefix}assets/champions-logo.png" alt="" width="32" height="32">
+                    <span class="logo-text"><span class="logo-text__brand">CHAMPIONS</span><span class="logo-text__accent">GUIDE</span></span>
                 </a>
-                <button id="menu-toggle" class="menu-btn" aria-label="Toggle Menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
+                <button id="menu-toggle" class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
+                    <span class="bar" aria-hidden="true"></span>
                 </button>
-                <nav class="nav-links">
+                <nav class="nav-links" id="primary-nav" aria-label="Primary">
                     <a href="${prefix}" data-page="home">Home</a>
                     <a href="${prefix}pokedex/" data-page="pokedex">Pokedex</a>
                     <a href="${prefix}teambuilder/" data-page="teambuilder">Builder</a>
@@ -46,116 +98,171 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     const footerHTML = `
-        <footer style="margin-top: 8rem; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
-            <div class="container" style="padding: 6rem 1.2rem;">
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem;">
-                    <div>
-                        <a href="${prefix}" class="logo" style="margin-bottom: 1.5rem; display: flex; align-items: center;">
-                            <img src="${prefix}assets/champions-logo.png" alt="Logo" style="height: 40px; margin-right: 15px;">
-                            CHAMPIONS GUIDE
+        <footer class="site-footer" role="contentinfo">
+            <div class="container site-footer__inner">
+                <div class="site-footer__grid">
+                    <div class="site-footer__brand">
+                        <a href="${prefix}" class="logo" aria-label="Champions Guide home">
+                            <img src="${prefix}assets/champions-logo.png" alt="" width="40" height="40">
+                            <span class="logo-text"><span class="logo-text__brand">CHAMPIONS</span><span class="logo-text__accent"> GUIDE</span></span>
                         </a>
-                        <p style="color: var(--text-muted); max-width: 400px; font-size: 0.95rem;">The world's most advanced competitive Pokemon resource. Built for VGC Masters and Smogon Enthusiasts alike. Precision data, elite strategies, and professional tools.</p>
+                        <p class="site-footer__blurb">The world's most advanced competitive Pokémon resource. Built for VGC Masters and Smogon enthusiasts alike — precision data, elite strategies, and professional tools.</p>
                     </div>
                     <div>
-                        <h4 style="color: white; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">Navigation</h4>
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}" style="color: var(--text-muted); text-decoration: none;">Home</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}pokedex/" style="color: var(--text-muted); text-decoration: none;">Elite Pokedex</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}builds/" style="color: var(--text-muted); text-decoration: none;">Competitive Builds</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}teambuilder/" style="color: var(--text-muted); text-decoration: none;">Team Builder</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}calc/" style="color: var(--text-muted); text-decoration: none;">Damage Calc</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}compare/" style="color: var(--text-muted); text-decoration: none;">Compare Builds</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="${prefix}counter/" style="color: var(--text-muted); text-decoration: none;">Counter Tool</a></li>
+                        <h4 class="site-footer__heading">Navigation</h4>
+                        <ul class="site-footer__list">
+                            <li><a href="${prefix}">Home</a></li>
+                            <li><a href="${prefix}pokedex/">Elite Pokédex</a></li>
+                            <li><a href="${prefix}builds/">Competitive Builds</a></li>
+                            <li><a href="${prefix}teambuilder/">Team Builder</a></li>
+                            <li><a href="${prefix}calc/">Damage Calc</a></li>
+                            <li><a href="${prefix}compare/">Compare Builds</a></li>
+                            <li><a href="${prefix}counter/">Counter Tool</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h4 style="color: white; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;">Community</h4>
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.8rem;"><a href="#" style="color: var(--text-muted); text-decoration: none;">Discord</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="#" style="color: var(--text-muted); text-decoration: none;">Twitter/X</a></li>
-                            <li style="margin-bottom: 0.8rem;"><a href="#" style="color: var(--text-muted); text-decoration: none;">Contribute</a></li>
+                        <h4 class="site-footer__heading">Accessibility</h4>
+                        <ul class="site-footer__list">
+                            <li><a href="#a11y-fab" id="footer-a11y-link">Open accessibility options</a></li>
+                            <li><a href="#main-content">Skip to content</a></li>
+                            <li><span style="color: var(--text-muted); font-size: 0.92rem;">Preferences save locally</span></li>
                         </ul>
                     </div>
                 </div>
-                <div style="margin-top: 6rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2026 Pokemon Champions Guide. For educational use.</p>
-                    <div class="mono" style="font-size: 0.7rem; opacity: 0.5;">LATEST_PATCH: 10.0.1 // SCALE_UP</div>
+                <div class="site-footer__bottom">
+                    <p class="site-footer__copy">&copy; 2026 Pokémon Champions Guide. For educational use. Not affiliated with Nintendo or The Pokémon Company.</p>
+                    <div class="mono site-footer__patch">LATEST_PATCH: 10.0.1 // SCALE_UP</div>
                 </div>
             </div>
         </footer>
     `;
 
-    // Inject if containers exist or at top/bottom
     const body = document.body;
     if (!document.getElementById('main-header')) {
-        body.insertAdjacentHTML('afterbegin', headerHTML);
+        const skipEl = document.getElementById('skip-to-content');
+        if (skipEl) {
+            skipEl.insertAdjacentHTML('afterend', headerHTML);
+        } else {
+            body.insertAdjacentHTML('afterbegin', headerHTML);
+        }
     }
     if (!document.querySelector('footer')) {
         body.insertAdjacentHTML('beforeend', footerHTML);
     }
 
-    // Menu logic
+    // Ensure a skip-link target without restructuring the DOM
+    let main = document.getElementById('main-content') || document.querySelector('main');
+    if (!main) {
+        main = document.querySelector('body > section, body > .container, body > div');
+    }
+    if (main) {
+        if (!main.id) main.id = 'main-content';
+        if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    } else {
+        const sentinel = document.createElement('div');
+        sentinel.id = 'main-content';
+        sentinel.setAttribute('tabindex', '-1');
+        sentinel.setAttribute('aria-hidden', 'true');
+        const header = document.getElementById('main-header');
+        if (header && header.nextSibling) {
+            header.parentNode.insertBefore(sentinel, header.nextSibling);
+        } else {
+            body.insertAdjacentElement('afterbegin', sentinel);
+        }
+    }
+
     const menuToggle = document.getElementById('menu-toggle');
     const navLinksContainer = document.querySelector('.nav-links');
-    
-    if (menuToggle) {
+
+    function setMenuOpen(open) {
+        if (!menuToggle || !navLinksContainer) return;
+        menuToggle.classList.toggle('active', open);
+        navLinksContainer.classList.toggle('active', open);
+        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    if (menuToggle && navLinksContainer) {
         menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navLinksContainer.classList.toggle('active');
-            document.body.style.overflow = navLinksContainer.classList.contains('active') ? 'hidden' : '';
+            setMenuOpen(!navLinksContainer.classList.contains('active'));
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => setMenuOpen(false));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinksContainer.classList.contains('active')) {
+                setMenuOpen(false);
+                menuToggle.focus();
+            }
         });
     }
 
-    // Close menu on link click
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            navLinksContainer.classList.remove('active');
-            document.body.style.overflow = '';
+    const footerA11y = document.getElementById('footer-a11y-link');
+    if (footerA11y) {
+        footerA11y.addEventListener('click', (e) => {
+            e.preventDefault();
+            const fab = document.getElementById('a11y-fab');
+            if (fab) {
+                fab.focus();
+                fab.click();
+            }
         });
-    });
+    }
 
-    // Scroll effect
     window.addEventListener('scroll', () => {
         const header = document.querySelector('header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
+        if (!header) return;
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+    }, { passive: true });
 
-    // Active link highlighting
     const currentPath = window.location.pathname.toLowerCase();
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
         const page = link.getAttribute('data-page');
-        if (currentPath.includes(page) || (page === 'home' && (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html')) && !currentPath.includes('pokedex') && !currentPath.includes('builds') && !currentPath.includes('teambuilder'))) {
-            link.style.color = 'var(--primary-red)';
-            link.style.textShadow = 'var(--accent-glow)';
+        const isHome = page === 'home' && (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html'))
+            && !currentPath.includes('pokedex')
+            && !currentPath.includes('builds')
+            && !currentPath.includes('teambuilder')
+            && !currentPath.includes('calc')
+            && !currentPath.includes('compare')
+            && !currentPath.includes('counter')
+            && !currentPath.includes('movedex')
+            && !currentPath.includes('abilitydex')
+            && !currentPath.includes('itemdex');
+        const isMatch = (page && page !== 'home' && currentPath.includes(page)) || isHome;
+        if (isMatch) {
+            link.classList.add('is-active');
+            link.setAttribute('aria-current', 'page');
         }
     });
 
-    // Fade-in observer
     const faders = document.querySelectorAll('.fade-in');
-    const appearOptions = {
-        threshold: 0.2,
-        rootMargin: "0px 0px -50px 0px"
-    };
+    if (reduceMotion) {
+        faders.forEach((el) => el.classList.add('appear'));
+    } else {
+        const appearOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        };
 
-    const appearOnScroll = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add('appear');
-            observer.unobserve(entry.target);
+        const appearOnScroll = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('appear');
+                observer.unobserve(entry.target);
+            });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+            appearOnScroll.observe(fader);
+            const rect = fader.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+                fader.classList.add('appear');
+            }
         });
-    }, appearOptions);
-
-    faders.forEach(fader => {
-        appearOnScroll.observe(fader);
-        const rect = fader.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
-            fader.classList.add('appear');
-        }
-    });
+    }
 });

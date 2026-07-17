@@ -3,6 +3,9 @@
 .dex-shell {
     padding: 7.5rem 0 4rem;
     min-height: 100vh;
+    background:
+        radial-gradient(ellipse 60% 40% at 90% 0%, rgba(255, 62, 62, 0.07), transparent 50%),
+        radial-gradient(ellipse 50% 35% at 0% 20%, rgba(255, 204, 0, 0.03), transparent 45%);
 }
 
 .dex-header {
@@ -15,7 +18,7 @@
 
 .dex-header h1 {
     font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: 900;
+    font-weight: 800;
     letter-spacing: -0.03em;
     text-transform: none;
     color: #fff;
