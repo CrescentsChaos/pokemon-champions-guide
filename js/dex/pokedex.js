@@ -14,7 +14,7 @@
 
     async function init() {
         document.getElementById('dex-nav-slot').innerHTML = D.renderNav('pokemon');
-        const cb = '?v=' + Date.now();
+        const cb = '?v=10.0.1';
         const [pokeRes, movesRes, abRes, itemsRes] = await Promise.all([
             fetch(D.ASSET_PREFIX + 'assets/pokemon.json' + cb),
             fetch(D.ASSET_PREFIX + 'assets/moves.json' + cb),

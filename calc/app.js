@@ -10,7 +10,14 @@ let selectedMoveIdx2 = 0;
 let importTargetId = 1;
 let topMetaNames = [];
 let _topPokemonsCache = null;
-let isChampionsMode = false;
+let isChampionsMode = true;
+
+function syncChampionsModeButton() {
+    const btn = document.getElementById('champions-ev-toggle');
+    if (!btn) return;
+    btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
+    btn.classList.toggle('active', isChampionsMode);
+}
 
 function toggleChampionsMode() {
     isChampionsMode = !isChampionsMode;
@@ -21,11 +28,7 @@ function toggleChampionsMode() {
         updateStatsUI(pk);
     });
 
-    const btn = document.getElementById('champions-ev-toggle');
-    if (btn) {
-        btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
-        btn.classList.toggle('active', isChampionsMode);
-    }
+    syncChampionsModeButton();
     recalculate();
 }
 
@@ -296,9 +299,11 @@ async function init() {
             console.warn('Meta list unavailable', e);
         }
 
-        // Load defaults
-        loadPokemon(1, 'Abomasnow');
-        loadPokemon(2, 'Abomasnow');
+        // Load defaults — Champions meta pair, not the same species twice
+        const meta = topMetaNames.length ? topMetaNames : ['Garchomp', 'Mimikyu'];
+        loadPokemon(1, meta[0] || 'Garchomp');
+        loadPokemon(2, meta[1] || meta[0] || 'Mimikyu');
+        syncChampionsModeButton();
 
         recalculate();
     } catch (e) {
@@ -602,8 +607,10 @@ function handleSearch(p, query) {
         return;
     }
 
-    // Filter base pokemon matches
-    const filteredDB = pokemonDB.filter(x => (x.Name || '').toLowerCase().includes(q.toLowerCase())).slice(0, 10);
+    // Filter base pokemon matches (Champions-eligible first)
+    const filteredDB = pokemonDB
+        .filter(x => x.inChampions === true && (x.Name || '').toLowerCase().includes(q.toLowerCase()))
+        .slice(0, 10);
 
     // Matching builds for current format only
     const rawBuilds = buildsDB.filter(b =>

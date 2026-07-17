@@ -94,8 +94,9 @@ const STANDARD_EV_TOTAL = 508;
 const STANDARD_EV_MAX_STAT = 252;
 
 /**
- * Normalizes Champions EVs to exactly 66 total (or less if capped),
- * distributing any remainder to the lowest EV stat(s).
+ * Normalizes Champions EVs to exactly 66 total (or less if capped).
+ * Remainder is filled into the lowest non-zero EV first (keeps dumps on invested stats).
+ * Falls back to zero stats only when no invested stat has room left.
  */
 function normalizeChampionsEvs(evs, targetTotal = CHAMPIONS_EV_TOTAL, maxPerStat = CHAMPIONS_EV_MAX_STAT) {
     const result = {};
@@ -120,12 +121,26 @@ function normalizeChampionsEvs(evs, targetTotal = CHAMPIONS_EV_TOTAL, maxPerStat
     while (remainder > 0) {
         let lowestKey = null;
         let lowestVal = Infinity;
+
+        // Prefer lowest non-zero invested stats that still have room
         EV_STAT_KEYS.forEach(k => {
-            if (result[k] < maxPerStat && result[k] < lowestVal) {
+            if (result[k] > 0 && result[k] < maxPerStat && result[k] < lowestVal) {
                 lowestVal = result[k];
                 lowestKey = k;
             }
         });
+
+        // Fallback: no invested room left (or empty spread) → use lowest under-cap stat
+        if (!lowestKey) {
+            lowestVal = Infinity;
+            EV_STAT_KEYS.forEach(k => {
+                if (result[k] < maxPerStat && result[k] < lowestVal) {
+                    lowestVal = result[k];
+                    lowestKey = k;
+                }
+            });
+        }
+
         if (!lowestKey) break;
         const add = Math.min(remainder, maxPerStat - result[lowestKey]);
         result[lowestKey] += add;

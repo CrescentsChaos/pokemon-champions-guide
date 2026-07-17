@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Pokemon Champions Guide Team Builder: Create, analyze, and save competitive Pokemon builds for Scarlet and Violet.">
+        content="Team builder for Pokémon Champions — Champions EV mode (66/32), legality checks, and shareable team pastes.">
     <title>Team Builder | Pokemon Champions Guide</title>
 
     <!-- Preload critical data to improve LCP/Performance -->
@@ -923,8 +923,8 @@
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <button id="champions-mode-toggle" class="analyze-btn" aria-label="Toggle Champions EV Mode"
-                        style="padding: 10px 20px; font-size: 0.8rem; background: #2b2b36; border: 1px solid var(--glass-border); color: #ccc;"
-                        onclick="toggleChampionsMode()">CHAMPIONS EV MODE: OFF</button>
+                        style="padding: 10px 20px; font-size: 0.8rem; background: var(--primary-red); border: 1px solid var(--glass-border); color: white;"
+                        onclick="toggleChampionsMode()">CHAMPIONS EV MODE: ON</button>
                     <button onclick="toggleLibrary()" class="analyze-btn" aria-label="Open My Saved Builds Library"
                         style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY
                         LIBRARY 📚</button>
@@ -1406,7 +1406,15 @@
         let moves_database = [];   // Alias for user request
         let currentSlot = 0;
         let overlayTarget = null; // 'species', 'item', 'move-0', etc.
-        let isChampionsMode = false;
+        let isChampionsMode = true;
+
+        function syncChampionsModeButton() {
+            const btn = document.getElementById('champions-mode-toggle');
+            if (!btn) return;
+            btn.textContent = `CHAMPIONS EV MODE: ${isChampionsMode ? 'ON' : 'OFF'}`;
+            btn.style.background = isChampionsMode ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.color = isChampionsMode ? 'white' : 'rgba(255, 255, 255, 0.7)';
+        }
 
         function toggleChampionsMode() {
             isChampionsMode = !isChampionsMode;
@@ -1415,12 +1423,7 @@
                 p.evs = isChampionsMode ? convertEvsToChampions(p.evs) : convertEvsFromChampions(p.evs);
             });
 
-            const btn = document.getElementById('champions-mode-toggle');
-            if (btn) {
-                btn.textContent = `CHAMPIONS EV MODE: ${isChampionsMode ? 'ON' : 'OFF'}`;
-                btn.style.background = isChampionsMode ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.05)';
-                btn.style.color = isChampionsMode ? 'white' : 'rgba(255, 255, 255, 0.7)';
-            }
+            syncChampionsModeButton();
             syncUI();
         }
 
@@ -1552,6 +1555,7 @@
                 }
 
                 setupTabs();
+                syncChampionsModeButton();
                 if (currentSlot === -1) {
                     switchSlot(-1);
                 } else {
@@ -1875,7 +1879,7 @@
                 }
                 data = allPokemon.filter(pk => {
                     const n = pk.Name || '';
-                    return !n.includes('-Mega') && !n.includes('-Primal');
+                    return pk.inChampions === true && !n.includes('-Mega') && !n.includes('-Primal');
                 }).map(pk => {
                     const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const recCount = recommendedTeammates.get(tKey) || 0;
@@ -3224,6 +3228,7 @@
 
         // ── Startup: wire all static UI immediately, don't wait for data ──
         setupTabs();
+        syncChampionsModeButton();
 
         // Import paste button
         document.getElementById('main-import-btn').onclick = () => document.getElementById('import-overlay').style.display = 'flex';
@@ -3268,7 +3273,7 @@
                 document.getElementById('import-overlay').style.display = 'none';
                 document.getElementById('import-textarea').value = '';
             }
-            setupTabs(); syncUI();
+            setupTabs(); syncChampionsModeButton(); syncUI();
         };
 
         function getTeamPasteText() {

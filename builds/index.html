@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Competitive Pokemon Builds Library: Browse and export top-tier strategies for Scarlet and Violet.">
+        content="Browse Champions-eligible competitive builds. Filter by type, role, and format, then export Poképastes for the Champions format.">
     <title>Competitive Builds | Pokemon Champions Guide</title>
 
     <!-- Preload critical datasets -->
@@ -522,7 +522,7 @@
                     </select>
                     <label
                         style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
-                        <input type="checkbox" id="champions-eligible-filter"
+                        <input type="checkbox" id="champions-eligible-filter" checked
                             style="accent-color: var(--primary-red); width: 14px; height: 14px;">
                         <span
                             style="font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.7); letter-spacing:0.5px;">CHAMPIONS
@@ -644,7 +644,7 @@
                 if (el) el.value = '';
             });
             const champs = document.getElementById('champions-eligible-filter');
-            if (champs) champs.checked = false;
+            if (champs) champs.checked = true;
             const sort = document.getElementById('build-sort-select');
             if (sort) sort.value = 'pokemon';
             const dir = document.getElementById('build-sort-dir');
@@ -1399,6 +1399,17 @@
             }
 
             const filtered = getFilteredBuilds();
+            if (!append && filtered.length === 0) {
+                grid.innerHTML = `<div class="dex-empty" style="grid-column:1/-1; text-align:center; padding:3rem 1.5rem; color:rgba(255,255,255,0.55);">
+                    <p style="font-size:1.05rem; font-weight:700; margin-bottom:0.5rem;">No builds match your filters</p>
+                    <p style="font-size:0.85rem; margin:0;">Try clearing filters or turning off Champions Eligible Only.</p>
+                </div>`;
+                const sentinelEmpty = document.getElementById('load-more-sentinel');
+                if (sentinelEmpty) sentinelEmpty.style.display = 'none';
+                const metaEmpty = document.getElementById('builds-results-meta');
+                if (metaEmpty) metaEmpty.textContent = 'Showing 0 builds';
+                return;
+            }
             const toRender = append ? filtered.slice(displayedCount - batchSize, displayedCount) : filtered.slice(0, displayedCount);
             const fragment = document.createDocumentFragment();
 

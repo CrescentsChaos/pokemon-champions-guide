@@ -3,7 +3,25 @@ let movesData = {};
 let itemsData = [];
 let buildsData = [];
 
-let isChampionsMode = false;
+let isChampionsMode = true;
+
+function syncChampionsModeButton() {
+    const btn = document.getElementById('champions-ev-toggle');
+    if (!btn) return;
+    btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
+    btn.classList.toggle('active', isChampionsMode);
+}
+
+function toggleChampionsMode() {
+    isChampionsMode = !isChampionsMode;
+    [p1, p2].forEach(pk => {
+        if (!pk) return;
+        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
+    });
+    syncChampionsModeButton();
+    recalcStats(1);
+    recalcStats(2);
+}
 
 let p1 = {
     species: '',
@@ -109,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderMoves(2);
         updateSprite(1, '');
         updateSprite(2, '');
+        syncChampionsModeButton();
         updateComparison();
 
         // Load curated builds.json separately so search still works if it fails
@@ -205,7 +224,7 @@ function setupSearchListeners() {
             }
 
             const filtered = pokemonData
-                .filter(x => (x.Name || '').toLowerCase().includes(q))
+                .filter(x => x.inChampions === true && (x.Name || '').toLowerCase().includes(q))
                 .sort((a, b) => {
                     const an = a.Name.toLowerCase();
                     const bn = b.Name.toLowerCase();
@@ -455,21 +474,6 @@ function updateSprite(num, species, suffix = '') {
     img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
 }
 
-function toggleChampionsMode() {
-    isChampionsMode = !isChampionsMode;
-    [p1, p2].forEach(pk => {
-        if (!pk) return;
-        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
-    });
-    const btn = document.getElementById('champions-ev-toggle');
-    if (btn) {
-        btn.textContent = `Champions EV: ${isChampionsMode ? 'ON' : 'OFF'}`;
-        btn.classList.toggle('active', isChampionsMode);
-    }
-    recalcStats(1);
-    recalcStats(2);
-}
-
 function renderMoves(num) {
     const el = document.getElementById(`p${num}-moves`);
     if (!el) return;
@@ -676,6 +680,13 @@ function populateLibraryList() {
 
     let pool = buildsData;
     if (fmt) pool = pool.filter(b => (b.format || 'Singles').toLowerCase() === fmt);
+
+    // Champions-first: only show builds whose species is Champions-eligible
+    const champSpecies = new Set(
+        pokemonData.filter(p => p.inChampions === true).map(p => normalizeKey(p.Name))
+    );
+    pool = pool.filter(b => champSpecies.has(normalizeKey(b.pokemon)));
+
     if (q) {
         pool = pool.filter(b =>
             (b.pokemon || '').toLowerCase().includes(q) ||

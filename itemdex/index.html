@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Dex | Pokemon Champions Guide</title>
+    <meta name="description" content="Item dex for Pokémon Champions — held items, mega stones, and Champions-legal gear.">
     <link rel="icon" type="image/png" href="../assets/champions-logo.png">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dex.css">
@@ -28,11 +29,11 @@
                         <option value="pokemon">Pokémon Count</option>
                         <option value="builds">Build Count</option>
                         <option value="category">Category</option>
-                        <option value="champions">Champions First</option>
+                        <option value="champions" selected>Champions First</option>
                     </select>
                     <select id="sort-dir" class="dex-select">
-                        <option value="asc" selected>Ascending</option>
-                        <option value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                        <option value="desc" selected>Descending</option>
                     </select>
                     <span class="dex-label">Group</span>
                     <select id="sort-group" class="dex-select">
@@ -51,7 +52,7 @@
                         <option value="Berry">Berry</option>
                         <option value="Other">Other</option>
                     </select>
-                    <label class="dex-check"><input type="checkbox" id="filter-champions"> Champions only</label>
+                    <label class="dex-check"><input type="checkbox" id="filter-champions" checked> Champions only</label>
                 </div>
             </div>
 

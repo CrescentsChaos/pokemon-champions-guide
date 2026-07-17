@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <img src="${prefix}assets/champions-logo.png" alt="" width="40" height="40">
                             <span class="logo-text"><span class="logo-text__brand">CHAMPIONS</span><span class="logo-text__accent"> GUIDE</span></span>
                         </a>
-                        <p class="site-footer__blurb">The world's most advanced competitive Pokémon resource. Built for VGC Masters and Smogon enthusiasts alike — precision data, elite strategies, and professional tools.</p>
+                        <p class="site-footer__blurb">The Champions-format competitive Pokémon resource. Built for Champions players — precision data, legal builds, and professional tools with 66/32 EV rules baked in.</p>
                     </div>
                     <div>
                         <h4 class="site-footer__heading">Navigation</h4>
