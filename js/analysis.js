@@ -1408,6 +1408,9 @@ async function loadTopPokemonsForFormat(format) {
 }
 
 function findLatestBuildForSpecies(speciesName, format, buildsArr) {
+    if (typeof findMetaBuildForSpecies === 'function') {
+        return findMetaBuildForSpecies(speciesName, format, buildsArr);
+    }
     const key = normalizeSpeciesKey(speciesName);
     const fmt = (format || 'Singles').toLowerCase();
     const matches = buildsArr.filter(b =>
@@ -1415,11 +1418,13 @@ function findLatestBuildForSpecies(speciesName, format, buildsArr) {
         (b.format || 'Singles').toLowerCase() === fmt
     );
     if (matches.length === 0) return null;
-    return matches.reduce((best, cur) => {
+    const metaTagged = matches.filter(b => b && (b.isMeta === true || b.isMeta === 1 || b.isMeta === 'true'));
+    const pool = metaTagged.length ? metaTagged : matches;
+    return pool.reduce((best, cur) => {
         const bestId = parseInt(best.id, 10) || 0;
         const curId = parseInt(cur.id, 10) || 0;
         return curId > bestId ? cur : best;
-    }, matches[0]);
+    }, pool[0]);
 }
 
 function resolveMoveType(moveName) {
@@ -1915,7 +1920,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
     const coveredCount = threats.filter(t => t.dangerLevel === 'covered').length;
 
     let html = `
-        <p class="analysis-section-note">Ranked ${format} meta · latest build per species · full-team damage &amp; speed calc</p>
+        <p class="analysis-section-note">Ranked ${format} meta · isMeta build per species (else latest id) · full-team damage &amp; speed calc</p>
         <div class="threat-summary-row">
             <div class="threat-summary-pill threat-summary-pill--critical"><span>CRITICAL</span><span>${critCount}</span></div>
             <div class="threat-summary-pill threat-summary-pill--warning"><span>CAUTION</span><span>${warnCount}</span></div>
@@ -2108,6 +2113,12 @@ function analyzeLibraryTeam(mainBuild, synergyBuilds, format = 'Singles') {
 if (typeof globalThis !== 'undefined') {
     globalThis.parseAnalysisBuild = parseAnalysisBuild;
     globalThis.findLatestBuildForSpecies = findLatestBuildForSpecies;
+    globalThis.findMetaBuildForSpecies = typeof findMetaBuildForSpecies === 'function'
+        ? findMetaBuildForSpecies
+        : findLatestBuildForSpecies;
+    globalThis.isBuildMarkedMeta = typeof isBuildMarkedMeta === 'function'
+        ? isBuildMarkedMeta
+        : (b) => !!(b && (b.isMeta === true || b.isMeta === 1 || b.isMeta === 'true'));
     globalThis.normalizeSpeciesKey = normalizeSpeciesKey;
     globalThis.loadTopPokemonsForFormat = loadTopPokemonsForFormat;
     globalThis.formatEvLine = formatEvLine;

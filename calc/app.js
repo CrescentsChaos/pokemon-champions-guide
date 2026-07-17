@@ -47,21 +47,6 @@ function normalizeSpeciesKey(name) {
     return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-function findLatestBuildForSpecies(speciesName, format, buildsArr) {
-    const key = normalizeSpeciesKey(speciesName);
-    const fmt = (format || 'Singles').toLowerCase();
-    const matches = (buildsArr || []).filter(b =>
-        normalizeSpeciesKey(b.pokemon) === key &&
-        (b.format || 'Singles').toLowerCase() === fmt
-    );
-    if (matches.length === 0) return null;
-    return matches.reduce((best, cur) => {
-        const bestId = parseInt(best.id, 10) || 0;
-        const curId = parseInt(cur.id, 10) || 0;
-        return curId > bestId ? cur : best;
-    }, matches[0]);
-}
-
 async function loadTopPokemonsForCalc(format) {
     if (!_topPokemonsCache) {
         try {

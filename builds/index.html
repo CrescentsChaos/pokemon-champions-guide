@@ -146,6 +146,133 @@
             flex-shrink: 0;
         }
 
+        .meta-build-pill {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.55rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            vertical-align: middle;
+            color: #1a1408;
+            background: linear-gradient(135deg, #e8c872, #c9a227);
+        }
+
+        /* Meta build cards — editorial accent, not neon */
+        .build-card-wrapper.is-meta {
+            position: relative;
+        }
+
+        .build-card-wrapper.is-meta .pokemon-card-premium,
+        .pokemon-card-premium--meta {
+            border-color: rgba(201, 162, 39, 0.5);
+            background:
+                linear-gradient(165deg, rgba(201, 162, 39, 0.14) 0%, transparent 42%),
+                linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.48));
+            box-shadow:
+                inset 0 1px 0 rgba(232, 200, 114, 0.18),
+                0 10px 28px rgba(0, 0, 0, 0.28);
+        }
+
+        .build-card-wrapper.is-meta .pokemon-card-premium::before,
+        .pokemon-card-premium--meta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            border-radius: 0 0 2px 2px;
+            background: linear-gradient(90deg, transparent 0%, #c9a227 20%, #e8c872 50%, #c9a227 80%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .build-card-wrapper.is-meta:hover .pokemon-card-premium,
+        .pokemon-card-premium--meta:hover {
+            border-color: rgba(232, 200, 114, 0.65);
+        }
+
+        .build-card-wrapper.is-meta.selected {
+            outline-color: #c9a227;
+        }
+
+        .build-card-wrapper.is-meta .card-sprite-area,
+        .pokemon-card-premium--meta .card-sprite-area {
+            background:
+                radial-gradient(circle at 50% 40%, rgba(232, 200, 114, 0.16), transparent 70%),
+                rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(201, 162, 39, 0.22);
+        }
+
+        .meta-build-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 0 0 2px;
+            padding: 7px 11px;
+            border-radius: 8px;
+            background: rgba(201, 162, 39, 0.1);
+            border: 1px solid rgba(201, 162, 39, 0.28);
+        }
+
+        .meta-build-banner__mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .meta-build-banner__mark::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #e8c872;
+            box-shadow: 0 0 0 3px rgba(232, 200, 114, 0.18);
+            flex-shrink: 0;
+        }
+
+        .meta-build-banner__label {
+            font-size: 0.64rem;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #e8c872;
+            white-space: nowrap;
+        }
+
+        .meta-build-banner__note {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: rgba(232, 200, 114, 0.7);
+            letter-spacing: 0.03em;
+            text-align: right;
+            line-height: 1.25;
+        }
+
+        .build-card-wrapper.is-meta .format-badge,
+        .pokemon-card-premium--meta .format-badge {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+        }
+
+        .build-card-wrapper.is-meta .build-card-species,
+        .pokemon-card-premium--meta .build-card-species {
+            color: #fff8e7;
+        }
+
+        @media (max-width: 520px) {
+            .meta-build-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .meta-build-banner__note {
+                text-align: left;
+            }
+        }
+
         .move-pill-icons {
             display: inline-flex;
             align-items: center;
@@ -521,6 +648,13 @@
                         <option value="asc">Low → High</option>
                     </select>
                     <label
+                        style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 160px;">
+                        <input type="checkbox" id="meta-builds-filter"
+                            style="accent-color: #ffd76f; width: 14px; height: 14px;">
+                        <span
+                            style="font-size:0.72rem; font-weight:800; color:rgba(255,215,111,0.9); letter-spacing:0.5px;">META BUILDS ONLY</span>
+                    </label>
+                    <label
                         style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; min-width: 200px;">
                         <input type="checkbox" id="champions-eligible-filter" checked
                             style="accent-color: var(--primary-red); width: 14px; height: 14px;">
@@ -608,6 +742,7 @@
             const ability = document.getElementById('ability-filter')?.value?.trim();
             const move = document.getElementById('move-filter')?.value?.trim();
             const champs = document.getElementById('champions-eligible-filter')?.checked;
+            const metaOnly = document.getElementById('meta-builds-filter')?.checked;
 
             if (search) chips.push({ label: `Search: ${search}`, clear: () => { document.getElementById('build-search').value = ''; } });
             if (type) chips.push({ label: `Type: ${type}`, clear: () => { document.getElementById('type-filter').value = ''; } });
@@ -615,6 +750,7 @@
             if (format) chips.push({ label: `Format: ${format}`, clear: () => { document.getElementById('format-filter').value = ''; } });
             if (ability) chips.push({ label: `Ability: ${ability}`, clear: () => { document.getElementById('ability-filter').value = ''; } });
             if (move) chips.push({ label: `Move: ${move}`, clear: () => { document.getElementById('move-filter').value = ''; } });
+            if (metaOnly) chips.push({ label: 'Meta builds', clear: () => { document.getElementById('meta-builds-filter').checked = false; } });
             if (champs) chips.push({ label: 'Champions eligible', clear: () => { document.getElementById('champions-eligible-filter').checked = false; } });
 
             if (!chips.length) {
@@ -645,6 +781,8 @@
             });
             const champs = document.getElementById('champions-eligible-filter');
             if (champs) champs.checked = true;
+            const metaOnly = document.getElementById('meta-builds-filter');
+            if (metaOnly) metaOnly.checked = false;
             const sort = document.getElementById('build-sort-select');
             if (sort) sort.value = 'pokemon';
             const dir = document.getElementById('build-sort-dir');
@@ -661,6 +799,7 @@
                 document.getElementById('format-filter')?.value || '',
                 document.getElementById('ability-filter')?.value || '',
                 document.getElementById('move-filter')?.value || '',
+                document.getElementById('meta-builds-filter')?.checked || false,
                 document.getElementById('champions-eligible-filter')?.checked || false,
                 document.getElementById('build-sort-select')?.value || 'pokemon',
                 document.getElementById('build-sort-dir')?.value || 'desc'
@@ -677,6 +816,7 @@
             const formatFilter = document.getElementById('format-filter').value.toLowerCase();
             const abilityFilter = (document.getElementById('ability-filter').value || '').toLowerCase().trim();
             const moveFilter = (document.getElementById('move-filter').value || '').toLowerCase().trim();
+            const metaBuildsOnly = document.getElementById('meta-builds-filter')?.checked;
             const championsEligibleOnly = document.getElementById('champions-eligible-filter').checked;
 
             const filtered = allBuilds.filter(build => {
@@ -698,6 +838,7 @@
                 if (formatFilter && format !== formatFilter) return false;
                 if (abilityFilter && !ability.includes(abilityFilter)) return false;
                 if (moveFilter && !moves.some(m => m.includes(moveFilter))) return false;
+                if (metaBuildsOnly && !(typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(build) : build.isMeta === true)) return false;
                 if (championsEligibleOnly && !isChampionsEligibleBuild(build)) return false;
                 return true;
             });
@@ -1079,7 +1220,7 @@
                 const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
                 img.src = `../assets/mega-sprites/${fileName}.gif`;
 
-                if (img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
+                if (img.classList.contains('mega-toggle') || img.classList.contains('form-toggle')) img.dataset.mega = img.src;
                 return;
             }
 
@@ -1087,7 +1228,7 @@
                 img.dataset.fallbackState = 'smogon';
                 const folder = shiny ? 'xy-shiny' : 'xy';
                 img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
-                if (img.classList.contains('mega-toggle') && img.dataset.currentSrc === 'base') {
+                if ((img.classList.contains('mega-toggle') || img.classList.contains('form-toggle')) && img.dataset.currentSrc === 'base') {
                     img.dataset.base = img.src;
                 }
                 return;
@@ -1095,7 +1236,7 @@
 
             img.dataset.fallbackState = 'dead';
             img.dataset.fallback = 'true';
-            img.classList.remove('mega-toggle');
+            img.classList.remove('mega-toggle', 'form-toggle');
         }
 
         function getMegaSpriteUrl(p) {
@@ -1107,16 +1248,150 @@
             const it = p.item.toLowerCase().replace(/[^a-z0-9]/g, '');
             const base = p.shiny ? 'ani-shiny' : 'ani';
 
-            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey')) return null;
+            if (!it.endsWith('ite') && !it.endsWith('itex') && !it.endsWith('itey') && !it.endsWith('dorb') && !it.endsWith('eorb')) return null;
             if (it === 'eviolite' || it === 'meteorite') return null;
 
             let suffix = '-mega';
             if (it.endsWith('itex')) suffix = '-megax';
             else if (it.endsWith('itey')) suffix = '-megay';
+            else if (it.endsWith('dorb') || it.endsWith('eorb')) suffix = '-primal';
 
             const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
             return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
         }
+
+        function getPermanentFormSpriteUrl(p) {
+            const permForm = getPermanentForm(p);
+            if (!permForm) return null;
+            const base = p.shiny ? 'ani-shiny' : 'ani';
+            const showdownName = String(permForm)
+                .replace('zaciancrowned', 'zacian-crowned')
+                .replace('zamazentacrowned', 'zamazenta-crowned')
+                .replace('dialgaorigin', 'dialga-origin')
+                .replace('palkiaorigin', 'palkia-origin')
+                .replace('giratinaorigin', 'giratina-origin')
+                .replace('ogerponwellspring', 'ogerpon-wellspring')
+                .replace('ogerponhearthflame', 'ogerpon-hearthflame')
+                .replace('ogerponcornerstone', 'ogerpon-cornerstone')
+                .replace(/arceus([a-z]+)/, 'arceus-$1')
+                .replace(/silvally([a-z]+)/, 'silvally-$1')
+                .replace(/genesect([a-z]+)/, 'genesect-$1');
+            return `https://play.pokemonshowdown.com/sprites/${base}/${showdownName}.gif`;
+        }
+
+        function getAlteredFormSpriteUrl(p) {
+            return getMegaSpriteUrl(p) || getPermanentFormSpriteUrl(p);
+        }
+
+        function applyCardFormState(card, isAltered) {
+            if (!card) return;
+            const sprite = card.querySelector('img.mega-toggle, img.form-toggle');
+            if (sprite && sprite.dataset.fallback !== 'true') {
+                const next = isAltered ? (sprite.dataset.mega || sprite.dataset.altered) : sprite.dataset.base;
+                if (next) {
+                    delete sprite.dataset.fallbackState;
+                    sprite.dataset.currentSrc = isAltered ? 'mega' : 'base';
+                    if (sprite.src !== next) sprite.src = next;
+                }
+            }
+
+            card.querySelectorAll('.mega-ability-text, .form-ability-text').forEach(el => {
+                const text = isAltered
+                    ? (el.dataset.megaAbility || el.dataset.alteredAbility)
+                    : el.dataset.baseAbility;
+                if (text) {
+                    el.innerText = text.toUpperCase();
+                    el.style.color = isAltered ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.8)';
+                }
+                const tip = isAltered
+                    ? (el.dataset.megaAbilityDesc || el.dataset.alteredAbilityDesc)
+                    : el.dataset.baseAbilityDesc;
+                if (tip != null) el.title = tip;
+            });
+
+            card.querySelectorAll('.mega-toggle-type1, .mega-toggle-type2, .form-toggle-type1, .form-toggle-type2').forEach(el => {
+                const type = isAltered ? el.dataset.megaType : el.dataset.baseType;
+                if (!type) {
+                    el.style.display = 'none';
+                    return;
+                }
+                el.style.display = 'inline-block';
+                el.src = `../assets/type-icons/${type.toLowerCase()}_type.png`;
+                el.alt = type;
+            });
+
+            card.querySelectorAll('.mega-data-text, .form-data-text').forEach(el => {
+                el.textContent = isAltered ? el.dataset.megaVal : el.dataset.baseVal;
+            });
+            card.querySelectorAll('.mega-data-fill, .form-data-fill').forEach(el => {
+                el.style.width = isAltered ? el.dataset.megaWidth : el.dataset.baseWidth;
+            });
+
+            card.dataset.formState = isAltered ? 'altered' : 'base';
+        }
+
+        const FORM_CYCLE_MS = 3000;
+        const visibleFormCards = new Set();
+        let formCycleAltered = false;
+        let formCycleTimer = null;
+        let formCardObserver = null;
+
+        function ensureFormCycleTimer() {
+            if (formCycleTimer || typeof document.hidden === 'boolean' && document.hidden) return;
+            formCycleTimer = setInterval(() => {
+                if (document.hidden || visibleFormCards.size === 0) return;
+                formCycleAltered = !formCycleAltered;
+                visibleFormCards.forEach(card => {
+                    if (!card.isConnected) {
+                        visibleFormCards.delete(card);
+                        return;
+                    }
+                    applyCardFormState(card, formCycleAltered);
+                });
+            }, FORM_CYCLE_MS);
+        }
+
+        function stopFormCycleTimerIfIdle() {
+            if (visibleFormCards.size === 0 && formCycleTimer) {
+                clearInterval(formCycleTimer);
+                formCycleTimer = null;
+            }
+        }
+
+        function observeFormToggleCards(root) {
+            const scope = root || document;
+            if (!formCardObserver) {
+                formCardObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const card = entry.target;
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.12) {
+                            visibleFormCards.add(card);
+                            applyCardFormState(card, formCycleAltered);
+                            ensureFormCycleTimer();
+                        } else {
+                            visibleFormCards.delete(card);
+                            stopFormCycleTimerIfIdle();
+                        }
+                    });
+                }, { root: null, rootMargin: '80px 0px', threshold: [0, 0.12, 0.35] });
+            }
+
+            scope.querySelectorAll('img.mega-toggle, img.form-toggle').forEach(img => {
+                const card = img.closest('.pokemon-card-premium');
+                if (card) formCardObserver.observe(card);
+            });
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (formCycleTimer) {
+                    clearInterval(formCycleTimer);
+                    formCycleTimer = null;
+                }
+            } else if (visibleFormCards.size > 0) {
+                ensureFormCycleTimer();
+            }
+        });
 
         function getDmgClassIcon(damageClass, size = 14) {
             const dc = (damageClass || 'Status').toLowerCase();
@@ -1227,26 +1502,19 @@
 
         function createTeamCard(p, dbRef, rawBuild) {
             const card = document.createElement('div');
-            card.className = 'pokemon-card-premium';
 
-            const permForm = getPermanentForm(p);
-            const dbEffective = getEffectivePokemonData(p, allPokemon);
-
-            // If it's a permanent form, use its data as the primary database reference
-            const dbBase = (permForm && dbEffective) ? dbEffective : (allPokemon.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === (p.species || '').toLowerCase().replace(/[^a-z0-9]/g, '')) || {
+            const dbBase = getBasePokemonData(p, allPokemon) || {
                 HP: 0, Attack: 0, Defense: 0, "Sp.Atk": 0, "Sp.Def": 0, Speed: 0, Type_1: 'Normal', Type_2: null, Ability: []
-            });
-
-            // Mega logic only applies if NOT a permanent form
-            const dbMega = permForm ? dbBase : (dbEffective || dbBase);
-            const isMegaActive = !permForm && dbMega !== dbBase;
+            };
+            const dbAltered = getEffectivePokemonData(p, allPokemon) || dbBase;
+            const canFormCycle = dbAltered !== dbBase;
 
             const t1Base = (dbBase.Type_1 || 'Normal').toLowerCase();
             const t2Base = dbBase.Type_2?.toLowerCase();
-            const t1Mega = (dbMega.Type_1 || 'Normal').toLowerCase();
-            const t2Mega = dbMega.Type_2?.toLowerCase();
+            const t1Altered = (dbAltered.Type_1 || 'Normal').toLowerCase();
+            const t2Altered = dbAltered.Type_2?.toLowerCase();
 
-            const roles = detectRole(p, dbMega);
+            const roles = detectRole(p, dbAltered);
             const visibleRoles = roles.slice(0, 3);
             const rolesHtml = visibleRoles.map(r => `<span class="role-badge" title="${roleDescriptions[r] || ''}">${r}</span>`).join('')
                 + (roles.length > 3 ? `<span class="role-badge role-badge--more" title="${roles.slice(3).join(', ')}">+${roles.length - 3}</span>` : '');
@@ -1258,10 +1526,10 @@
 
             const statsHtml = statsArr.map((s, idx) => {
                 const baseValue = parseInt(dbBase[statKeys[s]]) || 0;
-                const megaValue = parseInt(dbMega[statKeys[s]]) || 0;
+                const alteredValue = parseInt(dbAltered[statKeys[s]]) || 0;
 
                 const valBase = calculateStat(baseValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
-                const valMega = calculateStat(megaValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                const valAltered = calculateStat(alteredValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
 
                 const nature = natureMap[p.nature] || { pos: '', neg: '' };
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
@@ -1270,14 +1538,14 @@
                     <div style="display:flex; align-items:center; font-size:0.75rem; margin-bottom:4px;">
                         <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
                         <div class="stat-bar-mini">
-                            <div class="stat-fill-mini ${isMegaActive ? 'mega-data-fill' : ''}" 
+                            <div class="stat-fill-mini ${canFormCycle ? 'mega-data-fill' : ''}" 
                                  style="width:${Math.min(100, (valBase / 250) * 100)}%; background:${statColors[idx]};"
-                                 ${isMegaActive ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valMega / 250) * 100)}%"` : ''}>
+                                 ${canFormCycle ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valAltered / 250) * 100)}%"` : ''}>
                             </div>
                         </div>
-                        <span class="${isMegaActive ? 'mega-data-text' : ''}" 
+                        <span class="${canFormCycle ? 'mega-data-text' : ''}" 
                               style="width:30px; text-align:right; font-weight:900; color:${color}"
-                              ${isMegaActive ? `data-base-val="${valBase}" data-mega-val="${valMega}"` : ''}>
+                              ${canFormCycle ? `data-base-val="${valBase}" data-mega-val="${valAltered}"` : ''}>
                             ${valBase}
                         </span>
                     </div>
@@ -1312,49 +1580,49 @@
                 `;
             }).join('');
 
-            let spriteUrl = getSpriteUrl(p);
-            // Override sprite URL for permanent forms
-            if (permForm) {
-                const base = p.shiny ? 'ani-shiny' : 'ani';
-                const showdownName = permForm
-                    .replace('crowned', '-crowned')
-                    .replace('origin', '-origin')
-                    .replace('wellspring', '-wellspring')
-                    .replace('hearthflame', '-hearthflame')
-                    .replace('cornerstone', '-cornerstone')
-                    .replace(/arceus([a-z]+)/, 'arceus-$1')
-                    .replace(/silvally([a-z]+)/, 'silvally-$1');
-                spriteUrl = `https://play.pokemonshowdown.com/sprites/${base}/${showdownName}.gif`;
-            }
-            const megaUrl = getMegaSpriteUrl(p);
+            const baseSpriteUrl = getSpriteUrl(p);
+            const alteredSpriteUrl = getAlteredFormSpriteUrl(p);
+            const canSpriteCycle = !!(alteredSpriteUrl && alteredSpriteUrl !== baseSpriteUrl);
+            const isFormActive = canFormCycle || canSpriteCycle;
             const format = rawBuild.format || 'SINGLES';
+            const isMetaBuild = typeof isBuildMarkedMeta === 'function'
+                ? isBuildMarkedMeta(rawBuild)
+                : rawBuild?.isMeta === true;
+            card.className = 'pokemon-card-premium' + (isMetaBuild ? ' pokemon-card-premium--meta' : '');
 
-            // Ability from build paste first — dex default is fallback only
-            const abilityNameForCard = (p.ability && p.ability.trim())
+            const baseAbilityDisplay = (p.ability && p.ability.trim())
                 ? p.ability.trim()
-                : ((dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : (dbBase.Ability?.[0] || 'Unknown'));
-            const abilityKeyForCard = (abilityNameForCard || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-            const abilityDescForCard = (abilitiesMap[abilityKeyForCard] && abilitiesMap[abilityKeyForCard].description) ? abilitiesMap[abilityKeyForCard].description.replace(/"/g, '&quot;') : '';
-            const megaAbilityFallback = (dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : abilityNameForCard;
-            const baseAbilityDisplay = abilityNameForCard;
+                : (getPokemonAbilities(dbBase)[0] || 'Unknown');
+            const alteredAbilityDisplay = getPokemonAbilities(dbAltered)[0] || baseAbilityDisplay;
+            const baseAbilityKey = normalizeString(baseAbilityDisplay);
+            const alteredAbilityKey = normalizeString(alteredAbilityDisplay);
+            const baseAbilityDesc = (abilitiesMap[baseAbilityKey]?.description || '').replace(/"/g, '&quot;');
+            const alteredAbilityDesc = (abilitiesMap[alteredAbilityKey]?.description || baseAbilityDesc).replace(/"/g, '&quot;');
 
             card.innerHTML = `
+                ${isMetaBuild ? `
+                <div class="meta-build-banner" title="Tagged as the current meta set for this Pokémon in ${format}">
+                    <div class="meta-build-banner__mark">
+                        <span class="meta-build-banner__label">Current Meta</span>
+                    </div>
+                    <span class="meta-build-banner__note">${format} · representative set</span>
+                </div>` : ''}
                 <div class="card-header">
                     <div class="card-sprite-area">
-                        <img class="premium-sprite ${megaUrl ? 'mega-toggle' : ''}" src="${spriteUrl}" alt="${p.species.replace(/"/g, '&quot;')}" ${megaUrl ? `data-base="${spriteUrl}" data-mega="${megaUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species.replace(/'/g, "\\'")}', ${p.shiny})">
+                        <img class="premium-sprite ${isFormActive ? 'mega-toggle form-toggle' : ''}" src="${baseSpriteUrl}" alt="${p.species.replace(/"/g, '&quot;')}" ${isFormActive ? `data-base="${baseSpriteUrl}" data-mega="${alteredSpriteUrl || baseSpriteUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species.replace(/'/g, "\\'")}', ${p.shiny})">
                         ${p.tera ? `<img src="../assets/type-icons/tera_type_${p.tera.toLowerCase()}.png" class="tera-icon" alt="${p.tera} Tera" style="position: absolute; top: 5px; right: 5px; height: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">` : ''}
                         ${p.item ? `<img src="${getItemSpriteUrl(p.item)}" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')" style="position:absolute; bottom:5px; left:5px; width:22px; height:22px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">` : ''}
                     </div>
                     <div class="header-info">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 8px; min-width:0;">
-                            <h3 class="build-card-species">${p.species}</h3>
+                            <h3 class="build-card-species">${p.species}${isMetaBuild ? ' <span class="meta-build-pill" title="Current meta set">META</span>' : ''}</h3>
                             <span class="format-badge" style="background:${format.toLowerCase() === 'doubles' ? '#4a90e2' : '#e63946'}; flex-shrink: 0;">${format.toUpperCase()} #${rawBuild.id}</span>
                         </div>
                         <div class="type-badges-row" style="margin-top:2px;">
-                            <img src="../assets/type-icons/${t1Base.toLowerCase()}_type.png" class="type-icon ${isMegaActive ? 'mega-toggle-type1' : ''}" 
-                                  ${isMegaActive ? `data-base-type="${t1Base}" data-mega-type="${t1Mega}"` : ''} alt="${t1Base}">
-                            <img src="../assets/type-icons/${(t2Base || 'normal').toLowerCase()}_type.png" class="type-icon ${isMegaActive ? 'mega-toggle-type2' : ''}" 
-                                  ${isMegaActive ? `data-base-type="${t2Base || ''}" data-mega-type="${t2Mega || ''}"` : ''} 
+                            <img src="../assets/type-icons/${t1Base}_type.png" class="type-icon ${isFormActive ? 'mega-toggle-type1' : ''}" 
+                                  ${isFormActive ? `data-base-type="${t1Base}" data-mega-type="${t1Altered}"` : ''} alt="${t1Base}">
+                            <img src="../assets/type-icons/${(t2Base || 'normal')}_type.png" class="type-icon ${isFormActive ? 'mega-toggle-type2' : ''}" 
+                                  ${isFormActive ? `data-base-type="${t2Base || ''}" data-mega-type="${t2Altered || ''}"` : ''} 
                                   alt="${t2Base || ''}" style="display: ${t2Base ? 'inline-block' : 'none'};">
                         </div>
                         <div class="roles-row">${rolesHtml}</div>
@@ -1369,11 +1637,11 @@
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center;">
                     <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 800; line-height: 1.2;">
                             <span style="color:${natureMap[p.nature]?.color || '#ddd'}">${p.nature.toUpperCase()} NATURE</span><br>
-                            ABILITY: <span class="${isMegaActive ? 'mega-ability-text' : ''}" 
-                                           title="${abilityDescForCard}" 
-                                           ${isMegaActive ? `data-base-ability="${baseAbilityDisplay}" data-mega-ability="${megaAbilityFallback}"` : ''} 
+                            ABILITY: <span class="${isFormActive ? 'mega-ability-text' : ''}" 
+                                           title="${baseAbilityDesc}" 
+                                           ${isFormActive ? `data-base-ability="${baseAbilityDisplay.replace(/"/g, '&quot;')}" data-mega-ability="${alteredAbilityDisplay.replace(/"/g, '&quot;')}" data-base-ability-desc="${baseAbilityDesc}" data-mega-ability-desc="${alteredAbilityDesc}"` : ''} 
                                            style="color: rgba(255, 255, 255, 0.8)">
-                                ${abilityNameForCard.toUpperCase()}
+                                ${baseAbilityDisplay.toUpperCase()}
                             </span>
                         </div>
                     <div class="build-card-quick-actions">
@@ -1393,6 +1661,8 @@
             if (!append) {
                 grid.innerHTML = '';
                 displayedCount = batchSize;
+                visibleFormCards.clear();
+                stopFormCycleTimerIfIdle();
                 if (!isInitial) {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
@@ -1416,8 +1686,11 @@
             toRender.forEach(build => {
                 const p = getParsedBuild(build);
                 const dbRef = getEffectivePokemonData(p, allPokemon);
+                const isMetaBuild = typeof isBuildMarkedMeta === 'function'
+                    ? isBuildMarkedMeta(build)
+                    : build?.isMeta === true;
                 const wrapper = document.createElement('div');
-                wrapper.className = `build-card-wrapper ${String(selectedBuildId) === String(build.id) ? 'selected' : ''}`;
+                wrapper.className = `build-card-wrapper${isMetaBuild ? ' is-meta' : ''}${String(selectedBuildId) === String(build.id) ? ' selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
@@ -1428,6 +1701,7 @@
             });
 
             grid.appendChild(fragment);
+            observeFormToggleCards(grid);
 
             const sentinel = document.getElementById('load-more-sentinel');
             const metaEl = document.getElementById('builds-results-meta');
@@ -2133,6 +2407,7 @@
                     grid.appendChild(createEmptyCard());
                 }
             }
+            observeFormToggleCards(grid);
         }
 
         function createEmptyCard() {
@@ -2195,35 +2470,19 @@
         document.getElementById('ability-filter').addEventListener('input', () => debouncedRenderBuilds());
         document.getElementById('move-filter').addEventListener('input', () => debouncedRenderBuilds());
         document.getElementById('champions-eligible-filter').addEventListener('change', () => debouncedRenderBuilds());
+        document.getElementById('meta-builds-filter')?.addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('build-sort-select').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('build-sort-dir').addEventListener('change', () => debouncedRenderBuilds());
         document.getElementById('clear-filters-btn')?.addEventListener('click', clearAllFilters);
 
-        // Mega preview: toggle on sprite click only (avoids global interval lag)
+        // Form preview: timed cycle for visible mega/item forms; click still toggles
         document.addEventListener('click', (e) => {
-            const sprite = e.target.closest('img.mega-toggle');
+            const sprite = e.target.closest('img.mega-toggle, img.form-toggle');
             if (!sprite || sprite.dataset.fallback === 'true') return;
-            const isMega = sprite.dataset.currentSrc !== 'mega';
-            sprite.dataset.currentSrc = isMega ? 'mega' : 'base';
-            sprite.src = isMega ? sprite.dataset.mega : sprite.dataset.base;
             const card = sprite.closest('.pokemon-card-premium');
             if (!card) return;
-            card.querySelectorAll('.mega-ability-text').forEach(el => {
-                el.innerText = (isMega ? el.dataset.megaAbility : el.dataset.baseAbility).toUpperCase();
-                el.style.color = isMega ? 'var(--primary-red)' : 'rgba(255, 255, 255, 0.8)';
-            });
-            card.querySelectorAll('.mega-toggle-type1, .mega-toggle-type2').forEach(el => {
-                const type = isMega ? el.dataset.megaType : el.dataset.baseType;
-                if (!type) { el.style.display = 'none'; return; }
-                el.style.display = 'inline-block';
-                el.src = `../assets/type-icons/${type.toLowerCase()}_type.png`;
-            });
-            card.querySelectorAll('.mega-data-text').forEach(el => {
-                el.textContent = isMega ? el.dataset.megaVal : el.dataset.baseVal;
-            });
-            card.querySelectorAll('.mega-data-fill').forEach(el => {
-                el.style.width = isMega ? el.dataset.megaWidth : el.dataset.baseWidth;
-            });
+            const nextAltered = sprite.dataset.currentSrc !== 'mega';
+            applyCardFormState(card, nextAltered);
         });
 
         // Go to top

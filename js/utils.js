@@ -209,11 +209,49 @@ function clampEvsForMode(evs, championsMode = false) {
     return result;
 }
 
+function normalizeBuildSpeciesKey(name) {
+    return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+/** True when a builds.json entry is explicitly tagged as the current meta set. */
+function isBuildMarkedMeta(build) {
+    return build?.isMeta === true || build?.isMeta === 1 || build?.isMeta === 'true';
+}
+
+/**
+ * Picks the meta build for a species + format.
+ * Prefers builds with isMeta: true; otherwise falls back to highest id (legacy "latest" behavior).
+ */
+function findMetaBuildForSpecies(speciesName, format, buildsArr) {
+    const key = normalizeBuildSpeciesKey(speciesName);
+    const fmt = (format || 'Singles').toLowerCase();
+    const matches = (buildsArr || []).filter(b =>
+        normalizeBuildSpeciesKey(b.pokemon) === key &&
+        (b.format || 'Singles').toLowerCase() === fmt
+    );
+    if (matches.length === 0) return null;
+
+    const metaTagged = matches.filter(isBuildMarkedMeta);
+    const pool = metaTagged.length ? metaTagged : matches;
+
+    return pool.reduce((best, cur) => {
+        const bestId = parseInt(best.id, 10) || 0;
+        const curId = parseInt(cur.id, 10) || 0;
+        return curId > bestId ? cur : best;
+    }, pool[0]);
+}
+
+/** @deprecated Prefer findMetaBuildForSpecies — kept as alias for existing call sites. */
+function findLatestBuildForSpecies(speciesName, format, buildsArr) {
+    return findMetaBuildForSpecies(speciesName, format, buildsArr);
+}
+
 // Export for Node environments (testing)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPokemonAbilities, calculateStat, getPermanentForm,
-        normalizeChampionsEvs, convertEvsToChampions, convertEvsFromChampions, clampEvsForMode
+        normalizeChampionsEvs, convertEvsToChampions, convertEvsFromChampions, clampEvsForMode,
+        isBuildMarkedMeta, findMetaBuildForSpecies, findLatestBuildForSpecies, normalizeBuildSpeciesKey
     };
 }
 

@@ -658,17 +658,27 @@
                 );
             }
 
+            pool = [...pool].sort((a, b) => {
+                const am = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(a) : a.isMeta === true) ? 0 : 1;
+                const bm = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true) ? 0 : 1;
+                if (am !== bm) return am - bm;
+                return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
+            });
+
             const shown = pool.slice(0, 32);
             if (!shown.length) {
                 list.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.45);padding:0.5rem;">No premade builds match.</div>';
                 return;
             }
 
-            list.innerHTML = shown.map(b => `
+            list.innerHTML = shown.map(b => {
+                const meta = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
+                return `
                 <button type="button" class="premade-build-item" data-build-id="${b.id}">
-                    <span>${b.pokemon}</span>
+                    <span>${b.pokemon}${meta ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META</span>' : ''}</span>
                     <span class="premade-build-item__meta">${(b.format || 'Singles')} #${b.id}</span>
-                </button>`).join('');
+                </button>`;
+            }).join('');
 
             list.querySelectorAll('.premade-build-item').forEach(btn => {
                 btn.addEventListener('click', () => loadPremadeBuild(btn.dataset.buildId));
@@ -1015,10 +1025,23 @@
             targetDefender = buildCalcStateFromSlot(targetSlot, 2, targetData, movesDB);
 
             const targetFormatKey = targetFormat.toLowerCase();
-            const candidatePool = buildsDB.filter(b =>
-                normalizeKey(b.pokemon) !== targetKey &&
-                (b.format || 'Singles').toLowerCase() === targetFormatKey
-            );
+            // One representative build per species: isMeta tagged set, else highest id
+            const speciesNames = new Map();
+            buildsDB.forEach(b => {
+                if (normalizeKey(b.pokemon) === targetKey) return;
+                if ((b.format || 'Singles').toLowerCase() !== targetFormatKey) return;
+                const k = normalizeKey(b.pokemon);
+                if (!speciesNames.has(k)) speciesNames.set(k, b.pokemon);
+            });
+            const pickMeta = typeof findMetaBuildForSpecies === 'function'
+                ? findMetaBuildForSpecies
+                : (typeof findLatestBuildForSpecies === 'function' ? findLatestBuildForSpecies : null);
+            const candidatePool = pickMeta
+                ? [...speciesNames.values()].map(name => pickMeta(name, targetFormat, buildsDB)).filter(Boolean)
+                : buildsDB.filter(b =>
+                    normalizeKey(b.pokemon) !== targetKey &&
+                    (b.format || 'Singles').toLowerCase() === targetFormatKey
+                );
 
             const bestBySpecies = new Map();
             candidatePool.forEach(build => {
