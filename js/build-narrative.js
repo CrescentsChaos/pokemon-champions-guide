@@ -152,7 +152,19 @@
         if (!moveName) return '';
         const ref = getMoveRef(moveName);
         const types = getBattleTypes(db, mon);
-        const moveType = ref?.type || 'Normal';
+        let moveType = ref?.type || 'Normal';
+        if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.resolveMoveType === 'function') {
+            try {
+                const resolved = BattleCalc.resolveMoveType(
+                    { ability: mon?.ability || '', tera: !!mon?.tera, teraType: mon?.tera || null },
+                    { name: moveName, type: moveType, basePower: ref?.power || 0 },
+                    ref,
+                    (mon?.item || '').toLowerCase(),
+                    { weather: 'None' }
+                );
+                if (resolved?.moveType) moveType = resolved.moveType;
+            } catch (e) { /* keep base type */ }
+        }
         const category = ref?.damage_class || ref?.category || 'Physical';
         const power = ref?.power;
         const isStab = types.some(t => t && t.toLowerCase() === (moveType || '').toLowerCase());
@@ -430,8 +442,22 @@
         if (moves.length >= 2) {
             const stab = moves.filter(m => {
                 const ref = getMoveRef(m);
+                if (!ref) return false;
+                let mt = ref.type || '';
+                if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.resolveMoveType === 'function') {
+                    try {
+                        const resolved = BattleCalc.resolveMoveType(
+                            { ability: mainMon?.ability || '', tera: !!mainMon?.tera, teraType: mainMon?.tera || null },
+                            { name: m, type: mt, basePower: ref.power || 0 },
+                            ref,
+                            (mainMon?.item || '').toLowerCase(),
+                            { weather: 'None' }
+                        );
+                        if (resolved?.moveType) mt = resolved.moveType;
+                    } catch (e) { /* keep base */ }
+                }
                 const types = getMonTypes(db, mainMon);
-                return ref && types.some(t => t && t.toLowerCase() === (ref.type || '').toLowerCase());
+                return types.some(t => t && t.toLowerCase() === (mt || '').toLowerCase());
             });
             const coverage = moves.filter(m => !stab.includes(m) && (getMoveRef(m)?.power || 0) > 0);
             paras.push(`${link(mainMon.species)} carries ${joinList(moves, m => link(m))}. ${stab.length ? `Primary STAB comes from ${joinList(stab, m => link(m))}` : 'This set leans on coverage rather than STAB'}${coverage.length ? `, while ${joinList(coverage, m => link(m))} cover typings the base ${getMonTypes(db, mainMon).join('/')} line cannot` : ''}. In team preview, identify which move threatens the opponent's restricted Pokémon or common switch-ins, and avoid revealing your Tera line too early.`);

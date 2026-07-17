@@ -62,16 +62,21 @@
             else if (item === 'cornerstone mask') moveType = 'Rock';
         }
 
-        if (moveType === 'Normal') {
-            if (attacker.ability === 'Pixilate') { moveType = 'Fairy'; abilityBoost = 1.2; }
-            else if (attacker.ability === 'Aerilate') { moveType = 'Flying'; abilityBoost = 1.2; }
-            else if (attacker.ability === 'Refrigerate') { moveType = 'Ice'; abilityBoost = 1.2; }
-            else if (attacker.ability === 'Galvanize') { moveType = 'Electric'; abilityBoost = 1.2; }
-            else if (attacker.ability === 'Dragonize') { moveType = 'Dragon'; abilityBoost = 1.2; }
+        if (moveType === 'Normal' || (moveType || '').toLowerCase() === 'normal') {
+            const ab = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (ab === 'pixilate') { moveType = 'Fairy'; abilityBoost = 1.2; }
+            else if (ab === 'aerilate') { moveType = 'Flying'; abilityBoost = 1.2; }
+            else if (ab === 'refrigerate') { moveType = 'Ice'; abilityBoost = 1.2; }
+            else if (ab === 'galvanize') { moveType = 'Electric'; abilityBoost = 1.2; }
+            else if (ab === 'dragonize') { moveType = 'Dragon'; abilityBoost = 1.2; }
         }
 
-        if (attacker.ability === 'Liquid Voice' && MoveIndex.isSound(move.name)) {
+        const abKey = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (abKey === 'liquidvoice' && MoveIndex.isSound(move.name)) {
             moveType = 'Water';
+        }
+        if (abKey === 'normalize') {
+            moveType = 'Normal';
         }
 
         return { moveType, basePower, abilityBoost };

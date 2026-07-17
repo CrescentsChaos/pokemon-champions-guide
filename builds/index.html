@@ -696,8 +696,8 @@
     <script src="../js/battle/ko-chance.js"></script>
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
-    <script src="../js/analysis.js?v=5"></script>
-    <script src="../js/build-narrative.js?v=5"></script>
+    <script src="../js/analysis.js?v=6"></script>
+    <script src="../js/build-narrative.js?v=6"></script>
     <script>
         let allPokemon = [];
         let pokemonMap = {};
@@ -705,6 +705,7 @@
         let allMoves = [];
         let movesMap = {};
         let allItems = [];
+        let itemsMap = {};
         let allAbilities = [];
         let abilitiesMap = {};
         let selectedBuildId = null;
@@ -714,6 +715,8 @@
         let renderBuildsTimer = null;
         let filteredBuildsCache = null;
         let filterCacheKey = '';
+        let buildFilterIndex = [];
+        const championsEligibleCache = new Map();
 
         function getParsedBuild(build) {
             const key = build.id || build.build;
@@ -723,12 +726,19 @@
             return parsed;
         }
 
-        function debouncedRenderBuilds(append = false) {
+        function debouncedRenderBuilds(append = false, delay = 280) {
             clearTimeout(renderBuildsTimer);
             renderBuildsTimer = setTimeout(() => {
                 updateFilterChips();
                 renderBuilds(append);
-            }, 180);
+            }, delay);
+        }
+
+        function scheduleRenderBuilds(append = false) {
+            // Instant for selects/checkboxes; text inputs use debouncedRenderBuilds
+            clearTimeout(renderBuildsTimer);
+            updateFilterChips();
+            renderBuilds(append);
         }
 
         function updateFilterChips() {
@@ -788,7 +798,7 @@
             const dir = document.getElementById('build-sort-dir');
             if (dir) dir.value = 'desc';
             filteredBuildsCache = null;
-            debouncedRenderBuilds();
+            scheduleRenderBuilds();
         }
 
         function getFilterCacheKey() {
@@ -806,70 +816,100 @@
             ].join('|');
         }
 
+        function computeChampionsEligibleFromParsed(parsed, baseDbRef, effectiveDbRef) {
+            const candidateDbRefs = [effectiveDbRef, baseDbRef].filter(Boolean);
+            if (!candidateDbRefs.length) return false;
+            if (!candidateDbRefs.some(db => db.inChampions === true)) return false;
+
+            const itemName = (parsed.item || '').trim();
+            if (itemName && itemName.toLowerCase() !== 'none') {
+                const itemData = itemsMap[normalizeString(itemName)]
+                    || allItems.find(i => normalizeString(i.name || i.Name) === normalizeString(itemName));
+                if (!itemData || itemData.inChampions !== true) return false;
+            }
+
+            const allowedMoves = new Set(candidateDbRefs.flatMap(db => (db.Moves || []).map(move => normalizeString(move))));
+            const buildMoves = (parsed.moves || []).filter(Boolean).map(move => normalizeString(move));
+            return buildMoves.every(move => allowedMoves.has(move));
+        }
+
+        function rebuildBuildFilterIndex() {
+            buildFilterIndex = allBuilds.map(build => {
+                const p = getParsedBuild(build);
+                const baseDb = getBasePokemonData(p, allPokemon);
+                const dbRef = getEffectivePokemonData(p, allPokemon) || baseDb;
+                return {
+                    build,
+                    parsed: p,
+                    speciesL: (p.species || '').toLowerCase(),
+                    pokemonL: (build.pokemon || '').toLowerCase(),
+                    abilityL: (p.ability || '').toLowerCase(),
+                    movesL: (p.moves || []).map(m => (m || '').toLowerCase()),
+                    formatL: (build.format || 'Singles').toLowerCase(),
+                    t1: (dbRef?.Type_1 || '').toLowerCase(),
+                    t2: (dbRef?.Type_2 || '').toLowerCase(),
+                    roles: detectRole(p, dbRef),
+                    meta: typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(build) : build.isMeta === true,
+                    champs: computeChampionsEligibleFromParsed(p, baseDb, dbRef),
+                    total: parseInt(dbRef?.Total_Stats, 10) || 0,
+                    hp: parseInt(dbRef?.HP, 10) || 0,
+                    atk: parseInt(dbRef?.Attack, 10) || 0,
+                    def: parseInt(dbRef?.Defense, 10) || 0,
+                    spa: parseInt(dbRef?.['Sp.Atk'], 10) || 0,
+                    spd: parseInt(dbRef?.['Sp.Def'], 10) || 0,
+                    spe: parseInt(dbRef?.Speed, 10) || 0
+                };
+            });
+            championsEligibleCache.clear();
+            buildFilterIndex.forEach(row => {
+                championsEligibleCache.set(row.build.id || row.build.build, row.champs);
+            });
+        }
+
         function getFilteredBuilds() {
             const key = getFilterCacheKey();
             if (filteredBuildsCache && filterCacheKey === key) return filteredBuildsCache;
 
-            const search = document.getElementById('build-search').value.toLowerCase().trim();
-            const typeFilter = document.getElementById('type-filter').value.toLowerCase();
+            const search = (document.getElementById('build-search').value || '').toLowerCase().trim();
+            const typeFilter = (document.getElementById('type-filter').value || '').toLowerCase();
             const roleFilter = document.getElementById('role-filter').value;
-            const formatFilter = document.getElementById('format-filter').value.toLowerCase();
+            const formatFilter = (document.getElementById('format-filter').value || '').toLowerCase();
             const abilityFilter = (document.getElementById('ability-filter').value || '').toLowerCase().trim();
             const moveFilter = (document.getElementById('move-filter').value || '').toLowerCase().trim();
             const metaBuildsOnly = document.getElementById('meta-builds-filter')?.checked;
             const championsEligibleOnly = document.getElementById('champions-eligible-filter').checked;
+            const sortKey = document.getElementById('build-sort-select')?.value || 'pokemon';
+            const sortDir = document.getElementById('build-sort-dir')?.value || 'desc';
 
-            const filtered = allBuilds.filter(build => {
-                const p = getParsedBuild(build);
-                const dbRef = getEffectivePokemonData(p, allPokemon);
-                const t1 = (dbRef?.Type_1 || '').toLowerCase();
-                const t2 = (dbRef?.Type_2 || '').toLowerCase();
-                const ability = (p.ability || '').toLowerCase();
-                const moves = p.moves.map(m => m.toLowerCase());
-                const format = (build.format || 'Singles').toLowerCase();
-
+            const filteredRows = buildFilterIndex.filter(row => {
                 if (search) {
-                    const searchPool = [p.species.toLowerCase(), t1, t2, ability, ...moves, (build.pokemon || '').toLowerCase()];
-                    if (!searchPool.some(val => val.includes(search))) return false;
+                    const hay = [row.speciesL, row.pokemonL, row.t1, row.t2, row.abilityL, ...row.movesL];
+                    if (!hay.some(val => val.includes(search))) return false;
                 }
-                if (typeFilter && t1 !== typeFilter && t2 !== typeFilter) return false;
-                const buildRoles = detectRole(p, dbRef);
-                if (roleFilter && !buildRoles.includes(roleFilter)) return false;
-                if (formatFilter && format !== formatFilter) return false;
-                if (abilityFilter && !ability.includes(abilityFilter)) return false;
-                if (moveFilter && !moves.some(m => m.includes(moveFilter))) return false;
-                if (metaBuildsOnly && !(typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(build) : build.isMeta === true)) return false;
-                if (championsEligibleOnly && !isChampionsEligibleBuild(build)) return false;
+                if (typeFilter && row.t1 !== typeFilter && row.t2 !== typeFilter) return false;
+                if (roleFilter && !row.roles.includes(roleFilter)) return false;
+                if (formatFilter && row.formatL !== formatFilter) return false;
+                if (abilityFilter && !row.abilityL.includes(abilityFilter)) return false;
+                if (moveFilter && !row.movesL.some(m => m.includes(moveFilter))) return false;
+                if (metaBuildsOnly && !row.meta) return false;
+                if (championsEligibleOnly && !row.champs) return false;
                 return true;
             });
 
-            try {
-                const sortKey = document.getElementById('build-sort-select')?.value || 'pokemon';
-                const sortDir = document.getElementById('build-sort-dir')?.value || 'desc';
-                const keyFuncs = {
-                    pokemon: (b, p) => ((p?.species) || b.pokemon || '').toString().toLowerCase(),
-                    total: (b, p, db) => parseInt(db?.Total_Stats) || 0,
-                    hp: (b, p, db) => parseInt(db?.HP) || 0,
-                    atk: (b, p, db) => parseInt(db?.Attack) || 0,
-                    def: (b, p, db) => parseInt(db?.Defense) || 0,
-                    spa: (b, p, db) => parseInt(db?.['Sp.Atk']) || 0,
-                    spd: (b, p, db) => parseInt(db?.['Sp.Def']) || 0,
-                    spe: (b, p, db) => parseInt(db?.Speed) || 0
-                };
-                filtered.sort((a, b) => {
-                    try {
-                        const pa = getParsedBuild(a);
-                        const pb = getParsedBuild(b);
-                        const da = getEffectivePokemonData(pa, allPokemon) || getBasePokemonData(pa, allPokemon) || {};
-                        const db = getEffectivePokemonData(pb, allPokemon) || getBasePokemonData(pb, allPokemon) || {};
-                        const av = keyFuncs[sortKey](a, pa, da);
-                        const bv = keyFuncs[sortKey](b, pb, db);
-                        if (typeof av === 'string') return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
-                        return sortDir === 'asc' ? av - bv : bv - av;
-                    } catch (e) { return 0; }
-                });
-            } catch (e) { /* ignore */ }
+            filteredRows.sort((a, b) => {
+                let av;
+                let bv;
+                if (sortKey === 'pokemon') {
+                    av = a.speciesL || a.pokemonL;
+                    bv = b.speciesL || b.pokemonL;
+                    return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+                }
+                av = a[sortKey] || 0;
+                bv = b[sortKey] || 0;
+                return sortDir === 'asc' ? av - bv : bv - av;
+            });
 
+            const filtered = filteredRows.map(r => r.build);
             filterCacheKey = key;
             filteredBuildsCache = filtered;
             return filtered;
@@ -992,11 +1032,16 @@
                     const key = (m.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     movesMap[key] = m;
                 });
+                allItems.forEach(i => {
+                    const key = normalizeString(i.name || i.Name);
+                    if (key) itemsMap[key] = i;
+                });
 
                 // Sort Alphabetically
                 allBuilds.sort((a, b) => a.pokemon.localeCompare(b.pokemon));
                 parsedBuildCache.clear();
                 filteredBuildsCache = null;
+                rebuildBuildFilterIndex();
 
                 populateFilters();
                 setupInfiniteScroll();
@@ -1066,7 +1111,8 @@
         function getBasePokemonData(p, pokemonList) {
             if (!p || !p.species) return null;
             const search = p.species.toLowerCase().replace(/[^a-z0-9]/g, '');
-            return pokemonList.find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
+            if (pokemonMap[search]) return pokemonMap[search];
+            return (pokemonList || []).find(x => (x.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === search);
         }
 
         function getPokemonAbilities(db) {
@@ -1077,6 +1123,24 @@
 
         function normalizeString(value) {
             return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        /** Effective battle type for display (Pixilate, Liquid Voice, etc.). */
+        function getDisplayedMoveType(moveName, ability, moveData, item) {
+            const baseType = moveData?.type || 'Normal';
+            if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.resolveMoveType === 'function') {
+                try {
+                    const resolved = BattleCalc.resolveMoveType(
+                        { ability: ability || '', tera: false, teraType: null },
+                        { name: moveName, type: baseType, basePower: moveData?.power || 0 },
+                        moveData,
+                        (item || '').toLowerCase(),
+                        { weather: 'None' }
+                    );
+                    if (resolved?.moveType) return resolved.moveType;
+                } catch (e) { /* fall through */ }
+            }
+            return baseType;
         }
 
         /** True mega stones only (not Eviolite/Meteorite). */
@@ -1191,24 +1255,15 @@
 
         function isChampionsEligibleBuild(build) {
             try {
-                const parsed = typeof build === 'string' ? parsePaste(build) : parsePaste(build.build || '');
+                const cacheKey = (typeof build === 'object' ? (build.id || build.build) : build);
+                if (championsEligibleCache.has(cacheKey)) return championsEligibleCache.get(cacheKey);
+
+                const parsed = typeof build === 'string' ? parsePaste(build) : getParsedBuild(build);
                 const baseDbRef = getBasePokemonData(parsed, allPokemon);
                 const effectiveDbRef = getEffectivePokemonData(parsed, allPokemon);
-                const candidateDbRefs = [effectiveDbRef, baseDbRef].filter(Boolean);
-                const pokemonData = candidateDbRefs.find(db => db.Moves && db.Moves.length) || effectiveDbRef || baseDbRef;
-
-                if (!pokemonData) return false;
-                if (!candidateDbRefs.some(db => db.inChampions === true)) return false;
-
-                const itemName = (parsed.item || '').trim();
-                if (itemName && itemName.toLowerCase() !== 'none') {
-                    const itemData = allItems.find(i => normalizeString(i.name || i.Name) === normalizeString(itemName));
-                    if (!itemData || itemData.inChampions !== true) return false;
-                }
-
-                const allowedMoves = new Set(candidateDbRefs.flatMap(db => (db.Moves || []).map(move => normalizeString(move))));
-                const buildMoves = (parsed.moves || []).filter(Boolean).map(move => normalizeString(move));
-                return buildMoves.every(move => allowedMoves.has(move));
+                const ok = computeChampionsEligibleFromParsed(parsed, baseDbRef, effectiveDbRef);
+                championsEligibleCache.set(cacheKey, ok);
+                return ok;
             } catch (err) {
                 console.warn('Champions eligibility check failed', err);
                 return false;
@@ -1582,15 +1637,18 @@
             const movesHtml = p.moves.map(m => {
                 if (!m) return `<div class="move-pill" style="opacity:0.2;"><span>EMPTY SLOT</span></div>`;
                 const searchName = m.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const moveData = movesMap[searchName] || (allMoves || []).find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === searchName) || { type: 'Normal', damage_class: 'Status', power: null, accuracy: null, short_desc: '', pp: '-' };
-                const mt = (moveData.type || 'Normal').toLowerCase();
+                const moveData = movesMap[searchName] || { type: 'Normal', damage_class: 'Status', power: null, accuracy: null, short_desc: '', pp: '-' };
+                const displayType = getDisplayedMoveType(m, p.ability, moveData, p.item);
+                const mt = (displayType || 'Normal').toLowerCase();
+                const baseType = (moveData.type || 'Normal').toLowerCase();
+                const typeChanged = mt !== baseType;
 
                 const pwr = moveData.power !== null && moveData.power !== undefined ? moveData.power : '-';
                 const acc = moveData.accuracy !== null && moveData.accuracy !== undefined ? moveData.accuracy : '-';
                 const desc = (moveData.short_descripton || moveData.short_description || moveData.desc || 'No description available.').replace(/"/g, '&quot;');
 
                 const tooltipOptions = [
-                    `Type: ${mt.toUpperCase()}`,
+                    `Type: ${mt.toUpperCase()}${typeChanged ? ` (via ${p.ability})` : ''}`,
                     `Category: ${moveData.damage_class || 'Status'}`,
                     `Power: ${pwr} | Accuracy: ${acc} | PP: ${moveData.pp}`,
                     `\n${desc}`
@@ -1633,13 +1691,6 @@
             const alteredAbilityDesc = (abilitiesMap[alteredAbilityKey]?.description || baseAbilityDesc).replace(/"/g, '&quot;');
 
             card.innerHTML = `
-                ${isMetaBuild ? `
-                <div class="meta-build-banner" title="Tagged as the current meta set for this Pokémon in ${format}">
-                    <div class="meta-build-banner__mark">
-                        <span class="meta-build-banner__label">Current Meta</span>
-                    </div>
-                    <span class="meta-build-banner__note">${format} · representative set</span>
-                </div>` : ''}
                 <div class="card-header">
                     <div class="card-sprite-area">
                         <img class="premium-sprite ${isFormActive ? 'mega-toggle form-toggle' : ''}" src="${baseSpriteUrl}" alt="${p.species.replace(/"/g, '&quot;')}" ${isFormActive ? `data-base="${baseSpriteUrl}" data-mega="${alteredSpriteUrl || baseSpriteUrl}" data-current-src="base"` : ''} onerror="handleSpriteError(this, '${p.species.replace(/'/g, "\\'")}', ${p.shiny})">
@@ -2496,16 +2547,16 @@
             copyPaste(transformed, type);
         }
 
-        document.getElementById('build-search').addEventListener('input', () => debouncedRenderBuilds());
-        document.getElementById('type-filter').addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('role-filter').addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('format-filter').addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('ability-filter').addEventListener('input', () => debouncedRenderBuilds());
-        document.getElementById('move-filter').addEventListener('input', () => debouncedRenderBuilds());
-        document.getElementById('champions-eligible-filter').addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('meta-builds-filter')?.addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('build-sort-select').addEventListener('change', () => debouncedRenderBuilds());
-        document.getElementById('build-sort-dir').addEventListener('change', () => debouncedRenderBuilds());
+        document.getElementById('build-search').addEventListener('input', () => debouncedRenderBuilds(false, 320));
+        document.getElementById('type-filter').addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('role-filter').addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('format-filter').addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('ability-filter').addEventListener('input', () => debouncedRenderBuilds(false, 320));
+        document.getElementById('move-filter').addEventListener('input', () => debouncedRenderBuilds(false, 320));
+        document.getElementById('champions-eligible-filter').addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('meta-builds-filter')?.addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('build-sort-select').addEventListener('change', () => scheduleRenderBuilds());
+        document.getElementById('build-sort-dir').addEventListener('change', () => scheduleRenderBuilds());
         document.getElementById('clear-filters-btn')?.addEventListener('click', clearAllFilters);
 
         // Form preview: timed cycle for visible mega/item forms; click still toggles

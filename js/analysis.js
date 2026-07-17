@@ -850,7 +850,7 @@ function sharedAnalyzeTeam(activeMons, format = 'Singles') {
         const pTypes = [dbEffective?.Type_1, dbEffective?.Type_2].filter(x => x);
 
         // Offensive Coverage
-        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m)).filter(t => t);
+        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m, p)).filter(t => t);
 
         types.forEach(defType => {
             if (moveTypes.some(mt => getEffectiveness(mt, [defType]) > 1)) {
@@ -1427,15 +1427,29 @@ function findLatestBuildForSpecies(speciesName, format, buildsArr) {
     }, pool[0]);
 }
 
-function resolveMoveType(moveName) {
+function resolveMoveType(moveName, mon = null) {
     const clean = (moveName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     if (!clean) return null;
-    if (typeof movesMap !== 'undefined' && movesMap[clean]) return movesMap[clean].type;
-    if (typeof allMoves !== 'undefined') {
-        const moveRef = allMoves.find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === clean);
-        return moveRef ? moveRef.type : null;
+    let moveRef = null;
+    if (typeof movesMap !== 'undefined' && movesMap[clean]) moveRef = movesMap[clean];
+    else if (typeof allMoves !== 'undefined') {
+        moveRef = allMoves.find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === clean) || null;
     }
-    return null;
+    if (!moveRef) return null;
+
+    if (mon && typeof BattleCalc !== 'undefined' && typeof BattleCalc.resolveMoveType === 'function') {
+        try {
+            const resolved = BattleCalc.resolveMoveType(
+                { ability: mon.ability || '', tera: !!mon.tera, teraType: mon.tera || null },
+                { name: moveName, type: moveRef.type, basePower: moveRef.power || 0 },
+                moveRef,
+                (mon.item || '').toLowerCase(),
+                { weather: 'None' }
+            );
+            if (resolved?.moveType) return resolved.moveType;
+        } catch (e) { /* keep base type */ }
+    }
+    return moveRef.type || null;
 }
 
 function buildTeamMatchupData(activeMons, format = 'Singles') {
@@ -1449,7 +1463,7 @@ function buildTeamMatchupData(activeMons, format = 'Singles') {
             db = getEffectivePokemonData(p, allPokemon);
         }
         const pTypes = [db?.Type_1, db?.Type_2].filter(x => x);
-        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m)).filter(t => t);
+        const moveTypes = (p.moves || []).filter(m => m).map(m => resolveMoveType(m, p)).filter(t => t);
         let speed = null;
         if (hasSpeed && db && field) {
             const state = buildCalcStateFromSlot(p, 1, db, movesDb);
@@ -1587,7 +1601,7 @@ async function analyzeMetaThreats(activeMons, format = 'Singles') {
         let threatMoves = [];
         if (latestBuild && threatParsed) {
             threatMoves = threatParsed.moves.filter(m => m);
-            threatMoveTypes = threatMoves.map(m => resolveMoveType(m)).filter(t => t);
+            threatMoveTypes = threatMoves.map(m => resolveMoveType(m, threatParsed)).filter(t => t);
         }
 
         // === OFFENSIVE: Can team hit this threat super-effectively? ===
