@@ -89,15 +89,13 @@
     }
 
     function formatShowdownLine(attacker, defender, move, res, field) {
-        const isSpecial = move.category === 'Special';
+        const cat = (move.category || '').toString().toLowerCase();
+        const isSpecial = cat === 'special';
         const statKey = isSpecial ? 'spa' : 'atk';
         const defKey = isSpecial ? 'spd' : 'def';
         const boost = attacker.boosts?.[statKey] || 0;
-        let atkVal = attacker.stats[statKey] || 0;
-        if (BC.getBoostValue) atkVal = BC.getBoostValue(atkVal, boost);
-        const defVal = defender.stats[defKey] || 0;
-        const defHp = getEffectiveDefenderHp(defender, field);
         const maxHp = defender.stats.hp || 1;
+        const defHp = getEffectiveDefenderHp(defender, field);
         const minDmg = res.rolls[0] || 0;
         const maxDmg = res.rolls[res.rolls.length - 1] || 0;
         const minPct = (Math.floor((minDmg * 1000) / maxHp) / 10).toFixed(1);
@@ -106,10 +104,14 @@
         const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
         const ko = BC.getKOChance(res.rolls, defHp);
         const koSuffix = ko && ko !== 'No immediate KO' ? ` -- ${ko.toLowerCase()}` : '';
-        const boostSuffix = boost > 0 ? '+' : '';
+        const boostSuffix = boost !== 0 ? (boost > 0 ? `+${boost}` : `${boost}`) : '';
         const statLabel = isSpecial ? 'SpA' : 'Atk';
         const defLabel = isSpecial ? 'SpD' : 'Def';
-        return `${atkVal}${boostSuffix} ${statLabel} ${attacker.name}${item} ${move.name}${hitLabel} vs. ${defHp} HP / ${defVal} ${defLabel} ${defender.name}: ${minDmg}-${maxDmg} (${minPct}-${maxPct}%)${koSuffix}`;
+        // Match Showdown Champions line: EV investments, not calculated stats
+        const atkEv = parseInt(attacker.evs?.[statKey], 10) || 0;
+        const hpEv = parseInt(defender.evs?.hp, 10) || 0;
+        const defEv = parseInt(defender.evs?.[defKey], 10) || 0;
+        return `${atkEv}${boostSuffix} ${statLabel}${item} ${attacker.name} ${move.name}${hitLabel} vs. ${hpEv} HP / ${defEv} ${defLabel} ${defender.name}: ${minDmg}-${maxDmg} (${minPct}-${maxPct}%)${koSuffix}`;
     }
 
     BC.getHazardDamage = getHazardDamage;

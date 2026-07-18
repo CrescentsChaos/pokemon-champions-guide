@@ -847,7 +847,7 @@ function populatePokemonUI(pk) {
                 </label>
                 <label>Type
                     <select onchange="updateMoveField(${pk.id}, ${i}, 'type', this.value)">
-                        ${TYPE_LIST.map(t => `<option value="${t}" ${getEffectiveMoveType(pk, move) === t ? 'selected' : ''}>${t}</option>`).join('')}
+                        ${TYPE_LIST.map(t => `<option value="${t}" ${move.type === t ? 'selected' : ''}>${t}</option>`).join('')}
                     </select>
                 </label>
                 <label>Class
@@ -859,7 +859,8 @@ function populatePokemonUI(pk) {
             <div class="move-configs">
                 ${hasMove ? `
                     ${moveTypeBadgeHtml(pk, move, i)}
-                    <span class="move-meta-readout">${move.category || ''}${accuracy ? ' | ' + accuracy + '% acc' : ''}</span>
+                    ${categoryIconHtml(move.category, 15)}
+                    ${accuracy ? `<span class="move-meta-readout">${accuracy}% acc</span>` : ''}
                 ` : '<div style="margin-right: auto;"></div>'}
                 ${multiInfo ? `
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
@@ -1099,6 +1100,15 @@ function typeIconHtml(type, size = 22) {
     return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
 }
 
+function categoryIconHtml(category, size = 16) {
+    const c = (category || 'Physical').toString().toLowerCase();
+    const file = c === 'special' ? 'move-special.png'
+        : c === 'status' ? 'move-status.png'
+        : 'move-physical.png';
+    const label = c === 'special' ? 'Special' : c === 'status' ? 'Status' : 'Physical';
+    return `<img src="../assets/${file}" class="move-category-icon" alt="${label}" title="${label}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
 const TYPE_ACCENT = {
     normal: '#a8a878', fire: '#f08030', water: '#6890f0', electric: '#f8d030', grass: '#78c850',
     ice: '#98d8d8', fighting: '#c03028', poison: '#a040a0', ground: '#e0c068', flying: '#a890f0',
@@ -1110,11 +1120,9 @@ function moveTypeBadgeHtml(pk, move, idx) {
     const base = move?.type || 'Normal';
     const eff = getEffectiveMoveType(pk, move);
     const changed = eff.toLowerCase() !== base.toLowerCase();
-    const accent = TYPE_ACCENT[eff.toLowerCase()] || TYPE_ACCENT.normal;
     return `
-        <span class="move-type-badge" data-move-idx="${idx}" title="${changed ? `${base} → ${eff}` : eff}" style="--type-accent:${accent}">
+        <span class="move-type-badge" data-move-idx="${idx}" title="${changed ? `${base} → ${eff}` : eff}">
             ${typeIconHtml(eff, 18)}
-            ${changed ? `<span class="type-changed-hint">${eff}</span>` : `<span class="type-name-hint">${eff}</span>`}
         </span>
     `;
 }
@@ -1130,12 +1138,17 @@ function refreshMoveTypeBadges(pk) {
         const base = move.type || 'Normal';
         const eff = getEffectiveMoveType(pk, move);
         const changed = eff.toLowerCase() !== base.toLowerCase();
-        const accent = TYPE_ACCENT[eff.toLowerCase()] || TYPE_ACCENT.normal;
         el.title = changed ? `${base} → ${eff}` : eff;
-        el.style.setProperty('--type-accent', accent);
-        el.innerHTML = `${typeIconHtml(eff, 18)}${changed
-            ? `<span class="type-changed-hint">${eff}</span>`
-            : `<span class="type-name-hint">${eff}</span>`}`;
+        el.innerHTML = typeIconHtml(eff, 18);
+    });
+}
+
+function syncBattleStats(pk) {
+    if (!pk?.baseStats) return;
+    const champs = typeof isChampionsMode === 'boolean' ? isChampionsMode : true;
+    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
+        const base = pk.baseStats[k] || 0;
+        pk.stats[k] = calculateStat(base, pk.ivs[k], pk.evs[k], pk.level, pk.nature, k, champs);
     });
 }
 
@@ -1150,6 +1163,8 @@ function formatRollsDisplay(rolls) {
 function recalculate() {
     if (!p1 || !p2) return;
 
+    syncBattleStats(p1);
+    syncBattleStats(p2);
     refreshMoveTypeBadges(p1);
     refreshMoveTypeBadges(p2);
 
@@ -1235,6 +1250,7 @@ function renderMoveResults(p1Results, p2Results) {
                 <div class="result-move-box ${active}" onclick="selectMove(${sideId}, ${i})" style="--type-accent:${accent}">
                     <span class="move-name-summary">
                         ${typeIconHtml(effType, 22)}
+                        ${categoryIconHtml(move?.category, 14)}
                         <span class="move-name-text">
                             <span class="move-name-label">${res.move}</span>
                             ${converted}
