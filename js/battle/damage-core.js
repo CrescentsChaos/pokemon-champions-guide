@@ -188,7 +188,8 @@
         if (typeResult.basePower !== move.basePower) basePower = typeResult.basePower;
         basePower = applyTeraBpFloor(attacker, move, moveType, basePower);
 
-        // -ate abilities (Pixilate etc.): +20% BP via 4915/4096 (Showdown chain)
+        // BP modifiers (Showdown order): -ate abilities, Helping Hand, terrain,
+        // then type-boosting items (Fairy Feather, plates, etc.) — NOT final mods.
         const bpMods = [];
         if (abilityBoost && abilityBoost !== 1) {
             bpMods.push(Math.round(abilityBoost * 4096));
@@ -200,6 +201,12 @@
             else if (terrainMult === 0.5) bpMods.push(2048);
             else if (terrainMult !== 1) bpMods.push(Math.round(terrainMult * 4096));
         }
+        const typeItemList = TYPE_ITEMS[moveType.toLowerCase()];
+        if (typeItemList && typeItemList.includes(item)) {
+            bpMods.push(4915);
+        }
+        if (item === 'muscle band' && !isSpecial) bpMods.push(4505);
+        if (item === 'wise glasses' && isSpecial) bpMods.push(4505);
         if (bpMods.length) {
             basePower = of16(Math.max(1, pokeRound((basePower * chainMods(bpMods, 41, 2097152)) / 4096)));
         }
@@ -282,9 +289,6 @@
 
         if (item === 'life orb') finalMods.push(5324);
         if (item === 'expert belt' && typeMod > 1) finalMods.push(4915);
-
-        const typeItemList = TYPE_ITEMS[moveType.toLowerCase()];
-        if (typeItemList && typeItemList.includes(item)) finalMods.push(4915);
 
         const finalMod = chainMods(finalMods);
         const applyBurn = attacker.status === 'Burned' && !isSpecial && attacker.ability !== 'Guts';

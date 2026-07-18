@@ -104,5 +104,30 @@ assert(
     'EQ rolls match Showdown exactly'
 );
 
+// Pixilate + Fairy Feather: type items are BP mods (with -ate), not final mods
+const sylveon = sandbox.setupPokemonState(1);
+const garchomp2 = sandbox.setupPokemonState(2);
+sylveon.name = 'Sylveon';
+sylveon.type1 = 'Fairy';
+sylveon.type2 = 'None';
+sylveon.level = 50;
+sylveon.ability = 'Pixilate';
+sylveon.item = 'Fairy Feather';
+sylveon.stats = { hp: 202, atk: 76, def: 87, spa: 178, spd: 150, spe: 80 };
+garchomp2.name = 'Garchomp';
+garchomp2.type1 = 'Dragon';
+garchomp2.type2 = 'Ground';
+garchomp2.level = 50;
+garchomp2.stats = { hp: 184, atk: 182, def: 115, spa: 90, spd: 105, spe: 169 };
+const hvFeather = sandbox.calculateDamage(
+    sylveon, garchomp2, BC.MoveIndex.createMoveState('Hyper Voice'), fieldD2
+);
+assert(hvFeather.minDmg === 186 && hvFeather.maxDmg === 218, 'Pixilate+Fairy Feather HV 186-218 matches Showdown');
+assert(hvFeather.minPercent === '101.0' && hvFeather.maxPercent === '118.4', 'HV percent matches Showdown');
+const qaFeather = sandbox.calculateDamage(
+    sylveon, garchomp2, BC.MoveIndex.createMoveState('Quick Attack'), fieldD2
+);
+assert(qaFeather.minDmg === 44 && qaFeather.maxDmg === 54, 'Pixilate+Fairy Feather QA 44-54 matches Showdown');
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

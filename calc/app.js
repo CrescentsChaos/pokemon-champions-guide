@@ -899,29 +899,63 @@ function updateMoveField(pId, idx, field, value) {
     refreshMoveTypeBadges(pk);
 }
 
+function megaSpeciesSuffixFromItem(item) {
+    if (typeof MegaSprites !== 'undefined' && MegaSprites.megaFormSuffixFromItem) {
+        const form = MegaSprites.megaFormSuffixFromItem(item);
+        if (form === 'mega-x') return '-Mega-X';
+        if (form === 'mega-y') return '-Mega-Y';
+        if (form === 'mega-z') return '-Mega-Z';
+        if (form === 'mega' || form === 'primal') return form === 'primal' ? '-Primal' : '-Mega';
+    }
+    const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (it.endsWith('itex')) return '-Mega-X';
+    if (it.endsWith('itey')) return '-Mega-Y';
+    if (it.endsWith('itez')) return '-Mega-Z';
+    if (it === 'redorb' || it === 'blueorb') return '-Primal';
+    if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') return '-Mega';
+    return '-Mega';
+}
+
 function toggleMega(id) {
     const pk = id === 1 ? p1 : p2;
     const currentName = pk.name;
     const btn = document.getElementById(`p${id}-mega-toggle`);
+    const heldItem = pk.item;
 
     let targetName = "";
-    if (currentName.includes("-Mega")) {
-        // Revert to base
-        targetName = currentName.split("-Mega")[0];
+    if (currentName.includes("-Mega") || currentName.includes("-Primal")) {
+        targetName = currentName.split(/-Mega|-Primal/)[0];
         btn.classList.remove('active');
     } else {
-        // Try to find Mega
-        const mega = pokemonDB.find(p => p.Name === currentName + "-Mega" || p.Name === currentName + "-Mega-X" || p.Name === currentName + "-Mega-Y");
-        if (mega) {
-            targetName = mega.Name;
-            btn.classList.add('active');
-        } else {
-            showToast("No Mega form found for " + currentName);
+        const suffix = megaSpeciesSuffixFromItem(heldItem);
+        // Stone-specific forme first (Charizardite Y → Mega-Y, never Mega-X)
+        let mega = pokemonDB.find(p => p.Name === currentName + suffix);
+        if (!mega && suffix === '-Mega') {
+            mega = pokemonDB.find(p =>
+                p.Name === currentName + '-Mega' ||
+                p.Name === currentName + '-Mega-X' ||
+                p.Name === currentName + '-Mega-Y' ||
+                p.Name === currentName + '-Mega-Z');
+        }
+        if (!mega) {
+            showToast(suffix !== '-Mega'
+                ? `No ${suffix.slice(1)} forme found for ${currentName}`
+                : `No Mega form found for ${currentName}`);
             return;
         }
+        targetName = mega.Name;
+        btn.classList.add('active');
     }
 
-    if (targetName) loadPokemon(id, targetName);
+    if (targetName) {
+        loadPokemon(id, targetName);
+        const loaded = id === 1 ? p1 : p2;
+        if (heldItem && heldItem !== 'None') {
+            loaded.item = heldItem;
+            const itemSel = document.getElementById(`p${id}-item`);
+            if (itemSel) itemSel.value = heldItem;
+        }
+    }
 }
 
 function toggleForme(id) {
