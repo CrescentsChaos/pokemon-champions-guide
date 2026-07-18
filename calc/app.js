@@ -1242,6 +1242,7 @@ function recalculate() {
         banner.innerText = "Select moves to see damage results";
         subBanner.innerText = "Damage rolls: (0)";
         koResult.innerText = '';
+        syncMobileSummary();
         return;
     }
 
@@ -1260,6 +1261,7 @@ function recalculate() {
     subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
 
     koResult.innerText = getKOChance(res.rolls, effHp);
+    syncMobileSummary();
 }
 
 
@@ -1312,6 +1314,9 @@ function selectMove(pId, idx) {
         selectedMoveIdx1 = -1;
     }
     recalculate();
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        setMobileCalcTab('results');
+    }
 }
 
 
@@ -1708,6 +1713,59 @@ window.handleItemError = function (img, item) {
     const clean = item.toLowerCase().replace(/[^a-z0-9]/g, '');
     img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
     img.style.display = 'block';
-};;
+};
+
+const MOBILE_CALC_TABS = ['results', 'p1', 'field', 'p2'];
+
+function setMobileCalcTab(tab) {
+    if (!MOBILE_CALC_TABS.includes(tab)) tab = 'results';
+    document.body.classList.remove(...MOBILE_CALC_TABS.map(t => `calc-tab-${t}`));
+    document.body.classList.add(`calc-tab-${tab}`);
+    document.querySelectorAll('.calc-mobile-nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.calcTab === tab);
+    });
+    try { sessionStorage.setItem('calcMobileTab', tab); } catch (_) { /* ignore */ }
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+}
+
+function syncMobileSummary() {
+    const line = document.getElementById('main-result')?.innerText || '';
+    const ko = document.getElementById('ko-result')?.innerText || '';
+    const lineEl = document.getElementById('mobile-line-mirror');
+    const koEl = document.getElementById('mobile-ko-mirror');
+    if (lineEl) lineEl.textContent = line || 'Select moves to see damage';
+    if (koEl) koEl.textContent = ko || '—';
+}
+
+function swapCalcSides() {
+    if (!p1 || !p2) return;
+    const tmp = p1;
+    p1 = p2;
+    p2 = tmp;
+    p1.id = 1;
+    p2.id = 2;
+    window.p1 = p1;
+    window.p2 = p2;
+    const tmpMove = selectedMoveIdx1;
+    selectedMoveIdx1 = selectedMoveIdx2;
+    selectedMoveIdx2 = tmpMove;
+    populatePokemonUI(p1);
+    populatePokemonUI(p2);
+    const s1 = document.getElementById('p1-search');
+    const s2 = document.getElementById('p2-search');
+    if (s1) s1.value = p1.name || '';
+    if (s2) s2.value = p2.name || '';
+    recalculate();
+    showToast('Sides swapped');
+}
+
+function initMobileCalcNav() {
+    let tab = 'results';
+    try { tab = sessionStorage.getItem('calcMobileTab') || 'results'; } catch (_) { /* ignore */ }
+    if (!MOBILE_CALC_TABS.includes(tab)) tab = 'results';
+    setMobileCalcTab(tab);
+    syncMobileSummary();
+}
 
 init();
+initMobileCalcNav();

@@ -14,14 +14,23 @@
         rel="stylesheet">
 </head>
 
-<body class="calc-page">
+<body class="calc-page calc-tab-results">
     <script src="../js/main.js"></script>
 
     <!-- Build Pokepaste Hover Tooltip -->
     <div id="build-paste-tooltip" class="build-paste-tooltip"></div>
 
     <main class="container">
-        <section class="calc-results-section fade-in" aria-label="Damage results">
+        <!-- Mobile-only: always-visible compact result strip -->
+        <aside class="calc-mobile-sticky-summary" aria-live="polite" onclick="setMobileCalcTab('results')" role="button" tabindex="0">
+            <div class="cms-top">
+                <span class="cms-ko" id="mobile-ko-mirror">—</span>
+                <button type="button" class="cms-swap-btn" id="mobile-swap-btn" onclick="event.stopPropagation(); swapCalcSides()" title="Swap attacker and defender" aria-label="Swap sides">⇄</button>
+            </div>
+            <p class="cms-line" id="mobile-line-mirror">Select moves to see damage</p>
+        </aside>
+
+        <section class="calc-results-section fade-in" data-calc-pane="results" aria-label="Damage results">
             <div id="damage-banner" class="glass">
                 <div class="banner-content">
                     <div id="main-result">Select moves to see damage results</div>
@@ -42,7 +51,7 @@
 
         <div class="calc-grid">
             <!-- Pokemon 1 (Attacker) -->
-            <div class="calc-panel glass attacker-panel" id="p1-panel">
+            <div class="calc-panel glass attacker-panel" id="p1-panel" data-calc-pane="p1">
                 <div class="panel-role-badge attacker-badge">Attacker</div>
                 <div class="panel-header">
                     <div class="sprite-container">
@@ -165,7 +174,7 @@
             </div>
 
             <!-- Field Controls -->
-            <div class="calc-panel middle-panel" id="field-panel">
+            <div class="calc-panel middle-panel" id="field-panel" data-calc-pane="field">
                 <div class="field-section">
                     <h4>Format</h4>
                     <div class="btn-group">
@@ -282,7 +291,7 @@
             </div>
 
             <!-- Pokemon 2 (Defender) -->
-            <div class="calc-panel glass defender-panel" id="p2-panel">
+            <div class="calc-panel glass defender-panel" id="p2-panel" data-calc-pane="p2">
                 <div class="panel-role-badge defender-badge">Defender</div>
                 <div class="panel-header">
                     <div class="sprite-container">
@@ -405,6 +414,26 @@
             </div>
         </div>
     </main>
+
+    <!-- Mobile-only bottom navigation -->
+    <nav class="calc-mobile-nav" aria-label="Calculator sections">
+        <button type="button" class="calc-mobile-nav-btn active" data-calc-tab="results" onclick="setMobileCalcTab('results')">
+            <span class="cmn-icon" aria-hidden="true">◈</span>
+            <span class="cmn-label">Results</span>
+        </button>
+        <button type="button" class="calc-mobile-nav-btn" data-calc-tab="p1" onclick="setMobileCalcTab('p1')">
+            <span class="cmn-icon cmn-atk" aria-hidden="true">A</span>
+            <span class="cmn-label">Attacker</span>
+        </button>
+        <button type="button" class="calc-mobile-nav-btn" data-calc-tab="field" onclick="setMobileCalcTab('field')">
+            <span class="cmn-icon" aria-hidden="true">☰</span>
+            <span class="cmn-label">Field</span>
+        </button>
+        <button type="button" class="calc-mobile-nav-btn" data-calc-tab="p2" onclick="setMobileCalcTab('p2')">
+            <span class="cmn-icon cmn-def" aria-hidden="true">D</span>
+            <span class="cmn-label">Defender</span>
+        </button>
+    </nav>
 
     <div id="export-modal" class="modal">
         <div class="modal-content glass">
