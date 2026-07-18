@@ -32,7 +32,7 @@ body.calc-page header .container {
 body.calc-page main.container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 7rem 5% 5rem;
+    padding: 5rem 1.5rem 2.5rem;
     box-sizing: border-box;
 }
 
@@ -42,7 +42,7 @@ body.calc-page main.container {
     }
 
     body.calc-page main.container {
-        padding: 6.5rem 1rem 3rem;
+        padding: 4.75rem 0.75rem 1.75rem;
     }
 }
 
@@ -116,25 +116,25 @@ body.calc-page main.container {
 /* --- Damage Banner (top summary under nav) --- */
 .calc-results-section {
     margin-top: 0;
-    margin-bottom: 2.5rem;
-    padding-bottom: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--glass-border);
 }
 
 #damage-banner {
-    padding: 1.75rem 2rem;
-    margin-bottom: 1.25rem;
+    padding: 1.1rem 1.35rem;
+    margin-bottom: 0.85rem;
     text-align: left;
     background: linear-gradient(135deg, rgba(77, 148, 255, 0.08) 0%, rgba(255, 77, 77, 0.06) 50%, rgba(255, 255, 255, 0.02) 100%);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
+    border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 #main-result {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: clamp(1.15rem, 2.2vw, 1.75rem);
     font-weight: 900;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.4rem;
     letter-spacing: -0.5px;
     color: #fff;
     background: none;
@@ -150,9 +150,9 @@ body.calc-page main.container {
 }
 
 #ko-result {
-    margin-top: 0.85rem;
+    margin-top: 0.5rem;
     font-weight: 800;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: var(--primary-red);
     text-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
     text-transform: uppercase;
@@ -182,12 +182,12 @@ body.calc-page main.container {
 .calc-grid {
     display: grid;
     grid-template-columns: 1fr 0.8fr 1fr;
-    gap: 30px;
+    gap: 18px;
     align-items: start;
 }
 
 .calc-panel {
-    padding: 30px;
+    padding: 1.15rem 1.25rem;
     transition: transform var(--transition-slow), box-shadow var(--transition-fast), border-color var(--transition-fast);
     position: relative;
     overflow: visible;
@@ -423,7 +423,7 @@ input:hover {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 1.5rem 0;
+    margin: 0.75rem 0;
     padding: 0 5px;
 }
 
@@ -566,16 +566,16 @@ input:hover {
 }
 
 .hp-row {
-    margin-top: 1rem;
+    margin-top: 0.65rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 1rem;
+    padding-top: 0.65rem;
 }
 
 .hp-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .hp-header label {
@@ -597,9 +597,19 @@ input:hover {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
+    height: 20px;
+    margin: 0 0 8px;
+    padding: 0;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    border: none;
+}
+
+.hp-slider::-webkit-slider-runnable-track {
     height: 8px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
     background: linear-gradient(
         to right,
         var(--primary-blue) 0%,
@@ -607,40 +617,32 @@ input:hover {
         rgba(0, 0, 0, 0.35) var(--hp-fill, 100%),
         rgba(0, 0, 0, 0.35) 100%
     );
-    outline: none;
-    cursor: pointer;
-    border: 1px solid var(--glass-border);
-}
-
-.hp-slider::-webkit-slider-runnable-track {
-    height: 8px;
-    border-radius: 10px;
-    background: transparent;
 }
 
 .hp-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: var(--primary-blue);
     border: 2px solid #fff;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
     cursor: pointer;
-    margin-top: -4px;
+    /* Center 18px thumb on 8px track: (8 - 18) / 2 = -5 */
+    margin-top: -5px;
 }
 
 .hp-slider::-moz-range-track {
     height: 8px;
-    border-radius: 10px;
-    background: transparent;
-    border: none;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .hp-slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: var(--primary-blue);
     border: 2px solid #fff;
@@ -650,14 +652,18 @@ input:hover {
 
 .hp-slider::-moz-range-progress {
     height: 8px;
-    border-radius: 10px;
+    border-radius: 999px;
     background: var(--primary-blue);
+}
+
+.hp-slider::-moz-focus-outer {
+    border: 0;
 }
 
 .hp-inputs {
     display: flex;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .hp-input-group {
@@ -680,17 +686,17 @@ input:hover {
 }
 
 .move-row {
-    margin-bottom: 12px;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    border-bottom: none;
     background: rgba(0, 0, 0, 0.18);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .move-row:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.12);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
@@ -700,7 +706,7 @@ input:hover {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .result-move-box {
@@ -839,7 +845,7 @@ input:hover {
 .move-results-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 16px;
     margin-bottom: 0;
 }
 
@@ -847,7 +853,7 @@ input:hover {
     font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 0.55rem;
     letter-spacing: 0.12em;
     font-weight: 800;
 }
@@ -855,12 +861,13 @@ input:hover {
 .result-move-box {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 12px 20px;
+    border-radius: 14px;
+    padding: 10px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 6px;
     cursor: pointer;
     transition: var(--transition-fast);
 }
@@ -874,6 +881,49 @@ input:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: #fff;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.move-name-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-weight: 700;
+}
+
+.move-type-icon {
+    height: 18px;
+    width: auto;
+    border-radius: 5px;
+    display: block;
+    flex-shrink: 0;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+}
+
+.move-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 2px 4px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.move-type-badge .type-changed-hint {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    opacity: 0.95;
+}
+
+.move-configs .type-tag {
+    display: none;
 }
 
 .move-damage-summary {
@@ -956,11 +1006,11 @@ input:hover {
 
 /* --- HP Bar --- */
 .hp-bar-wrap {
-    height: 10px;
+    height: 8px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     overflow: hidden;
-    margin-top: 12px;
+    margin-top: 8px;
     border: 1px solid var(--glass-border);
 }
 
@@ -1246,12 +1296,12 @@ input:hover {
 
 @media (max-width: 768px) {
     body.calc-page main.container {
-        padding: 5.5rem 0.75rem 2rem;
+        padding: 4.5rem 0.75rem 1.5rem;
     }
 
     .calc-results-section {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.25rem;
+        margin-bottom: 0.85rem;
+        padding-bottom: 0.85rem;
     }
 
     #damage-banner {

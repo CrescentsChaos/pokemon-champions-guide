@@ -858,7 +858,7 @@ function populatePokemonUI(pk) {
             </div>` : ''}
             <div class="move-configs">
                 ${hasMove ? `
-                    <span class="type-tag type-${(move.type || 'normal').toLowerCase()}" style="font-size: 0.6rem; padding: 2px 6px;">${move.type}</span>
+                    ${moveTypeBadgeHtml(pk, move, i)}
                     <span class="move-meta-readout">${move.category || ''}${accuracy ? ' | ' + accuracy + '% acc' : ''}</span>
                 ` : '<div style="margin-right: auto;"></div>'}
                 ${multiInfo ? `
@@ -894,6 +894,8 @@ function updateMoveField(pId, idx, field, value) {
     }
     move.customized = true;
     recalculate();
+    // Ensure type badge reflects manual type edits immediately
+    refreshMoveTypeBadges(pk);
 }
 
 function toggleMega(id) {
@@ -1077,6 +1079,53 @@ function updateStatVal(id, k, type, val) {
     recalculate();
 }
 
+function getEffectiveMoveType(pk, move) {
+    if (!pk || !move || !move.name || move.name === 'None') return move?.type || 'Normal';
+    const moveRecord = (typeof BattleCalc !== 'undefined' && BattleCalc.MoveIndex)
+        ? BattleCalc.MoveIndex.get(move.name)
+        : null;
+    const item = (pk.item || '').toLowerCase();
+    if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.resolveMoveType === 'function') {
+        const resolved = BattleCalc.resolveMoveType(pk, move, moveRecord, item, field);
+        return resolved?.moveType || move.type || 'Normal';
+    }
+    return move.type || 'Normal';
+}
+
+function typeIconHtml(type, size = 18) {
+    const raw = (type || 'Normal').toString();
+    const key = raw.toLowerCase().replace(/[^a-z]/g, '') || 'normal';
+    return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" style="height:${size}px;">`;
+}
+
+function moveTypeBadgeHtml(pk, move, idx) {
+    const base = move?.type || 'Normal';
+    const eff = getEffectiveMoveType(pk, move);
+    const changed = eff.toLowerCase() !== base.toLowerCase();
+    return `
+        <span class="move-type-badge" data-move-idx="${idx}" title="${changed ? `${base} → ${eff}` : eff}">
+            ${typeIconHtml(eff, 16)}
+            ${changed ? `<span class="type-changed-hint">${eff}</span>` : ''}
+        </span>
+    `;
+}
+
+function refreshMoveTypeBadges(pk) {
+    if (!pk) return;
+    const container = document.getElementById(`p${pk.id}-moves`);
+    if (!container) return;
+    container.querySelectorAll('.move-type-badge').forEach(el => {
+        const idx = parseInt(el.dataset.moveIdx, 10);
+        const move = pk.moves[idx];
+        if (!move || move.name === 'None') return;
+        const base = move.type || 'Normal';
+        const eff = getEffectiveMoveType(pk, move);
+        const changed = eff.toLowerCase() !== base.toLowerCase();
+        el.title = changed ? `${base} → ${eff}` : eff;
+        el.innerHTML = `${typeIconHtml(eff, 16)}${changed ? `<span class="type-changed-hint">${eff}</span>` : ''}`;
+    });
+}
+
 function formatRollsDisplay(rolls) {
     if (!rolls.length) return '(0)';
     if (rolls.length <= 20) return `(${rolls.join(', ')})`;
@@ -1087,6 +1136,9 @@ function formatRollsDisplay(rolls) {
 
 function recalculate() {
     if (!p1 || !p2) return;
+
+    refreshMoveTypeBadges(p1);
+    refreshMoveTypeBadges(p2);
 
     const p1Results = p1.moves.map(m => m.name !== 'None' ? calculateDamage(p1, p2, m, field) : null);
     const p2Results = p2.moves.map(m => m.name !== 'None' ? calculateDamage(p2, p1, m, field) : null);
@@ -1153,29 +1205,24 @@ function renderMoveResults(p1Results, p2Results) {
     const p1Container = document.getElementById('p1-move-results');
     const p2Container = document.getElementById('p2-move-results');
 
-    p1Container.innerHTML = `<h4>${p1.name}'s Moves</h4>` + p1Results.map((res, i) => {
-        if (!res) return '';
-        const active = selectedMoveIdx1 === i ? 'active' : '';
-        const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
-        return `
-            <div class="result-move-box ${active}" onclick="selectMove(1, ${i})">
-                <span class="move-name-summary">${res.move}</span>
-                <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
-            </div>
-        `;
-    }).join('');
+    const renderSide = (pk, results, selectedIdx, sideId) => {
+        return `<h4>${pk.name}'s Moves</h4>` + results.map((res, i) => {
+            if (!res) return '';
+            const active = selectedIdx === i ? 'active' : '';
+            const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
+            const move = pk.moves[i];
+            const effType = getEffectiveMoveType(pk, move);
+            return `
+                <div class="result-move-box ${active}" onclick="selectMove(${sideId}, ${i})">
+                    <span class="move-name-summary">${typeIconHtml(effType, 18)}<span>${res.move}</span></span>
+                    <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
+                </div>
+            `;
+        }).join('');
+    };
 
-    p2Container.innerHTML = `<h4>${p2.name}'s Moves</h4>` + p2Results.map((res, i) => {
-        if (!res) return '';
-        const active = selectedMoveIdx2 === i ? 'active' : '';
-        const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
-        return `
-            <div class="result-move-box ${active}" onclick="selectMove(2, ${i})">
-                <span class="move-name-summary">${res.move}</span>
-                <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
-            </div>
-        `;
-    }).join('');
+    p1Container.innerHTML = renderSide(p1, p1Results, selectedMoveIdx1, 1);
+    p2Container.innerHTML = renderSide(p2, p2Results, selectedMoveIdx2, 2);
 }
 
 function selectMove(pId, idx) {
