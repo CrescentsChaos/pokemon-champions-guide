@@ -71,6 +71,22 @@
             else if (ab === 'dragonize') { moveType = 'Dragon'; abilityBoost = 1.2; }
         }
 
+        // If the UI already shows the -ate result type (e.g. Fairy) but the catalog
+        // move is Normal, still apply the 1.2× BP boost so damage matches Showdown.
+        const catalogType = (moveRecord?.type || move.type || '').toLowerCase();
+        if (abilityBoost === 1 && catalogType === 'normal') {
+            const ab = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const ateMap = {
+                pixilate: 'Fairy', aerilate: 'Flying', refrigerate: 'Ice',
+                galvanize: 'Electric', dragonize: 'Dragon'
+            };
+            const ateType = ateMap[ab];
+            if (ateType && (moveType === ateType || (moveType || '').toLowerCase() === ateType.toLowerCase())) {
+                moveType = ateType;
+                abilityBoost = 1.2;
+            }
+        }
+
         const abKey = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         if (abKey === 'liquidvoice' && MoveIndex.isSound(move.name)) {
             moveType = 'Water';

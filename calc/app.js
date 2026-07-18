@@ -847,7 +847,7 @@ function populatePokemonUI(pk) {
                 </label>
                 <label>Type
                     <select onchange="updateMoveField(${pk.id}, ${i}, 'type', this.value)">
-                        ${TYPE_LIST.map(t => `<option value="${t}" ${move.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                        ${TYPE_LIST.map(t => `<option value="${t}" ${getEffectiveMoveType(pk, move) === t ? 'selected' : ''}>${t}</option>`).join('')}
                     </select>
                 </label>
                 <label>Class
@@ -981,15 +981,16 @@ function updateMove(pId, idx, moveName) {
     const rec = BattleCalc.MoveIndex.findInArray(movesDB, moveName);
     if (rec) {
         const hits = BattleCalc.isMultiHitMove(rec.name) ? getDefaultHitCount(rec.name, pk) : undefined;
-        pk.moves[idx] = {
-            name: rec.name,
-            basePower: rec.power,
-            type: rec.type,
-            category: rec.category,
+        pk.moves[idx] = BattleCalc.MoveIndex.createMoveState(rec.name, {
             crit: prevCrit,
             customized: false,
             ...(hits ? { hits } : {})
-        };
+        });
+        // Ensure category is always title-cased for damage calc
+        if (pk.moves[idx]) {
+            const c = (pk.moves[idx].category || '').toLowerCase();
+            pk.moves[idx].category = c === 'special' ? 'Special' : c === 'status' ? 'Status' : 'Physical';
+        }
     } else {
         pk.moves[idx] = { name: moveName, basePower: 0, type: 'Normal', category: 'Physical', crit: prevCrit };
     }
@@ -1092,20 +1093,28 @@ function getEffectiveMoveType(pk, move) {
     return move.type || 'Normal';
 }
 
-function typeIconHtml(type, size = 18) {
+function typeIconHtml(type, size = 22) {
     const raw = (type || 'Normal').toString();
     const key = raw.toLowerCase().replace(/[^a-z]/g, '') || 'normal';
-    return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" style="height:${size}px;">`;
+    return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
 }
+
+const TYPE_ACCENT = {
+    normal: '#a8a878', fire: '#f08030', water: '#6890f0', electric: '#f8d030', grass: '#78c850',
+    ice: '#98d8d8', fighting: '#c03028', poison: '#a040a0', ground: '#e0c068', flying: '#a890f0',
+    psychic: '#f85888', bug: '#a8b820', rock: '#b8a038', ghost: '#705898', dragon: '#7038f8',
+    dark: '#705848', steel: '#b8b8d0', fairy: '#ee99ac', stellar: '#7cc7b2'
+};
 
 function moveTypeBadgeHtml(pk, move, idx) {
     const base = move?.type || 'Normal';
     const eff = getEffectiveMoveType(pk, move);
     const changed = eff.toLowerCase() !== base.toLowerCase();
+    const accent = TYPE_ACCENT[eff.toLowerCase()] || TYPE_ACCENT.normal;
     return `
-        <span class="move-type-badge" data-move-idx="${idx}" title="${changed ? `${base} → ${eff}` : eff}">
-            ${typeIconHtml(eff, 16)}
-            ${changed ? `<span class="type-changed-hint">${eff}</span>` : ''}
+        <span class="move-type-badge" data-move-idx="${idx}" title="${changed ? `${base} → ${eff}` : eff}" style="--type-accent:${accent}">
+            ${typeIconHtml(eff, 18)}
+            ${changed ? `<span class="type-changed-hint">${eff}</span>` : `<span class="type-name-hint">${eff}</span>`}
         </span>
     `;
 }
@@ -1121,8 +1130,12 @@ function refreshMoveTypeBadges(pk) {
         const base = move.type || 'Normal';
         const eff = getEffectiveMoveType(pk, move);
         const changed = eff.toLowerCase() !== base.toLowerCase();
+        const accent = TYPE_ACCENT[eff.toLowerCase()] || TYPE_ACCENT.normal;
         el.title = changed ? `${base} → ${eff}` : eff;
-        el.innerHTML = `${typeIconHtml(eff, 16)}${changed ? `<span class="type-changed-hint">${eff}</span>` : ''}`;
+        el.style.setProperty('--type-accent', accent);
+        el.innerHTML = `${typeIconHtml(eff, 18)}${changed
+            ? `<span class="type-changed-hint">${eff}</span>`
+            : `<span class="type-name-hint">${eff}</span>`}`;
     });
 }
 
@@ -1209,13 +1222,28 @@ function renderMoveResults(p1Results, p2Results) {
         return `<h4>${pk.name}'s Moves</h4>` + results.map((res, i) => {
             if (!res) return '';
             const active = selectedIdx === i ? 'active' : '';
-            const dmg = res.minDmg != null ? `${res.minDmg}-${res.maxDmg}` : '';
+            const dmg = res.minDmg != null ? `${res.minDmg}–${res.maxDmg}` : '';
             const move = pk.moves[i];
             const effType = getEffectiveMoveType(pk, move);
+            const baseType = move?.type || 'Normal';
+            const changed = effType.toLowerCase() !== baseType.toLowerCase();
+            const accent = TYPE_ACCENT[effType.toLowerCase()] || TYPE_ACCENT.normal;
+            const converted = changed
+                ? `<span class="move-converted-pill" title="${baseType} → ${effType}">${baseType}→${effType}</span>`
+                : '';
             return `
-                <div class="result-move-box ${active}" onclick="selectMove(${sideId}, ${i})">
-                    <span class="move-name-summary">${typeIconHtml(effType, 18)}<span>${res.move}</span></span>
-                    <span class="move-damage-summary">${dmg ? dmg + ' · ' : ''}${res.minPercent}% - ${res.maxPercent}%</span>
+                <div class="result-move-box ${active}" onclick="selectMove(${sideId}, ${i})" style="--type-accent:${accent}">
+                    <span class="move-name-summary">
+                        ${typeIconHtml(effType, 22)}
+                        <span class="move-name-text">
+                            <span class="move-name-label">${res.move}</span>
+                            ${converted}
+                        </span>
+                    </span>
+                    <span class="move-damage-summary">
+                        ${dmg ? `<span class="dmg-abs">${dmg}</span>` : ''}
+                        <span class="dmg-pct">${res.minPercent}% – ${res.maxPercent}%</span>
+                    </span>
                 </div>
             `;
         }).join('');
@@ -1473,11 +1501,20 @@ function importPokePaste(id, paste) {
                 if (emptyIdx !== -1) {
                     const mData = movesDB.find(m => m.name.toLowerCase() === moveName.toLowerCase());
                     if (mData) {
-                        pk.moves[emptyIdx] = {
-                            name: mData.name, basePower: parseInt(mData.power) || 0,
-                            type: mData.type, category: mData.damage_class, crit: false,
+                        pk.moves[emptyIdx] = BattleCalc.MoveIndex.createMoveState(mData.name, {
+                            crit: false,
                             ...(isMultiHitMove(mData.name) ? { hits: getDefaultHitCount(mData.name, pk) } : {})
-                        };
+                        });
+                        if (!pk.moves[emptyIdx]?.name || pk.moves[emptyIdx].name === 'None') {
+                            pk.moves[emptyIdx] = {
+                                name: mData.name,
+                                basePower: parseInt(mData.power, 10) || 0,
+                                type: mData.type || 'Normal',
+                                category: mData.damage_class || mData.category || 'Physical',
+                                crit: false,
+                                ...(isMultiHitMove(mData.name) ? { hits: getDefaultHitCount(mData.name, pk) } : {})
+                            };
+                        }
                     }
                 }
             }

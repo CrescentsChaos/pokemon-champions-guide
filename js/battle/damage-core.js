@@ -83,6 +83,13 @@
         return n > 4294967295 ? n % 4294967296 : n;
     }
 
+    function normalizeMoveCategory(cat) {
+        const c = (cat || '').toString().toLowerCase();
+        if (c === 'special') return 'Special';
+        if (c === 'status') return 'Status';
+        return 'Physical';
+    }
+
     /** Chain 4096-fixed modifiers the way Gen 5+ battles do. */
     function chainMods(mods, lowerBound = 41, upperBound = 131072) {
         let M = 4096;
@@ -121,7 +128,8 @@
 
         const moveRecord = MoveIndex.get(move.name);
         const level = attacker.level;
-        const isSpecial = move.category === 'Special';
+        const category = normalizeMoveCategory(move.category || moveRecord?.category);
+        const isSpecial = category === 'Special';
 
         let atkBoost = isSpecial ? attacker.boosts.spa : attacker.boosts.atk;
         const defStatKey = field.wonderRoom
@@ -167,8 +175,8 @@
         const itemsActive = !field.magicRoom;
         const item = itemsActive ? (attacker.item || '').toLowerCase() : '';
         const defenderItem = itemsActive ? (defender.item || '').toLowerCase() : '';
-        if (item === 'choice band' && !isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
-        if (item === 'choice specs' && isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
+        if (item === 'choice band' && !isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
+        if (item === 'choice specs' && isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
         if (defenderItem === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5);
 
         const typeItem = itemsActive ? item : '';
@@ -180,23 +188,20 @@
         if (typeResult.basePower !== move.basePower) basePower = typeResult.basePower;
         basePower = applyTeraBpFloor(attacker, move, moveType, basePower);
 
-        // -ate abilities (Pixilate etc.): +20% BP (4915/4096), not a late damage mult
+        // -ate abilities (Pixilate etc.): +20% BP via 4915/4096 (Showdown chain)
+        const bpMods = [];
         if (abilityBoost && abilityBoost !== 1) {
-            basePower = pokeRound(of32(basePower * Math.round(abilityBoost * 4096)) / 4096);
+            bpMods.push(Math.round(abilityBoost * 4096));
         }
-
-        // Helping Hand / Terrain are base-power modifiers in Gen 5+
-        if (attackerSide.helpingHand) {
-            basePower = pokeRound(of32(basePower * 6144) / 4096);
-        }
+        if (attackerSide.helpingHand) bpMods.push(6144);
         if (BC.getTerrainModifier) {
             const terrainMult = BC.getTerrainModifier(moveType, field);
-            if (terrainMult !== 1) {
-                const tMod = terrainMult === 1.3 ? 5325
-                    : terrainMult === 0.5 ? 2048
-                    : Math.round(terrainMult * 4096);
-                basePower = pokeRound(of32(basePower * tMod) / 4096);
-            }
+            if (terrainMult === 1.3) bpMods.push(5325);
+            else if (terrainMult === 0.5) bpMods.push(2048);
+            else if (terrainMult !== 1) bpMods.push(Math.round(terrainMult * 4096));
+        }
+        if (bpMods.length) {
+            basePower = of16(Math.max(1, pokeRound((basePower * chainMods(bpMods, 41, 2097152)) / 4096)));
         }
 
         // Water Bubble doubles the offensive stat for Water moves
