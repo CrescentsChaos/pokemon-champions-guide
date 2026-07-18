@@ -124,8 +124,8 @@ function looksLikeTraditionalEvs(evs) {
 
 /**
  * Coerce a paste/import spread into the active EV mode without double-converting.
- * - Champions ON + traditional paste → convert ÷8 and normalize to 66
- * - Champions ON + champions paste → normalize to 66 only
+ * - Champions ON + traditional paste → convert ÷8 and fill remainder to 66
+ * - Champions ON + champions paste → clamp only (no auto-fill)
  * - Champions OFF + champions paste → ×8 back to Smogon
  * - Champions OFF + traditional paste → clamp Smogon limits
  */
@@ -135,7 +135,7 @@ function coerceEvsForMode(evs, championsMode = isChampionsEvMode()) {
     // Keep empty spreads empty (don't dump remainder into blank slots)
     if (getEvTotal(src) === 0) return src;
     if (championsMode) {
-        return looksLikeTraditionalEvs(src) ? convertEvsToChampions(src) : normalizeChampionsEvs(src);
+        return looksLikeTraditionalEvs(src) ? convertEvsToChampions(src) : clampEvsForMode(src, true);
     }
     if (!looksLikeTraditionalEvs(src) && getEvMax(src) > 0) {
         return convertEvsFromChampions(src);
@@ -144,9 +144,9 @@ function coerceEvsForMode(evs, championsMode = isChampionsEvMode()) {
 }
 
 /**
- * Normalizes Champions EVs to exactly 66 total (or less if capped).
- * Remainder is filled into the lowest non-zero EV first (keeps dumps on invested stats).
- * Falls back to zero stats only when no invested stat has room left.
+ * Fills Champions EVs up to exactly 66 total (or less if capped).
+ * Only used when converting traditional → Champions — not during manual edits.
+ * Remainder goes into the lowest non-zero EV first (keeps dumps on invested stats).
  */
 function normalizeChampionsEvs(evs, targetTotal = CHAMPIONS_EV_TOTAL, maxPerStat = CHAMPIONS_EV_MAX_STAT) {
     const result = {};
@@ -234,21 +234,21 @@ function convertEvsFromChampions(evs) {
 }
 
 /**
- * Clamps EVs to format limits; in Champions mode ensures 66 total via remainder fill.
+ * Clamps EVs to format limits without auto-filling remainder.
+ * Champions: max 32/stat, max 66 total (trims excess only).
+ * Traditional: max 252/stat, max 508 total.
  */
 function clampEvsForMode(evs, championsMode = false) {
-    if (championsMode) {
-        return normalizeChampionsEvs(evs);
-    }
-
+    const maxStat = championsMode ? CHAMPIONS_EV_MAX_STAT : STANDARD_EV_MAX_STAT;
+    const maxTotal = championsMode ? CHAMPIONS_EV_TOTAL : STANDARD_EV_TOTAL;
     const result = {};
     EV_STAT_KEYS.forEach(k => {
-        result[k] = Math.max(0, Math.min(STANDARD_EV_MAX_STAT, parseInt(evs?.[k], 10) || 0));
+        result[k] = Math.max(0, Math.min(maxStat, parseInt(evs?.[k], 10) || 0));
     });
 
     let total = EV_STAT_KEYS.reduce((sum, k) => sum + result[k], 0);
-    if (total > STANDARD_EV_TOTAL) {
-        let excess = total - STANDARD_EV_TOTAL;
+    if (total > maxTotal) {
+        let excess = total - maxTotal;
         ['spe', 'spd', 'spa', 'def', 'atk', 'hp'].forEach(k => {
             if (excess <= 0) return;
             const sub = Math.min(result[k], excess);

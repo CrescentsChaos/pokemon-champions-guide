@@ -573,11 +573,7 @@ function renderStatsEditor(num) {
             if (val > evMax) val = evMax;
             if (val < 0) val = 0;
             p.evs[stat] = val;
-            if (isChampionsMode) {
-                p.evs = normalizeChampionsEvs(p.evs);
-            } else {
-                p.evs = clampEvsForMode(p.evs, false);
-            }
+            p.evs = clampEvsForMode(p.evs, isChampionsMode);
             e.target.value = p.evs[stat];
             recalcStats(num);
         });
@@ -891,7 +887,7 @@ function importFromText(num, text) {
         } else if (isChampionsMode) {
             p.evs = looksLikeTraditionalEvs && looksLikeTraditionalEvs(p.evs)
                 ? convertEvsToChampions(p.evs)
-                : (typeof normalizeChampionsEvs === 'function' ? normalizeChampionsEvs(p.evs) : p.evs);
+                : (typeof clampEvsForMode === 'function' ? clampEvsForMode(p.evs, true) : p.evs);
         }
 
         document.getElementById(`p${num}-search`).value = p.species;

@@ -2790,9 +2790,6 @@
                 }
 
                 p.evs[stat] = val;
-                if (isChampionsMode) {
-                    p.evs = normalizeChampionsEvs(p.evs);
-                }
                 syncUI();
             };
 
@@ -3099,7 +3096,7 @@
                             slot.evs = coerceEvsForMode(slot.evs, isChampionsMode);
                         } else if (isChampionsMode) {
                             const maxEv = Math.max(...['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k => slot.evs[k] || 0));
-                            slot.evs = maxEv > 32 ? convertEvsToChampions(slot.evs) : normalizeChampionsEvs(slot.evs);
+                            slot.evs = maxEv > 32 ? convertEvsToChampions(slot.evs) : clampEvsForMode(slot.evs, true);
                         } else {
                             slot.evs = clampEvsForMode(slot.evs, false);
                         }

@@ -1440,7 +1440,7 @@ function importPokePaste(id, paste) {
             pk.evs = coerceEvsForMode(pk.evs, isChampionsMode);
         } else if (isChampionsMode) {
             const maxEv = Math.max(...['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k => pk.evs[k] || 0));
-            pk.evs = maxEv > 32 ? convertEvsToChampions(pk.evs) : normalizeChampionsEvs(pk.evs);
+            pk.evs = maxEv > 32 ? convertEvsToChampions(pk.evs) : clampEvsForMode(pk.evs, true);
         } else {
             pk.evs = clampEvsForMode(pk.evs, false);
         }
