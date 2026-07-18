@@ -1082,6 +1082,15 @@ function updateStatsUI(pk) {
             : '';
         const choiceTitle = isChoiceBoosted ? ` title="×1.5 from ${pk.item}"` : '';
 
+        const natureMods = natures[pk.nature] || [1, 1, 1, 1, 1];
+        const natureStatIdx = { atk: 0, def: 1, spa: 2, spd: 3, spe: 4 };
+        let natureStyle = choiceStyle;
+        if (!isChoiceBoosted && k !== 'hp') {
+            const mod = natureMods[natureStatIdx[k]] || 1;
+            if (mod > 1) natureStyle = 'color: #ff5c5c; font-weight: 900;';
+            else if (mod < 1) natureStyle = 'color: #9ec5ff; font-weight: 800;';
+        }
+
         const evMax = isChampionsMode ? 32 : 252;
         const evStep = isChampionsMode ? 1 : 1;
 
@@ -1098,7 +1107,7 @@ function updateStatsUI(pk) {
                     </select>
                     `}
                 </td>
-                <td class="stat-total" id="${p}-${k}-total" style="${choiceStyle}"${choiceTitle}>${boostedTotal}</td>
+                <td class="stat-total" id="${p}-${k}-total" style="${natureStyle}"${choiceTitle}>${boostedTotal}</td>
             </tr>
         `;
     }).join('');

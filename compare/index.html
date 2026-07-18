@@ -20,7 +20,7 @@
         <div id="compare-banner" class="glass fade-in">
             <h1>COMPARE <span style="color: var(--primary-red);">BUILDS</span></h1>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">
-                Import curated library builds or Poképastes to compare stats, speed tiers, bulk, and moves side-by-side.
+                Import curated library builds or Poképastes to compare stats, meta survival, speed tiers, and KO coverage side-by-side.
             </p>
         </div>
 
@@ -224,6 +224,74 @@
             </div>
         </div>
 
+        <!-- ============ META MATCHUP DIFFERENCES ============ -->
+        <section id="meta-diff-section" class="meta-diff glass fade-in" aria-labelledby="meta-diff-title">
+            <div class="meta-diff__header">
+                <div>
+                    <h2 id="meta-diff-title">META MATCHUP DIFFERENCES</h2>
+                    <p class="meta-diff__subtitle">
+                        Using the damage calculator against ranked meta sets — exclusive survival, outspeed, and KO advantages.
+                    </p>
+                </div>
+                <div class="meta-diff__controls">
+                    <label class="meta-diff__format">
+                        <span>Format</span>
+                        <select id="meta-diff-format" aria-label="Meta format">
+                            <option value="Singles">Singles</option>
+                            <option value="Doubles">Doubles</option>
+                        </select>
+                    </label>
+                    <button type="button" class="import-btn meta-diff__refresh" id="meta-diff-refresh">Recalc</button>
+                </div>
+            </div>
+
+            <div class="meta-diff__summary" id="meta-diff-summary" aria-live="polite">
+                <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__label">A survives alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-survive-a">—</strong>
+                </div>
+                <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__label">B survives alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-survive-b">—</strong>
+                </div>
+                <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__label">A outspeeds alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-speed-a">—</strong>
+                </div>
+                <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__label">B outspeeds alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-speed-b">—</strong>
+                </div>
+                <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__label">A KOs alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-ko-a">—</strong>
+                </div>
+                <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__label">B KOs alone</span>
+                    <strong class="meta-diff-stat__value" id="meta-sum-ko-b">—</strong>
+                </div>
+            </div>
+
+            <div class="meta-diff__tabs" role="tablist" aria-label="Advantage type">
+                <button type="button" class="meta-diff-tab is-active" role="tab" aria-selected="true" data-meta-tab="survive">Survives uniquely</button>
+                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="outspeed">Outspeeds uniquely</button>
+                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="ko">KOs uniquely</button>
+            </div>
+
+            <div class="meta-diff__status" id="meta-diff-status">Load both builds to compare meta matchups.</div>
+
+            <div class="meta-diff__columns" id="meta-diff-columns">
+                <div class="meta-diff-col meta-diff-col--a">
+                    <h3 class="meta-diff-col__title"><span class="meta-diff-col__badge meta-diff-col__badge--a">A</span> <span id="meta-col-title-a">Build A advantages</span></h3>
+                    <div class="meta-diff-list" id="meta-diff-list-a"></div>
+                </div>
+                <div class="meta-diff-col meta-diff-col--b">
+                    <h3 class="meta-diff-col__title"><span class="meta-diff-col__badge meta-diff-col__badge--b">B</span> <span id="meta-col-title-b">Build B advantages</span></h3>
+                    <div class="meta-diff-list" id="meta-diff-list-b"></div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ============ IMPORT MODAL ============ -->
@@ -278,6 +346,16 @@
 
     <script src="../js/mega-sprites.js"></script>
     <script src="../js/utils.js"></script>
+    <script src="../js/battle/type-chart.js"></script>
+    <script src="../js/battle/move-index.js"></script>
+    <script src="../js/battle/stat-modifiers.js"></script>
+    <script src="../js/battle/move-power.js"></script>
+    <script src="../js/battle/field-effects.js"></script>
+    <script src="../js/battle/damage-core.js"></script>
+    <script src="../js/battle/ko-chance.js"></script>
+    <script src="../js/battle/pokemon-state.js"></script>
+    <script src="../js/damage-calc.js"></script>
+    <script src="../js/analysis.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

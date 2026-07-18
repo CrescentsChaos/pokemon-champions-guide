@@ -25,5 +25,13 @@
 
     exports.forEach(exportGlobal);
 
+    // Ensure speed helpers always exist as globals (some hosts miss the first pass)
+    if (typeof BC.compareSpeedTiers === 'function' && typeof global.compareSpeedTiers !== 'function') {
+        global.compareSpeedTiers = BC.compareSpeedTiers;
+    }
+    if (typeof BC.getEffectiveSpeed === 'function' && typeof global.getEffectiveSpeed !== 'function') {
+        global.getEffectiveSpeed = BC.getEffectiveSpeed;
+    }
+
     global.BattleCalc = BC;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

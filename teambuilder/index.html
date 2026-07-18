@@ -354,7 +354,186 @@
         .import-export-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
             margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .analyze-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(180deg, rgba(255, 70, 70, 0.95), rgba(220, 40, 40, 0.92));
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+            box-shadow: 0 6px 16px rgba(255, 51, 51, 0.18);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 10px 22px rgba(255, 51, 51, 0.28);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .builder-container .format-toggle-wrapper {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 2px;
+        }
+
+        .builder-container .toggle-btn {
+            border-radius: 9px;
+            padding: 8px 14px;
+            border: 1px solid transparent;
+        }
+
+        .builder-container .toggle-btn.active {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Boxes / inputs polish */
+        .team-tab {
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .team-tab:hover {
+            opacity: 0.9;
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .builder-input,
+        select {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .stat-rows {
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.28);
+            padding: 20px;
+        }
+
+        .ev-input,
+        .iv-input {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 4px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ev-input:focus,
+        .iv-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 2px rgba(255, 51, 51, 0.2);
+        }
+
+        .big-sprite-box {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .moves-grid .builder-input,
+        .moves-grid select {
+            border-radius: 8px;
+        }
+
+        .overlay-content {
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        }
+
+        .search-item {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+
+        .preset-chip {
+            border-radius: 10px;
+        }
+
+        /* Team preview stat rows + EV badges */
+        .tb-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+            height: 18px;
+        }
+
+        .tb-stat-row__label {
+            width: 30px;
+            flex-shrink: 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 900;
+            font-family: monospace;
+        }
+
+        .tb-stat-row__bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .tb-stat-row__total {
+            width: 36px;
+            flex-shrink: 0;
+            text-align: right;
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: -0.5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tb-stat-ev {
+            flex-shrink: 0;
+            min-width: 1.65rem;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.35);
+            color: rgba(255, 255, 255, 0.35);
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.35;
+        }
+
+        .tb-stat-ev--invested {
+            color: rgba(255, 220, 120, 0.95);
+            border-color: rgba(255, 200, 80, 0.35);
+            background: rgba(255, 190, 60, 0.12);
         }
 
         /* =============================================
@@ -1739,15 +1918,17 @@
                         const valMega = calculateStat(megaStat, p.ivs[s], p.evs[s], p.level, p.nature, s);
                         const isPos = natureMap[p.nature].pos === s;
                         const isNeg = natureMap[p.nature].neg === s;
-                        const color = isPos ? '#00ffcc' : (isNeg ? '#ff4d4d' : '#ddd');
+                        const color = isPos ? '#ff5c5c' : (isNeg ? '#9ec5ff' : '#ddd');
+                        const evVal = parseInt(p.evs?.[s], 10) || 0;
 
                         return `
-                        <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; margin-bottom:4px; height:18px;">
-                            <span style="width:30px; color:rgba(255,255,255,0.4); font-weight:900; font-family:monospace;">${statLabels[idx]}</span>
-                            <div style="flex:1; height:6px; background:rgba(0,0,0,0.4); border-radius:3px; overflow:hidden;">
+                        <div class="tb-stat-row">
+                            <span class="tb-stat-row__label">${statLabels[idx]}</span>
+                            <div class="tb-stat-row__bar">
                                 <div class="${isMegaActive ? 'mega-data-fill' : ''}" ${isMegaActive ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valMega / 250) * 100)}%"` : ''} style="height:100%; width:${Math.min(100, (valBase / 250) * 100)}%; background:${statOrder[idx]}; border-radius:3px; box-shadow: 0 0 12px ${statOrder[idx]}aa; transition: width 0.3s;"></div>
                             </div>
-                            <span ${isMegaActive ? `data-base-val="${valBase}" data-mega-val="${valMega}"` : ''} style="width:40px; text-align:right; font-weight:900; color:${color}; font-size:0.9rem; letter-spacing:-0.5px;">${valBase}</span>
+                            <span class="tb-stat-row__total" ${isMegaActive ? `data-base-val="${valBase}" data-mega-val="${valMega}"` : ''} style="color:${color};">${valBase}</span>
+                            <span class="tb-stat-ev${evVal > 0 ? ' tb-stat-ev--invested' : ''}" title="${statLabels[idx]} EV">${evVal}</span>
                         </div>
                     `;
                     }).join('');
@@ -1999,7 +2180,7 @@
                     const neg = natureMap[n].neg;
                     let desc = 'Neutral Nature';
                     if (pos && neg && pos !== neg) {
-                        desc = `<span style="color:#00ffcc">+${statLabels[pos]}</span>, <span style="color:#ff4d4d">-${statLabels[neg]}</span>`;
+                        desc = `<span style="color:#ff5c5c">+${statLabels[pos]}</span>, <span style="color:#9ec5ff">-${statLabels[neg]}</span>`;
                     }
                     if (isRecommended) desc = '✨ Recommended Nature - ' + desc;
                     return { name: n, Name: n, eligible: isRecommended, rank: isRecommended ? recNatures.indexOf(n) : Infinity, description: desc };
@@ -2716,8 +2897,8 @@
 
                 // Stat Color highlighting for nature
                 const nature = natureMap[p.nature] || {};
-                if (nature.pos === key) actEl.style.color = '#00ffcc';
-                else if (nature.neg === key) actEl.style.color = '#ff4d4d';
+                if (nature.pos === key) actEl.style.color = '#ff5c5c';
+                else if (nature.neg === key) actEl.style.color = '#9ec5ff';
                 else actEl.style.color = '#fff';
             });
 

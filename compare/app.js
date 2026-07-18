@@ -27,6 +27,7 @@ function toggleChampionsMode() {
     syncChampionsModeButton();
     recalcStats(1);
     recalcStats(2);
+    scheduleMetaDiff();
 }
 
 let p1 = {
@@ -119,6 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         movesData = await movesRes.json();
         itemsData = await itemsRes.json();
 
+        if (typeof initMoveIndex === 'function') initMoveIndex(movesData);
+        syncAnalysisGlobals();
+
         initMetaSelects();
         populateItemsList();
         setupSearchListeners();
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupImportTabs();
         setupLibraryFilters();
         setupImportConfirm();
+        setupMetaDiffUI();
 
         renderStatsEditor(1);
         renderStatsEditor(2);
@@ -140,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const buildsRes = await fetch('../assets/builds.json');
             buildsData = await buildsRes.json();
+            syncAnalysisGlobals();
             const libHint = document.getElementById('library-hint');
             if (libHint) libHint.textContent = `${buildsData.length.toLocaleString()} curated builds from builds.json`;
         } catch (buildErr) {
@@ -147,11 +153,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             buildsData = [];
         }
 
+        try {
+            const topRes = await fetch('../assets/top_pokemons.json?v=' + Date.now());
+            const topCache = await topRes.json();
+            if (typeof globalThis !== 'undefined') globalThis._topPokemonsCache = topCache;
+        } catch (topErr) {
+            console.warn('top_pokemons.json failed to load', topErr);
+        }
+
         const params = new URLSearchParams(window.location.search);
         const buildA = params.get('buildA') || params.get('a');
         const buildB = params.get('buildB') || params.get('b');
         if (buildA) loadLibraryBuild(1, buildA, false);
         if (buildB) loadLibraryBuild(2, buildB, false);
+
+        scheduleMetaDiff();
 
     } catch (e) {
         showToast('Error loading data');
@@ -422,6 +438,7 @@ function setupInputListeners() {
                     const p = num === 1 ? p1 : p2;
                     p[field] = val;
                     if (field === 'nature') recalcStats(num);
+                    else scheduleMetaDiff();
 
                     if (field === 'item' && p.species) {
                         const nextForm = getPermanentForm({ species: p.species, item: val });
@@ -436,6 +453,7 @@ function setupInputListeners() {
                                 else if (it.endsWith('itey')) suffix = '-megay';
                             }
                             updateSprite(num, p.species, suffix);
+                            scheduleMetaDiff();
                         }
                     }
                 });
@@ -612,6 +630,7 @@ function recalcStats(num) {
 
     renderStatsEditor(num);
     updateComparison();
+    scheduleMetaDiff();
 }
 
 function updateComparison() {
@@ -658,6 +677,460 @@ function updateComparison() {
         <td class="${bst2Cls}" style="opacity: 0.7; font-size: 0.9rem;">${hasP2 ? bst2 : '--'}</td>
     `;
     tbody.appendChild(trBST);
+}
+
+// ------ META MATCHUP DIFFERENCES (survive / outspeed / KO) ------
+let metaDiffTab = 'survive';
+let metaDiffFormat = 'Singles';
+let metaDiffTimer = null;
+let metaDiffRequestId = 0;
+let metaDiffCache = null;
+
+function syncAnalysisGlobals() {
+    if (typeof globalThis === 'undefined') return;
+    globalThis.allPokemon = pokemonData;
+    globalThis.allMoves = movesData;
+    globalThis.allBuilds = buildsData;
+}
+
+function setupMetaDiffUI() {
+    document.querySelectorAll('.meta-diff-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            metaDiffTab = tab.dataset.metaTab || 'survive';
+            document.querySelectorAll('.meta-diff-tab').forEach(btn => {
+                const on = btn.dataset.metaTab === metaDiffTab;
+                btn.classList.toggle('is-active', on);
+                btn.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            renderMetaDiffFromCache();
+        });
+    });
+
+    const formatEl = document.getElementById('meta-diff-format');
+    if (formatEl) {
+        formatEl.addEventListener('change', () => {
+            metaDiffFormat = formatEl.value === 'Doubles' ? 'Doubles' : 'Singles';
+            scheduleMetaDiff(true);
+        });
+    }
+
+    document.getElementById('meta-diff-refresh')?.addEventListener('click', () => scheduleMetaDiff(true));
+}
+
+function scheduleMetaDiff(immediate) {
+    clearTimeout(metaDiffTimer);
+    if (immediate) {
+        runMetaDiff();
+        return;
+    }
+    metaDiffTimer = setTimeout(() => runMetaDiff(), 280);
+}
+
+function compareBuildToSlot(p) {
+    if (!p?.species) return null;
+    return {
+        species: p.species,
+        item: p.item || '',
+        ability: p.ability || '',
+        level: p.level || 50,
+        nature: p.nature || 'Serious',
+        tera: 'Normal',
+        evs: { ...p.evs },
+        ivs: { ...p.ivs },
+        moves: [...(p.moves || [])].filter(Boolean)
+    };
+}
+
+function resolveCompareDb(slot) {
+    if (!slot?.species) return null;
+    const key = normalizeKey(slot.species);
+    let db = pokemonData.find(p => normalizeKey(p.Name) === key) || null;
+    if (!db) return null;
+
+    if (slot.item && typeof getPermanentForm === 'function') {
+        const perm = getPermanentForm({ species: slot.species, item: slot.item });
+        if (perm) {
+            const permDb = pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(perm));
+            if (permDb) return permDb;
+        }
+    }
+
+    const it = (slot.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez'))
+        && it !== 'eviolite' && it !== 'meteorite') {
+        let suffix = '-Mega';
+        if (it.endsWith('itex')) suffix = '-Mega-X';
+        else if (it.endsWith('itey')) suffix = '-Mega-Y';
+        else if (it.endsWith('itez')) suffix = '-Mega-Z';
+        const base = String(slot.species).replace(/-Mega(-[XYZ])?$/i, '').replace(/-Primal$/i, '');
+        const megaDb = pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(base + suffix));
+        if (megaDb) return megaDb;
+    }
+    return db;
+}
+
+function getCompareSpeedTier(speedA, speedB) {
+    if (typeof compareSpeedTiers === 'function') return compareSpeedTiers(speedA, speedB);
+    if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.compareSpeedTiers === 'function') {
+        return BattleCalc.compareSpeedTiers(speedA, speedB);
+    }
+    if (speedA > speedB) return 'faster';
+    if (speedA < speedB) return 'slower';
+    return 'tie';
+}
+
+function getBuildEffectiveSpeed(state, field) {
+    if (!state) return null;
+    if (typeof getEffectiveSpeed === 'function') return getEffectiveSpeed(state, field);
+    if (typeof BattleCalc !== 'undefined' && typeof BattleCalc.getEffectiveSpeed === 'function') {
+        return BattleCalc.getEffectiveSpeed(state, field);
+    }
+    return state.stats?.spe ?? null;
+}
+
+function survivesMetaHit(defense) {
+    if (!defense) return true;
+    return parseFloat(defense.maxPercent) < 100;
+}
+
+function fmtDamage(result) {
+    if (!result) return { pct: '—', label: 'No damage', survive: true };
+    const max = parseFloat(result.maxPercent);
+    const min = parseFloat(result.minPercent);
+    const pct = Number.isFinite(min) && Number.isFinite(max) && min !== max
+        ? `${min}–${max}%`
+        : `${Number.isFinite(max) ? max : '—'}%`;
+    const survive = max < 100;
+    let label = result.koLabel || (survive ? 'Survives' : 'OHKO');
+    if (survive && max < 50) label = 'Tanks';
+    else if (survive) label = 'Survives';
+    return { pct, label, survive, move: result.move || '' };
+}
+
+function metaSpriteUrl(species) {
+    const clean = (species || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    return `https://play.pokemonshowdown.com/sprites/gen5/${clean}.png`;
+}
+
+async function runMetaDiff() {
+    const requestId = ++metaDiffRequestId;
+    const statusEl = document.getElementById('meta-diff-status');
+    const hasA = !!p1.species;
+    const hasB = !!p2.species;
+
+    if (!hasA && !hasB) {
+        metaDiffCache = null;
+        setMetaSummary(null);
+        setMetaStatus('Load both builds to compare meta matchups.');
+        renderMetaLists([], [], metaDiffTab);
+        return;
+    }
+
+    if (typeof buildCalcStateFromSlot !== 'function' || typeof findBestDamage !== 'function') {
+        setMetaStatus('Damage calculator failed to load.');
+        return;
+    }
+
+    setMetaStatus('Calculating meta matchups…');
+    syncAnalysisGlobals();
+
+    try {
+    const format = metaDiffFormat;
+    let topList = [];
+    if (typeof loadTopPokemonsForFormat === 'function') {
+        topList = await loadTopPokemonsForFormat(format);
+    } else {
+        const cache = (typeof getTopPokemonsList === 'function') ? getTopPokemonsList(format) : [];
+        topList = cache.slice(0, 28);
+    }
+    if (requestId !== metaDiffRequestId) return;
+
+    if (!topList.length) {
+        metaDiffCache = null;
+        setMetaSummary(null);
+        setMetaStatus('No meta ranking data available for this format.');
+        renderMetaLists([], [], metaDiffTab);
+        return;
+    }
+
+    const field = getDefaultField(format);
+    const slotA = compareBuildToSlot(p1);
+    const slotB = compareBuildToSlot(p2);
+    const dbA = slotA ? resolveCompareDb(slotA) : null;
+    const dbB = slotB ? resolveCompareDb(slotB) : null;
+
+    const stateAAtk = (slotA && dbA) ? buildCalcStateFromSlot(slotA, 1, dbA, movesData) : null;
+    const stateADef = (slotA && dbA) ? buildCalcStateFromSlot(slotA, 2, dbA, movesData) : null;
+    const stateBAtk = (slotB && dbB) ? buildCalcStateFromSlot(slotB, 1, dbB, movesData) : null;
+    const stateBDef = (slotB && dbB) ? buildCalcStateFromSlot(slotB, 2, dbB, movesData) : null;
+
+    const speedA = getBuildEffectiveSpeed(stateAAtk, field);
+    const speedB = getBuildEffectiveSpeed(stateBAtk, field);
+
+    const surviveA = [];
+    const surviveB = [];
+    const outspeedA = [];
+    const outspeedB = [];
+    const koA = [];
+    const koB = [];
+    let checked = 0;
+
+    for (let rank = 0; rank < topList.length; rank++) {
+        const threatName = topList[rank];
+        const threatKey = normalizeKey(threatName);
+
+        // Skip self-mirrors when comparing the same species as the threat
+        const aIsThreat = hasA && normalizeKey(p1.species) === threatKey;
+        const bIsThreat = hasB && normalizeKey(p2.species) === threatKey;
+
+        const metaBuild = typeof findMetaBuildForSpecies === 'function'
+            ? findMetaBuildForSpecies(threatName, format, buildsData)
+            : null;
+        if (!metaBuild?.build) continue;
+
+        const threatParsed = typeof parseAnalysisBuild === 'function'
+            ? parseAnalysisBuild(metaBuild.build)
+            : null;
+        if (!threatParsed?.species) continue;
+
+        const threatDb = resolveCompareDb(threatParsed)
+            || pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(threatParsed.species));
+        if (!threatDb) continue;
+
+        const threatAtk = buildCalcStateFromSlot(threatParsed, 1, threatDb, movesData);
+        const threatDef = buildCalcStateFromSlot(threatParsed, 2, threatDb, movesData);
+        const threatSpeed = getBuildEffectiveSpeed(threatAtk, field) || 0;
+        checked++;
+
+        const defA = (!aIsThreat && stateADef) ? findBestDamage(threatAtk, stateADef, field) : null;
+        const defB = (!bIsThreat && stateBDef) ? findBestDamage(threatAtk, stateBDef, field) : null;
+        const offA = (!aIsThreat && stateAAtk) ? findBestDamage(stateAAtk, threatDef, field) : null;
+        const offB = (!bIsThreat && stateBAtk) ? findBestDamage(stateBAtk, threatDef, field) : null;
+
+        const aSurv = !aIsThreat && hasA && survivesMetaHit(defA);
+        const bSurv = !bIsThreat && hasB && survivesMetaHit(defB);
+        const aFmt = fmtDamage(defA);
+        const bFmt = fmtDamage(defB);
+
+        const aFaster = hasA && !aIsThreat && speedA != null
+            && getCompareSpeedTier(speedA, threatSpeed) === 'faster';
+        const bFaster = hasB && !bIsThreat && speedB != null
+            && getCompareSpeedTier(speedB, threatSpeed) === 'faster';
+
+        const aKo = hasA && !aIsThreat && typeof isStrongAnswer === 'function' && isStrongAnswer(offA?.koLabel);
+        const bKo = hasB && !bIsThreat && typeof isStrongAnswer === 'function' && isStrongAnswer(offB?.koLabel);
+
+        const base = {
+            name: threatName,
+            rank: rank + 1,
+            item: threatParsed.item || '',
+            threatSpeed,
+            speedA,
+            speedB,
+            defA: aFmt,
+            defB: bFmt,
+            offA: fmtDamage(offA),
+            offB: fmtDamage(offB),
+            offALabel: offA?.koLabel || '',
+            offBLabel: offB?.koLabel || ''
+        };
+
+        // Only compare sides that can face this threat (skip self-mirror false positives)
+        const canCompareBoth = hasA && hasB && !aIsThreat && !bIsThreat;
+        const canCompareAOnly = hasA && !hasB && !aIsThreat;
+        const canCompareBOnly = hasB && !hasA && !bIsThreat;
+
+        if (canCompareBoth) {
+            if (aSurv && !bSurv) surviveA.push(base);
+            if (bSurv && !aSurv) surviveB.push(base);
+            if (aFaster && !bFaster) outspeedA.push(base);
+            if (bFaster && !aFaster) outspeedB.push(base);
+            if (aKo && !bKo) koA.push(base);
+            if (bKo && !aKo) koB.push(base);
+        } else if (canCompareAOnly) {
+            if (aSurv) surviveA.push(base);
+            if (aFaster) outspeedA.push(base);
+            if (aKo) koA.push(base);
+        } else if (canCompareBOnly) {
+            if (bSurv) surviveB.push(base);
+            if (bFaster) outspeedB.push(base);
+            if (bKo) koB.push(base);
+        }
+    }
+
+    if (requestId !== metaDiffRequestId) return;
+
+    metaDiffCache = {
+        surviveA, surviveB, outspeedA, outspeedB, koA, koB,
+        checked, hasA, hasB, speedA, speedB, format
+    };
+
+    setMetaSummary(metaDiffCache);
+    const modeNote = hasA && hasB
+        ? `Compared against ${checked} meta sets (${format}). Showing exclusive advantages only.`
+        : `Compared against ${checked} meta sets (${format}). Load the other build to see exclusive differences.`;
+    setMetaStatus(modeNote);
+    renderMetaDiffFromCache();
+    } catch (err) {
+        console.error('Meta diff failed', err);
+        if (requestId === metaDiffRequestId) {
+            setMetaStatus('Meta comparison failed. Try Recalc, or check the console.');
+        }
+    }
+}
+
+function setMetaStatus(text) {
+    const el = document.getElementById('meta-diff-status');
+    if (el) el.textContent = text || '';
+}
+
+function setMetaSummary(cache) {
+    const ids = {
+        'meta-sum-survive-a': cache?.surviveA?.length,
+        'meta-sum-survive-b': cache?.surviveB?.length,
+        'meta-sum-speed-a': cache?.outspeedA?.length,
+        'meta-sum-speed-b': cache?.outspeedB?.length,
+        'meta-sum-ko-a': cache?.koA?.length,
+        'meta-sum-ko-b': cache?.koB?.length
+    };
+    Object.entries(ids).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val == null ? '—' : String(val);
+    });
+}
+
+function renderMetaDiffFromCache() {
+    if (!metaDiffCache) {
+        renderMetaLists([], [], metaDiffTab);
+        return;
+    }
+    const map = {
+        survive: [metaDiffCache.surviveA, metaDiffCache.surviveB],
+        outspeed: [metaDiffCache.outspeedA, metaDiffCache.outspeedB],
+        ko: [metaDiffCache.koA, metaDiffCache.koB]
+    };
+    const [listA, listB] = map[metaDiffTab] || map.survive;
+    renderMetaLists(listA, listB, metaDiffTab);
+}
+
+function renderMetaLists(listA, listB, tab) {
+    const titles = {
+        survive: ['Survives attacks B does not', 'Survives attacks A does not'],
+        outspeed: ['Outspeeds threats B does not', 'Outspeeds threats A does not'],
+        ko: ['OHKO / 2HKO threats B does not', 'OHKO / 2HKO threats A does not']
+    };
+    const singleTitles = {
+        survive: ['Survives these meta attacks', 'Survives these meta attacks'],
+        outspeed: ['Outspeeds these meta threats', 'Outspeeds these meta threats'],
+        ko: ['OHKO / 2HKO these meta threats', 'OHKO / 2HKO these meta threats']
+    };
+    const both = !!(metaDiffCache?.hasA && metaDiffCache?.hasB);
+    const t = both ? titles : singleTitles;
+    const titleA = document.getElementById('meta-col-title-a');
+    const titleB = document.getElementById('meta-col-title-b');
+    if (titleA) titleA.textContent = (t[tab] || t.survive)[0];
+    if (titleB) titleB.textContent = (t[tab] || t.survive)[1];
+
+    const emptyA = both
+        ? 'No exclusive advantages for Build A in this category.'
+        : (metaDiffCache?.hasA ? 'No matchups in this category.' : 'Load Build A.');
+    const emptyB = both
+        ? 'No exclusive advantages for Build B in this category.'
+        : (metaDiffCache?.hasB ? 'No matchups in this category.' : 'Load Build B.');
+
+    fillMetaList('meta-diff-list-a', listA || [], tab, 'a', emptyA);
+    fillMetaList('meta-diff-list-b', listB || [], tab, 'b', emptyB);
+}
+
+function fillMetaList(elId, list, tab, side, emptyMsg) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (!list.length) {
+        el.innerHTML = `<div class="meta-diff-empty">${emptyMsg}</div>`;
+        return;
+    }
+    el.innerHTML = list.map(row => metaDiffCardHtml(row, tab, side)).join('');
+}
+
+function metaDiffCardHtml(row, tab, side) {
+    const other = side === 'a' ? 'b' : 'a';
+    const ownDef = side === 'a' ? row.defA : row.defB;
+    const otherDef = side === 'a' ? row.defB : row.defA;
+    const ownOff = side === 'a' ? row.offA : row.offB;
+    const otherOff = side === 'a' ? row.offB : row.offA;
+    const ownOffLabel = side === 'a' ? row.offALabel : row.offBLabel;
+    const otherOffLabel = side === 'a' ? row.offBLabel : row.offALabel;
+    const ownSpe = side === 'a' ? row.speedA : row.speedB;
+    const otherSpe = side === 'a' ? row.speedB : row.speedA;
+
+    let detail = '';
+    if (tab === 'survive') {
+        detail = `
+            <div class="meta-diff-card__calcs">
+                <div class="meta-diff-calc meta-diff-calc--win">
+                    <span class="meta-diff-calc__who">${side.toUpperCase()}</span>
+                    <span class="meta-diff-calc__move">${ownDef.move || 'Best hit'}</span>
+                    <span class="meta-diff-calc__pct">${ownDef.pct}</span>
+                    <span class="meta-diff-calc__tag">${ownDef.label}</span>
+                </div>
+                <div class="meta-diff-calc meta-diff-calc--lose">
+                    <span class="meta-diff-calc__who">${other.toUpperCase()}</span>
+                    <span class="meta-diff-calc__move">${otherDef.move || 'Best hit'}</span>
+                    <span class="meta-diff-calc__pct">${otherDef.pct}</span>
+                    <span class="meta-diff-calc__tag">${otherDef.label}</span>
+                </div>
+            </div>`;
+    } else if (tab === 'outspeed') {
+        detail = `
+            <div class="meta-diff-card__calcs meta-diff-card__calcs--speed">
+                <div class="meta-diff-calc meta-diff-calc--win">
+                    <span class="meta-diff-calc__who">${side.toUpperCase()}</span>
+                    <span class="meta-diff-calc__pct">${ownSpe ?? '—'} Spe</span>
+                    <span class="meta-diff-calc__tag">Faster</span>
+                </div>
+                <div class="meta-diff-calc">
+                    <span class="meta-diff-calc__who">Threat</span>
+                    <span class="meta-diff-calc__pct">${row.threatSpeed ?? '—'} Spe</span>
+                </div>
+                <div class="meta-diff-calc meta-diff-calc--lose">
+                    <span class="meta-diff-calc__who">${other.toUpperCase()}</span>
+                    <span class="meta-diff-calc__pct">${otherSpe ?? '—'} Spe</span>
+                    <span class="meta-diff-calc__tag">Not faster</span>
+                </div>
+            </div>`;
+    } else {
+        detail = `
+            <div class="meta-diff-card__calcs">
+                <div class="meta-diff-calc meta-diff-calc--win">
+                    <span class="meta-diff-calc__who">${side.toUpperCase()}</span>
+                    <span class="meta-diff-calc__move">${ownOff.move || 'Best move'}</span>
+                    <span class="meta-diff-calc__pct">${ownOff.pct}</span>
+                    <span class="meta-diff-calc__tag">${ownOffLabel || ownOff.label}</span>
+                </div>
+                <div class="meta-diff-calc meta-diff-calc--lose">
+                    <span class="meta-diff-calc__who">${other.toUpperCase()}</span>
+                    <span class="meta-diff-calc__move">${otherOff.move || 'Best move'}</span>
+                    <span class="meta-diff-calc__pct">${otherOff.pct}</span>
+                    <span class="meta-diff-calc__tag">${otherOffLabel || otherOff.label}</span>
+                </div>
+            </div>`;
+    }
+
+    return `
+        <article class="meta-diff-card">
+            <div class="meta-diff-card__head">
+                <img class="meta-diff-card__sprite" src="${metaSpriteUrl(row.name)}" alt=""
+                     onerror="this.style.visibility='hidden'" width="40" height="40">
+                <div class="meta-diff-card__identity">
+                    <div class="meta-diff-card__name">
+                        <span class="meta-diff-card__rank">#${row.rank}</span>
+                        ${row.name}
+                    </div>
+                    ${row.item ? `<div class="meta-diff-card__item">${row.item}</div>` : ''}
+                </div>
+            </div>
+            ${detail}
+        </article>`;
 }
 
 // ------ MODAL / POKEPASTE IMPORTER ------
