@@ -2177,9 +2177,9 @@
         "id": "274",
         "pokemon": "Vivillon",
         "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
-        "synergy": [],
+        "synergy": ["657","658"],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "275",
@@ -5563,20 +5563,20 @@
     {
         "id": "657",
         "pokemon": "Politoed",
-        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 32 HP / 23 Def / 11 SpD\nCalm Nature    \n- Weather Ball  \n- Encore  \n- Protect  \n- Perish Song",
+        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 32 HP / 23 Def / 11 SpD\nCalm Nature    \n- Weather Ball  \n- Hypnosis  \n- Protect  \n- Perish Song",
         "synergy": ["658"],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "658",
         "pokemon": "Gengar",
-        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 30 HP / 28 SpD / 8 Spe\nModest Nature    \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
+        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 30 HP / 1 Def / 1 SpA / 28 SpD / 6 Spe\nModest Nature    \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
         "synergy": [
-            "657"
+            "657","524","274"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "659",
