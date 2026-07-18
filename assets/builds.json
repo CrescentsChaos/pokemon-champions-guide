@@ -2,7 +2,7 @@
     {
         "id": "01",
         "pokemon": "Abomasnow",
-        "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 31 HP / 32 SpA / 3 SpD\nIVs: 0 Atk\nTera Type: Water\nModest Nature\n- Aurora Veil\n- Blizzard\n- Giga Drain\n- Earth Power",
+        "build": "Abomasnow @ Heavy-Duty Boots\nAbility: Snow Warning\nEVs: 31 HP / 32 SpA / 3 SpD\nTera Type: Water\nModest Nature\n- Aurora Veil\n- Blizzard\n- Giga Drain\n- Earth Power",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -90,7 +90,7 @@
     {
         "id": "17",
         "pokemon": "Armarouge",
-        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 29 HP / 5 Def / 32 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
+        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 29 HP / 5 Def / 32 SpA / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
         "synergy": [
             "16"
         ],
@@ -126,7 +126,7 @@
     {
         "id": "06",
         "pokemon": "Flutter Mane",
-        "build": "Flutter Mane @ Focus Sash\nLevel: 50\nAbility: Protosynthesis\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Normal\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Icy Wind\n- Protect",
+        "build": "Flutter Mane @ Focus Sash\nLevel: 50\nAbility: Protosynthesis\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Normal\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Icy Wind\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -134,7 +134,7 @@
     {
         "id": "07",
         "pokemon": "Flutter Mane",
-        "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 15 HP / 10 Def / 15 SpA / 1 SpD / 25 Spe\nIVs: 0 Atk\nTera Type: Stellar\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
+        "build": "Flutter Mane @ Booster Energy\nLevel: 50\nAbility: Protosynthesis\nEVs: 15 HP / 10 Def / 15 SpA / 1 SpD / 25 Spe\nTera Type: Stellar\nModest Nature\n- Moonblast\n- Shadow Ball\n- Dazzling Gleam\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -142,7 +142,7 @@
     {
         "id": "08",
         "pokemon": "Flutter Mane",
-        "build": "Flutter Mane @ Choice Specs\nAbility: Protosynthesis\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Psyshock\n- Power Gem",
+        "build": "Flutter Mane @ Choice Specs\nAbility: Protosynthesis\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fairy\nTimid Nature\n- Shadow Ball\n- Moonblast\n- Psyshock\n- Power Gem",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -150,7 +150,7 @@
     {
         "id": "09",
         "pokemon": "Flutter Mane",
-        "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nEVs: 31 HP / 30 Def / 5 Spe\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Thunder Wave\n- Moonblast\n- Icy Wind\n- Taunt",
+        "build": "Flutter Mane @ Booster Energy\nAbility: Protosynthesis\nEVs: 31 HP / 30 Def / 5 Spe\nTera Type: Fairy\nBold Nature\n- Thunder Wave\n- Moonblast\n- Icy Wind\n- Taunt",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -158,7 +158,7 @@
     {
         "id": "18",
         "pokemon": "Hatterene",
-        "build": "Hatterene @ Life Orb\nLevel: 50\nAbility: Magic Bounce\nEVs: 31 HP / 7 Def / 28 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Expanding Force\n- Dazzling Gleam\n- Trick Room\n- Protect",
+        "build": "Hatterene @ Life Orb\nLevel: 50\nAbility: Magic Bounce\nEVs: 31 HP / 7 Def / 28 SpA / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Expanding Force\n- Dazzling Gleam\n- Trick Room\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -232,7 +232,7 @@
     {
         "id": "16",
         "pokemon": "Indeedee-F",
-        "build": "Indeedee-F @ Psychic Seed\nLevel: 50\nAbility: Psychic Surge\nEVs: 32 HP / 32 Def / 2 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fairy\nRelaxed Nature\n- Follow Me\n- Trick Room\n- Helping Hand\n- Psychic",
+        "build": "Indeedee-F @ Psychic Seed\nLevel: 50\nAbility: Psychic Surge\nEVs: 32 HP / 32 Def / 2 SpD / 0 Spe\nTera Type: Fairy\nRelaxed Nature\n- Follow Me\n- Trick Room\n- Helping Hand\n- Psychic",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -304,7 +304,7 @@
     {
         "id": "37",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
+        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -312,7 +312,7 @@
     {
         "id": "38",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 30 HP / 21 Def / 15 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
+        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 30 HP / 21 Def / 15 SpD\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -361,7 +361,7 @@
     {
         "id": "43",
         "pokemon": "Venusaur",
-        "build": "Venusaur @ Venusaurite\nAbility: Chlorophyll\nEVs: 32 HP / 20 SpA / 14 Spe\nIVs: 0 Atk\nModest Nature\n- Giga Drain\n- Sludge Bomb\n- Earth Power\n- Synthesis",
+        "build": "Venusaur @ Venusaurite\nAbility: Chlorophyll\nEVs: 32 HP / 20 SpA / 14 Spe\nModest Nature\n- Giga Drain\n- Sludge Bomb\n- Earth Power\n- Synthesis",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -369,7 +369,7 @@
     {
         "id": "44",
         "pokemon": "Charizard",
-        "build": "Charizard @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Ground\nTimid Nature\n- Hurricane\n- Flamethrower\n- Scorching Sands\n- Will-O-Wisp",
+        "build": "Charizard @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Ground\nTimid Nature\n- Hurricane\n- Flamethrower\n- Scorching Sands\n- Will-O-Wisp",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -377,7 +377,7 @@
     {
         "id": "45",
         "pokemon": "Charizard",
-        "build": "Charizard @ Choice Specs\nLevel: 50\nAbility: Solar Power\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Heat Wave\n- Weather Ball\n- Overheat\n- Air Slash",
+        "build": "Charizard @ Choice Specs\nLevel: 50\nAbility: Solar Power\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Heat Wave\n- Weather Ball\n- Overheat\n- Air Slash",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -385,7 +385,7 @@
     {
         "id": "46",
         "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y\nAbility: Solar Power\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
+        "build": "Charizard @ Charizardite Y\nAbility: Solar Power\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fire\nTimid Nature\n- Heat Wave\n- Scorching Sands\n- Tailwind\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -433,7 +433,7 @@
     {
         "id": "52",
         "pokemon": "Pidgeot",
-        "build": "Pidgeot @ Pidgeotite\nAbility: Tangled Feet\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTimid Nature\n- Hurricane\n- Heat Wave\n- Roost\n- Toxic",
+        "build": "Pidgeot @ Pidgeotite\nAbility: Tangled Feet\nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature\n- Hurricane\n- Heat Wave\n- Roost\n- Toxic",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -497,7 +497,7 @@
     {
         "id": "60",
         "pokemon": "Ninetales",
-        "build": "Ninetales @ Heat Rock\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 Spe\nIVs: 0 Atk\nTera Type: Grass\nTimid Nature\n- Weather Ball\n- Encore\n- Healing Wish\n- Will-O-Wisp",
+        "build": "Ninetales @ Heat Rock\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 Spe\nTera Type: Grass\nTimid Nature\n- Weather Ball\n- Encore\n- Healing Wish\n- Will-O-Wisp",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -513,7 +513,7 @@
     {
         "id": "62",
         "pokemon": "Ninetales-Alola",
-        "build": "Ninetales-Alola @ Focus Sash\nLevel: 50\nAbility: Snow Warning\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Blizzard\n- Freeze-Dry\n- Aurora Veil\n- Icy Wind",
+        "build": "Ninetales-Alola @ Focus Sash\nLevel: 50\nAbility: Snow Warning\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Blizzard\n- Freeze-Dry\n- Aurora Veil\n- Icy Wind",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -521,7 +521,7 @@
     {
         "id": "63",
         "pokemon": "Alakazam",
-        "build": "Alakazam @ Focus Sash\nAbility: Magic Guard\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTimid Nature\n- Nasty Plot\n- Psychic\n- Focus Blast\n- Shadow Ball",
+        "build": "Alakazam @ Focus Sash\nAbility: Magic Guard\nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature\n- Nasty Plot\n- Psychic\n- Focus Blast\n- Shadow Ball",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -539,7 +539,7 @@
     {
         "id": "65",
         "pokemon": "Slowbro",
-        "build": "Slowbro @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpD\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Scald\n- Psychic Noise\n- Slack Off",
+        "build": "Slowbro @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpD\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Scald\n- Psychic Noise\n- Slack Off",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -547,7 +547,7 @@
     {
         "id": "66",
         "pokemon": "Slowbro-Galar",
-        "build": "Slowbro-Galar @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Calm Mind\n- Sludge Bomb\n- Flamethrower\n- Slack Off",
+        "build": "Slowbro-Galar @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpD\nTera Type: Water\nBold Nature\n- Calm Mind\n- Sludge Bomb\n- Flamethrower\n- Slack Off",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -555,7 +555,7 @@
     {
         "id": "67",
         "pokemon": "Gengar",
-        "build": "Gengar @ Air Balloon\nAbility: Cursed Body\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Shadow Ball\n- Sludge Wave\n- Focus Blast",
+        "build": "Gengar @ Air Balloon\nAbility: Cursed Body\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Shadow Ball\n- Sludge Wave\n- Focus Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -683,7 +683,7 @@
     {
         "id": "85",
         "pokemon": "Typhlosion",
-        "build": "Typhlosion @ Choice Specs\nAbility: Flash Fire\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Eruption\n- Fire Blast\n- Focus Blast\n- Scorching Sands",
+        "build": "Typhlosion @ Choice Specs\nAbility: Flash Fire\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Fire\nTimid Nature\n- Eruption\n- Fire Blast\n- Focus Blast\n- Scorching Sands",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -691,7 +691,7 @@
     {
         "id": "86",
         "pokemon": "Typhlosion-Hisui",
-        "build": "Typhlosion-Hisui @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Eruption\n- Lava Plume\n- Infernal Parade\n- Focus Blast",
+        "build": "Typhlosion-Hisui @ Heavy-Duty Boots\nAbility: Blaze\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fire\nTimid Nature\n- Eruption\n- Lava Plume\n- Infernal Parade\n- Focus Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -875,7 +875,7 @@
     {
         "id": "109",
         "pokemon": "Skarmory",
-        "build": "Skarmory @ Rocky Helmet\nAbility: Sturdy\nEVs: 31 HP / 4 Def / 23 SpD / 8 Spe\nIVs: 0 Atk\nTera Type: Ghost\nImpish Nature\n- Spikes\n- Body Press\n- Whirlwind\n- Roost",
+        "build": "Skarmory @ Rocky Helmet\nAbility: Sturdy\nEVs: 31 HP / 4 Def / 23 SpD / 8 Spe\nTera Type: Ghost\nImpish Nature\n- Spikes\n- Body Press\n- Whirlwind\n- Roost",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -891,7 +891,7 @@
     {
         "id": "111",
         "pokemon": "Houndoom",
-        "build": "Houndoom @ Heavy-Duty Boots\nAbility: Flash Fire\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Dark Pulse\n- Substitute",
+        "build": "Houndoom @ Heavy-Duty Boots\nAbility: Flash Fire\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Dark Pulse\n- Substitute",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -915,7 +915,7 @@
     {
         "id": "114",
         "pokemon": "Pelipper",
-        "build": "Pelipper @ Focus Sash\nLevel: 50\nAbility: Drizzle\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Stellar\nModest Nature\n- Hurricane\n- Weather Ball\n- Tailwind\n- Protect",
+        "build": "Pelipper @ Focus Sash\nLevel: 50\nAbility: Drizzle\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Stellar\nModest Nature\n- Hurricane\n- Weather Ball\n- Tailwind\n- Protect",
         "synergy": [
             "523"
         ],
@@ -925,7 +925,7 @@
     {
         "id": "115",
         "pokemon": "Gardevoir",
-        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Psychic Noise\n- Focus Blast\n- Healing Wish",
+        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fairy\nModest Nature\n- Moonblast\n- Psychic Noise\n- Focus Blast\n- Healing Wish",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -933,7 +933,7 @@
     {
         "id": "116",
         "pokemon": "Gardevoir",
-        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Psychic\n- Trick\n- Healing Wish",
+        "build": "Gardevoir @ Choice Scarf\nAbility: Trace\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Psychic\n- Trick\n- Healing Wish",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -941,7 +941,7 @@
     {
         "id": "117",
         "pokemon": "Gardevoir",
-        "build": "Gardevoir @ Gardevoirite\nLevel: 50\nAbility: Trace\nEVs: 32 HP / 28 Def / 6 SpA\nIVs: 0 Atk / 0 Spe\nQuiet Nature\n- Trick Room\n- Hyper Voice\n- Psychic\n- Protect",
+        "build": "Gardevoir @ Gardevoirite\nLevel: 50\nAbility: Trace\nEVs: 32 HP / 28 Def / 6 SpA / 0 Spe\nQuiet Nature\n- Trick Room\n- Hyper Voice\n- Psychic\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1013,7 +1013,7 @@
     {
         "id": "128",
         "pokemon": "Manectric",
-        "build": "Manectric @ Manectite\nAbility: Lightning Rod\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTimid Nature\n- Volt Switch\n- Thunderbolt\n- Overheat\n- Hidden Power Ice",
+        "build": "Manectric @ Manectite\nAbility: Lightning Rod\nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature\n- Volt Switch\n- Thunderbolt\n- Overheat\n- Hidden Power Ice",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1029,7 +1029,7 @@
     {
         "id": "130",
         "pokemon": "Camerupt",
-        "build": "Camerupt @ Leftovers\nAbility: Solid Rock\nEVs: 32 HP / 2 Def / 32 SpD\nIVs: 0 Atk\nTera Type: Water\nCalm Nature\n- Stealth Rock\n- Lava Plume\n- Earth Power\n- Roar",
+        "build": "Camerupt @ Leftovers\nAbility: Solid Rock\nEVs: 32 HP / 2 Def / 32 SpD\nTera Type: Water\nCalm Nature\n- Stealth Rock\n- Lava Plume\n- Earth Power\n- Roar",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1037,7 +1037,7 @@
     {
         "id": "131",
         "pokemon": "Camerupt",
-        "build": "Camerupt @ Cameruptite\nAbility: Solid Rock\nEVs: 31 HP / 2 Def / 32 SpA / 1 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Heat Wave\n- Earth Power\n- Eruption\n- Protect",
+        "build": "Camerupt @ Cameruptite\nAbility: Solid Rock\nEVs: 31 HP / 2 Def / 32 SpA / 1 SpD / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Heat Wave\n- Earth Power\n- Eruption\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1053,7 +1053,7 @@
     {
         "id": "133",
         "pokemon": "Torkoal",
-        "build": "Torkoal @ Eject Pack\nLevel: 50\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Overheat\n- Eruption\n- Helping Hand\n- Protect",
+        "build": "Torkoal @ Eject Pack\nLevel: 50\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 SpA / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Overheat\n- Eruption\n- Helping Hand\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1061,7 +1061,7 @@
     {
         "id": "134",
         "pokemon": "Torkoal",
-        "build": "Torkoal @ Charcoal\nLevel: 50\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Eruption\n- Heat Wave\n- Earth Power\n- Protect",
+        "build": "Torkoal @ Charcoal\nLevel: 50\nAbility: Drought\nEVs: 32 HP / 2 Def / 32 SpA / 0 Spe\nTera Type: Fire\nQuiet Nature\n- Eruption\n- Heat Wave\n- Earth Power\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1253,7 +1253,7 @@
     {
         "id": "158",
         "pokemon": "Empoleon",
-        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 20 HP / 19 SpA / 27 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Surf\n- Ice Beam\n- Grass Knot\n- Roost",
+        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 20 HP / 19 SpA / 27 Spe\nTera Type: Fairy\nModest Nature\n- Surf\n- Ice Beam\n- Grass Knot\n- Roost",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1261,7 +1261,7 @@
     {
         "id": "159",
         "pokemon": "Empoleon",
-        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 32 HP / 2 Def / 32 SpD\nIVs: 0 Atk\nTera Type: Fairy\nCalm Nature\n- Surf\n- Roost\n- Stealth Rock\n- Knock Off",
+        "build": "Empoleon @ Leftovers\nAbility: Competitive\nEVs: 32 HP / 2 Def / 32 SpD\nTera Type: Fairy\nCalm Nature\n- Surf\n- Roost\n- Stealth Rock\n- Knock Off",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1293,7 +1293,7 @@
     {
         "id": "163",
         "pokemon": "Roserade",
-        "build": "Roserade @ Heavy-Duty Boots\nAbility: Natural Cure\nEVs: 32 HP / 17 Def / 17 Spe\nIVs: 0 Atk\nBold Nature\n- Spikes\n- Giga Drain\n- Sludge Bomb\n- Synthesis",
+        "build": "Roserade @ Heavy-Duty Boots\nAbility: Natural Cure\nEVs: 32 HP / 17 Def / 17 Spe\nBold Nature\n- Spikes\n- Giga Drain\n- Sludge Bomb\n- Synthesis",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1349,7 +1349,7 @@
     {
         "id": "170",
         "pokemon": "Spiritomb",
-        "build": "Spiritomb @ Leftovers\nAbility: Infiltrator\nEVs: 32 HP / 32 SpA / 2 SpD\nIVs: 0 Atk / 0 Spe\nTera Type: Dark\nQuiet Nature\n- Trick Room\n- Nasty Plot\n- Dark Pulse\n- Psyshock",
+        "build": "Spiritomb @ Leftovers\nAbility: Infiltrator\nEVs: 32 HP / 32 SpA / 2 SpD / 0 Spe\nTera Type: Dark\nQuiet Nature\n- Trick Room\n- Nasty Plot\n- Dark Pulse\n- Psyshock",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1549,7 +1549,7 @@
     {
         "id": "195",
         "pokemon": "Froslass",
-        "build": "Froslass @ Focus Sash\nAbility: Cursed Body\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Spikes\n- Taunt\n- Destiny Bond\n- Icy Wind",
+        "build": "Froslass @ Focus Sash\nAbility: Cursed Body\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Spikes\n- Taunt\n- Destiny Bond\n- Icy Wind",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1731,38 +1731,6 @@
         "isMeta": false
     },
     {
-        "id": "218",
-        "pokemon": "Whimsicott",
-        "build": "Whimsicott @ Choice Specs\nAbility: Infiltrator\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Energy Ball\n- U-turn\n- Switcheroo",
-        "synergy": [],
-        "format": "Singles",
-        "isMeta": false
-    },
-    {
-        "id": "219",
-        "pokemon": "Whimsicott",
-        "build": "Whimsicott @ Heavy-Duty Boots\nAbility: Prankster\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Steel\nTimid Nature\n- Moonblast\n- Giga Drain\n- U-turn\n- Encore",
-        "synergy": [],
-        "format": "Singles",
-        "isMeta": false
-    },
-    {
-        "id": "220",
-        "pokemon": "Whimsicott",
-        "build": "Whimsicott @ Covert Cloak\nLevel: 50\nAbility: Prankster\nEVs: 32 HP / 2 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Tailwind\n- Moonblast\n- Encore\n- Helping Hand",
-        "synergy": [],
-        "format": "Doubles",
-        "isMeta": false
-    },
-    {
-        "id": "221",
-        "pokemon": "Whimsicott",
-        "build": "Whimsicott @ Covert Cloak\nLevel: 50\nAbility: Prankster\nEVs: 23 HP / 15 SpD / 28 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Moonblast\n- Tailwind\n- Encore\n- Light Screen",
-        "synergy": [],
-        "format": "Doubles",
-        "isMeta": false
-    },
-    {
         "id": "222",
         "pokemon": "Krookodile",
         "build": "Krookodile @ Choice Band\nAbility: Intimidate\nEVs: 32 Atk / 2 SpD / 32 Spe\nTera Type: Dark\nJolly Nature\n- Earthquake\n- Knock Off\n- Gunk Shot\n- Close Combat",
@@ -1805,7 +1773,7 @@
     {
         "id": "227",
         "pokemon": "Zoroark",
-        "build": "Zoroark @ Choice Specs\nAbility: Illusion\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Dark Pulse\n- Sludge Bomb\n- Trick\n- Focus Blast",
+        "build": "Zoroark @ Choice Specs\nAbility: Illusion\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Dark\nTimid Nature\n- Dark Pulse\n- Sludge Bomb\n- Trick\n- Focus Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1877,7 +1845,7 @@
     {
         "id": "236",
         "pokemon": "Chandelure",
-        "build": "Chandelure @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTimid Nature\n- Fire Blast\n- Shadow Ball\n- Toxic\n- Energy Ball",
+        "build": "Chandelure @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature\n- Fire Blast\n- Shadow Ball\n- Toxic\n- Energy Ball",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1933,7 +1901,7 @@
     {
         "id": "243",
         "pokemon": "Hydreigon",
-        "build": "Hydreigon @ Leftovers\nAbility: Levitate\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Poison\nTimid Nature\n- Nasty Plot\n- Draco Meteor\n- Flamethrower\n- Thunder Wave",
+        "build": "Hydreigon @ Leftovers\nAbility: Levitate\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Poison\nTimid Nature\n- Nasty Plot\n- Draco Meteor\n- Flamethrower\n- Thunder Wave",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1949,7 +1917,7 @@
     {
         "id": "245",
         "pokemon": "Hydreigon",
-        "build": "Hydreigon @ Choice Specs\nAbility: Levitate\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Steel\nTimid Nature\n- Dark Pulse\n- Draco Meteor\n- Flash Cannon\n- Earth Power",
+        "build": "Hydreigon @ Choice Specs\nAbility: Levitate\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Steel\nTimid Nature\n- Dark Pulse\n- Draco Meteor\n- Flash Cannon\n- Earth Power",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1965,7 +1933,7 @@
     {
         "id": "247",
         "pokemon": "Volcarona",
-        "build": "Volcarona @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 12 HP / 32 Def / 22 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Quiver Dance\n- Flamethrower\n- Morning Sun\n- Will-O-Wisp",
+        "build": "Volcarona @ Heavy-Duty Boots\nAbility: Flame Body\nEVs: 12 HP / 32 Def / 22 Spe\nTera Type: Water\nTimid Nature\n- Quiver Dance\n- Flamethrower\n- Morning Sun\n- Will-O-Wisp",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -1973,7 +1941,7 @@
     {
         "id": "248",
         "pokemon": "Volcarona",
-        "build": "Volcarona @ Covert Cloak\nLevel: 50\nAbility: Flame Body\nEVs: 32 HP / 18 Def / 1 SpA / 1 SpD / 14 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Heat Wave\n- Tera Blast\n- Quiver Dance\n- Protect",
+        "build": "Volcarona @ Covert Cloak\nLevel: 50\nAbility: Flame Body\nEVs: 32 HP / 18 Def / 1 SpA / 1 SpD / 14 Spe\nTera Type: Fairy\nTimid Nature\n- Heat Wave\n- Tera Blast\n- Quiver Dance\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1981,7 +1949,7 @@
     {
         "id": "249",
         "pokemon": "Volcarona",
-        "build": "Volcarona @ Sitrus Berry\nLevel: 50\nAbility: Flame Body\nEVs: 20 HP / 11 Def / 2 SpA / 1 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Overheat\n- Struggle Bug\n- Rage Powder\n- Tailwind",
+        "build": "Volcarona @ Sitrus Berry\nLevel: 50\nAbility: Flame Body\nEVs: 20 HP / 11 Def / 2 SpA / 1 SpD / 32 Spe\nTera Type: Water\nTimid Nature\n- Overheat\n- Struggle Bug\n- Rage Powder\n- Tailwind",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -1989,7 +1957,7 @@
     {
         "id": "679",
         "pokemon": "Venusaur",
-        "build": "Venusaur @ Focus Sash  \nAbility: Chlorophyll  \nTera Type: Grass  \nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Sleep Powder  \n- Sludge Bomb  \n- Energy Ball  \n- Earth Power",
+        "build": "Venusaur @ Focus Sash  \nAbility: Chlorophyll  \nTera Type: Grass  \nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature    \n- Sleep Powder  \n- Sludge Bomb  \n- Energy Ball  \n- Earth Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": true
@@ -1997,13 +1965,13 @@
     {
         "id": "250",
         "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Solar Beam  \n- Weather Ball  \n- Protect",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 25 Def / 5 SpA / 4 Spe\nModest Nature  \n- Heat Wave  \n- Solar Beam  \n- Weather Ball  \n- Protect",
         "synergy": [
             "250",
             "570",
             "415",
             "356",
-            "327"
+            "327","251"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -2011,7 +1979,7 @@
     {
         "id": "251",
         "pokemon": "Whimsicott",
-        "build": "Whimsicott @ Focus Sash  \nAbility: Prankster  \nLevel: 50  \nTera Type: Grass  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Sunny Day  \n- Encore  \n- Tailwind",
+        "build": "Whimsicott @ Focus Sash  \nAbility: Prankster  \nLevel: 50  \nTera Type: Grass  \nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature  \n- Moonblast  \n- Sunny Day  \n- Encore  \n- Tailwind",
         "synergy": [
             "250"
         ],
@@ -2041,7 +2009,7 @@
     {
         "id": "254",
         "pokemon": "Maushold",
-        "build": "Maushold @ Chople Berry  \nAbility: Friend Guard  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 HP / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Super Fang  \n- Taunt  \n- Follow Me  \n- Protect",
+        "build": "Maushold @ Chople Berry  \nAbility: Friend Guard  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 HP / 2 SpD / 32 Spe\nTimid Nature    \n- Super Fang  \n- Taunt  \n- Follow Me  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2065,7 +2033,7 @@
     {
         "id": "257",
         "pokemon": "Gengar",
-        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nLevel: 50  \nTera Type: Ghost  \nEVs: 32 HP / 2 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Perish Song  \n- Protect  \n- Substitute",
+        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nLevel: 50  \nTera Type: Ghost  \nEVs: 32 HP / 2 SpA / 32 Spe\nTimid Nature    \n- Shadow Ball  \n- Perish Song  \n- Protect  \n- Substitute",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2073,7 +2041,7 @@
     {
         "id": "258",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 31 HP / 10 Def / 1 SpA / 23 SpD / 1 Spe\nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 31 HP / 10 Def / 1 SpA / 23 SpD / 1 Spe\nBold Nature    \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2099,7 +2067,7 @@
     {
         "id": "261",
         "pokemon": "Kommo-o",
-        "build": "Kommo-o @ Leftovers  \nAbility: Soundproof  \nLevel: 50  \nTera Type: Dragon  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Clanging Scales  \n- Clangorous Soul  \n- Aura Sphere  \n- Protect",
+        "build": "Kommo-o @ Leftovers  \nAbility: Soundproof  \nLevel: 50  \nTera Type: Dragon  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Clanging Scales  \n- Clangorous Soul  \n- Aura Sphere  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2115,7 +2083,7 @@
     {
         "id": "264",
         "pokemon": "Froslass",
-        "build": "Froslass @ Froslassite  \nAbility: Snow Cloak  \nLevel: 50  \nTera Type: Ice  \nEVs: 26 HP / 1 Def / 9 SpA / 15 SpD / 15 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Aurora Veil  \n- Blizzard  \n- Shadow Ball",
+        "build": "Froslass @ Froslassite  \nAbility: Snow Cloak  \nLevel: 50  \nTera Type: Ice  \nEVs: 26 HP / 1 Def / 9 SpA / 15 SpD / 15 Spe\nTimid Nature    \n- Protect  \n- Aurora Veil  \n- Blizzard  \n- Shadow Ball",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2123,7 +2091,7 @@
     {
         "id": "265",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 32 HP / 32 Def / 2 SpA\nRelaxed Nature  \nIVs: 0 Atk  \n- Trick Room  \n- Rage Powder  \n- Imprison  \n- Matcha Gotcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 32 HP / 32 Def / 2 SpA\nRelaxed Nature    \n- Trick Room  \n- Rage Powder  \n- Imprison  \n- Matcha Gotcha",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2131,7 +2099,7 @@
     {
         "id": "266",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ Bright Powder  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Aura Sphere",
+        "build": "Archaludon @ Bright Powder  \nAbility: Sturdy  \nLevel: 50  \nTera Type: Steel  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Aura Sphere",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2155,7 +2123,7 @@
     {
         "id": "269",
         "pokemon": "Greninja",
-        "build": "Greninja @ Choice Specs\nAbility: Protean\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Water\nTimid Nature\n- Surf\n- Dark Pulse\n- Ice Beam\n- Water Shuriken",
+        "build": "Greninja @ Choice Specs\nAbility: Protean\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Water\nTimid Nature\n- Surf\n- Dark Pulse\n- Ice Beam\n- Water Shuriken",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2195,7 +2163,7 @@
     {
         "id": "274",
         "pokemon": "Vivillon",
-        "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
+        "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2203,7 +2171,7 @@
     {
         "id": "275",
         "pokemon": "Floette-Eternal",
-        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Calm Mind  \n- Moonblast  \n- Draining Kiss  \n- Protect",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Calm Mind  \n- Moonblast  \n- Draining Kiss  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2211,7 +2179,7 @@
     {
         "id": "276",
         "pokemon": "Florges",
-        "build": "Florges @ Choice Scarf\nAbility: Flower Veil\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Synthesis\n- Trick\n- Calm Mind",
+        "build": "Florges @ Choice Scarf\nAbility: Flower Veil\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Fairy\nTimid Nature\n- Moonblast\n- Synthesis\n- Trick\n- Calm Mind",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2219,7 +2187,7 @@
     {
         "id": "277",
         "pokemon": "Florges",
-        "build": "Florges @ Choice Specs\nAbility: Flower Veil\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Ground\nModest Nature\n- Moonblast\n- Trick\n- Tera Blast\n- Psychic Noise",
+        "build": "Florges @ Choice Specs\nAbility: Flower Veil\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Ground\nModest Nature\n- Moonblast\n- Trick\n- Tera Blast\n- Psychic Noise",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2227,7 +2195,7 @@
     {
         "id": "278",
         "pokemon": "Florges",
-        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 32 HP / 20 Def / 14 Spe\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Moonblast\n- Psychic Noise\n- Synthesis",
+        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 32 HP / 20 Def / 14 Spe\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Moonblast\n- Psychic Noise\n- Synthesis",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2235,7 +2203,7 @@
     {
         "id": "279",
         "pokemon": "Florges",
-        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 32 HP / 25 Def / 9 Spe\nIVs: 0 Atk\nTera Type: Poison\nTimid Nature\n- Wish\n- Synthesis\n- Moonblast\n- Psychic Noise",
+        "build": "Florges @ Heavy-Duty Boots\nAbility: Flower Veil\nEVs: 32 HP / 25 Def / 9 Spe\nTera Type: Poison\nTimid Nature\n- Wish\n- Synthesis\n- Moonblast\n- Psychic Noise",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2323,7 +2291,7 @@
     {
         "id": "290",
         "pokemon": "Clawitzer",
-        "build": "Clawitzer @ Choice Specs\nAbility: Mega Launcher\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Dragon\nModest Nature\n- Water Pulse\n- Dragon Pulse\n- Aura Sphere\n- Dark Pulse",
+        "build": "Clawitzer @ Choice Specs\nAbility: Mega Launcher\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Dragon\nModest Nature\n- Water Pulse\n- Dragon Pulse\n- Aura Sphere\n- Dark Pulse",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2387,7 +2355,7 @@
     {
         "id": "298",
         "pokemon": "Aurorus",
-        "build": "Aurorus @ Focus Sash\nAbility: Snow Warning\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nModest Nature\n- Stealth Rock\n- Blizzard\n- Encore\n- Earth Power",
+        "build": "Aurorus @ Focus Sash\nAbility: Snow Warning\nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature\n- Stealth Rock\n- Blizzard\n- Encore\n- Earth Power",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2451,7 +2419,7 @@
     {
         "id": "306",
         "pokemon": "Dedenne",
-        "build": "Dedenne @ Heavy-Duty Boots\nAbility: Pickup\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTimid Nature\n- Volt Switch\n- Dazzling Gleam\n- Grass Knot\n- Super Fang",
+        "build": "Dedenne @ Heavy-Duty Boots\nAbility: Pickup\nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature\n- Volt Switch\n- Dazzling Gleam\n- Grass Knot\n- Super Fang",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2491,7 +2459,7 @@
     {
         "id": "311",
         "pokemon": "Goodra-Hisui",
-        "build": "Goodra-Hisui @ Choice Specs\nAbility: Gooey\nEVs: 7 HP / 32 SpA / 27 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Flash Cannon\n- Draco Meteor\n- Thunderbolt\n- Flamethrower",
+        "build": "Goodra-Hisui @ Choice Specs\nAbility: Gooey\nEVs: 7 HP / 32 SpA / 27 Spe\nTera Type: Ghost\nModest Nature\n- Flash Cannon\n- Draco Meteor\n- Thunderbolt\n- Flamethrower",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2619,7 +2587,7 @@
     {
         "id": "327",
         "pokemon": "Floette-Eternal",
-        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Calm Mind  \n- Protect",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Moonblast  \n- Dazzling Gleam  \n- Calm Mind  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2635,7 +2603,7 @@
     {
         "id": "329",
         "pokemon": "Rotom-Wash",
-        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Helping Hand",
+        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Helping Hand",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2683,7 +2651,7 @@
     {
         "id": "335",
         "pokemon": "Primarina",
-        "build": "Primarina @ Leftovers\nAbility: Torrent\nEVs: 12 HP / 32 SpA / 22 Spe\nIVs: 0 Atk\nTera Type: Steel\nModest Nature\n- Calm Mind\n- Surf\n- Moonblast\n- Substitute",
+        "build": "Primarina @ Leftovers\nAbility: Torrent\nEVs: 12 HP / 32 SpA / 22 Spe\nTera Type: Steel\nModest Nature\n- Calm Mind\n- Surf\n- Moonblast\n- Substitute",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2691,7 +2659,7 @@
     {
         "id": "336",
         "pokemon": "Primarina",
-        "build": "Primarina @ Leftovers\nAbility: Liquid Voice\nEVs: 32 HP / 31 Def / 3 SpD\nIVs: 0 Atk\nTera Type: Steel\nBold Nature\n- Calm Mind\n- Psychic Noise\n- Draining Kiss\n- Substitute",
+        "build": "Primarina @ Leftovers\nAbility: Liquid Voice\nEVs: 32 HP / 31 Def / 3 SpD\nTera Type: Steel\nBold Nature\n- Calm Mind\n- Psychic Noise\n- Draining Kiss\n- Substitute",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -2699,7 +2667,7 @@
     {
         "id": "337",
         "pokemon": "Primarina",
-        "build": "Primarina @ Throat Spray\nLevel: 50\nAbility: Liquid Voice\nEVs: 30 HP / 9 Def / 14 SpA / 2 SpD / 11 Spe\nIVs: 0 Atk\nTera Type: Poison\nModest Nature\n- Hyper Voice\n- Moonblast\n- Haze\n- Protect",
+        "build": "Primarina @ Throat Spray\nLevel: 50\nAbility: Liquid Voice\nEVs: 30 HP / 9 Def / 14 SpA / 2 SpD / 11 Spe\nTera Type: Poison\nModest Nature\n- Hyper Voice\n- Moonblast\n- Haze\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2779,7 +2747,7 @@
     {
         "id": "346",
         "pokemon": "Calyrex-Shadow",
-        "build": "Calyrex-Shadow @ Life Orb  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Astral Barrage  \n- Expanding Force  \n- Protect  \n- Nasty Plot",
+        "build": "Calyrex-Shadow @ Life Orb  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Astral Barrage  \n- Expanding Force  \n- Protect  \n- Nasty Plot",
         "synergy": [
             "16"
         ],
@@ -2821,7 +2789,7 @@
     {
         "id": "351",
         "pokemon": "Smeargle",
-        "build": "Smeargle @ Focus Sash  \nAbility: Moody  \nTera Type: Normal  \nEVs: 32 HP / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Decorate  \n- Spore  \n- Follow Me  \n- Protect",
+        "build": "Smeargle @ Focus Sash  \nAbility: Moody  \nTera Type: Normal  \nEVs: 32 HP / 2 SpD / 32 Spe\nTimid Nature    \n- Decorate  \n- Spore  \n- Follow Me  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2837,7 +2805,7 @@
     {
         "id": "353",
         "pokemon": "Gholdengo",
-        "build": "Gholdengo @ Air Balloon  \nAbility: Good as Gold  \nTera Type: Steel  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Make It Rain  \n- Protect  \n- Shadow Ball  \n- Nasty Plot",
+        "build": "Gholdengo @ Air Balloon  \nAbility: Good as Gold  \nTera Type: Steel  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Make It Rain  \n- Protect  \n- Shadow Ball  \n- Nasty Plot",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2845,7 +2813,7 @@
     {
         "id": "120",
         "pokemon": "Scovillain",
-        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nTera Type: Grass  \nEVs: 31 HP / 21 Def / 2 SpA / 12 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Flamethrower  \n- Rage Powder  \n- Giga Drain  \n- Protect",
+        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nTera Type: Grass  \nEVs: 31 HP / 21 Def / 2 SpA / 12 SpD\nCalm Nature    \n- Flamethrower  \n- Rage Powder  \n- Giga Drain  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2863,7 +2831,7 @@
     {
         "id": "354",
         "pokemon": "Ursaluna-Bloodmoon",
-        "build": "Ursaluna-Bloodmoon @ Life Orb  \nAbility: Mind's Eye  \nTera Type: Normal  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Hyper Voice  \n- Blood Moon  \n- Earth Power",
+        "build": "Ursaluna-Bloodmoon @ Life Orb  \nAbility: Mind's Eye  \nTera Type: Normal  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature    \n- Protect  \n- Hyper Voice  \n- Blood Moon  \n- Earth Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2871,7 +2839,7 @@
     {
         "id": "355",
         "pokemon": "Primarina",
-        "build": "Primarina @ Leftovers  \nAbility: Liquid Voice  \nLevel: 50  \nTera Type: Water  \nEVs: 32 HP / 7 Def / 25 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Moonblast  \n- Protect  \n- Calm Mind",
+        "build": "Primarina @ Leftovers  \nAbility: Liquid Voice  \nLevel: 50  \nTera Type: Water  \nEVs: 32 HP / 7 Def / 25 SpA / 2 SpD\nModest Nature    \n- Hyper Voice  \n- Moonblast  \n- Protect  \n- Calm Mind",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -2991,7 +2959,7 @@
     {
         "id": "370",
         "pokemon": "Salazzle",
-        "build": "Salazzle @ Heavy-Duty Boots\nAbility: Corrosion\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Ground\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Sludge Bomb\n- Tera Blast",
+        "build": "Salazzle @ Heavy-Duty Boots\nAbility: Corrosion\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Ground\nTimid Nature\n- Nasty Plot\n- Fire Blast\n- Sludge Bomb\n- Tera Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3007,7 +2975,7 @@
     {
         "id": "372",
         "pokemon": "Salazzle",
-        "build": "Salazzle @ Leftovers\nAbility: Corrosion\nEVs: 31 HP / 3 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Dark\nTimid Nature\n- Flamethrower\n- Substitute\n- Protect\n- Toxic",
+        "build": "Salazzle @ Leftovers\nAbility: Corrosion\nEVs: 31 HP / 3 SpA / 32 Spe\nTera Type: Dark\nTimid Nature\n- Flamethrower\n- Substitute\n- Protect\n- Toxic",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3031,7 +2999,7 @@
     {
         "id": "375",
         "pokemon": "Oranguru",
-        "build": "Oranguru @ Leftovers\nAbility: Inner Focus\nEVs: 20 HP / 32 SpA / 14 Spe\nIVs: 0 Atk\nModest Nature\n- Substitute\n- Nasty Plot\n- Psychic\n- Thunderbolt",
+        "build": "Oranguru @ Leftovers\nAbility: Inner Focus\nEVs: 20 HP / 32 SpA / 14 Spe\nModest Nature\n- Substitute\n- Nasty Plot\n- Psychic\n- Thunderbolt",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3095,7 +3063,7 @@
     {
         "id": "383",
         "pokemon": "Kommo-o",
-        "build": "Kommo-o @ Throat Spray\nLevel: 50\nAbility: Overcoat\nEVs: 14 HP / 28 SpA / 24 Spe\nIVs: 0 Atk\nTera Type: Fire\nModest Nature\n- Clangorous Soul\n- Clanging Scales\n- Flamethrower\n- Protect",
+        "build": "Kommo-o @ Throat Spray\nLevel: 50\nAbility: Overcoat\nEVs: 14 HP / 28 SpA / 24 Spe\nTera Type: Fire\nModest Nature\n- Clangorous Soul\n- Clanging Scales\n- Flamethrower\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3378,7 +3346,7 @@
     {
         "id": "418",
         "pokemon": "F",
-        "build": "Basculegion-F @ Weakness Policy\nAbility: Adaptability\nEVs: 7 Def / 30 SpA / 4 SpD / 25 Spe\nIVs: 0 Atk\nTera Type: Ghost\nModest Nature\n- Agility\n- Shadow Ball\n- Surf\n- Ice Beam",
+        "build": "Basculegion-F @ Weakness Policy\nAbility: Adaptability\nEVs: 7 Def / 30 SpA / 4 SpD / 25 Spe\nTera Type: Ghost\nModest Nature\n- Agility\n- Shadow Ball\n- Surf\n- Ice Beam",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3426,7 +3394,7 @@
     {
         "id": "424",
         "pokemon": "Skeledirge",
-        "build": "Skeledirge @ Heavy-Duty Boots\nAbility: Unaware\nEVs: 32 HP / 32 Def / 2 SpA\nIVs: 0 Atk\nTera Type: Fairy\nBold Nature\n- Torch Song\n- Hex\n- Will-O-Wisp\n- Slack Off",
+        "build": "Skeledirge @ Heavy-Duty Boots\nAbility: Unaware\nEVs: 32 HP / 32 Def / 2 SpA\nTera Type: Fairy\nBold Nature\n- Torch Song\n- Hex\n- Will-O-Wisp\n- Slack Off",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3498,7 +3466,7 @@
     {
         "id": "433",
         "pokemon": "Armarouge",
-        "build": "Armarouge @ Heavy-Duty Boots\nAbility: Weak Armor\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Fairy\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Calm Mind",
+        "build": "Armarouge @ Heavy-Duty Boots\nAbility: Weak Armor\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Fairy\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Calm Mind",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3506,7 +3474,7 @@
     {
         "id": "434",
         "pokemon": "Armarouge",
-        "build": "Armarouge @ Weakness Policy\nAbility: Weak Armor\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Normal\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Endure",
+        "build": "Armarouge @ Weakness Policy\nAbility: Weak Armor\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Normal\nTimid Nature\n- Armor Cannon\n- Psyshock\n- Energy Ball\n- Endure",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3514,7 +3482,7 @@
     {
         "id": "435",
         "pokemon": "Armarouge",
-        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 29 HP / 5 Def / 32 SpA\nIVs: 0 Atk / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
+        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 29 HP / 5 Def / 32 SpA / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3546,7 +3514,7 @@
     {
         "id": "439",
         "pokemon": "Bellibolt",
-        "build": "Bellibolt @ Heavy-Duty Boots\nAbility: Static\nEVs: 32 HP / 27 Def / 7 SpD\nIVs: 0 Atk\nTera Type: Dragon\nBold Nature\n- Toxic\n- Muddy Water\n- Volt Switch\n- Slack Off",
+        "build": "Bellibolt @ Heavy-Duty Boots\nAbility: Static\nEVs: 32 HP / 27 Def / 7 SpD\nTera Type: Dragon\nBold Nature\n- Toxic\n- Muddy Water\n- Volt Switch\n- Slack Off",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3658,7 +3626,7 @@
     {
         "id": "453",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 32 SpA / 2 SpD / 32 Spe\nIVs: 0 Atk\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
+        "build": "Farigiraf @ Leftovers\nAbility: Armor Tail\nEVs: 32 SpA / 2 SpD / 32 Spe\nTera Type: Fire\nTimid Nature\n- Agility\n- Nasty Plot\n- Psyshock\n- Tera Blast",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3666,7 +3634,7 @@
     {
         "id": "454",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 30 HP / 21 Def / 15 SpD\nIVs: 0 Atk\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
+        "build": "Farigiraf @ Electric Seed\nLevel: 50\nAbility: Armor Tail\nEVs: 30 HP / 21 Def / 15 SpD\nTera Type: Water\nBold Nature\n- Foul Play\n- Psychic\n- Trick Room\n- Helping Hand",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3674,7 +3642,7 @@
     {
         "id": "455",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Leftovers\nAbility: Heatproof\nEVs: 32 HP / 20 Def / 14 Spe\nIVs: 0 Atk\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Hex\n- Stun Spore\n- Strength Sap",
+        "build": "Sinistcha @ Leftovers\nAbility: Heatproof\nEVs: 32 HP / 20 Def / 14 Spe\nTera Type: Poison\nBold Nature\n- Calm Mind\n- Hex\n- Stun Spore\n- Strength Sap",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3690,7 +3658,7 @@
     {
         "id": "457",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ Assault Vest\nLevel: 50\nAbility: Stamina\nEVs: 32 HP / 20 SpD / 14 Spe\nIVs: 0 Atk\nTera Type: Grass\nModest Nature\n- Electro Shot\n- Body Press\n- Flash Cannon\n- Dragon Pulse",
+        "build": "Archaludon @ Assault Vest\nLevel: 50\nAbility: Stamina\nEVs: 32 HP / 20 SpD / 14 Spe\nTera Type: Grass\nModest Nature\n- Electro Shot\n- Body Press\n- Flash Cannon\n- Dragon Pulse",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3698,7 +3666,7 @@
     {
         "id": "458",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ Power Herb\nLevel: 50\nAbility: Sturdy\nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Electric\nTimid Nature\n- Electro Shot\n- Thunderbolt\n- Draco Meteor\n- Protect",
+        "build": "Archaludon @ Power Herb\nLevel: 50\nAbility: Sturdy\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Electric\nTimid Nature\n- Electro Shot\n- Thunderbolt\n- Draco Meteor\n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3706,7 +3674,7 @@
     {
         "id": "459",
         "pokemon": "Hydrapple",
-        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 17 SpA / 9 SpD / 8 Spe\nIVs: 0 Atk\nTera Type: Fairy\nModest Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
+        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 17 SpA / 9 SpD / 8 Spe\nTera Type: Fairy\nModest Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3714,7 +3682,7 @@
     {
         "id": "460",
         "pokemon": "Hydrapple",
-        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpA\nIVs: 0 Atk\nTera Type: Steel\nBold Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
+        "build": "Hydrapple @ Heavy-Duty Boots\nAbility: Regenerator\nEVs: 32 HP / 32 Def / 2 SpA\nTera Type: Steel\nBold Nature\n- Nasty Plot\n- Draco Meteor\n- Giga Drain\n- Earth Power",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3722,7 +3690,7 @@
     {
         "id": "461",
         "pokemon": "Hydrapple",
-        "build": "Hydrapple @ Choice Specs\nAbility: Regenerator\nEVs: 2 Def / 32 SpA / 32 Spe\nIVs: 0 Atk\nTera Type: Steel\nModest Nature\n- Draco Meteor\n- Leaf Storm\n- Earth Power\n- Fickle Beam",
+        "build": "Hydrapple @ Choice Specs\nAbility: Regenerator\nEVs: 2 Def / 32 SpA / 32 Spe\nTera Type: Steel\nModest Nature\n- Draco Meteor\n- Leaf Storm\n- Earth Power\n- Fickle Beam",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3730,7 +3698,7 @@
     {
         "id": "462",
         "pokemon": "Clefable",
-        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Flamethrower",
+        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature    \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Flamethrower",
         "synergy": [],
         "format": "Singles",
         "isMeta": false
@@ -3746,7 +3714,7 @@
     {
         "id": "464",
         "pokemon": "Pelipper",
-        "build": "Pelipper @ Focus Sash  \nAbility: Drizzle  \nEVs: 31 HP / 32 SpA / 3 SpD\nModest Nature  \nIVs: 0 Atk  \n- Wide Guard  \n- Weather Ball  \n- Tailwind  \n- Hurricane",
+        "build": "Pelipper @ Focus Sash  \nAbility: Drizzle  \nEVs: 31 HP / 32 SpA / 3 SpD\nModest Nature    \n- Wide Guard  \n- Weather Ball  \n- Tailwind  \n- Hurricane",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3754,7 +3722,7 @@
     {
         "id": "465",
         "pokemon": "Basculegion-F",
-        "build": "Basculegion-F @ Mystic Water  \nAbility: Swift Swim  \nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Icy Wind  \n- Shadow Ball  \n- Muddy Water",
+        "build": "Basculegion-F @ Mystic Water  \nAbility: Swift Swim  \nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature    \n- Protect  \n- Icy Wind  \n- Shadow Ball  \n- Muddy Water",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3762,7 +3730,7 @@
     {
         "id": "466",
         "pokemon": "Milotic",
-        "build": "Milotic @ Bright Powder  \nAbility: Competitive  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature  \nIVs: 0 Atk  \n- Scald  \n- Icy Wind  \n- Life Dew  \n- Protect",
+        "build": "Milotic @ Bright Powder  \nAbility: Competitive  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature    \n- Scald  \n- Icy Wind  \n- Life Dew  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3770,7 +3738,7 @@
     {
         "id": "467",
         "pokemon": "Politoed",
-        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 31 HP / 32 SpA / 3 SpD\nModest Nature  \nIVs: 0 Atk  \n- Icy Wind  \n- Weather Ball  \n- Earth Power  \n- Psychic",
+        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 31 HP / 32 SpA / 3 SpD\nModest Nature    \n- Icy Wind  \n- Weather Ball  \n- Earth Power  \n- Psychic",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3786,7 +3754,7 @@
     {
         "id": "469",
         "pokemon": "Meganium",
-        "build": "Meganium @ Meganiumite  \nAbility: Overgrow  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Weather Ball  \n- Dazzling Gleam  \n- Solar Beam  \n- Synthesis",
+        "build": "Meganium @ Meganiumite  \nAbility: Overgrow  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Weather Ball  \n- Dazzling Gleam  \n- Solar Beam  \n- Synthesis",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3794,7 +3762,7 @@
     {
         "id": "470",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ White Herb  \nAbility: Sturdy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Aura Sphere  \n- Flash Cannon  \n- Draco Meteor  \n- Electro Shot",
+        "build": "Archaludon @ White Herb  \nAbility: Sturdy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Aura Sphere  \n- Flash Cannon  \n- Draco Meteor  \n- Electro Shot",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3802,7 +3770,7 @@
     {
         "id": "471",
         "pokemon": "Gardevoir",
-        "build": "Gardevoir @ Gardevoirite  \nAbility: Trace  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Thunderbolt  \n- Psychic  \n- Protect",
+        "build": "Gardevoir @ Gardevoirite  \nAbility: Trace  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Hyper Voice  \n- Thunderbolt  \n- Psychic  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3810,7 +3778,7 @@
     {
         "id": "472",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Leftovers  \nAbility: Armor Tail  \nEVs: 32 HP / 32 SpA / 2 SpD\nQuiet Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Twin Beam  \n- Trick Room  \n- Dazzling Gleam",
+        "build": "Farigiraf @ Leftovers  \nAbility: Armor Tail  \nEVs: 32 HP / 32 SpA / 2 SpD\nQuiet Nature    \n- Thunderbolt  \n- Twin Beam  \n- Trick Room  \n- Dazzling Gleam",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3850,7 +3818,7 @@
     {
         "id": "477",
         "pokemon": "Bellibolt",
-        "build": "Bellibolt @ Leftovers  \nAbility: Electromorphosis  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Electroweb  \n- Mud Shot  \n- Parabolic Charge  \n- Protect",
+        "build": "Bellibolt @ Leftovers  \nAbility: Electromorphosis  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature    \n- Electroweb  \n- Mud Shot  \n- Parabolic Charge  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3858,7 +3826,7 @@
     {
         "id": "478",
         "pokemon": "Dragonite",
-        "build": "Dragonite @ Dragoninite  \nAbility: Multiscale  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Hurricane  \n- Protect  \n- Ice Beam",
+        "build": "Dragonite @ Dragoninite  \nAbility: Multiscale  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature    \n- Draco Meteor  \n- Hurricane  \n- Protect  \n- Ice Beam",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3882,7 +3850,7 @@
     {
         "id": "481",
         "pokemon": "Blastoise",
-        "build": "Blastoise @ Blastoisinite  \nAbility: Torrent  \nLevel: 50  \nTera Type: Water  \nEVs: 18 HP / 32 SpA / 2 SpD / 14 Spe\nModest Nature  \nIVs: 0 Atk  \n- Water Spout  \n- Ice Beam  \n- Shell Smash  \n- Protect",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Torrent  \nLevel: 50  \nTera Type: Water  \nEVs: 18 HP / 32 SpA / 2 SpD / 14 Spe\nModest Nature    \n- Water Spout  \n- Ice Beam  \n- Shell Smash  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3890,7 +3858,7 @@
     {
         "id": "482",
         "pokemon": "Glimmora",
-        "build": "Glimmora @ Glimmoranite  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
+        "build": "Glimmora @ Glimmoranite  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3922,7 +3890,7 @@
     {
         "id": "486",
         "pokemon": "Delphox",
-        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Psychic  \n- Encore  \n- Protect",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Encore  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3930,7 +3898,7 @@
     {
         "id": "487",
         "pokemon": "Delphox",
-        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3946,7 +3914,7 @@
     {
         "id": "489",
         "pokemon": "Clefable",
-        "build": "Clefable @ Sitrus Berry  \nAbility: Unaware  \nEVs: 32 HP / 2 SpA / 32 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Follow Me  \n- Helping Hand  \n- Moonblast  \n- Protect",
+        "build": "Clefable @ Sitrus Berry  \nAbility: Unaware  \nEVs: 32 HP / 2 SpA / 32 SpD\nCalm Nature    \n- Follow Me  \n- Helping Hand  \n- Moonblast  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -3954,7 +3922,7 @@
     {
         "id": "490",
         "pokemon": "Clefable",
-        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 32 HP / 24 Def / 10 SpD\nModest Nature  \nIVs: 0 Atk  \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Stored Power",
+        "build": "Clefable @ Clefablite  \nAbility: Magic Guard  \nEVs: 32 HP / 24 Def / 10 SpD\nModest Nature    \n- Cosmic Power  \n- Moonblast  \n- Moonlight  \n- Stored Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4027,7 +3995,7 @@
     {
         "id": "498",
         "pokemon": "Greninja",
-        "build": "Greninja @ Greninjite  \nAbility: Protean  \nTera Type: Water  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Dark Pulse  \n- Ice Beam  \n- Sludge Wave",
+        "build": "Greninja @ Greninjite  \nAbility: Protean  \nTera Type: Water  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Hydro Pump  \n- Dark Pulse  \n- Ice Beam  \n- Sludge Wave",
         "synergy": [
             "496",
             "258"
@@ -4038,7 +4006,7 @@
     {
         "id": "499",
         "pokemon": "Ting-Lu",
-        "build": "Ting-Lu @ Sitrus Berry  \nAbility: Vessel of Ruin  \nEVs: 32 HP / 2 Atk / 32 Def\nImpish Nature  \nIVs: 0 Atk  \n- Stealth Rock  \n- Whirlwind  \n- Spikes  \n- Fissure",
+        "build": "Ting-Lu @ Sitrus Berry  \nAbility: Vessel of Ruin  \nEVs: 32 HP / 2 Atk / 32 Def\nImpish Nature    \n- Stealth Rock  \n- Whirlwind  \n- Spikes  \n- Fissure",
         "synergy": [
             "500"
         ],
@@ -4058,7 +4026,7 @@
     {
         "id": "501",
         "pokemon": "Magmar",
-        "build": "Magmar @ Eviolite\nLevel: 50\nAbility: Vital Spirit\nEVs: 32 HP / 30 Def / 4 SpD\nIVs: 0 Atk\nTera Type: Ghost\nCalm Nature\n- Overheat\n- Will-O-Wisp\n- Follow Me\n- Protect",
+        "build": "Magmar @ Eviolite\nLevel: 50\nAbility: Vital Spirit\nEVs: 32 HP / 30 Def / 4 SpD\nTera Type: Ghost\nCalm Nature\n- Overheat\n- Will-O-Wisp\n- Follow Me\n- Protect",
         "synergy": [
             "499"
         ],
@@ -4068,7 +4036,7 @@
     {
         "id": "502",
         "pokemon": "Milotic",
-        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 32 HP / 2 SpA / 32 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Coil  \n- Hypnosis  \n- Recover",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 32 HP / 2 SpA / 32 SpD\nCalm Nature    \n- Muddy Water  \n- Coil  \n- Hypnosis  \n- Recover",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4100,7 +4068,7 @@
     {
         "id": "506",
         "pokemon": "Rotom-Wash",
-        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nEVs: 31 HP / 3 SpA / 32 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Hydro Pump  \n- Will-O-Wisp  \n- Thunderbolt  \n- Protect",
+        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nEVs: 31 HP / 3 SpA / 32 SpD\nCalm Nature    \n- Hydro Pump  \n- Will-O-Wisp  \n- Thunderbolt  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4132,7 +4100,7 @@
     {
         "id": "510",
         "pokemon": "Ninetales-Alola",
-        "build": "Ninetales-Alola @ Mental Herb  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Poison  \nEVs: 31 HP / 3 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Aurora Veil  \n- Moonblast  \n- Protect",
+        "build": "Ninetales-Alola @ Mental Herb  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Poison  \nEVs: 31 HP / 3 SpA / 32 Spe\nTimid Nature    \n- Blizzard  \n- Aurora Veil  \n- Moonblast  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4148,7 +4116,7 @@
     {
         "id": "512",
         "pokemon": "Calyrex-Shadow",
-        "build": "Calyrex-Shadow @ Focus Sash  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Astral Barrage  \n- Psychic  \n- Encore",
+        "build": "Calyrex-Shadow @ Focus Sash  \nAbility: As One (Spectrier)  \nLevel: 50  \nTera Type: Normal  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Protect  \n- Astral Barrage  \n- Psychic  \n- Encore",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4196,7 +4164,7 @@
     {
         "id": "518",
         "pokemon": "Scovillain",
-        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nEVs: 31 HP / 3 SpA / 32 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Leech Seed  \n- Rage Powder  \n- Protect  \n- Overheat",
+        "build": "Scovillain @ Scovillainite  \nAbility: Moody  \nLevel: 50  \nEVs: 31 HP / 3 SpA / 32 SpD\nCalm Nature    \n- Leech Seed  \n- Rage Powder  \n- Protect  \n- Overheat",
         "synergy": [
             "519",
             "520",
@@ -4209,7 +4177,7 @@
     {
         "id": "519",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ Choice Scarf  \nAbility: Sturdy  \nLevel: 50  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Electro Shot  \n- Snarl  \n- Flash Cannon  \n- Draco Meteor",
+        "build": "Archaludon @ Choice Scarf  \nAbility: Sturdy  \nLevel: 50  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Electro Shot  \n- Snarl  \n- Flash Cannon  \n- Draco Meteor",
         "synergy": [
             "518"
         ],
@@ -4219,7 +4187,7 @@
     {
         "id": "520",
         "pokemon": "Pelipper",
-        "build": "Pelipper @ Sitrus Berry  \nAbility: Drizzle  \nLevel: 50  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature  \nIVs: 0 Atk  \n- Protect  \n- Hurricane  \n- Weather Ball  \n- Wide Guard",
+        "build": "Pelipper @ Sitrus Berry  \nAbility: Drizzle  \nLevel: 50  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature    \n- Protect  \n- Hurricane  \n- Weather Ball  \n- Wide Guard",
         "synergy": [
             "518"
         ],
@@ -4249,7 +4217,7 @@
     {
         "id": "523",
         "pokemon": "Chesnaught",
-        "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nEVs: 32 HP / 8 Def / 26 SpD\nRelaxed Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Body Press  \n- Iron Defense  \n- Leech Seed",
+        "build": "Chesnaught @ Chesnaughtite  \nAbility: Bulletproof  \nLevel: 50  \nEVs: 32 HP / 8 Def / 26 SpD\nRelaxed Nature    \n- Spiky Shield  \n- Body Press  \n- Iron Defense  \n- Leech Seed",
         "synergy": [
             "524",
             "525",
@@ -4261,7 +4229,7 @@
     {
         "id": "524",
         "pokemon": "Archaludon",
-        "build": "Archaludon @ Leftovers  \nAbility: Stamina  \nLevel: 50  \nTera Type: Steel  \nEVs: 32 HP / 2 SpA / 32 SpD\nBold Nature  \nIVs: 0 Atk  \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Flash Cannon",
+        "build": "Archaludon @ Leftovers  \nAbility: Stamina  \nLevel: 50  \nTera Type: Steel  \nEVs: 32 HP / 2 SpA / 32 SpD\nBold Nature    \n- Protect  \n- Electro Shot  \n- Dragon Pulse  \n- Flash Cannon",
         "synergy": [
             "523"
         ],
@@ -4271,7 +4239,7 @@
     {
         "id": "525",
         "pokemon": "Slowking-Galar",
-        "build": "Slowking-Galar @ Sitrus Berry  \nAbility: Regenerator  \nTera Type: Water  \nEVs: 32 HP / 28 Def / 6 SpD\nRelaxed Nature  \nIVs: 0 Atk / 0 Spe  \n- Eerie Spell  \n- Sludge Bomb  \n- Heal Pulse  \n- Trick Room",
+        "build": "Slowking-Galar @ Sitrus Berry  \nAbility: Regenerator  \nTera Type: Water  \nEVs: 32 HP / 28 Def / 6 SpD\nRelaxed Nature   / 0 Spe  \n- Eerie Spell  \n- Sludge Bomb  \n- Heal Pulse  \n- Trick Room",
         "synergy": [
             "523"
         ],
@@ -4305,7 +4273,7 @@
     {
         "id": "528",
         "pokemon": "Vanilluxe",
-        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Aurora Veil  \n- Icy Wind",
+        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Blizzard  \n- Freeze-Dry  \n- Aurora Veil  \n- Icy Wind",
         "synergy": [
             "527"
         ],
@@ -4325,7 +4293,7 @@
     {
         "id": "530",
         "pokemon": "Gengar",
-        "build": "Gengar @ Focus Sash  \nAbility: Cursed Body  \nTera Type: Ghost  \nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Shadow Ball  \n- Sludge Bomb  \n- Destiny Bond",
+        "build": "Gengar @ Focus Sash  \nAbility: Cursed Body  \nTera Type: Ghost  \nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature    \n- Protect  \n- Shadow Ball  \n- Sludge Bomb  \n- Destiny Bond",
         "synergy": [
             "527"
         ],
@@ -4335,7 +4303,7 @@
     {
         "id": "531",
         "pokemon": "Milotic",
-        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature  \nIVs: 0 Atk  \n- Scald  \n- Icy Wind  \n- Protect  \n- Recover",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature    \n- Scald  \n- Icy Wind  \n- Protect  \n- Recover",
         "synergy": [
             "527"
         ],
@@ -4345,15 +4313,15 @@
     {
         "id": "532",
         "pokemon": "Floette-Eternal",
-        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 10 HP / 19 Def / 5 SpA / 32 Spe\nModest Nature  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
         "synergy": [
             "533",
             "534",
             "535",
-            "536"
+            "536","250","251"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "533",
@@ -4388,7 +4356,7 @@
     {
         "id": "536",
         "pokemon": "Rotom-Wash",
-        "build": "Rotom-Wash @ Choice Scarf  \nAbility: Levitate  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Electroweb  \n- Will-O-Wisp  \n- Thunderbolt  \n- Hydro Pump",
+        "build": "Rotom-Wash @ Choice Scarf  \nAbility: Levitate  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Electroweb  \n- Will-O-Wisp  \n- Thunderbolt  \n- Hydro Pump",
         "synergy": [
             "532"
         ],
@@ -4470,7 +4438,7 @@
     {
         "id": "546",
         "pokemon": "Gholdengo",
-        "build": "Gholdengo @ Life Orb  \nAbility: Good as Gold  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Make It Rain  \n- Shadow Ball  \n- Protect  \n- Nasty Plot",
+        "build": "Gholdengo @ Life Orb  \nAbility: Good as Gold  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Make It Rain  \n- Shadow Ball  \n- Protect  \n- Nasty Plot",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4499,7 +4467,7 @@
     {
         "id": "549",
         "pokemon": "Vanilluxe",
-        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Icy Wind  \n- Sheer Cold",
+        "build": "Vanilluxe @ Choice Scarf  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Blizzard  \n- Freeze-Dry  \n- Icy Wind  \n- Sheer Cold",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4528,7 +4496,7 @@
     {
         "id": "552",
         "pokemon": "Dragalge",
-        "build": "Dragalge @ Dragalgite  \nAbility: Adaptability  \nLevel: 50  \nTera Type: Poison  \nEVs: 32 HP / 13 Def / 21 SpA\nModest Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Sludge Bomb  \n- Thunderbolt  \n- Protect",
+        "build": "Dragalge @ Dragalgite  \nAbility: Adaptability  \nLevel: 50  \nTera Type: Poison  \nEVs: 32 HP / 13 Def / 21 SpA\nModest Nature    \n- Draco Meteor  \n- Sludge Bomb  \n- Thunderbolt  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4536,7 +4504,7 @@
     {
         "id": "553",
         "pokemon": "Eelektross",
-        "build": "Eelektross @ Eelektrossite  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 HP / 2 Def / 32 SpA\nModest Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Discharge  \n- Grass Knot  \n- Protect",
+        "build": "Eelektross @ Eelektrossite  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 HP / 2 Def / 32 SpA\nModest Nature    \n- Thunderbolt  \n- Discharge  \n- Grass Knot  \n- Protect",
         "synergy": [
             "552",
             "554"
@@ -4547,7 +4515,7 @@
     {
         "id": "554",
         "pokemon": "Hydreigon",
-        "build": "Hydreigon @ Focus Sash  \nAbility: Levitate  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Draco Meteor  \n- Snarl  \n- Earth Power  \n- Protect",
+        "build": "Hydreigon @ Focus Sash  \nAbility: Levitate  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Draco Meteor  \n- Snarl  \n- Earth Power  \n- Protect",
         "synergy": [
             "552",
             "553"
@@ -4574,7 +4542,7 @@
     {
         "id": "557",
         "pokemon": "Pyroar",
-        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Fire  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Overheat  \n- Solar Beam  \n- Protect",
+        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Fire  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Heat Wave  \n- Overheat  \n- Solar Beam  \n- Protect",
         "synergy": [
             "556"
         ],
@@ -4584,7 +4552,7 @@
     {
         "id": "558",
         "pokemon": "Torkoal",
-        "build": "Torkoal @ Heat Rock  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 2 SpA / 32 SpD\nRelaxed Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Helping Hand  \n- Yawn  \n- Protect",
+        "build": "Torkoal @ Heat Rock  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 2 SpA / 32 SpD\nRelaxed Nature    \n- Heat Wave  \n- Helping Hand  \n- Yawn  \n- Protect",
         "synergy": [
             "557",
             "556"
@@ -4595,7 +4563,7 @@
     {
         "id": "559",
         "pokemon": "Oranguru",
-        "build": "Oranguru @ Leftovers  \nAbility: Inner Focus  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 HP / 32 Def / 2 SpD\nRelaxed Nature  \nIVs: 0 Atk  \n- Psychic  \n- Instruct  \n- Encore  \n- Trick Room",
+        "build": "Oranguru @ Leftovers  \nAbility: Inner Focus  \nLevel: 50  \nTera Type: Normal  \nEVs: 32 HP / 32 Def / 2 SpD\nRelaxed Nature    \n- Psychic  \n- Instruct  \n- Encore  \n- Trick Room",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4603,7 +4571,7 @@
     {
         "id": "560",
         "pokemon": "Hydrapple",
-        "build": "Hydrapple @ Quick Claw  \nAbility: Regenerator  \nEVs: 32 HP / 2 Def / 32 SpA\nQuiet Nature  \nIVs: 0 Atk  \n- Fickle Beam  \n- Giga Drain  \n- Pollen Puff  \n- Earth Power",
+        "build": "Hydrapple @ Quick Claw  \nAbility: Regenerator  \nEVs: 32 HP / 2 Def / 32 SpA\nQuiet Nature    \n- Fickle Beam  \n- Giga Drain  \n- Pollen Puff  \n- Earth Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4611,7 +4579,7 @@
     {
         "id": "561",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 30 HP / 21 Def / 15 SpD\nBold Nature  \nIVs: 0 Atk  \n- Trick Room  \n- Psychic  \n- Helping Hand  \n- Dazzling Gleam",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 30 HP / 21 Def / 15 SpD\nBold Nature    \n- Trick Room  \n- Psychic  \n- Helping Hand  \n- Dazzling Gleam",
         "synergy": [
             "560"
         ],
@@ -4621,7 +4589,7 @@
     {
         "id": "562",
         "pokemon": "Sableye",
-        "build": "Sableye @ Light Clay  \nAbility: Prankster  \nLevel: 50  \nTera Type: Dark  \nEVs: 32 HP / 14 Def / 20 SpD\nSassy Nature  \nIVs: 0 Atk  \n- Light Screen  \n- Reflect  \n- Rain Dance  \n- Encore",
+        "build": "Sableye @ Light Clay  \nAbility: Prankster  \nLevel: 50  \nTera Type: Dark  \nEVs: 32 HP / 14 Def / 20 SpD\nSassy Nature    \n- Light Screen  \n- Reflect  \n- Rain Dance  \n- Encore",
         "synergy": [
             "524",
             "464"
@@ -4652,7 +4620,7 @@
     {
         "id": "565",
         "pokemon": "Sylveon",
-        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Detect  \n- Yawn  \n- Psychic",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nLevel: 50  \nTera Type: Fairy  \nEVs: 32 HP / 32 SpA / 2 SpD\nModest Nature    \n- Hyper Voice  \n- Detect  \n- Yawn  \n- Psychic",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -4668,7 +4636,7 @@
     {
         "id": "567",
         "pokemon": "Sceptile",
-        "build": "Sceptile @ Sceptilite  \nAbility: Overgrow  \nLevel: 50  \nTera Type: Grass  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Grass Knot  \n- Dragon Dance  \n- Earth Power  \n- Detect",
+        "build": "Sceptile @ Sceptilite  \nAbility: Overgrow  \nLevel: 50  \nTera Type: Grass  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Grass Knot  \n- Dragon Dance  \n- Earth Power  \n- Detect",
         "synergy": [
             "532",
             "535"
@@ -4689,7 +4657,7 @@
     {
         "id": "569",
         "pokemon": "Rotom-Heat",
-        "build": "Rotom-Heat @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Volt Switch  \n- Overheat  \n- Discharge",
+        "build": "Rotom-Heat @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Thunderbolt  \n- Volt Switch  \n- Overheat  \n- Discharge",
         "synergy": [
             "568",
             "535"
@@ -4713,7 +4681,7 @@
     {
         "id": "571",
         "pokemon": "Toxapex",
-        "build": "Toxapex @ Leftovers  \nAbility: Regenerator  \nEVs: 32 HP / 18 Def / 16 SpD\nBold Nature  \nIVs: 0 Atk  \n- Infestation  \n- Toxic  \n- Baneful Bunker  \n- Wide Guard",
+        "build": "Toxapex @ Leftovers  \nAbility: Regenerator  \nEVs: 32 HP / 18 Def / 16 SpD\nBold Nature    \n- Infestation  \n- Toxic  \n- Baneful Bunker  \n- Wide Guard",
         "synergy": [
             "250"
         ],
@@ -4746,7 +4714,7 @@
     {
         "id": "574",
         "pokemon": "Hydreigon",
-        "build": "Hydreigon @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Dark  \nEVs: 9 HP / 25 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Dark Pulse  \n- Draco Meteor  \n- Snarl",
+        "build": "Hydreigon @ Choice Scarf  \nAbility: Levitate  \nLevel: 50  \nTera Type: Dark  \nEVs: 9 HP / 25 SpA / 32 Spe\nModest Nature    \n- Heat Wave  \n- Dark Pulse  \n- Draco Meteor  \n- Snarl",
         "synergy": [
             "571",
             "250",
@@ -4781,7 +4749,7 @@
     {
         "id": "577",
         "pokemon": "Ninetales-Alola",
-        "build": "Ninetales-Alola @ Never-Melt Ice  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Blizzard  \n- Freeze-Dry  \n- Encore  \n- Protect",
+        "build": "Ninetales-Alola @ Never-Melt Ice  \nAbility: Snow Warning  \nLevel: 50  \nTera Type: Ice  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Blizzard  \n- Freeze-Dry  \n- Encore  \n- Protect",
         "synergy": [
             "576"
         ],
@@ -4791,7 +4759,7 @@
     {
         "id": "578",
         "pokemon": "Floette-Eternal",
-        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nEVs: 26 HP / 8 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nEVs: 26 HP / 8 SpA / 32 Spe\nModest Nature    \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
         "synergy": [
             "577",
             "576"
@@ -4838,7 +4806,7 @@
     {
         "id": "582",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 15 HP / 14 Def / 20 SpA / 14 SpD / 3 Spe\nModest Nature  \nIVs: 0 Atk  \n- Twin Beam  \n- Thunderbolt  \n- Trick Room  \n- Protect",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 15 HP / 14 Def / 20 SpA / 14 SpD / 3 Spe\nModest Nature    \n- Twin Beam  \n- Thunderbolt  \n- Trick Room  \n- Protect",
         "synergy": [
             "581",
             "583"
@@ -4873,7 +4841,7 @@
     {
         "id": "585",
         "pokemon": "Torkoal",
-        "build": "Torkoal @ Charcoal  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 2 Def / 32 SpA\nQuiet Nature  \nIVs: 0 Atk  \n- Eruption  \n- Heat Wave  \n- Weather Ball  \n- Helping Hand",
+        "build": "Torkoal @ Charcoal  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 2 Def / 32 SpA\nQuiet Nature    \n- Eruption  \n- Heat Wave  \n- Weather Ball  \n- Helping Hand",
         "synergy": [
             "581",
             "582",
@@ -4894,7 +4862,7 @@
     {
         "id": "587",
         "pokemon": "Grimmsnarl",
-        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nEVs: 32 HP / 2 Def / 32 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Foul Play  \n- Parting Shot  \n- Light Screen  \n- Reflect",
+        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nEVs: 32 HP / 2 Def / 32 SpD\nCalm Nature    \n- Foul Play  \n- Parting Shot  \n- Light Screen  \n- Reflect",
         "synergy": [
             "545"
         ],
@@ -4904,7 +4872,7 @@
     {
         "id": "588",
         "pokemon": "Ninetales",
-        "build": "Ninetales @ Choice Scarf  \nAbility: Drought  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Overheat  \n- Heat Wave  \n- Fake Tears  \n- Weather Ball",
+        "build": "Ninetales @ Choice Scarf  \nAbility: Drought  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Overheat  \n- Heat Wave  \n- Fake Tears  \n- Weather Ball",
         "synergy": [
             "557"
         ],
@@ -5029,7 +4997,7 @@
     {
         "id": "601",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Kasib Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 32 HP / 13 Def / 21 SpD\nBold Nature  \nIVs: 0 Atk  \n- Matcha Gotcha  \n- Rage Powder  \n- Life Dew  \n- Protect",
+        "build": "Sinistcha @ Kasib Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 32 HP / 13 Def / 21 SpD\nBold Nature    \n- Matcha Gotcha  \n- Rage Powder  \n- Life Dew  \n- Protect",
         "synergy": [
             "600"
         ],
@@ -5049,7 +5017,7 @@
     {
         "id": "603",
         "pokemon": "Gholdengo",
-        "build": "Gholdengo @ Focus Sash  \nAbility: Good as Gold  \nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk  \n- Protect  \n- Nasty Plot  \n- Shadow Ball  \n- Make It Rain",
+        "build": "Gholdengo @ Focus Sash  \nAbility: Good as Gold  \nEVs: 2 HP / 32 SpA / 32 Spe  \n- Protect  \n- Nasty Plot  \n- Shadow Ball  \n- Make It Rain",
         "synergy": [
             "602"
         ],
@@ -5059,7 +5027,7 @@
     {
         "id": "604",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nEVs: 32 HP / 32 SpA / 2 SpD\nQuiet Nature  \nIVs: 0 Atk  \n- Psychic Noise  \n- Trick Room  \n- Grass Knot  \n- Sunny Day",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nEVs: 32 HP / 32 SpA / 2 SpD\nQuiet Nature    \n- Psychic Noise  \n- Trick Room  \n- Grass Knot  \n- Sunny Day",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5105,7 +5073,7 @@
     {
         "id": "609",
         "pokemon": "Pyroar",
-        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nEVs: 7 Def / 32 SpA / 27 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Overheat  \n- Yawn  \n- Protect",
+        "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nEVs: 7 Def / 32 SpA / 27 Spe\nTimid Nature    \n- Heat Wave  \n- Overheat  \n- Yawn  \n- Protect",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5123,7 +5091,7 @@
     {
         "id": "611",
         "pokemon": "Venusaur",
-        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Energy Ball  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
+        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Energy Ball  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
         "synergy": [
             "610"
         ],
@@ -5153,7 +5121,7 @@
     {
         "id": "614",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 32 HP / 14 Def / 20 SpD\nIVs: 0 Atk  \nBold Nature \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
+        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 32 HP / 14 Def / 20 SpD  \nBold Nature \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
         "synergy": [
             "613"
         ],
@@ -5185,7 +5153,7 @@
     {
         "id": "617",
         "pokemon": "Rotom-Wash",
-        "build": "Rotom-Wash @ Leftovers  \nAbility: Levitate  \nEVs: 32 HP / 11 Def / 23 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Will-O-Wisp  \n- Hydro Pump  \n- Light Screen",
+        "build": "Rotom-Wash @ Leftovers  \nAbility: Levitate  \nEVs: 32 HP / 11 Def / 23 SpD\nCalm Nature    \n- Thunderbolt  \n- Will-O-Wisp  \n- Hydro Pump  \n- Light Screen",
         "synergy": [
             "614"
         ],
@@ -5195,7 +5163,7 @@
     {
         "id": "618",
         "pokemon": "Delphox",
-        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Heat Wave  \n- Nasty Plot  \n- Psybeam",
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 2 Def / 32 SpA / 32 Spe\nTimid Nature    \n- Protect  \n- Heat Wave  \n- Nasty Plot  \n- Psybeam",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5213,7 +5181,7 @@
     {
         "id": "620",
         "pokemon": "Ninetales-Alola",
-        "build": "Ninetales-Alola @ Light Clay  \nAbility: Snow Warning  \nEVs: 20 Def / 7 SpA / 7 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Fake Tears  \n- Moonblast  \n- Blizzard  \n- Aurora Veil",
+        "build": "Ninetales-Alola @ Light Clay  \nAbility: Snow Warning  \nEVs: 20 Def / 7 SpA / 7 SpD / 32 Spe\nTimid Nature    \n- Fake Tears  \n- Moonblast  \n- Blizzard  \n- Aurora Veil",
         "synergy": [
             "619"
         ],
@@ -5233,7 +5201,7 @@
     {
         "id": "622",
         "pokemon": "Heliolisk",
-        "build": "Heliolisk @ Expert Belt  \nAbility: Dry Skin  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Grass Knot  \n- Ally Switch  \n- Thunderbolt  \n- Hyper Beam",
+        "build": "Heliolisk @ Expert Belt  \nAbility: Dry Skin  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Grass Knot  \n- Ally Switch  \n- Thunderbolt  \n- Hyper Beam",
         "synergy": [
             "621"
         ],
@@ -5261,7 +5229,7 @@
     {
         "id": "625",
         "pokemon": "Vileplume",
-        "build": "Vileplume @ Big Root  \nAbility: Effect Spore  \nEVs: 31 HP / 25 Def / 10 SpD\nRelaxed Nature  \nIVs: 0 Atk  \n- Sludge Bomb  \n- Giga Drain  \n- Strength Sap  \n- Leech Seed",
+        "build": "Vileplume @ Big Root  \nAbility: Effect Spore  \nEVs: 31 HP / 25 Def / 10 SpD\nRelaxed Nature    \n- Sludge Bomb  \n- Giga Drain  \n- Strength Sap  \n- Leech Seed",
         "synergy": [
             "624"
         ],
@@ -5271,7 +5239,7 @@
     {
         "id": "626",
         "pokemon": "Florges",
-        "build": "Florges @ Choice Scarf  \nAbility: Flower Veil  \nEVs: 22 HP / 12 SpA / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Moonblast  \n- Dazzling Gleam  \n- Energy Ball  \n- Trick",
+        "build": "Florges @ Choice Scarf  \nAbility: Flower Veil  \nEVs: 22 HP / 12 SpA / 32 Spe\nTimid Nature    \n- Moonblast  \n- Dazzling Gleam  \n- Energy Ball  \n- Trick",
         "synergy": [
             "625"
         ],
@@ -5291,7 +5259,7 @@
     {
         "id": "628",
         "pokemon": "Vileplume",
-        "build": "Vileplume @ Focus Sash  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nIVs: 0 Atk  \n- Sludge Bomb  \n- Sleep Powder  \n- After You  \n- Leaf Storm",
+        "build": "Vileplume @ Focus Sash  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe  \n- Sludge Bomb  \n- Sleep Powder  \n- After You  \n- Leaf Storm",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5328,7 +5296,7 @@
     {
         "id": "632",
         "pokemon": "Zoroark-Hisui",
-        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Bitter Malice  \n- Hyper Voice  \n- Icy Wind  \n- Flamethrower",
+        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Bitter Malice  \n- Hyper Voice  \n- Icy Wind  \n- Flamethrower",
         "synergy": [
             "631"
         ],
@@ -5348,7 +5316,7 @@
     {
         "id": "634",
         "pokemon": "Ampharos",
-        "build": "Ampharos @ Ampharosite  \nAbility: Static  \nEVs: 32 HP / 30 SpA / 4 SpD\nQuiet Nature  \nIVs: 0 Atk  \n- Thunderbolt  \n- Dragon Pulse  \n- Cotton Guard  \n- Protect",
+        "build": "Ampharos @ Ampharosite  \nAbility: Static  \nEVs: 32 HP / 30 SpA / 4 SpD\nQuiet Nature    \n- Thunderbolt  \n- Dragon Pulse  \n- Cotton Guard  \n- Protect",
         "synergy": [
             "161",
             "561",
@@ -5361,7 +5329,7 @@
     {
         "id": "635",
         "pokemon": "Serperior",
-        "build": "Serperior @ Sitrus Berry  \nAbility: Contrary  \nEVs: 32 HP / 5 Def / 3 SpD / 26 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Leaf Storm  \n- Light Screen  \n- Reflect  \n- Glare",
+        "build": "Serperior @ Sitrus Berry  \nAbility: Contrary  \nEVs: 32 HP / 5 Def / 3 SpD / 26 Spe\nTimid Nature    \n- Leaf Storm  \n- Light Screen  \n- Reflect  \n- Glare",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5369,7 +5337,7 @@
     {
         "id": "636",
         "pokemon": "Milotic",
-        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 31 HP / 31 Def / 2 SpA / 2 Spe\nSassy Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Hypnosis  \n- Life Dew  \n- Coil",
+        "build": "Milotic @ Leftovers  \nAbility: Competitive  \nEVs: 31 HP / 31 Def / 2 SpA / 2 Spe\nSassy Nature    \n- Muddy Water  \n- Hypnosis  \n- Life Dew  \n- Coil",
         "synergy": [
             "635"
         ],
@@ -5425,7 +5393,7 @@
     {
         "id": "642",
         "pokemon": "Zoroark-Hisui",
-        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Flamethrower  \n- Icy Wind  \n- Psychic",
+        "build": "Zoroark-Hisui @ Choice Scarf  \nAbility: Illusion  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Shadow Ball  \n- Flamethrower  \n- Icy Wind  \n- Psychic",
         "synergy": [
             "641"
         ],
@@ -5435,7 +5403,7 @@
     {
         "id": "643",
         "pokemon": "Aurorus",
-        "build": "Aurorus @ Sitrus Berry  \nAbility: Snow Warning  \nEVs: 8 Def / 32 SpA / 18 SpD / 8 Spe\nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Blizzard  \n- Ancient Power  \n- Freeze-Dry",
+        "build": "Aurorus @ Sitrus Berry  \nAbility: Snow Warning  \nEVs: 8 Def / 32 SpA / 18 SpD / 8 Spe\nModest Nature    \n- Protect  \n- Blizzard  \n- Ancient Power  \n- Freeze-Dry",
         "synergy": [
             "642"
         ],
@@ -5473,7 +5441,7 @@
     {
         "id": "647",
         "pokemon": "Glimmora",
-        "build": "Glimmora @ Focus Sash  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
+        "build": "Glimmora @ Focus Sash  \nAbility: Toxic Debris  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Spiky Shield  \n- Power Gem  \n- Sludge Bomb  \n- Earth Power",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5489,7 +5457,7 @@
     {
         "id": "649",
         "pokemon": "Espathra",
-        "build": "Espathra @ Sitrus Berry  \nAbility: Speed Boost  \nEVs: 32 HP / 15 Def / 19 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Protect  \n- Lumina Crash  \n- Calm Mind  \n- Baton Pass",
+        "build": "Espathra @ Sitrus Berry  \nAbility: Speed Boost  \nEVs: 32 HP / 15 Def / 19 Spe\nTimid Nature    \n- Protect  \n- Lumina Crash  \n- Calm Mind  \n- Baton Pass",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5497,7 +5465,7 @@
     {
         "id": "650",
         "pokemon": "Politoed",
-        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 23 HP / 10 Def / 30 SpA / 3 Spe\nModest Nature  \nIVs: 0 Atk  \n- Protect  \n- Muddy Water  \n- Weather Ball  \n- Ice Beam",
+        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 23 HP / 10 Def / 30 SpA / 3 Spe\nModest Nature    \n- Protect  \n- Muddy Water  \n- Weather Ball  \n- Ice Beam",
         "synergy": [
             "649"
         ],
@@ -5545,7 +5513,7 @@
     {
         "id": "655",
         "pokemon": "Vivillon",
-        "build": "Vivillon @ Choice Scarf  \nAbility: Compound Eyes  \nEVs: 24 Def / 5 SpA / 5 SpD / 32 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Sleep Powder  \n- Hurricane  \n- Rage Powder  \n- Tailwind",
+        "build": "Vivillon @ Choice Scarf  \nAbility: Compound Eyes  \nEVs: 24 Def / 5 SpA / 5 SpD / 32 Spe\nTimid Nature    \n- Sleep Powder  \n- Hurricane  \n- Rage Powder  \n- Tailwind",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5563,7 +5531,7 @@
     {
         "id": "657",
         "pokemon": "Politoed",
-        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 32 HP / 23 Def / 11 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Weather Ball  \n- Hypnosis  \n- Protect  \n- Perish Song",
+        "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 32 HP / 23 Def / 11 SpD\nCalm Nature    \n- Weather Ball  \n- Hypnosis  \n- Protect  \n- Perish Song",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5571,7 +5539,7 @@
     {
         "id": "658",
         "pokemon": "Gengar",
-        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 30 HP / 28 SpD / 8 Spe\nModest Nature  \nIVs: 0 Atk  \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
+        "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 30 HP / 28 SpD / 8 Spe\nModest Nature    \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
         "synergy": [
             "657"
         ],
@@ -5589,7 +5557,7 @@
     {
         "id": "660",
         "pokemon": "Slowking-Galar",
-        "build": "Slowking-Galar @ Colbur Berry  \nAbility: Regenerator  \nEVs: 32 HP / 18 Def / 16 SpD\nSassy Nature  \nIVs: 0 Atk  \n- Acid Spray  \n- Snarl  \n- Heal Pulse  \n- Trick Room",
+        "build": "Slowking-Galar @ Colbur Berry  \nAbility: Regenerator  \nEVs: 32 HP / 18 Def / 16 SpD\nSassy Nature    \n- Acid Spray  \n- Snarl  \n- Heal Pulse  \n- Trick Room",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
@@ -5597,7 +5565,7 @@
     {
         "id": "661",
         "pokemon": "Politoed",
-        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 28 HP / 18 Def / 20 Spe\nTimid Nature  \nIVs: 0 Atk  \n- Muddy Water  \n- Encore  \n- Psych Up  \n- Rain Dance",
+        "build": "Politoed @ Mystic Water  \nAbility: Drizzle  \nEVs: 28 HP / 18 Def / 20 Spe\nTimid Nature    \n- Muddy Water  \n- Encore  \n- Psych Up  \n- Rain Dance",
         "synergy": [
             "660"
         ],
@@ -5607,7 +5575,7 @@
     {
         "id": "662",
         "pokemon": "Blastoise",
-        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nEVs: 13 HP / 32 SpA / 21 Spe\nModest Nature  \nIVs: 0 Atk  \n- Water Spout  \n- Dark Pulse  \n- Shell Smash  \n- Protect",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nEVs: 13 HP / 32 SpA / 21 Spe\nModest Nature    \n- Water Spout  \n- Dark Pulse  \n- Shell Smash  \n- Protect",
         "synergy": [
             "660"
         ],
@@ -5627,7 +5595,7 @@
     {
         "id": "664",
         "pokemon": "Sylveon",
-        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 27 HP / 27 Def / 12 SpA\nModest Nature  \nIVs: 0 Atk  \n- Hyper Voice  \n- Moonblast  \n- Calm Mind  \n- Protect",
+        "build": "Sylveon @ Fairy Feather  \nAbility: Pixilate  \nEVs: 27 HP / 27 Def / 12 SpA\nModest Nature    \n- Hyper Voice  \n- Moonblast  \n- Calm Mind  \n- Protect",
         "synergy": [
             "660"
         ],
@@ -5661,7 +5629,7 @@
     {
         "id": "668",
         "pokemon": "Drampa",
-        "build": "Drampa @ Drampanite  \nAbility: Cloud Nine  \nEVs: 32 HP / 9 Def / 25 SpA\nQuiet Nature  \nIVs: 0 Atk  \n- Protect  \n- Hyper Voice  \n- Earth Power  \n- Calm Mind",
+        "build": "Drampa @ Drampanite  \nAbility: Cloud Nine  \nEVs: 32 HP / 9 Def / 25 SpA\nQuiet Nature    \n- Protect  \n- Hyper Voice  \n- Earth Power  \n- Calm Mind",
         "synergy": [
             "669"
         ],
@@ -5671,7 +5639,7 @@
     {
         "id": "669",
         "pokemon": "Oranguru",
-        "build": "Oranguru @ Colbur Berry  \nAbility: Inner Focus  \nEVs: 32 HP / 20 Def / 14 SpD\nCalm Nature  \nIVs: 0 Atk  \n- Foul Play  \n- Instruct  \n- Trick Room  \n- Psychic",
+        "build": "Oranguru @ Colbur Berry  \nAbility: Inner Focus  \nEVs: 32 HP / 20 Def / 14 SpD\nCalm Nature    \n- Foul Play  \n- Instruct  \n- Trick Room  \n- Psychic",
         "synergy": [
             "668"
         ],
@@ -5701,7 +5669,7 @@
     {
         "id": "672",
         "pokemon": "Snorlax",
-        "build": "Snorlax @ Leftovers  \nAbility: Thick Fat  \nEVs: 32 HP / 2 Atk / 32 Def\nRelaxed Nature  \nIVs: 0 Atk  \n- Encore  \n- Yawn  \n- Fissure  \n- Protect",
+        "build": "Snorlax @ Leftovers  \nAbility: Thick Fat  \nEVs: 32 HP / 2 Atk / 32 Def\nRelaxed Nature    \n- Encore  \n- Yawn  \n- Fissure  \n- Protect",
         "synergy": [
             "658"
         ],
@@ -5739,7 +5707,7 @@
     {
         "id": "676",
         "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 28 HP / 25 Def / 13 SpA\nModest Nature  \nIVs: 0 Atk  \n- Heat Wave  \n- Helping Hand  \n- Weather Ball  \n- Protect",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 28 HP / 25 Def / 13 SpA\nModest Nature    \n- Heat Wave  \n- Helping Hand  \n- Weather Ball  \n- Protect",
         "synergy": [
             "677"
         ],
@@ -5759,7 +5727,7 @@
     {
         "id": "678",
         "pokemon": "Venusaur",
-        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature  \nIVs: 0 Atk  \n- Leaf Storm  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
+        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Leaf Storm  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
         "synergy": [
             "677"
         ],

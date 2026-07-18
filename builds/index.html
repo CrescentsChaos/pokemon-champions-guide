@@ -902,7 +902,7 @@
                 if (formatFilter && row.formatL !== formatFilter) return false;
                 if (abilityFilter && !row.abilityL.includes(abilityFilter)) return false;
                 if (moveFilter && !row.movesL.some(m => m.includes(moveFilter))) return false;
-                if (metaBuildsOnly && !(row.meta || row.metaNumber != null)) return false;
+                if (metaBuildsOnly && !row.meta) return false;
                 if (championsEligibleOnly && !row.champs) return false;
                 return true;
             });
@@ -916,12 +916,19 @@
                     return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
                 }
                 if (sortKey === 'meta') {
-                    av = a.metaRank;
-                    bv = b.metaRank;
-                    if (av !== bv) return sortDir === 'asc' ? av - bv : bv - av;
-                    // Tie-break: tagged meta sets first, then name
-                    if (a.meta !== b.meta) return a.meta ? -1 : 1;
-                    return (a.speciesL || '').localeCompare(b.speciesL || '');
+                    // isMeta builds first, ordered by top_pokemons.json; others after
+                    if (a.meta !== b.meta) {
+                        return a.meta ? -1 : 1;
+                    }
+                    if (a.meta && b.meta) {
+                        if (a.metaRank !== b.metaRank) {
+                            return sortDir === 'asc' ? a.metaRank - b.metaRank : b.metaRank - a.metaRank;
+                        }
+                        return (a.speciesL || '').localeCompare(b.speciesL || '');
+                    }
+                    av = a.speciesL || a.pokemonL;
+                    bv = b.speciesL || b.pokemonL;
+                    return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
                 }
                 av = a[sortKey] || 0;
                 bv = b[sortKey] || 0;
@@ -1718,15 +1725,15 @@
             const isMetaBuild = typeof isBuildMarkedMeta === 'function'
                 ? isBuildMarkedMeta(rawBuild)
                 : rawBuild?.isMeta === true;
-            const metaNumber = typeof getMetaNumberFromTop === 'function'
+            const metaNumber = isMetaBuild && typeof getMetaNumberFromTop === 'function'
                 ? getMetaNumberFromTop(p.species || rawBuild.pokemon, format)
                 : null;
-            const showMetaPill = isMetaBuild || metaNumber != null;
+            const showMetaPill = isMetaBuild;
             const metaPillLabel = metaNumber != null ? `META #${metaNumber}` : 'META';
             const metaPillTitle = metaNumber != null
                 ? `#${metaNumber} in ${format} meta (top_pokemons)`
-                : 'Tagged meta set';
-            card.className = 'pokemon-card-premium' + (isMetaBuild || metaNumber != null ? ' pokemon-card-premium--meta' : '');
+                : 'Tagged meta set (isMeta)';
+            card.className = 'pokemon-card-premium' + (isMetaBuild ? ' pokemon-card-premium--meta' : '');
 
             const baseAbilityDisplay = (p.ability && p.ability.trim())
                 ? p.ability.trim()
@@ -1826,11 +1833,8 @@
                 const isMetaBuild = typeof isBuildMarkedMeta === 'function'
                     ? isBuildMarkedMeta(build)
                     : build?.isMeta === true;
-                const metaNumber = typeof getMetaNumberFromTop === 'function'
-                    ? getMetaNumberFromTop(p.species || build.pokemon, build.format || 'Singles')
-                    : null;
                 const wrapper = document.createElement('div');
-                wrapper.className = `build-card-wrapper${(isMetaBuild || metaNumber != null) ? ' is-meta' : ''}${String(selectedBuildId) === String(build.id) ? ' selected' : ''}`;
+                wrapper.className = `build-card-wrapper${isMetaBuild ? ' is-meta' : ''}${String(selectedBuildId) === String(build.id) ? ' selected' : ''}`;
                 wrapper.id = `build-${build.id}`;
                 wrapper.onclick = (e) => {
                     if (e.target.tagName === 'BUTTON') return;
