@@ -2105,6 +2105,47 @@ input:hover {
     text-align: center;
 }
 
+.fallen-row {
+    margin: 0.65rem 0 0.85rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fallen-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.fallen-header label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.fallen-hint {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.fallen-group {
+    margin: 0;
+}
+
+.fallen-group .fallen-btn {
+    flex: 1;
+    min-width: 2rem;
+    padding: 6px 8px !important;
+    text-align: center;
+}
+
 .ruin-grid .field-btn {
     font-size: 0.7rem;
     padding: 8px 10px;

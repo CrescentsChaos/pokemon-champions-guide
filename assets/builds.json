@@ -2616,8 +2616,8 @@
     {
         "id": "329",
         "pokemon": "Rotom-Wash",
-        "build": "Rotom-Wash @ Sitrus Berry  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Helping Hand",
-        "synergy": [],
+        "build": "Rotom-Wash @ Magnet  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 HP / 12 Def / 15 SpA / 1 SpD / 6 Spe\nTimid Nature    \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Protect",
+        "synergy": ["219","670","545"],
         "format": "Doubles",
         "isMeta": false
     },
@@ -4378,7 +4378,7 @@
             "532"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "537",

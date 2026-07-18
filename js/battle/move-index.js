@@ -1,5 +1,6 @@
 /**
  * Move index — loads and normalizes move data from moves.json.
+ * Contact / sound / wind / ball / spread flags are derived from tags.
  */
 (function (global) {
     const BC = global.BattleCalc = global.BattleCalc || {};
@@ -8,9 +9,20 @@
         return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
+    function normalizeTag(tag) {
+        return (tag || '').toLowerCase().replace(/[^a-z0-9&]+/g, '');
+    }
+
+    function hasTag(tags, ...needles) {
+        if (!tags || !tags.length) return false;
+        const normalized = tags.map(normalizeTag);
+        return needles.some(n => normalized.includes(normalizeTag(n)));
+    }
+
     function parseMoveRecord(m) {
         if (!m) return null;
         const battle = m.battle || {};
+        const tags = Array.isArray(m.tags) ? m.tags.slice() : [];
         return {
             name: m.name,
             id: m.id,
@@ -19,12 +31,8 @@
             category: m.damage_class || m.category || 'Physical',
             accuracy: m.accuracy,
             priority: m.priority || 0,
-            tags: m.tags || [],
+            tags,
             battle: {
-                spread: !!battle.spread,
-                sound: !!battle.sound,
-                contact: !!battle.contact,
-                priority: battle.priority != null ? !!battle.priority : (m.priority || 0) > 0,
                 multiHit: battle.multiHit || null,
                 variablePower: battle.variablePower || null,
                 dynamicType: battle.dynamicType || null
@@ -45,6 +53,17 @@
             crit: false,
             ...overrides
         };
+    }
+
+    function resolveRecord(nameOrRecord) {
+        if (!nameOrRecord) return null;
+        if (typeof nameOrRecord === 'string') return MoveIndex.get(nameOrRecord);
+        // Live move state objects only carry name/BP — resolve the catalog record for tags.
+        if (nameOrRecord.name) {
+            const fromIndex = MoveIndex.get(nameOrRecord.name);
+            if (fromIndex) return fromIndex;
+        }
+        return nameOrRecord;
     }
 
     const MoveIndex = {
@@ -75,33 +94,52 @@
             return createMoveState(this.get(name), overrides);
         },
 
+        hasTag(nameOrRecord, ...needles) {
+            const rec = resolveRecord(nameOrRecord);
+            return hasTag(rec?.tags, ...needles);
+        },
+
         isSpread(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
-            return !!rec?.battle?.spread;
+            return this.hasTag(nameOrRecord, 'All Pokemon', 'All Opponents');
         },
 
         isSound(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
-            return !!rec?.battle?.sound;
+            return this.hasTag(nameOrRecord, 'Sound-Based');
+        },
+
+        isContact(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Contact');
+        },
+
+        isWind(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Wind');
+        },
+
+        isBallBomb(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Ball & Bomb');
+        },
+
+        isPulse(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Pulse');
         },
 
         isPriority(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
-            return !!rec?.battle?.priority || (rec?.priority || 0) > 0;
+            const rec = resolveRecord(nameOrRecord);
+            return (rec?.priority || 0) > 0;
         },
 
         getMultiHitInfo(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
+            const rec = resolveRecord(nameOrRecord);
             return rec?.battle?.multiHit || null;
         },
 
         getVariablePower(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
+            const rec = resolveRecord(nameOrRecord);
             return rec?.battle?.variablePower || null;
         },
 
         getDynamicType(nameOrRecord) {
-            const rec = typeof nameOrRecord === 'string' ? this.get(nameOrRecord) : nameOrRecord;
+            const rec = resolveRecord(nameOrRecord);
             return rec?.battle?.dynamicType || null;
         },
 

@@ -56,9 +56,12 @@
         return stab;
     }
 
-    function checkAbilityImmunity(attacker, defender, moveType, typeMod, field) {
-        const isMoldBreaker = attacker.ability === 'Mold Breaker';
-        if (isMoldBreaker) return false;
+    function checkAbilityImmunity(attacker, defender, move, moveType, typeMod, field) {
+        const ab = (defender.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const atkAb = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const breaksAbility = atkAb === 'moldbreaker' || atkAb === 'teravolt' || atkAb === 'turboblaze';
+        if (breaksAbility) return false;
+
         if (defender.ability === 'Wonder Guard' && typeMod <= 1 && moveType !== 'None') return true;
         if (defender.ability === 'Levitate' && moveType === 'Ground' && !field.gravity) return true;
         if (defender.ability === 'Flash Fire' && moveType === 'Fire') return true;
@@ -67,6 +70,12 @@
         if (defender.ability === 'Sap Sipper' && moveType === 'Grass') return true;
         if (defender.ability === 'Earth Eater' && moveType === 'Ground') return true;
         if (defender.ability === 'Well-Baked Body' && moveType === 'Fire') return true;
+
+        // Tag-based move immunities
+        if (ab === 'bulletproof' && MoveIndex.isBallBomb(move)) return true;
+        if (ab === 'soundproof' && MoveIndex.isSound(move)) return true;
+        if (ab === 'windrider' && MoveIndex.isWind(move)) return true;
+
         return false;
     }
 
@@ -195,6 +204,17 @@
             bpMods.push(Math.round(abilityBoost * 4096));
         }
         if (attackerSide.helpingHand) bpMods.push(6144);
+        // Supreme Overlord: BP × (1.0–1.5) from fainted allies (capped at 5)
+        {
+            const abKey = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (abKey === 'supremeoverlord') {
+                const fallen = Math.min(5, Math.max(0, parseInt(attacker.alliesFainted, 10) || 0));
+                if (fallen > 0) {
+                    const powMod = [4096, 4506, 4915, 5325, 5734, 6144];
+                    bpMods.push(powMod[fallen]);
+                }
+            }
+        }
         if (BC.getTerrainModifier) {
             const terrainMult = BC.getTerrainModifier(moveType, field);
             if (terrainMult === 1.3) bpMods.push(5325);
@@ -265,7 +285,7 @@
             }
         }
 
-        if (checkAbilityImmunity(attacker, defender, moveType, typeMod, field)) return res;
+        if (checkAbilityImmunity(attacker, defender, move, moveType, typeMod, field)) return res;
         if (typeMod === 0) return res;
 
         const stabMod = stabFloatToMod(calculateStab(attacker, moveType));

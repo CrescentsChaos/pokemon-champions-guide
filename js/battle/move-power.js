@@ -149,6 +149,13 @@
             basePower = 20 + (20 * positiveBoosts);
         }
 
+        // Last Respects: 50 × (1 + fainted allies on user's side)
+        const moveKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (variablePower === 'fallen_allies' || moveKey === 'lastrespects') {
+            const fallen = Math.max(0, Math.min(100, parseInt(attacker.alliesFainted, 10) || 0));
+            basePower = 50 * (1 + fallen);
+        }
+
         if (attacker.hpPercent <= 33.33) {
             const typeResolved = resolveMoveType(attacker, move, moveRecord, (attacker.item || '').toLowerCase(), field);
             const moveType = typeResolved.moveType;

@@ -460,6 +460,22 @@ function setupEventListeners() {
                 return;
             }
 
+            if (btn.classList.contains('fallen-btn')) {
+                const group = btn.closest('.fallen-group');
+                if (group) {
+                    group.querySelectorAll('.fallen-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const id = parseInt(group.getAttribute('data-pokemon'), 10);
+                    const pk = id === 1 ? p1 : p2;
+                    if (pk) {
+                        pk.alliesFainted = parseInt(btn.getAttribute('data-fallen'), 10) || 0;
+                        syncLastRespectsBpDisplay(pk);
+                    }
+                }
+                recalculate();
+                return;
+            }
+
             if (btn.classList.contains('level-preset')) {
                 document.querySelectorAll('.level-preset').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
@@ -723,6 +739,7 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-status`).value = pk.status || 'Healthy';
     document.getElementById(`${p}-tera`).checked = pk.tera || false;
     if (pk.teraType) document.getElementById(`${p}-tera-type`).value = pk.teraType;
+    syncFallenUI(pk);
 
     let recAbilities = [];
     let recMoves = [];
@@ -826,6 +843,13 @@ function populatePokemonUI(pk) {
             : [];
         const hasMove = move.name && move.name !== 'None';
         const accuracy = mData?.accuracy;
+        const moveKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const isLastRespects = moveKey === 'lastrespects'
+            || (mData?.battle?.variablePower === 'fallen_allies');
+        const fallen = Math.max(0, Math.min(100, parseInt(pk.alliesFainted, 10) || 0));
+        const displayBp = isLastRespects ? (50 * (1 + fallen)) : (move.basePower ?? 0);
+        const bpMax = isLastRespects ? 5050 : 250;
+        const bpReadonly = isLastRespects ? 'readonly title="Scales with Fallen allies"' : '';
 
         return `
         <div class="move-row">
@@ -842,7 +866,8 @@ function populatePokemonUI(pk) {
             ${hasMove ? `
             <div class="move-edit-row">
                 <label>BP
-                    <input type="number" min="0" max="250" value="${move.basePower ?? 0}"
+                    <input type="number" min="0" max="${bpMax}" value="${displayBp}"
+                        ${bpReadonly}
                         onchange="updateMoveField(${pk.id}, ${i}, 'basePower', this.value)">
                 </label>
                 <label>Type
@@ -873,6 +898,40 @@ function populatePokemonUI(pk) {
             </div>
         </div>`;
     }).join('');
+}
+
+function syncFallenUI(pk) {
+    if (!pk) return;
+    const fallen = Math.max(0, Math.min(5, parseInt(pk.alliesFainted, 10) || 0));
+    pk.alliesFainted = fallen;
+    const group = document.querySelector(`.fallen-group[data-pokemon="${pk.id}"]`);
+    if (!group) return;
+    group.querySelectorAll('.fallen-btn').forEach(btn => {
+        const n = parseInt(btn.getAttribute('data-fallen'), 10) || 0;
+        btn.classList.toggle('active', n === fallen);
+    });
+}
+
+function syncLastRespectsBpDisplay(pk) {
+    if (!pk) return;
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const container = document.getElementById(`${p}-moves`);
+    if (!container) return;
+    const fallen = Math.max(0, Math.min(100, parseInt(pk.alliesFainted, 10) || 0));
+    const rows = container.querySelectorAll('.move-row');
+    pk.moves.forEach((move, i) => {
+        const key = (move?.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (key !== 'lastrespects') return;
+        const input = rows[i]?.querySelector('input[type="number"]');
+        if (input) {
+            input.value = String(50 * (1 + fallen));
+            input.max = 5050;
+            input.readOnly = true;
+            input.title = 'Scales with Fallen allies';
+        }
+        // Keep stored catalog BP at 50; damage calc applies the fallen formula.
+        if (!move.customized) move.basePower = 50;
+    });
 }
 
 function updateHits(pId, idx, hits) {

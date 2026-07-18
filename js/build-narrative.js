@@ -168,13 +168,15 @@
         const category = ref?.damage_class || ref?.category || 'Physical';
         const power = ref?.power;
         const isStab = types.some(t => t && t.toLowerCase() === (moveType || '').toLowerCase());
-        const battle = ref?.battle || {};
+        const tags = ref?.tags || [];
+        const tagKey = t => (t || '').toLowerCase().replace(/[^a-z0-9&]+/g, '');
+        const hasMoveTag = (...needles) => tags.some(t => needles.some(n => tagKey(t) === tagKey(n)));
         const parts = [];
 
         let role = isStab ? 'STAB' : 'coverage';
         if (power === 0 || category === 'Status') role = 'utility';
-        if (battle.spread) role = 'spread damage';
-        if (battle.priority || (ref?.priority > 0)) role = 'priority';
+        if (hasMoveTag('All Pokemon', 'All Opponents')) role = 'spread damage';
+        if ((ref?.priority || 0) > 0) role = 'priority';
 
         const desc = ref?.short_descripton || ref?.short_description || '';
         parts.push(`<strong>${esc(moveName)}</strong> (${moveType}${power ? `, ${power} BP` : ''}, ${category.toLowerCase()}) functions as ${role}.`);

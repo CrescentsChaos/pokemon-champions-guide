@@ -15,7 +15,8 @@
             nature: 'Hardy', ability: 'None', item: 'None', status: 'Healthy',
             type1: 'None', type2: 'None', tera: false, teraType: 'Normal',
             moves: Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })),
-            hpPercent: 100
+            hpPercent: 100,
+            alliesFainted: 0
         };
     }
 
