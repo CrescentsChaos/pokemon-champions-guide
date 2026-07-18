@@ -1958,7 +1958,7 @@
         "id": "679",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Focus Sash  \nAbility: Chlorophyll  \nTera Type: Grass  \nEVs: 32 SpA / 2 SpD / 32 Spe\nModest Nature    \n- Sleep Powder  \n- Sludge Bomb  \n- Energy Ball  \n- Earth Power",
-        "synergy": [],
+        "synergy": ["250","555"],
         "format": "Doubles",
         "isMeta": true
     },
@@ -1971,7 +1971,7 @@
             "570",
             "415",
             "356",
-            "327","251"
+            "327","251","679"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -2041,8 +2041,8 @@
     {
         "id": "258",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 31 HP / 10 Def / 1 SpA / 23 SpD / 1 Spe\nBold Nature    \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Life Dew",
-        "synergy": [],
+        "build": "Sinistcha @ Colbur Berry  \nAbility: Hospitality  \nLevel: 50  \nTera Type: Grass  \nEVs: 29 HP / 15 Def / 22 SpD\nBold Nature    \n- Matcha Gotcha  \n- Rage Powder  \n- Protect  \n- Shadow Ball",
+        "synergy": ["545"],
         "format": "Doubles",
         "isMeta": false
     },
@@ -4425,7 +4425,7 @@
     {
         "id": "545",
         "pokemon": "Staraptor",
-        "build": "Staraptor @ Staraptite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 31 HP / 32 Atk / 3 SpD\nAdamant Nature  \n- Brave Bird  \n- Close Combat  \n- Roost  \n- Tailwind",
+        "build": "Staraptor @ Staraptite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 29 HP / 1 Atk / 4 SpD / 32 Spe\nJolly Nature  \n- Brave Bird  \n- Close Combat  \n- Roost  \n- Tailwind",
         "synergy": [],
         "format": "Doubles",
         "isMeta": true
@@ -4923,12 +4923,11 @@
     {
         "id": "594",
         "pokemon": "Gholdengo",
-        "build": "Gholdengo @ Life Orb\nAbility: Good as Gold\nTera Type: Fairy\nEVs: 17 HP / 9 Def / 23 SpA / 3 SpD / 14 Spe\nModest Nature\n- Protect\n- Nasty Plot\n- Shadow Ball\n- Make It Rain",
-        "synergy": [
-            "590"
+        "build": "Gholdengo @ Life Orb\nAbility: Good as Gold\nTera Type: Fairy\nEVs: 27 HP / 24 Def / 5 SpD / 10 Spe\nModest Nature\n- Protect\n- Nasty Plot\n- Shadow Ball\n- Make It Rain",
+        "synergy": ["545","258"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "595",
@@ -5485,9 +5484,9 @@
     {
         "id": "653",
         "pokemon": "Excadrill",
-        "build": "Excadrill @ Focus Sash  \nAbility: Sand Rush  \nEVs: 2 HP / 32 Atk / 32 Spe\nJolly Nature  \n- Earthquake  \n- Iron Head  \n- Rock Slide  \n- Protect",
+        "build": "Excadrill @ Focus Sash  \nAbility: Sand Rush  \nEVs: 32 Atk / 2 SpD / 32 Spe\nJolly Nature  \n- Earthquake  \n- Iron Head  \n- Rock Slide  \n- Protect",
         "synergy": [
-            "652"
+            "652","545"
         ],
         "format": "Doubles",
         "isMeta": false
