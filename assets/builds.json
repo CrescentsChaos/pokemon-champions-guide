@@ -3319,7 +3319,7 @@
     {
         "id": "415",
         "pokemon": "Basculegion",
-        "build": "Basculegion @ Choice Scarf\nLevel: 50\nAbility: Adaptability\nEVs: 2 HP / 32 Atk / 32 Spe\nTera Type: Water\nJolly Nature\n- Wave Crash\n- Last Respects\n- Flip Turn\n- Aqua Jet",
+        "build": "Basculegion @ Choice Scarf\nLevel: 50\nAbility: Adaptability\nEVs: 26 Atk / 8 Def / 32 Spe\nTera Type: Water\nJolly Nature\n- Wave Crash\n- Last Respects\n- Flip Turn\n- Aqua Jet",
         "synergy": [
             "523",
             "250"
@@ -4534,10 +4534,10 @@
     {
         "id": "556",
         "pokemon": "Aerodactyl",
-        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Rock  \nEVs: 22 HP / 12 Atk / 32 Spe\nJolly Nature  \n- Rock Slide  \n- Ice Fang  \n- Dual Wingbeat  \n- Tailwind",
-        "synergy": [],
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Rock  \nEVs: 26 HP / 7 Atk / 1 Def / 32 Spe\nJolly Nature  \n- Rock Slide  \n- Ice Fang  \n- Dual Wingbeat  \n- Tailwind",
+        "synergy": ["250"],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "557",
@@ -4727,10 +4727,9 @@
     {
         "id": "575",
         "pokemon": "Garchomp",
-        "build": "Garchomp @ Sitrus Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 31 HP / 14 Atk / 3 Def / 4 SpD / 14 Spe\nAdamant Nature  \n- Earthquake  \n- Dragon Claw  \n- Rock Slide  \n- Protect",
+        "build": "Garchomp @ Sitrus Berry  \nAbility: Rough Skin  \nLevel: 50  \nTera Type: Dragon  \nEVs: 32 HP / 20 Atk / 9 Def / 4 SpD / 1 Spe\nAdamant Nature  \n- Stomping Tantrum  \n- Dragon Tail  \n- Rock Slide  \n- Protect",
         "synergy": [
             "571",
-            "250",
             "572",
             "573",
             "574"
@@ -4806,7 +4805,7 @@
     {
         "id": "582",
         "pokemon": "Farigiraf",
-        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 15 HP / 14 Def / 20 SpA / 14 SpD / 3 Spe\nModest Nature    \n- Twin Beam  \n- Thunderbolt  \n- Trick Room  \n- Protect",
+        "build": "Farigiraf @ Sitrus Berry  \nAbility: Armor Tail  \nLevel: 50  \nTera Type: Normal  \nEVs: 27 HP / 21 Def / 18 SpD \nBold Nature    \n- Psychic  \n- Thunderbolt  \n- Trick Room  \n- Protect",
         "synergy": [
             "581",
             "583"
@@ -5692,7 +5691,7 @@
             "250"
         ],
         "format": "Doubles",
-        "isMeta": true
+        "isMeta": false
     },
     {
         "id": "675",
