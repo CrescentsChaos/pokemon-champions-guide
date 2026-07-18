@@ -14,172 +14,192 @@
 
     <script src="../js/main.js"></script>
 
-    <main class="container" style="padding-top: 7rem; padding-bottom: 6rem;">
+    <main class="container compare-main">
 
-        <!-- Page Header -->
-        <div id="compare-banner" class="glass fade-in">
-            <h1>COMPARE <span style="color: var(--primary-red);">BUILDS</span></h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">
-                Import curated library builds or Poképastes to compare stats, meta survival, speed tiers, and KO coverage side-by-side.
-            </p>
-        </div>
+        <!-- Summary banner (calc-style) -->
+        <section class="compare-results-section fade-in" aria-label="Comparison summary">
+            <div id="compare-banner" class="glass">
+                <div class="banner-content">
+                    <div class="compare-banner__eyebrow">Side-by-side analysis</div>
+                    <h1 id="compare-headline">COMPARE <span>BUILDS</span></h1>
+                    <p class="compare-banner__sub">Stats, mega formes, meta survival, speed tiers, and KO coverage — same calc engine as the damage calculator.</p>
+                    <div class="compare-banner__meta" id="compare-headline-meta">
+                        <span class="compare-pill compare-pill--a" id="banner-name-a">Build A</span>
+                        <button type="button" class="compare-swap-btn" id="compare-swap-btn" title="Swap builds" aria-label="Swap Build A and Build B">⇄</button>
+                        <span class="compare-pill compare-pill--b" id="banner-name-b">Build B</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Main 3-Column Grid -->
         <div class="calc-grid fade-in">
 
             <!-- ============ BUILD A ============ -->
             <div class="calc-panel glass attacker-panel" id="p1-panel">
-                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem; gap:0.5rem; flex-wrap:wrap;">
-                    <h2 style="margin:0; color:var(--primary-red); font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD A</h2>
-                    <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+                <div class="panel-role-badge build-a-badge">Build A</div>
+                <div class="panel-header">
+                    <div class="sprite-container sprite-container--a">
+                        <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p1-sprite" alt="Build A Sprite"
+                             onerror="handleSpriteError(this, p1 && p1.species || '', false)">
+                    </div>
+                    <div class="panel-actions">
                         <button class="import-btn" type="button" onclick="openImportModal(1, 'library')">Library</button>
-                        <button class="import-btn" type="button" onclick="openImportModal(1, 'paste')">Import Paste</button>
+                        <button class="import-btn" type="button" onclick="openImportModal(1, 'paste')">Paste</button>
                     </div>
-                </div>
-
-                <!-- Search -->
-                <div style="position:relative; margin-bottom:1rem;">
-                    <input type="text" id="p1-search" placeholder="Search Pokémon..." class="search-input">
-                    <div class="search-results" id="p1-search-results"></div>
-                </div>
-
-                <!-- Sprite -->
-                <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
-                    <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p1-sprite" alt="Build A Sprite"
-                         style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(255,62,62,0.25));"
-                         onerror="handleSpriteError(this, p1 && p1.species || '', false, p1 && p1.item || '')">
-                </div>
-
-                <!-- Types -->
-                <div style="display:flex; gap:8px; justify-content:center; margin-bottom:1.2rem;">
-                    <input type="text" id="p1-type1" class="type-input" readonly placeholder="Type 1" style="width:48%; text-align:center;">
-                    <input type="text" id="p1-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
-                </div>
-
-                <!-- Level & Form -->
-                <div class="level-row">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span>Level</span>
-                        <input type="number" id="p1-level" value="50" min="1" max="100">
+                    <div class="search-wrap">
+                        <input type="text" id="p1-search" placeholder="Search Pokémon…" class="search-input">
+                        <div class="search-results" id="p1-search-results"></div>
                     </div>
-                    <button class="import-btn" id="p1-mega-toggle" onclick="toggleMega(1)" style="margin-top:0; border-radius:8px; padding:6px 12px; background:linear-gradient(135deg, #7b2ff7 0%, #3e9fff 100%); border:none; color:white;">MEGA</button>
+                    <div class="type-badges" id="p1-types" aria-label="Types">
+                        <span class="type-badge-empty">—</span>
+                    </div>
+                    <!-- Hidden for compatibility -->
+                    <input type="hidden" id="p1-type1" value="">
+                    <input type="hidden" id="p1-type2" value="">
                 </div>
 
-                <!-- Meta Fields -->
-                <div class="meta-row">
-                    <div class="select-group">
-                        <label>Nature</label>
-                        <select id="p1-nature" style="flex:1;"></select>
+                <div class="panel-body">
+                    <div class="level-row">
+                        <div class="level-control">
+                            <span>Level</span>
+                            <input type="number" id="p1-level" value="50" min="1" max="100">
+                        </div>
+                        <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle" type="button" onclick="toggleMega(1)">MEGA</button>
                     </div>
-                    <div class="select-group">
-                        <label>Ability</label>
-                        <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose..." style="flex:1;">
-                        <datalist id="p1-abilities-list"></datalist>
-                    </div>
-                    <div class="select-group">
-                        <label>Item</label>
-                        <input type="text" id="p1-item" list="items-list" placeholder="Choose..." style="flex:1;">
-                    </div>
-                </div>
 
-                <div class="compare-moves-block">
-                    <div class="compare-moves-label">Moves</div>
-                    <div id="p1-moves" class="compare-moves-list">
-                        <span class="compare-move-empty">Import a build to see moves</span>
+                    <div class="meta-row">
+                        <div class="select-group">
+                            <label>Nature</label>
+                            <select id="p1-nature"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Ability</label>
+                            <input type="text" id="p1-ability" list="p1-abilities-list" placeholder="Choose…">
+                            <datalist id="p1-abilities-list"></datalist>
+                        </div>
+                        <div class="select-group">
+                            <label>Item</label>
+                            <div class="item-select-wrap">
+                                <img src="" id="p1-item-sprite" class="item-sprite" alt=""
+                                     onerror="handleItemError(this, p1 && p1.item)">
+                                <input type="text" id="p1-item" list="items-list" placeholder="Choose…">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="moves-section">
+                        <h4>Moves</h4>
+                        <div id="p1-moves" class="compare-moves-list">
+                            <span class="compare-move-empty">Import a build to see moves</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- ============ MIDDLE: STAT COMPARISON ============ -->
-            <div class="middle-panel glass" style="background:rgba(0,0,0,0.35); padding:1.5rem;">
-                <h3 style="text-align:center; font-size:0.8rem; font-weight:900; letter-spacing:2px; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:1.5rem;">STAT COMPARISON</h3>
-
-                <div class="compare-table-wrap">
-                <table class="compare-table">
-                    <thead>
-                        <tr>
-                            <th style="width:38%;">A</th>
-                            <th style="width:24%; color:rgba(255,255,255,0.3);">Stat</th>
-                            <th style="width:38%;">B</th>
-                        </tr>
-                    </thead>
-                    <tbody id="compare-stats-body">
-                        <!-- Injected by JS -->
-                    </tbody>
-                </table>
+            <div class="calc-panel middle-panel glass" id="compare-middle">
+                <div class="field-section">
+                    <h4>Stat Comparison</h4>
+                    <div class="compare-table-wrap">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th class="th-a">A</th>
+                                    <th class="th-stat">Stat</th>
+                                    <th class="th-b">B</th>
+                                </tr>
+                            </thead>
+                            <tbody id="compare-stats-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="field-section compare-speed-card" id="compare-speed-card">
+                    <h4>Battle Speed</h4>
+                    <div class="speed-duo">
+                        <div class="speed-side speed-side--a">
+                            <span class="speed-side__label">A</span>
+                            <strong id="compare-spe-a">—</strong>
+                        </div>
+                        <div class="speed-side__vs" id="compare-spe-vs">vs</div>
+                        <div class="speed-side speed-side--b">
+                            <span class="speed-side__label">B</span>
+                            <strong id="compare-spe-b">—</strong>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- ============ BUILD B ============ -->
             <div class="calc-panel glass defender-panel" id="p2-panel">
-                <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.2rem; padding-bottom:1rem; gap:0.5rem; flex-wrap:wrap;">
-                    <h2 style="margin:0; color:#2196F3; font-size:1.4rem; font-weight:900; letter-spacing:1px;">BUILD B</h2>
-                    <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
-                        <button class="import-btn" type="button" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2, 'library')">Library</button>
-                        <button class="import-btn" type="button" style="background:rgba(33,150,243,0.15); border-color:rgba(33,150,243,0.4);" onclick="openImportModal(2, 'paste')">Import Paste</button>
+                <div class="panel-role-badge build-b-badge">Build B</div>
+                <div class="panel-header">
+                    <div class="sprite-container sprite-container--b">
+                        <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p2-sprite" alt="Build B Sprite"
+                             onerror="handleSpriteError(this, p2 && p2.species || '', false)">
                     </div>
-                </div>
-
-                <!-- Search -->
-                <div style="position:relative; margin-bottom:1rem;">
-                    <input type="text" id="p2-search" placeholder="Search Pokémon..." class="search-input">
-                    <div class="search-results" id="p2-search-results"></div>
-                </div>
-
-                <!-- Sprite -->
-                <div style="display:flex; justify-content:center; align-items:center; min-height:130px; margin-bottom:1rem;">
-                    <img src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" id="p2-sprite" alt="Build B Sprite"
-                         style="height:120px; object-fit:contain; image-rendering:crisp-edges; filter:drop-shadow(0 0 20px rgba(33,150,243,0.25));"
-                         onerror="handleSpriteError(this, p2 && p2.species || '', false, p2 && p2.item || '')">
-                </div>
-
-                <!-- Types -->
-                <div style="display:flex; gap:8px; justify-content:center; margin-bottom:1.2rem;">
-                    <input type="text" id="p2-type1" class="type-input" readonly placeholder="Type 1" style="width:48%; text-align:center;">
-                    <input type="text" id="p2-type2" class="type-input" readonly placeholder="Type 2" style="width:48%; text-align:center;">
-                </div>
-
-                <!-- Level & Form -->
-                <div class="level-row">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span>Level</span>
-                        <input type="number" id="p2-level" value="50" min="1" max="100">
+                    <div class="panel-actions panel-actions--b">
+                        <button class="import-btn import-btn--b" type="button" onclick="openImportModal(2, 'library')">Library</button>
+                        <button class="import-btn import-btn--b" type="button" onclick="openImportModal(2, 'paste')">Paste</button>
                     </div>
-                    <button class="import-btn" id="p2-mega-toggle" onclick="toggleMega(2)" style="margin-top:0; border-radius:8px; padding:6px 12px; background:linear-gradient(135deg, #7b2ff7 0%, #3e9fff 100%); border:none; color:white;">MEGA</button>
+                    <div class="search-wrap">
+                        <input type="text" id="p2-search" placeholder="Search Pokémon…" class="search-input">
+                        <div class="search-results" id="p2-search-results"></div>
+                    </div>
+                    <div class="type-badges" id="p2-types" aria-label="Types">
+                        <span class="type-badge-empty">—</span>
+                    </div>
+                    <input type="hidden" id="p2-type1" value="">
+                    <input type="hidden" id="p2-type2" value="">
                 </div>
 
-                <!-- Meta Fields -->
-                <div class="meta-row">
-                    <div class="select-group">
-                        <label>Nature</label>
-                        <select id="p2-nature" style="flex:1;"></select>
+                <div class="panel-body">
+                    <div class="level-row">
+                        <div class="level-control">
+                            <span>Level</span>
+                            <input type="number" id="p2-level" value="50" min="1" max="100">
+                        </div>
+                        <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle" type="button" onclick="toggleMega(2)">MEGA</button>
                     </div>
-                    <div class="select-group">
-                        <label>Ability</label>
-                        <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose..." style="flex:1;">
-                        <datalist id="p2-abilities-list"></datalist>
-                    </div>
-                    <div class="select-group">
-                        <label>Item</label>
-                        <input type="text" id="p2-item" list="items-list" placeholder="Choose..." style="flex:1;">
-                    </div>
-                </div>
 
-                <div class="compare-moves-block">
-                    <div class="compare-moves-label">Moves</div>
-                    <div id="p2-moves" class="compare-moves-list">
-                        <span class="compare-move-empty">Import a build to see moves</span>
+                    <div class="meta-row">
+                        <div class="select-group">
+                            <label>Nature</label>
+                            <select id="p2-nature"></select>
+                        </div>
+                        <div class="select-group">
+                            <label>Ability</label>
+                            <input type="text" id="p2-ability" list="p2-abilities-list" placeholder="Choose…">
+                            <datalist id="p2-abilities-list"></datalist>
+                        </div>
+                        <div class="select-group">
+                            <label>Item</label>
+                            <div class="item-select-wrap">
+                                <img src="" id="p2-item-sprite" class="item-sprite" alt=""
+                                     onerror="handleItemError(this, p2 && p2.item)">
+                                <input type="text" id="p2-item" list="items-list" placeholder="Choose…">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="moves-section">
+                        <h4>Moves</h4>
+                        <div id="p2-moves" class="compare-moves-list">
+                            <span class="compare-move-empty">Import a build to see moves</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ============ EV / IV EDITORS ============ -->
-        <div class="calc-grid compare-ev-grid fade-in" style="margin-top:1.5rem; grid-template-columns:1fr 200px 1fr;">
+        <div class="calc-grid compare-ev-grid fade-in">
 
-            <!-- Build A EVs/IVs -->
             <div class="calc-panel glass attacker-panel">
-                <h4 style="margin-bottom:1.2rem; font-size:0.85rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:rgba(255,62,62,0.9);">Build A — EVs &amp; IVs</h4>
+                <div class="ev-panel-head">
+                    <h4>Build A — EVs &amp; IVs</h4>
+                    <span class="ev-total" id="p1-ev-total">0 / 66</span>
+                </div>
                 <table class="stats-table">
                     <thead>
                         <tr>
@@ -194,21 +214,20 @@
                 </table>
             </div>
 
-            <!-- Middle spacer with Champions EV toggle -->
-            <div class="middle-panel glass" style="background:rgba(0,0,0,0.25); padding:1.5rem; justify-content:center;">
-                <div style="text-align:center;">
-                    <h4 style="font-size:0.72rem; letter-spacing:0.1em; color:var(--accent-gold, #ffd700); margin-bottom:10px; text-transform:uppercase;">Champions Rules</h4>
-                    <button class="import-btn champions-ev-btn active" id="champions-ev-toggle" type="button"
-                        onclick="toggleChampionsMode()" style="width:100%; margin-bottom:0.5rem;">Champions EV: ON</button>
-                    <p class="field-hint" style="font-size:0.68rem; color:rgba(255,255,255,0.4); line-height:1.4; margin:0;">
-                        Max 66 total EV · 32 per stat · 1 EV = 1 stat point
-                    </p>
+            <div class="calc-panel middle-panel glass champions-rules-panel">
+                <div class="field-section">
+                    <h4>Champions Rules</h4>
+                    <button class="field-btn champions-ev-btn active" id="champions-ev-toggle" type="button"
+                        onclick="toggleChampionsMode()">Champions EV: ON</button>
+                    <p class="field-hint">Max 66 total EV · 32 per stat · 1 EV = 1 stat point</p>
                 </div>
             </div>
 
-            <!-- Build B EVs/IVs -->
             <div class="calc-panel glass defender-panel">
-                <h4 style="margin-bottom:1.2rem; font-size:0.85rem; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:rgba(33,150,243,0.9);">Build B — EVs &amp; IVs</h4>
+                <div class="ev-panel-head">
+                    <h4>Build B — EVs &amp; IVs</h4>
+                    <span class="ev-total" id="p2-ev-total">0 / 66</span>
+                </div>
                 <table class="stats-table">
                     <thead>
                         <tr>
@@ -230,52 +249,68 @@
                 <div>
                     <h2 id="meta-diff-title">META MATCHUP DIFFERENCES</h2>
                     <p class="meta-diff__subtitle">
-                        Using the damage calculator against ranked meta sets — exclusive survival, outspeed, and KO advantages.
+                        Damage calc vs ranked meta sets — exclusive survival, outspeed, and KO advantages.
                     </p>
                 </div>
                 <div class="meta-diff__controls">
-                    <label class="meta-diff__format">
-                        <span>Format</span>
-                        <select id="meta-diff-format" aria-label="Meta format">
+                    <div class="field-section meta-format-section">
+                        <h4>Format</h4>
+                        <div class="btn-group" id="meta-format-group" role="group" aria-label="Meta format">
+                            <button type="button" class="field-btn active" data-format="Singles" id="meta-fmt-singles">Singles</button>
+                            <button type="button" class="field-btn" data-format="Doubles" id="meta-fmt-doubles">Doubles</button>
+                        </div>
+                        <select id="meta-diff-format" class="sr-only" aria-hidden="true" tabindex="-1">
                             <option value="Singles">Singles</option>
                             <option value="Doubles">Doubles</option>
                         </select>
-                    </label>
-                    <button type="button" class="import-btn meta-diff__refresh" id="meta-diff-refresh">Recalc</button>
+                    </div>
+                    <button type="button" class="field-btn meta-diff__refresh" id="meta-diff-refresh">Recalc</button>
                 </div>
             </div>
 
             <div class="meta-diff__summary" id="meta-diff-summary" aria-live="polite">
                 <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--shield" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">A survives alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-survive-a">—</strong>
                 </div>
                 <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--shield" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">B survives alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-survive-b">—</strong>
                 </div>
                 <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--bolt" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">A outspeeds alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-speed-a">—</strong>
                 </div>
                 <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--bolt" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">B outspeeds alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-speed-b">—</strong>
                 </div>
                 <div class="meta-diff-stat meta-diff-stat--a">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--burst" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">A KOs alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-ko-a">—</strong>
                 </div>
                 <div class="meta-diff-stat meta-diff-stat--b">
+                    <span class="meta-diff-stat__ico meta-diff-stat__ico--burst" aria-hidden="true"></span>
                     <span class="meta-diff-stat__label">B KOs alone</span>
                     <strong class="meta-diff-stat__value" id="meta-sum-ko-b">—</strong>
                 </div>
             </div>
 
             <div class="meta-diff__tabs" role="tablist" aria-label="Advantage type">
-                <button type="button" class="meta-diff-tab is-active" role="tab" aria-selected="true" data-meta-tab="survive">Survives uniquely</button>
-                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="outspeed">Outspeeds uniquely</button>
-                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="ko">KOs uniquely</button>
+                <button type="button" class="meta-diff-tab is-active" role="tab" aria-selected="true" data-meta-tab="survive">
+                    <span class="meta-diff-tab__ico meta-diff-stat__ico--shield" aria-hidden="true"></span> Survives uniquely
+                </button>
+                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="outspeed">
+                    <span class="meta-diff-tab__ico meta-diff-stat__ico--bolt" aria-hidden="true"></span> Outspeeds uniquely
+                </button>
+                <button type="button" class="meta-diff-tab" role="tab" aria-selected="false" data-meta-tab="ko">
+                    <span class="meta-diff-tab__ico meta-diff-stat__ico--burst" aria-hidden="true"></span> KOs uniquely
+                </button>
             </div>
 
             <div class="meta-diff__status" id="meta-diff-status">Load both builds to compare meta matchups.</div>
@@ -298,7 +333,7 @@
     <div id="import-modal">
         <div class="modal-content glass" onclick="event.stopPropagation()">
             <h3>Import Build</h3>
-            <p id="import-target-label" style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">Importing for Build A</p>
+            <p id="import-target-label" class="import-target-label">Importing for Build A</p>
 
             <div class="import-tabs" role="tablist">
                 <button type="button" class="import-tab is-active" data-import-tab="library" role="tab" aria-selected="true">builds.json Library</button>
@@ -317,31 +352,27 @@
                 </div>
                 <div id="library-build-list" class="library-build-list">Loading builds…</div>
                 <div class="modal-actions">
-                    <button type="button" onclick="closeImportModal()">Close</button>
+                    <button type="button" class="field-btn" onclick="closeImportModal()">Close</button>
                 </div>
             </div>
 
             <div id="import-paste-pane" class="import-pane" hidden>
                 <textarea id="paste-input" placeholder="Paste a Showdown set, or a pokepast.es URL..."></textarea>
                 <div class="modal-actions">
-                    <button type="button" onclick="closeImportModal()">Cancel</button>
-                    <button type="button" id="confirm-import">Import</button>
+                    <button type="button" class="field-btn" onclick="closeImportModal()">Cancel</button>
+                    <button type="button" class="field-btn active" id="confirm-import">Import</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Close modal on backdrop click -->
     <script>
         document.getElementById('import-modal').addEventListener('click', function(e) {
             if (e.target === this) closeImportModal();
         });
     </script>
 
-    <!-- Toast notification -->
     <div id="toast" class="toast"></div>
-
-    <!-- Shared items datalist -->
     <datalist id="items-list"></datalist>
 
     <script src="../js/mega-sprites.js"></script>

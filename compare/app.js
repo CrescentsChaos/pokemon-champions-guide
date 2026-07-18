@@ -136,8 +136,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderStatsEditor(2);
         renderMoves(1);
         renderMoves(2);
-        updateSprite(1, '');
-        updateSprite(2, '');
+        updateSprite(1);
+        updateSprite(2);
         syncChampionsModeButton();
         updateComparison();
 
@@ -333,8 +333,8 @@ function selectPokemon(num, species) {
     p.type2 = (pd.Type_2 && pd.Type_2 !== 'None') ? pd.Type_2 : '';
 
     document.getElementById(`p${num}-search`).value = p.species;
-    document.getElementById(`p${num}-type1`).value = p.type1;
-    document.getElementById(`p${num}-type2`).value = p.type2 || '-';
+    renderTypes(num);
+    updateItemSprite(num);
 
     const abList = document.getElementById(`p${num}-abilities-list`);
     abList.innerHTML = '';
@@ -356,22 +356,122 @@ function selectPokemon(num, species) {
         document.getElementById(`p${num}-level`).value = p.level;
         document.getElementById(`p${num}-nature`).value = p.nature;
         document.getElementById(`p${num}-item`).value = '';
+        updateItemSprite(num);
     } else if (!p.ability && abilities.length > 0) {
         p.ability = abilities[0];
     }
 
     document.getElementById(`p${num}-ability`).value = p.ability;
 
-    updateSprite(num, p.species);
+    updateSprite(num);
     recalcStats(num);
     renderMoves(num);
+    updateBannerNames();
 }
 
-// Builder-matching sprite fallback chain
-window.handleSpriteError = function(img, species, shiny, item) {
+// ── Mega / sprite helpers (aligned with calc + builds) ──
+function megaSpeciesSuffixFromItem(item) {
+    if (typeof MegaSprites !== 'undefined' && MegaSprites.megaFormSuffixFromItem) {
+        const form = MegaSprites.megaFormSuffixFromItem(item);
+        if (form === 'mega-x') return '-Mega-X';
+        if (form === 'mega-y') return '-Mega-Y';
+        if (form === 'mega-z') return '-Mega-Z';
+        if (form === 'mega') return '-Mega';
+        if (form === 'primal') return '-Primal';
+    }
+    const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (it.endsWith('itex')) return '-Mega-X';
+    if (it.endsWith('itey')) return '-Mega-Y';
+    if (it.endsWith('itez')) return '-Mega-Z';
+    if (it === 'redorb' || it === 'blueorb') return '-Primal';
+    if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') return '-Mega';
+    return null;
+}
+
+function isPrimalOrbItem(item, species) {
+    const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const sp = (species || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return (it === 'redorb' && sp === 'groudon') || (it === 'blueorb' && sp === 'kyogre');
+}
+
+function getBasePokemonData(slot, list) {
+    if (!slot?.species) return null;
+    const key = normalizeKey(slot.species);
+    return (list || pokemonData).find(p => normalizeKey(p.Name) === key) || null;
+}
+
+/** Same idea as builds getEffectivePokemonData — permanent forms + stone-specific megas. */
+function getEffectivePokemonData(slot, list) {
+    const pokemonList = list || pokemonData;
+    const dbRef = getBasePokemonData(slot, pokemonList);
+    if (!dbRef) return null;
+    if (!slot.item) return dbRef;
+
+    if (typeof getPermanentForm === 'function') {
+        const permSearch = getPermanentForm({ species: slot.species, item: slot.item });
+        if (permSearch) {
+            const permDb = pokemonList.find(p => normalizeKey(p.Name) === normalizeKey(permSearch));
+            if (permDb) return permDb;
+        }
+    }
+
+    if (isPrimalOrbItem(slot.item, slot.species)) {
+        const primal = pokemonList.find(p => normalizeKey(p.Name) === normalizeKey(slot.species + '-Primal'));
+        if (primal) return primal;
+    }
+
+    const megaSuffix = megaSpeciesSuffixFromItem(slot.item);
+    if (megaSuffix) {
+        const baseName = String(slot.species)
+            .replace(/-Mega(-[XYZ])?$/i, '')
+            .replace(/-Primal$/i, '');
+        const megaDb = pokemonList.find(p => normalizeKey(p.Name) === normalizeKey(baseName + megaSuffix));
+        if (megaDb) return megaDb;
+    }
+    return dbRef;
+}
+
+function getSpriteUrl(p) {
+    if (!p || !p.species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+    if (typeof MegaSprites !== 'undefined') {
+        const formSuffix = MegaSprites.megaFormSuffixFromSpecies(p.species);
+        if (formSuffix) {
+            const local = MegaSprites.getLocalMegaSpriteUrl(p.species, formSuffix);
+            if (local) return local;
+        }
+    }
+    const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    return `https://play.pokemonshowdown.com/sprites/ani/${clean}.gif`;
+}
+
+function getMegaSpriteUrl(p) {
+    if (!p || !p.species || !p.item) return null;
+    if (typeof getPermanentForm === 'function' && getPermanentForm(p)) return null;
+
+    if (typeof MegaSprites !== 'undefined') {
+        if (isPrimalOrbItem(p.item, p.species)) {
+            return MegaSprites.resolveMegaSpriteUrl(p.species, 'primal', { preferLocal: true });
+        }
+        const resolved = MegaSprites.resolveMegaSpriteUrl(p.species, p.item, { preferLocal: true });
+        if (resolved) return resolved;
+    }
+
+    const megaSuffix = megaSpeciesSuffixFromItem(p.item);
+    if (!megaSuffix) return null;
+    let sdSuffix = '-mega';
+    if (megaSuffix === '-Mega-X') sdSuffix = '-megax';
+    else if (megaSuffix === '-Mega-Y') sdSuffix = '-megay';
+    else if (megaSuffix === '-Mega-Z') sdSuffix = '-megaz';
+    else if (megaSuffix === '-Primal') sdSuffix = '-primal';
+    const clean = p.species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '')
+        .replace(/-mega(-[xyz])?$/, '').replace(/-primal$/, '');
+    return `https://play.pokemonshowdown.com/sprites/ani/${clean}${sdSuffix}.gif`;
+}
+
+// Builds-matching sprite fallback chain
+window.handleSpriteError = function(img, species, shiny) {
     if (!species || img.dataset.fallbackState === 'dead') return;
 
-    item = item || '';
     const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     const isMegaURL = img.src && (img.src.includes('mega') || img.src.includes('primal')) && !img.src.includes('assets/');
 
@@ -388,40 +488,31 @@ window.handleSpriteError = function(img, species, shiny, item) {
         const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
         const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
         img.src = `../assets/mega-sprites/${fileName}.gif`;
+        if (img.classList.contains('mega-toggle') || img.classList.contains('form-toggle')) img.dataset.mega = img.src;
         return;
     }
 
     if (!img.dataset.fallbackState) {
-        const it = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez')) && it !== 'eviolite' && it !== 'meteorite') {
-            img.dataset.fallbackState = 'mega-local';
-            if (typeof MegaSprites !== 'undefined' && MegaSprites.applyLocalMegaFallback(img, species, MegaSprites.megaFormSuffixFromItem(item))) {
-                return;
-            }
-            let suffix = 'mega';
-            if (it.endsWith('itex')) suffix = 'mega-x';
-            else if (it.endsWith('itey')) suffix = 'mega-y';
-            else if (it.endsWith('itez')) suffix = 'mega-z';
-            img.src = `../assets/mega-sprites/${clean}-${suffix}.gif`;
-            return;
-        }
         img.dataset.fallbackState = 'smogon';
         const folder = shiny ? 'xy-shiny' : 'xy';
         img.src = `https://www.smogon.com/dex/media/sprites/${folder}/${clean}.gif`;
+        if ((img.classList.contains('mega-toggle') || img.classList.contains('form-toggle')) && img.dataset.currentSrc === 'base') {
+            img.dataset.base = img.src;
+        }
         return;
     }
 
     img.dataset.fallbackState = 'dead';
     img.dataset.fallback = 'true';
+    img.classList.remove('mega-toggle', 'form-toggle');
     img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
 };
-
 
 function setupInputListeners() {
     [1, 2].forEach(num => {
         ['level'].forEach(field => {
             const el = document.getElementById(`p${num}-${field}`);
-            if(el) {
+            if (el) {
                 el.addEventListener('change', (e) => {
                     (num === 1 ? p1 : p2)[field] = parseInt(e.target.value) || 50;
                     recalcStats(num);
@@ -429,7 +520,6 @@ function setupInputListeners() {
             }
         });
 
-        // Meta selects/inputs
         ['nature', 'ability', 'item'].forEach(field => {
             const el = document.getElementById(`p${num}-${field}`);
             if (el) {
@@ -441,20 +531,19 @@ function setupInputListeners() {
                     else scheduleMetaDiff();
 
                     if (field === 'item' && p.species) {
-                        const nextForm = getPermanentForm({ species: p.species, item: val });
+                        const nextForm = typeof getPermanentForm === 'function'
+                            ? getPermanentForm({ species: p.species, item: val })
+                            : null;
                         if (nextForm) updatePokemonForm(num, nextForm);
                         else {
-                            // Check if item is a mega stone to update suffix only
-                            let suffix = '';
-                            const it = val.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if (it.endsWith('ite') && it !== 'eviolite' && it !== 'meteorite') {
-                                suffix = '-mega';
-                                if (it.endsWith('itex')) suffix = '-megax';
-                                else if (it.endsWith('itey')) suffix = '-megay';
-                            }
-                            updateSprite(num, p.species, suffix);
+                            updateItemSprite(num);
+                            renderTypes(num);
+                            updateSprite(num);
                             scheduleMetaDiff();
                         }
+                    } else if (field === 'item') {
+                        updateItemSprite(num);
+                        renderTypes(num);
                     }
                 });
             }
@@ -467,6 +556,7 @@ function updatePokemonForm(num, species) {
     const pd = pokemonData.find(x => x.Name === species);
     if (!pd) return;
 
+    const keptItem = p.item;
     p.species = pd.Name;
     p.base = {
         hp: pd.HP || 0,
@@ -477,51 +567,151 @@ function updatePokemonForm(num, species) {
         spe: pd.Speed || 0
     };
     p.type1 = pd.Type_1;
-    p.type2 = pd.Type_2 || '';
-    p.ability = (getPokemonAbilities(pd)[0]) || '';
+    p.type2 = (pd.Type_2 && pd.Type_2 !== 'None') ? pd.Type_2 : '';
+    const abilities = getPokemonAbilities(pd);
+    p.ability = abilities[0] || '';
+    p.item = keptItem;
 
-    // Update UI
     const searchInput = document.getElementById(`p${num}-search`);
     if (searchInput) searchInput.value = p.species;
-    document.getElementById(`p${num}-type1`).value = p.type1;
-    document.getElementById(`p${num}-type2`).value = p.type2 || '-';
+    renderTypes(num);
     const abEl = document.getElementById(`p${num}-ability`);
     if (abEl) abEl.value = p.ability;
+    const abList = document.getElementById(`p${num}-abilities-list`);
+    if (abList) {
+        abList.innerHTML = '';
+        abilities.forEach(ab => {
+            const opt = document.createElement('option');
+            opt.value = ab;
+            abList.appendChild(opt);
+        });
+    }
+    const itemEl = document.getElementById(`p${num}-item`);
+    if (itemEl) itemEl.value = p.item || '';
 
-    updateSprite(num, p.species);
+    updateItemSprite(num);
+    updateSprite(num);
     recalcStats(num);
+    updateBannerNames();
 }
 
-function updateSprite(num, species, suffix = '') {
+function updateSprite(num) {
     const img = document.getElementById(`p${num}-sprite`);
     if (!img) return;
+    const p = num === 1 ? p1 : p2;
     delete img.dataset.fallbackState;
     delete img.dataset.fallback;
-    if (!species) {
+
+    if (!p.species) {
         img.src = 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+        img.classList.remove('mega-toggle', 'form-toggle');
         return;
     }
 
-    // Prefer local mega GIFs when available (Champions megas missing/broken on Showdown)
-    if (typeof MegaSprites !== 'undefined') {
-        let formSuffix = null;
-        if (suffix === '-megax' || suffix === '-mega-x') formSuffix = 'mega-x';
-        else if (suffix === '-megay' || suffix === '-mega-y') formSuffix = 'mega-y';
-        else if (suffix === '-megaz' || suffix === '-mega-z') formSuffix = 'mega-z';
-        else if (suffix === '-mega' || suffix === '-primal') formSuffix = suffix.slice(1);
-        else formSuffix = MegaSprites.megaFormSuffixFromSpecies(species + (suffix || ''));
+    const baseUrl = getSpriteUrl(p);
+    const megaUrl = getMegaSpriteUrl(p);
+    img.dataset.base = baseUrl;
 
-        if (formSuffix) {
-            const local = MegaSprites.getLocalMegaSpriteUrl(species, formSuffix);
-            if (local) {
-                img.src = local;
-                return;
-            }
-        }
+    // Prefer mega sprite when a mega stone is held or species is already mega (matches calc display intent)
+    if (megaUrl) {
+        img.dataset.mega = megaUrl;
+        img.classList.add('mega-toggle');
+        img.dataset.currentSrc = 'mega';
+        img.src = megaUrl;
+    } else if (typeof MegaSprites !== 'undefined' && MegaSprites.megaFormSuffixFromSpecies(p.species)) {
+        img.classList.remove('mega-toggle');
+        img.src = baseUrl;
+    } else {
+        img.classList.remove('mega-toggle');
+        img.src = baseUrl;
     }
+}
 
-    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
-    img.src = `https://play.pokemonshowdown.com/sprites/ani/${clean}${suffix}.gif`;
+function typeIconHtml(type, size = 18) {
+    const raw = (type || 'Normal').toString();
+    const key = raw.toLowerCase().replace(/[^a-z]/g, '') || 'normal';
+    return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+function categoryIconHtml(category, size = 14) {
+    const c = (category || 'Physical').toString().toLowerCase();
+    const file = c === 'special' ? 'move-special.png'
+        : c === 'status' ? 'move-status.png'
+        : 'move-physical.png';
+    const label = c === 'special' ? 'Special' : c === 'status' ? 'Status' : 'Physical';
+    return `<img src="../assets/${file}" class="move-category-icon" alt="${label}" title="${label}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+function renderTypes(num) {
+    const p = num === 1 ? p1 : p2;
+    const el = document.getElementById(`p${num}-types`);
+    const t1 = document.getElementById(`p${num}-type1`);
+    const t2 = document.getElementById(`p${num}-type2`);
+
+    // Prefer battle forme types when a mega/primal stone is held (matches calc display intent)
+    let type1 = p.type1;
+    let type2 = p.type2;
+    try {
+        const eff = getEffectivePokemonData({ species: p.species, item: p.item }, pokemonData);
+        if (eff && eff.Name !== p.species) {
+            type1 = eff.Type_1;
+            type2 = (eff.Type_2 && eff.Type_2 !== 'None') ? eff.Type_2 : '';
+        }
+    } catch (_) { /* keep set types */ }
+
+    if (t1) t1.value = type1 || '';
+    if (t2) t2.value = type2 || '';
+    if (!el) return;
+    if (!type1) {
+        el.innerHTML = '<span class="type-badge-empty">—</span>';
+        return;
+    }
+    const types = [type1, type2].filter(t => t && t !== 'None' && t !== '-');
+    el.innerHTML = types.map(t =>
+        `<span class="type-badge">${typeIconHtml(t, 18)}<span>${t}</span></span>`
+    ).join('');
+}
+
+function getItemSpriteUrl(item) {
+    if (!item || item.toLowerCase() === 'none') return '';
+    const clean = item.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    return `https://www.serebii.net/itemdex/sprites/sv/${clean}.png`;
+}
+
+function updateItemSprite(num) {
+    const p = num === 1 ? p1 : p2;
+    const img = document.getElementById(`p${num}-item-sprite`);
+    if (!img) return;
+    delete img.dataset.fallback;
+    const url = getItemSpriteUrl(p.item);
+    if (!url) {
+        img.style.display = 'none';
+        img.removeAttribute('src');
+        return;
+    }
+    img.src = url;
+    img.style.display = 'block';
+    img.alt = p.item || '';
+}
+
+window.handleItemError = function(img, item) {
+    if (img.dataset.fallback === 'true' || !item) {
+        img.style.display = 'none';
+        return;
+    }
+    img.dataset.fallback = 'true';
+    const clean = (item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    img.src = `https://www.serebii.net/itemdex/sprites/${clean}.png`;
+    img.style.display = 'block';
+};
+
+function lookupMoveRecord(moveName) {
+    if (!moveName || !movesData) return null;
+    if (typeof BattleCalc !== 'undefined' && BattleCalc.MoveIndex?.findInArray) {
+        return BattleCalc.MoveIndex.findInArray(movesData, moveName);
+    }
+    const key = normalizeKey(moveName);
+    return (Array.isArray(movesData) ? movesData : []).find(m => normalizeKey(m.name) === key) || null;
 }
 
 function renderMoves(num) {
@@ -533,7 +723,170 @@ function renderMoves(num) {
         el.innerHTML = '<span class="compare-move-empty">Import a build to see moves</span>';
         return;
     }
-    el.innerHTML = moves.map(m => `<span class="compare-move-chip">${m}</span>`).join('');
+    el.innerHTML = moves.map(name => {
+        const rec = lookupMoveRecord(name);
+        const type = rec?.type || 'Normal';
+        const cat = rec?.category || 'Physical';
+        return `<div class="compare-move-chip">
+            ${typeIconHtml(type, 18)}
+            ${categoryIconHtml(cat, 14)}
+            <span class="compare-move-chip__name">${name}</span>
+        </div>`;
+    }).join('');
+}
+
+function updateBannerNames() {
+    const a = document.getElementById('banner-name-a');
+    const b = document.getElementById('banner-name-b');
+    if (a) a.textContent = p1.species || 'Build A';
+    if (b) b.textContent = p2.species || 'Build B';
+}
+
+function updateEvTotals() {
+    [1, 2].forEach(num => {
+        const p = num === 1 ? p1 : p2;
+        const el = document.getElementById(`p${num}-ev-total`);
+        if (!el) return;
+        const total = STATS.reduce((s, k) => s + (parseInt(p.evs[k], 10) || 0), 0);
+        const max = isChampionsMode ? 66 : 508;
+        el.textContent = `${total} / ${max}`;
+        el.style.color = total > max ? '#ff8a8a' : 'rgba(255,255,255,0.55)';
+    });
+}
+
+function swapCompareBuilds() {
+    const tmp = JSON.parse(JSON.stringify(p1));
+    Object.assign(p1, JSON.parse(JSON.stringify(p2)));
+    Object.assign(p2, tmp);
+
+    [1, 2].forEach(num => {
+        const p = num === 1 ? p1 : p2;
+        const search = document.getElementById(`p${num}-search`);
+        if (search) search.value = p.species || '';
+        const level = document.getElementById(`p${num}-level`);
+        if (level) level.value = p.level || 50;
+        const nature = document.getElementById(`p${num}-nature`);
+        if (nature) nature.value = p.nature || 'Serious';
+        const ability = document.getElementById(`p${num}-ability`);
+        if (ability) ability.value = p.ability || '';
+        const item = document.getElementById(`p${num}-item`);
+        if (item) item.value = p.item || '';
+        const megaBtn = document.getElementById(`p${num}-mega-toggle`);
+        if (megaBtn) megaBtn.classList.toggle('active', /(-Mega|-Primal)/i.test(p.species || ''));
+
+        if (p.species) {
+            const pd = findPokemonByName(p.species);
+            const abList = document.getElementById(`p${num}-abilities-list`);
+            if (abList && pd) {
+                abList.innerHTML = '';
+                getPokemonAbilities(pd).forEach(ab => {
+                    const opt = document.createElement('option');
+                    opt.value = ab;
+                    abList.appendChild(opt);
+                });
+            }
+        }
+        renderTypes(num);
+        updateItemSprite(num);
+        updateSprite(num);
+        renderMoves(num);
+        renderStatsEditor(num);
+    });
+    updateComparison();
+    updateBannerNames();
+    scheduleMetaDiff(true);
+    showToast('Builds swapped');
+}
+
+function updateComparison() {
+    const tbody = document.getElementById('compare-stats-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const hasP1 = !!p1.species;
+    const hasP2 = !!p2.species;
+    const maxStat = Math.max(
+        ...STATS.map(s => Math.max(p1.stats[s] || 0, p2.stats[s] || 0)),
+        1
+    );
+
+    STATS.forEach(stat => {
+        const c1 = p1.stats[stat] || 0;
+        const c2 = p2.stats[stat] || 0;
+        let cls1 = 'stat-tie', cls2 = 'stat-tie';
+        if (hasP1 && hasP2) {
+            if (c1 > c2) { cls1 = 'stat-win'; cls2 = 'stat-lose'; }
+            else if (c2 > c1) { cls2 = 'stat-win'; cls1 = 'stat-lose'; }
+        }
+        const pct1 = hasP1 ? Math.round((c1 / maxStat) * 100) : 0;
+        const pct2 = hasP2 ? Math.round((c2 / maxStat) * 100) : 0;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="${cls1}">
+                <div class="compare-stat-cell">
+                    <span>${hasP1 ? c1 : '—'}</span>
+                    <div class="compare-stat-bar"><i style="width:${pct1}%"></i></div>
+                </div>
+            </td>
+            <td class="stat-name">${STAT_NAMES[stat]}</td>
+            <td class="${cls2}">
+                <div class="compare-stat-cell" style="align-items:flex-end;">
+                    <span>${hasP2 ? c2 : '—'}</span>
+                    <div class="compare-stat-bar compare-stat-bar--b" style="width:100%;"><i style="width:${pct2}%"></i></div>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    let bst1 = STATS.reduce((s, a) => s + (p1.base[a] || 0), 0);
+    let bst2 = STATS.reduce((s, a) => s + (p2.base[a] || 0), 0);
+    let bst1Cls = 'stat-tie', bst2Cls = 'stat-tie';
+    if (hasP1 && hasP2) {
+        if (bst1 > bst2) { bst1Cls = 'stat-win'; bst2Cls = 'stat-lose'; }
+        if (bst2 > bst1) { bst2Cls = 'stat-win'; bst1Cls = 'stat-lose'; }
+    }
+    const trBST = document.createElement('tr');
+    trBST.innerHTML = `
+        <td class="${bst1Cls}" style="opacity:0.75;font-size:0.85rem;">${hasP1 ? bst1 : '—'}</td>
+        <td class="stat-name" style="color:#fff;">BST</td>
+        <td class="${bst2Cls}" style="opacity:0.75;font-size:0.85rem;">${hasP2 ? bst2 : '—'}</td>
+    `;
+    tbody.appendChild(trBST);
+
+    // Battle speed readout (effective Spe when possible)
+    const speAEl = document.getElementById('compare-spe-a');
+    const speBEl = document.getElementById('compare-spe-b');
+    const sideA = document.querySelector('.speed-side--a');
+    const sideB = document.querySelector('.speed-side--b');
+    const vsEl = document.getElementById('compare-spe-vs');
+    let speA = hasP1 ? (p1.stats.spe || 0) : null;
+    let speB = hasP2 ? (p2.stats.spe || 0) : null;
+    try {
+        const field = battleGetDefaultField(metaDiffFormat || 'Singles');
+        const sA = hasP1 ? buildCompareCalcState(compareBuildToSlot(p1), 1) : null;
+        const sB = hasP2 ? buildCompareCalcState(compareBuildToSlot(p2), 1) : null;
+        if (sA) speA = getBuildEffectiveSpeed(sA, field);
+        if (sB) speB = getBuildEffectiveSpeed(sB, field);
+    } catch (_) { /* keep raw Spe */ }
+
+    if (speAEl) speAEl.textContent = speA == null ? '—' : String(speA);
+    if (speBEl) speBEl.textContent = speB == null ? '—' : String(speB);
+    sideA?.classList.remove('is-faster');
+    sideB?.classList.remove('is-faster');
+    if (speA != null && speB != null && hasP1 && hasP2) {
+        if (speA > speB) {
+            sideA?.classList.add('is-faster');
+            if (vsEl) vsEl.textContent = 'A faster';
+        } else if (speB > speA) {
+            sideB?.classList.add('is-faster');
+            if (vsEl) vsEl.textContent = 'B faster';
+        } else if (vsEl) vsEl.textContent = 'tie';
+    } else if (vsEl) vsEl.textContent = 'vs';
+
+    updateEvTotals();
+    updateBannerNames();
 }
 
 function toggleMega(num) {
@@ -542,22 +895,35 @@ function toggleMega(num) {
 
     const currentName = p.species;
     const btn = document.getElementById(`p${num}-mega-toggle`);
-    
-    let targetName = "";
-    if (currentName.includes("-Mega")) {
-        targetName = currentName.split("-Mega")[0];
+    const heldItem = p.item;
+
+    let targetName = '';
+    if (currentName.includes('-Mega') || currentName.includes('-Primal')) {
+        targetName = currentName.split(/-Mega|-Primal/)[0];
         btn.classList.remove('active');
     } else {
-        const mega = pokemonData.find(pd => pd.Name === currentName + "-Mega" || pd.Name === currentName + "-Mega-X" || pd.Name === currentName + "-Mega-Y");
-        if (mega) {
-            targetName = mega.Name;
-            btn.classList.add('active');
-        } else {
-            showToast("No Mega form found for " + currentName);
+        const suffix = megaSpeciesSuffixFromItem(heldItem);
+        // Stone-specific forme first (Charizardite Y → Mega-Y, never Mega-X)
+        let mega = suffix
+            ? pokemonData.find(pd => pd.Name === currentName + suffix)
+            : null;
+        if (!mega && (!suffix || suffix === '-Mega')) {
+            mega = pokemonData.find(pd =>
+                pd.Name === currentName + '-Mega' ||
+                pd.Name === currentName + '-Mega-X' ||
+                pd.Name === currentName + '-Mega-Y' ||
+                pd.Name === currentName + '-Mega-Z');
+        }
+        if (!mega) {
+            showToast(suffix && suffix !== '-Mega'
+                ? `No ${suffix.slice(1)} forme found for ${currentName}`
+                : `No Mega form found for ${currentName}`);
             return;
         }
+        targetName = mega.Name;
+        btn.classList.add('active');
     }
-    
+
     if (targetName) updatePokemonForm(num, targetName);
 }
 
@@ -633,52 +999,6 @@ function recalcStats(num) {
     scheduleMetaDiff();
 }
 
-function updateComparison() {
-    const tbody = document.getElementById('compare-stats-body');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-
-    const hasP1 = !!p1.species;
-    const hasP2 = !!p2.species;
-
-    STATS.forEach(stat => {
-        const c1 = p1.stats[stat] || 0;
-        const c2 = p2.stats[stat] || 0;
-
-        let cls1 = 'stat-tie', cls2 = 'stat-tie';
-        if (hasP1 && hasP2) {
-            if (c1 > c2) { cls1 = 'stat-win'; cls2 = 'stat-lose'; }
-            else if (c2 > c1) { cls2 = 'stat-win'; cls1 = 'stat-lose'; }
-        }
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="${cls1}">${hasP1 ? c1 : '--'}</td>
-            <td class="stat-name">${STAT_NAMES[stat]}</td>
-            <td class="${cls2}">${hasP2 ? c2 : '--'}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    // Also add Base Stat Total row
-    let bst1 = STATS.reduce((s, a) => s + p1.base[a], 0);
-    let bst2 = STATS.reduce((s, a) => s + p2.base[a], 0);
-
-    let bst1Cls = 'stat-tie', bst2Cls = 'stat-tie';
-    if (hasP1 && hasP2) {
-         if (bst1 > bst2) { bst1Cls = 'stat-win'; bst2Cls = 'stat-lose'; }
-         if (bst2 > bst1) { bst2Cls = 'stat-win'; bst1Cls = 'stat-lose'; }
-    }
-
-    const trBST = document.createElement('tr');
-    trBST.innerHTML = `
-        <td class="${bst1Cls}" style="opacity: 0.7; font-size: 0.9rem;">${hasP1 ? bst1 : '--'}</td>
-        <td class="stat-name" style="color: white;">BST</td>
-        <td class="${bst2Cls}" style="opacity: 0.7; font-size: 0.9rem;">${hasP2 ? bst2 : '--'}</td>
-    `;
-    tbody.appendChild(trBST);
-}
-
 // ------ META MATCHUP DIFFERENCES (survive / outspeed / KO) ------
 let metaDiffTab = 'survive';
 let metaDiffFormat = 'Singles';
@@ -707,14 +1027,26 @@ function setupMetaDiffUI() {
     });
 
     const formatEl = document.getElementById('meta-diff-format');
-    if (formatEl) {
-        formatEl.addEventListener('change', () => {
-            metaDiffFormat = formatEl.value === 'Doubles' ? 'Doubles' : 'Singles';
-            scheduleMetaDiff(true);
+    const setFormat = (fmt) => {
+        metaDiffFormat = fmt === 'Doubles' ? 'Doubles' : 'Singles';
+        if (formatEl) formatEl.value = metaDiffFormat;
+        document.querySelectorAll('#meta-format-group .field-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.format === metaDiffFormat);
         });
+        scheduleMetaDiff(true);
+        updateComparison();
+    };
+
+    document.querySelectorAll('#meta-format-group .field-btn').forEach(btn => {
+        btn.addEventListener('click', () => setFormat(btn.dataset.format));
+    });
+
+    if (formatEl) {
+        formatEl.addEventListener('change', () => setFormat(formatEl.value));
     }
 
     document.getElementById('meta-diff-refresh')?.addEventListener('click', () => scheduleMetaDiff(true));
+    document.getElementById('compare-swap-btn')?.addEventListener('click', swapCompareBuilds);
 }
 
 function scheduleMetaDiff(immediate) {
@@ -742,31 +1074,45 @@ function compareBuildToSlot(p) {
 }
 
 function resolveCompareDb(slot) {
+    return getEffectivePokemonData(slot, pokemonData);
+}
+
+/** Build a BattleCalc state the same way the calc page does (via BattleCalc.buildCalcStateFromSlot). */
+function buildCompareCalcState(slot, id) {
     if (!slot?.species) return null;
-    const key = normalizeKey(slot.species);
-    let db = pokemonData.find(p => normalizeKey(p.Name) === key) || null;
-    if (!db) return null;
+    const baseDb = getBasePokemonData(slot, pokemonData);
+    const effDb = getEffectivePokemonData(slot, pokemonData) || baseDb;
+    if (!effDb) return null;
 
-    if (slot.item && typeof getPermanentForm === 'function') {
-        const perm = getPermanentForm({ species: slot.species, item: slot.item });
-        if (perm) {
-            const permDb = pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(perm));
-            if (permDb) return permDb;
-        }
+    const calcSlot = { ...slot };
+    // When mega/primal form is active for calcs, use that forme's ability (Drought / Tough Claws / etc.)
+    if (effDb !== baseDb && effDb.Name !== slot.species) {
+        const megaAbs = typeof getPokemonAbilities === 'function' ? getPokemonAbilities(effDb) : (effDb.Ability || []);
+        if (megaAbs && megaAbs.length) calcSlot.ability = megaAbs[0];
     }
 
-    const it = (slot.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if ((it.endsWith('ite') || it.endsWith('itex') || it.endsWith('itey') || it.endsWith('itez'))
-        && it !== 'eviolite' && it !== 'meteorite') {
-        let suffix = '-Mega';
-        if (it.endsWith('itex')) suffix = '-Mega-X';
-        else if (it.endsWith('itey')) suffix = '-Mega-Y';
-        else if (it.endsWith('itez')) suffix = '-Mega-Z';
-        const base = String(slot.species).replace(/-Mega(-[XYZ])?$/i, '').replace(/-Primal$/i, '');
-        const megaDb = pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(base + suffix));
-        if (megaDb) return megaDb;
-    }
-    return db;
+    const buildFn = (typeof BattleCalc !== 'undefined' && BattleCalc.buildCalcStateFromSlot)
+        || (typeof buildCalcStateFromSlot === 'function' ? buildCalcStateFromSlot : null);
+    if (!buildFn) return null;
+    return buildFn(calcSlot, id, effDb, movesData);
+}
+
+function battleFindBestDamage(attacker, defender, field) {
+    const fn = (typeof BattleCalc !== 'undefined' && BattleCalc.findBestDamage)
+        || (typeof findBestDamage === 'function' ? findBestDamage : null);
+    return fn ? fn(attacker, defender, field) : null;
+}
+
+function battleGetDefaultField(format) {
+    const fn = (typeof BattleCalc !== 'undefined' && BattleCalc.getDefaultField)
+        || (typeof getDefaultField === 'function' ? getDefaultField : null);
+    return fn ? fn(format) : { format, weather: 'None', terrain: 'None', side1: {}, side2: {} };
+}
+
+function battleIsStrongAnswer(koLabel) {
+    const fn = (typeof BattleCalc !== 'undefined' && BattleCalc.isStrongAnswer)
+        || (typeof isStrongAnswer === 'function' ? isStrongAnswer : null);
+    return fn ? fn(koLabel) : false;
 }
 
 function getCompareSpeedTier(speedA, speedB) {
@@ -807,7 +1153,17 @@ function fmtDamage(result) {
     return { pct, label, survive, move: result.move || '' };
 }
 
-function metaSpriteUrl(species) {
+function metaSpriteUrl(species, item) {
+    const slot = { species, item: item || '' };
+    const megaUrl = getMegaSpriteUrl(slot);
+    if (megaUrl) return megaUrl;
+    if (typeof MegaSprites !== 'undefined') {
+        const form = MegaSprites.megaFormSuffixFromSpecies(species);
+        if (form) {
+            const local = MegaSprites.getLocalMegaSpriteUrl(species, form);
+            if (local) return local;
+        }
+    }
     const clean = (species || '').toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
     return `https://play.pokemonshowdown.com/sprites/gen5/${clean}.png`;
 }
@@ -826,7 +1182,7 @@ async function runMetaDiff() {
         return;
     }
 
-    if (typeof buildCalcStateFromSlot !== 'function' || typeof findBestDamage !== 'function') {
+    if (typeof buildCompareCalcState !== 'function' || (!(typeof BattleCalc !== 'undefined' && BattleCalc.findBestDamage) && typeof findBestDamage !== 'function')) {
         setMetaStatus('Damage calculator failed to load.');
         return;
     }
@@ -853,16 +1209,14 @@ async function runMetaDiff() {
         return;
     }
 
-    const field = getDefaultField(format);
+    const field = battleGetDefaultField(format);
     const slotA = compareBuildToSlot(p1);
     const slotB = compareBuildToSlot(p2);
-    const dbA = slotA ? resolveCompareDb(slotA) : null;
-    const dbB = slotB ? resolveCompareDb(slotB) : null;
 
-    const stateAAtk = (slotA && dbA) ? buildCalcStateFromSlot(slotA, 1, dbA, movesData) : null;
-    const stateADef = (slotA && dbA) ? buildCalcStateFromSlot(slotA, 2, dbA, movesData) : null;
-    const stateBAtk = (slotB && dbB) ? buildCalcStateFromSlot(slotB, 1, dbB, movesData) : null;
-    const stateBDef = (slotB && dbB) ? buildCalcStateFromSlot(slotB, 2, dbB, movesData) : null;
+    const stateAAtk = slotA ? buildCompareCalcState(slotA, 1) : null;
+    const stateADef = slotA ? buildCompareCalcState(slotA, 2) : null;
+    const stateBAtk = slotB ? buildCompareCalcState(slotB, 1) : null;
+    const stateBDef = slotB ? buildCompareCalcState(slotB, 2) : null;
 
     const speedA = getBuildEffectiveSpeed(stateAAtk, field);
     const speedB = getBuildEffectiveSpeed(stateBAtk, field);
@@ -893,19 +1247,17 @@ async function runMetaDiff() {
             : null;
         if (!threatParsed?.species) continue;
 
-        const threatDb = resolveCompareDb(threatParsed)
-            || pokemonData.find(p => normalizeKey(p.Name) === normalizeKey(threatParsed.species));
-        if (!threatDb) continue;
-
-        const threatAtk = buildCalcStateFromSlot(threatParsed, 1, threatDb, movesData);
-        const threatDef = buildCalcStateFromSlot(threatParsed, 2, threatDb, movesData);
+        const threatAtk = buildCompareCalcState(threatParsed, 1);
+        const threatDef = buildCompareCalcState(threatParsed, 2);
+        if (!threatAtk || !threatDef) continue;
         const threatSpeed = getBuildEffectiveSpeed(threatAtk, field) || 0;
+        const threatEffDb = getEffectivePokemonData(threatParsed, pokemonData);
         checked++;
 
-        const defA = (!aIsThreat && stateADef) ? findBestDamage(threatAtk, stateADef, field) : null;
-        const defB = (!bIsThreat && stateBDef) ? findBestDamage(threatAtk, stateBDef, field) : null;
-        const offA = (!aIsThreat && stateAAtk) ? findBestDamage(stateAAtk, threatDef, field) : null;
-        const offB = (!bIsThreat && stateBAtk) ? findBestDamage(stateBAtk, threatDef, field) : null;
+        const defA = (!aIsThreat && stateADef) ? battleFindBestDamage(threatAtk, stateADef, field) : null;
+        const defB = (!bIsThreat && stateBDef) ? battleFindBestDamage(threatAtk, stateBDef, field) : null;
+        const offA = (!aIsThreat && stateAAtk) ? battleFindBestDamage(stateAAtk, threatDef, field) : null;
+        const offB = (!bIsThreat && stateBAtk) ? battleFindBestDamage(stateBAtk, threatDef, field) : null;
 
         const aSurv = !aIsThreat && hasA && survivesMetaHit(defA);
         const bSurv = !bIsThreat && hasB && survivesMetaHit(defB);
@@ -917,11 +1269,12 @@ async function runMetaDiff() {
         const bFaster = hasB && !bIsThreat && speedB != null
             && getCompareSpeedTier(speedB, threatSpeed) === 'faster';
 
-        const aKo = hasA && !aIsThreat && typeof isStrongAnswer === 'function' && isStrongAnswer(offA?.koLabel);
-        const bKo = hasB && !bIsThreat && typeof isStrongAnswer === 'function' && isStrongAnswer(offB?.koLabel);
+        const aKo = hasA && !aIsThreat && battleIsStrongAnswer(offA?.koLabel);
+        const bKo = hasB && !bIsThreat && battleIsStrongAnswer(offB?.koLabel);
 
         const base = {
             name: threatName,
+            displayName: (threatEffDb && threatEffDb.Name !== threatParsed.species) ? threatEffDb.Name : threatName,
             rank: rank + 1,
             item: threatParsed.item || '',
             threatSpeed,
@@ -1119,12 +1472,12 @@ function metaDiffCardHtml(row, tab, side) {
     return `
         <article class="meta-diff-card">
             <div class="meta-diff-card__head">
-                <img class="meta-diff-card__sprite" src="${metaSpriteUrl(row.name)}" alt=""
-                     onerror="this.style.visibility='hidden'" width="40" height="40">
+                <img class="meta-diff-card__sprite" src="${metaSpriteUrl(row.displayName || row.name, row.item)}" alt=""
+                     onerror="handleSpriteError(this, '${(row.displayName || row.name).replace(/'/g, "\\'")}', false)" width="40" height="40">
                 <div class="meta-diff-card__identity">
                     <div class="meta-diff-card__name">
                         <span class="meta-diff-card__rank">#${row.rank}</span>
-                        ${row.name}
+                        ${row.displayName || row.name}
                     </div>
                     ${row.item ? `<div class="meta-diff-card__item">${row.item}</div>` : ''}
                 </div>
@@ -1369,8 +1722,17 @@ function importFromText(num, text) {
         document.getElementById(`p${num}-ability`).value = p.ability;
         document.getElementById(`p${num}-item`).value = p.item;
 
+        const megaBtn = document.getElementById(`p${num}-mega-toggle`);
+        if (megaBtn) {
+            megaBtn.classList.toggle('active', /(-Mega|-Primal)/i.test(p.species));
+        }
+
+        renderTypes(num);
+        updateItemSprite(num);
+        updateSprite(num);
         recalcStats(num);
         renderMoves(num);
+        updateBannerNames();
         showToast(`Build ${num === 1 ? 'A' : 'B'} imported`);
     } catch (e) {
         console.error('Import error', e);
