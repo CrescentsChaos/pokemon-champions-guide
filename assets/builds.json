@@ -3898,10 +3898,10 @@
     {
         "id": "487",
         "pokemon": "Delphox",
-        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 32 SpA / 2 SpD / 32 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
-        "synergy": [],
+        "build": "Delphox @ Delphoxite  \nAbility: Blaze  \nEVs: 23 HP / 11 Def / 1 SpA / 31 Spe\nModest Nature    \n- Heat Wave  \n- Psyshock  \n- Nasty Plot  \n- Protect",
+        "synergy": ["662","356"],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "488",
@@ -4187,7 +4187,7 @@
     {
         "id": "520",
         "pokemon": "Pelipper",
-        "build": "Pelipper @ Sitrus Berry  \nAbility: Drizzle  \nLevel: 50  \nEVs: 32 HP / 32 Def / 2 SpA\nBold Nature    \n- Protect  \n- Hurricane  \n- Weather Ball  \n- Wide Guard",
+        "build": "Pelipper @ Sitrus Berry  \nAbility: Drizzle  \nLevel: 50  \nEVs: 32 HP / 1 Def / 5 SpA / 17 SpD / 11 Spe\nModest Nature    \n- Protect  \n- Hurricane  \n- Weather Ball  \n- Wide Guard",
         "synergy": [
             "524","563"
         ],
@@ -4609,8 +4609,8 @@
     {
         "id": "564",
         "pokemon": "Metagross",
-        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 17 HP / 24 Atk / 25 Spe\nJolly Nature  \n- Psychic Fangs  \n- Iron Head  \n- Body Press  \n- Protect",
-        "synergy": [],
+        "build": "Metagross @ Metagrossite  \nAbility: Clear Body  \nLevel: 50  \nTera Type: Steel  \nEVs: 14 HP / 27 Atk / 25 Spe\nJolly Nature  \n- Psychic Fangs  \n- Iron Head  \n- Body Press  \n- Protect",
+        "synergy": ["520","614","587"],
         "format": "Doubles",
         "isMeta": false
     },
@@ -4858,9 +4858,9 @@
     {
         "id": "587",
         "pokemon": "Grimmsnarl",
-        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nEVs: 32 HP / 2 Def / 32 SpD\nCalm Nature    \n- Foul Play  \n- Parting Shot  \n- Light Screen  \n- Reflect",
+        "build": "Grimmsnarl @ Light Clay  \nAbility: Prankster  \nEVs: 32 HP / 20 Def / 14 SpD\nCalm Nature    \n- Foul Play  \n- Parting Shot  \n- Light Screen  \n- Reflect",
         "synergy": [
-            "545"
+            "545","614","520"
         ],
         "format": "Doubles",
         "isMeta": false
@@ -5117,9 +5117,9 @@
     {
         "id": "614",
         "pokemon": "Sinistcha",
-        "build": "Sinistcha @ Sitrus Berry  \nAbility: Hospitality  \nEVs: 32 HP / 14 Def / 20 SpD  \nBold Nature \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
+        "build": "Sinistcha @ Coba Berry  \nAbility: Hospitality  \nEVs: 32 HP / 4 Def / 30 SpD  \nRelaxed Nature \n- Protect  \n- Trick Room  \n- Rage Powder  \n- Matcha Gotcha",
         "synergy": [
-            "613"
+            "613","520","524","563"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -5571,12 +5571,12 @@
     {
         "id": "662",
         "pokemon": "Blastoise",
-        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nEVs: 13 HP / 32 SpA / 21 Spe\nModest Nature    \n- Water Spout  \n- Dark Pulse  \n- Shell Smash  \n- Protect",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nEVs: 1 HP / 1 Def / 32 SpA / 32 Spe\nModest Nature    \n- Water Spout  \n- Dark Pulse  \n- Shell Smash  \n- Protect",
         "synergy": [
-            "660"
+            "660","487"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "663",
