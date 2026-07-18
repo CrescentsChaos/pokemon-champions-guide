@@ -1725,7 +1725,7 @@ function setMobileCalcTab(tab) {
         btn.classList.toggle('active', btn.dataset.calcTab === tab);
     });
     try { sessionStorage.setItem('calcMobileTab', tab); } catch (_) { /* ignore */ }
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    window.scrollTo(0, 0);
 }
 
 function syncMobileSummary() {

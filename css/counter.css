@@ -431,6 +431,11 @@ body.counter-page {
     flex-wrap: wrap;
     gap: 0.75rem;
     margin: -0.35rem 0 1rem;
+    align-items: center;
+}
+
+.results-champions-check {
+    margin-left: auto;
 }
 
 .results-toolbar__field {

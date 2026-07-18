@@ -4313,7 +4313,6 @@
         "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nTera Type: Fairy  \nEVs: 10 HP / 19 Def / 5 SpA / 32 Spe\nModest Nature  \n- Moonblast  \n- Dazzling Gleam  \n- Light of Ruin  \n- Protect",
         "synergy": [
             "533",
-            "534",
             "535",
             "536","250","251"
         ],
@@ -4335,7 +4334,6 @@
         "pokemon": "Aegislash",
         "build": "Aegislash @ Spell Tag  \nAbility: Stance Change  \nLevel: 50  \nTera Type: Steel  \nEVs: 32 HP / 32 Atk / 2 SpD\nAdamant Nature  \n- Poltergeist  \n- Shadow Sneak  \n- Sacred Sword  \n- King's Shield",
         "synergy": [
-            "532"
         ],
         "format": "Doubles",
         "isMeta": false
@@ -4532,7 +4530,7 @@
         "id": "556",
         "pokemon": "Aerodactyl",
         "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Rock  \nEVs: 26 HP / 7 Atk / 1 Def / 32 Spe\nJolly Nature  \n- Rock Slide  \n- Ice Fang  \n- Dual Wingbeat  \n- Tailwind",
-        "synergy": ["250"],
+        "synergy": ["250","607","675","570","255"],
         "format": "Doubles",
         "isMeta": true
     },
@@ -4541,7 +4539,6 @@
         "pokemon": "Pyroar",
         "build": "Pyroar @ Pyroarite  \nAbility: Unnerve  \nLevel: 50  \nTera Type: Fire  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Heat Wave  \n- Overheat  \n- Solar Beam  \n- Protect",
         "synergy": [
-            "556"
         ],
         "format": "Doubles",
         "isMeta": false
@@ -4551,8 +4548,7 @@
         "pokemon": "Torkoal",
         "build": "Torkoal @ Heat Rock  \nAbility: Drought  \nLevel: 50  \nTera Type: Fire  \nEVs: 32 HP / 2 SpA / 32 SpD\nRelaxed Nature    \n- Heat Wave  \n- Helping Hand  \n- Yawn  \n- Protect",
         "synergy": [
-            "557",
-            "556"
+            "557"
         ],
         "format": "Doubles",
         "isMeta": false

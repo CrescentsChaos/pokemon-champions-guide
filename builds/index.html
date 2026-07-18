@@ -262,6 +262,60 @@
             color: #fff8e7;
         }
 
+        .build-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .build-stat-row__label {
+            width: 25px;
+            flex-shrink: 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 800;
+        }
+
+        .build-stat-row .stat-bar-mini {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .build-stat-row__total {
+            width: 28px;
+            flex-shrink: 0;
+            text-align: right;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .build-stat-ev {
+            flex-shrink: 0;
+            min-width: 1.65rem;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.35);
+            color: rgba(255, 255, 255, 0.35);
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.35;
+        }
+
+        .build-stat-ev--invested {
+            color: rgba(255, 220, 120, 0.95);
+            border-color: rgba(255, 200, 80, 0.35);
+            background: rgba(255, 190, 60, 0.12);
+        }
+
+        .stats-column {
+            min-width: 0;
+        }
+
         @media (max-width: 520px) {
             .meta-build-banner {
                 flex-direction: column;
@@ -270,6 +324,12 @@
 
             .meta-build-banner__note {
                 text-align: left;
+            }
+
+            .build-stat-ev {
+                min-width: 1.5rem;
+                padding: 1px 4px;
+                font-size: 0.58rem;
             }
         }
 
@@ -1664,24 +1724,26 @@
 
                 const valBase = calculateStat(baseValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
                 const valAltered = calculateStat(alteredValue, p.ivs[s], p.evs[s], p.level, p.nature, s);
+                const evVal = parseInt(p.evs?.[s], 10) || 0;
 
                 const nature = natureMap[p.nature] || { pos: '', neg: '' };
                 const color = nature.pos === s ? '#00ffcc' : (nature.neg === s ? '#ff4d4d' : '#ddd');
 
                 return `
-                    <div style="display:flex; align-items:center; font-size:0.75rem; margin-bottom:4px;">
-                        <span style="width:25px; color:rgba(255,255,255,0.4); font-weight:800;">${statLabels[idx]}</span>
+                    <div class="build-stat-row">
+                        <span class="build-stat-row__label">${statLabels[idx]}</span>
                         <div class="stat-bar-mini">
                             <div class="stat-fill-mini ${canFormCycle ? 'mega-data-fill' : ''}" 
                                  style="width:${Math.min(100, (valBase / 250) * 100)}%; background:${statColors[idx]};"
                                  ${canFormCycle ? `data-base-width="${Math.min(100, (valBase / 250) * 100)}%" data-mega-width="${Math.min(100, (valAltered / 250) * 100)}%"` : ''}>
                             </div>
                         </div>
-                        <span class="${canFormCycle ? 'mega-data-text' : ''}" 
-                              style="width:30px; text-align:right; font-weight:900; color:${color}"
+                        <span class="build-stat-row__total ${canFormCycle ? 'mega-data-text' : ''}" 
+                              style="color:${color}"
                               ${canFormCycle ? `data-base-val="${valBase}" data-mega-val="${valAltered}"` : ''}>
                             ${valBase}
                         </span>
+                        <span class="build-stat-ev${evVal > 0 ? ' build-stat-ev--invested' : ''}" title="${statLabels[idx]} EV">${evVal}</span>
                     </div>
                 `;
             }).join('');

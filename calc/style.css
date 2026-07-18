@@ -41,8 +41,10 @@ body.calc-page main.container {
         padding: 0 1rem;
     }
 
+    /* Bottom padding reserved for fixed mobile nav — see larger mobile block below */
     body.calc-page main.container {
-        padding: 4.75rem 0.75rem 1.75rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
     }
 }
 
@@ -1367,8 +1369,10 @@ input:hover {
     }
 
     body.calc-page main.container {
-        padding: 4.35rem 0.7rem calc(var(--calc-nav-h) + 1.25rem + env(safe-area-inset-bottom, 0px));
+        padding: 4.5rem 0.7rem calc(var(--calc-nav-h) + 1.5rem + env(safe-area-inset-bottom, 0px)) !important;
         max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
 
     /* Disable hover lift on touch */
@@ -1380,7 +1384,7 @@ input:hover {
 
     /* —— Sticky summary + bottom nav —— */
     .calc-mobile-sticky-summary {
-        display: block;
+        display: block !important;
         position: sticky;
         top: 4.25rem;
         z-index: 90;
@@ -1452,13 +1456,13 @@ input:hover {
     }
 
     .calc-mobile-nav {
-        display: grid;
+        display: grid !important;
         grid-template-columns: repeat(4, 1fr);
         position: fixed;
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 200;
+        z-index: 1200;
         height: calc(var(--calc-nav-h) + env(safe-area-inset-bottom, 0px));
         padding: 0.35rem 0.4rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
         gap: 0.25rem;
@@ -1467,6 +1471,7 @@ input:hover {
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
     }
 
     .calc-mobile-nav-btn {
@@ -1484,6 +1489,7 @@ input:hover {
         padding: 0.35rem 0.2rem;
         font-family: inherit;
         transition: background 0.15s ease, color 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .calc-mobile-nav-btn.active {
@@ -1542,19 +1548,20 @@ input:hover {
     }
 
     .calc-grid {
-        display: block;
+        display: block !important;
         gap: 0;
+        width: 100%;
     }
 
     .calc-results-section {
-        margin-bottom: 0;
-        padding-bottom: 0;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
         border-bottom: none;
     }
 
     /* Results tab keeps full banner + rolls; sticky strip covers other tabs */
     body.calc-tab-results .calc-mobile-sticky-summary {
-        display: none;
+        display: none !important;
     }
 
     body.calc-tab-results .calc-results-section {
@@ -1570,6 +1577,7 @@ input:hover {
     #main-result {
         font-size: 1.05rem;
         line-height: 1.35;
+        word-break: break-word;
     }
 
     #sub-result {
@@ -1584,7 +1592,7 @@ input:hover {
     }
 
     .move-results-container {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         gap: 14px;
     }
@@ -1619,9 +1627,17 @@ input:hover {
     }
 
     .calc-panel {
-        padding: 14px 12px;
+        padding: 14px 12px !important;
         border-radius: 16px;
         margin-bottom: 0;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+
+    .panel-body {
+        overflow: visible !important;
+        width: 100%;
     }
 
     .panel-role-badge {
@@ -1633,16 +1649,21 @@ input:hover {
 
     .panel-header {
         margin-bottom: 12px;
-        display: grid;
+        display: grid !important;
         grid-template-columns: 72px 1fr;
         gap: 10px;
         align-items: center;
     }
 
     .sprite-container {
-        width: 72px;
-        height: 72px;
-        margin: 0;
+        width: 72px !important;
+        height: 72px !important;
+        margin: 0 !important;
+    }
+
+    .sprite-container img {
+        max-height: 68px !important;
+        max-width: 100%;
     }
 
     .search-input {
@@ -1659,6 +1680,7 @@ input:hover {
 
     .config-row {
         gap: 10px;
+        grid-template-columns: 1fr !important;
     }
 
     .config-sets,
@@ -1723,25 +1745,29 @@ input:hover {
 
     /* Stats: card-like rows instead of cramped table scroll */
     .stats-table {
-        display: block;
-        width: 100%;
-        overflow: visible;
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: visible !important;
         margin: 0.75rem 0;
         border-spacing: 0;
+        table-layout: auto;
     }
 
     .stats-table thead {
-        display: none;
+        display: none !important;
     }
 
     .stats-table tbody {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         gap: 8px;
+        width: 100%;
     }
 
     .stats-table tr {
-        display: grid;
+        display: grid !important;
         grid-template-columns: 44px 1fr 1fr 1fr auto 52px;
         align-items: center;
         gap: 6px;
@@ -1749,13 +1775,16 @@ input:hover {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.07);
         border-radius: 12px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .stats-table td {
-        padding: 0;
+        padding: 0 !important;
         font-size: 0.78rem;
         white-space: nowrap;
         border: none;
+        min-width: 0;
     }
 
     .stats-table td.stat-label {
@@ -1784,12 +1813,13 @@ input:hover {
     .stats-table input,
     .stats-table select {
         min-height: 40px;
-        font-size: 16px;
-        min-width: 0;
-        width: 100%;
+        font-size: 16px !important;
+        min-width: 0 !important;
+        width: 100% !important;
         border-radius: 8px;
-        padding: 4px 4px;
+        padding: 4px 4px !important;
         text-align: center;
+        box-sizing: border-box;
     }
 
     .stats-table .boost-select {
@@ -1804,7 +1834,7 @@ input:hover {
     }
 
     .meta-row {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr !important;
         gap: 10px;
     }
 
@@ -2003,6 +2033,7 @@ input:hover {
         bottom: calc(var(--calc-nav-h) + 16px + env(safe-area-inset-bottom, 0px));
         max-width: calc(100vw - 32px);
         font-size: 0.85rem;
+        z-index: 1300;
     }
 
     .build-select,

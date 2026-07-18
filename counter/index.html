@@ -504,6 +504,10 @@
                             <option value="name">Name</option>
                         </select>
                     </label>
+                    <label class="premade-meta-check results-champions-check" title="Only show Pokémon marked inChampions in pokemon.json">
+                        <input type="checkbox" id="results-champions-only">
+                        <span>Champions eligible</span>
+                    </label>
                 </div>
 
                 <div id="counter-results" class="counter-grid">
@@ -1043,6 +1047,7 @@
             document.getElementById('premade-meta-only')?.addEventListener('change', populatePremadeBuilds);
             document.getElementById('results-filter')?.addEventListener('change', applyResultsView);
             document.getElementById('results-sort')?.addEventListener('change', applyResultsView);
+            document.getElementById('results-champions-only')?.addEventListener('change', applyResultsView);
 
             document.getElementById('target-format')?.addEventListener('change', () => {
                 syncFormatFromUI();
@@ -1489,7 +1494,8 @@
                         item: candSlot.item || build.item || '',
                         ability: candSlot.ability || '',
                         metaRank: effectiveMetaRank,
-                        isMeta
+                        isMeta,
+                        inChampions: candidateData.inChampions === true
                     };
                     const prev = bestBySpecies.get(speciesKey);
                     if (!prev || entry.score > prev.score || (entry.score === prev.score && entry.metaRank < prev.metaRank)) {
@@ -1565,8 +1571,10 @@
         function applyResultsView() {
             const filter = document.getElementById('results-filter')?.value || 'all';
             const sort = document.getElementById('results-sort')?.value || 'score';
+            const champsOnly = document.getElementById('results-champions-only')?.checked;
             let list = [...lastCounters];
 
+            if (champsOnly) list = list.filter(c => c.inChampions === true);
             if (filter === 'meta') list = list.filter(c => c.isMeta);
             else if (filter === 'ohko') list = list.filter(c => c.verdict === 'ohko');
             else if (filter === 'tank') list = list.filter(c => c.verdict === 'tank');
@@ -1590,7 +1598,9 @@
         function renderResults(counters, totalFound = counters.length) {
             const container = document.getElementById('counter-results');
             const filter = document.getElementById('results-filter')?.value || 'all';
-            const countLabel = filter === 'all'
+            const champsOnly = document.getElementById('results-champions-only')?.checked;
+            const narrowed = filter !== 'all' || champsOnly;
+            const countLabel = !narrowed
                 ? `${counters.length} COUNTER${counters.length === 1 ? '' : 'S'} FOUND`
                 : `${counters.length} OF ${totalFound} SHOWN`;
             document.getElementById('results-count').innerText = countLabel;
