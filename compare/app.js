@@ -4,6 +4,8 @@ let itemsData = [];
 let buildsData = [];
 
 let isChampionsMode = true;
+if (typeof setChampionsEvMode === 'function') setChampionsEvMode(true);
+else if (typeof globalThis !== 'undefined') globalThis.isChampionsMode = true;
 
 function syncChampionsModeButton() {
     const btn = document.getElementById('champions-ev-toggle');
@@ -14,9 +16,13 @@ function syncChampionsModeButton() {
 
 function toggleChampionsMode() {
     isChampionsMode = !isChampionsMode;
+    if (typeof setChampionsEvMode === 'function') setChampionsEvMode(isChampionsMode);
+    else globalThis.isChampionsMode = isChampionsMode;
     [p1, p2].forEach(pk => {
         if (!pk) return;
-        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
+        pk.evs = typeof coerceEvsForMode === 'function'
+            ? coerceEvsForMode(pk.evs, isChampionsMode)
+            : (isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs));
     });
     syncChampionsModeButton();
     recalcStats(1);
@@ -880,8 +886,12 @@ function importFromText(num, text) {
             p.ability = (pd && getPokemonAbilities(pd)[0]) || '';
         }
 
-        if (isChampionsMode) {
-            p.evs = convertEvsToChampions(p.evs);
+        if (typeof coerceEvsForMode === 'function') {
+            p.evs = coerceEvsForMode(p.evs, isChampionsMode);
+        } else if (isChampionsMode) {
+            p.evs = looksLikeTraditionalEvs && looksLikeTraditionalEvs(p.evs)
+                ? convertEvsToChampions(p.evs)
+                : (typeof normalizeChampionsEvs === 'function' ? normalizeChampionsEvs(p.evs) : p.evs);
         }
 
         document.getElementById(`p${num}-search`).value = p.species;

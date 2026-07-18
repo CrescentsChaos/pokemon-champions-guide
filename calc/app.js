@@ -11,6 +11,8 @@ let importTargetId = 1;
 let topMetaNames = [];
 let _topPokemonsCache = null;
 let isChampionsMode = true;
+if (typeof setChampionsEvMode === 'function') setChampionsEvMode(true);
+else if (typeof globalThis !== 'undefined') globalThis.isChampionsMode = true;
 
 function syncChampionsModeButton() {
     const btn = document.getElementById('champions-ev-toggle');
@@ -21,10 +23,14 @@ function syncChampionsModeButton() {
 
 function toggleChampionsMode() {
     isChampionsMode = !isChampionsMode;
+    if (typeof setChampionsEvMode === 'function') setChampionsEvMode(isChampionsMode);
+    else globalThis.isChampionsMode = isChampionsMode;
 
     [p1, p2].forEach(pk => {
         if (!pk) return;
-        pk.evs = isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs);
+        pk.evs = typeof coerceEvsForMode === 'function'
+            ? coerceEvsForMode(pk.evs, isChampionsMode)
+            : (isChampionsMode ? convertEvsToChampions(pk.evs) : convertEvsFromChampions(pk.evs));
         updateStatsUI(pk);
     });
 
@@ -1430,7 +1436,9 @@ function importPokePaste(id, paste) {
             }
         });
 
-        if (isChampionsMode) {
+        if (typeof coerceEvsForMode === 'function') {
+            pk.evs = coerceEvsForMode(pk.evs, isChampionsMode);
+        } else if (isChampionsMode) {
             const maxEv = Math.max(...['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k => pk.evs[k] || 0));
             pk.evs = maxEv > 32 ? convertEvsToChampions(pk.evs) : normalizeChampionsEvs(pk.evs);
         } else {

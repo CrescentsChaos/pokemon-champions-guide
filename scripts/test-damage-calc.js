@@ -78,5 +78,31 @@ atk.ability = 'None';
 const normal = sandbox.calculateDamage(atk, def, waterGun, field);
 assert(parseFloat(wb.maxPercent) > parseFloat(normal.maxPercent), 'Water Bubble boosts Water moves');
 
+// Official Showdown Champions: LO Garchomp EQ vs Kingambit (Doubles)
+const fieldD2 = sandbox.getDefaultField('Doubles');
+const garchomp = sandbox.setupPokemonState(1);
+const kingambit = sandbox.setupPokemonState(2);
+garchomp.name = 'Garchomp';
+garchomp.type1 = 'Dragon';
+garchomp.type2 = 'Ground';
+garchomp.level = 50;
+garchomp.stats = { hp: 185, atk: 182, def: 115, spa: 90, spd: 105, spe: 169 };
+garchomp.item = 'Life Orb';
+garchomp.ability = 'Rough Skin';
+kingambit.name = 'Kingambit';
+kingambit.type1 = 'Dark';
+kingambit.type2 = 'Steel';
+kingambit.level = 50;
+kingambit.stats = { hp: 207, atk: 205, def: 142, spa: 72, spd: 105, spe: 70 };
+const eqShowdown = sandbox.calculateDamage(
+    garchomp, kingambit, BC.MoveIndex.createMoveState('Earthquake'), fieldD2
+);
+assert(eqShowdown.minDmg === 140 && eqShowdown.maxDmg === 166, 'EQ damage 140-166 matches Showdown');
+assert(eqShowdown.minPercent === '67.6' && eqShowdown.maxPercent === '80.1', 'EQ percent 67.6-80.1 matches Showdown');
+assert(
+    eqShowdown.rolls.join(',') === '140,140,143,143,148,148,151,151,151,156,156,159,159,164,164,166',
+    'EQ rolls match Showdown exactly'
+);
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

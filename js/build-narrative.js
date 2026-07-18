@@ -53,7 +53,7 @@
             ability: '',
             level: 50,
             tera: 'Normal',
-            evs: { hp: 252, def: 4, spd: 252, atk: 0, spa: 0, spe: 0 },
+            evs: { hp: 32, def: 2, spd: 32, atk: 0, spa: 0, spe: 0 },
             ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
             nature: 'Bold',
             moves: ['Protect']

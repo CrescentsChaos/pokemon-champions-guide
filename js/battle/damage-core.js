@@ -70,6 +70,51 @@
         return false;
     }
 
+    /** Round half down (Showdown / in-game pokeRound). */
+    function pokeRound(num) {
+        return (num % 1 > 0.5) ? Math.ceil(num) : Math.floor(num);
+    }
+
+    function of16(n) {
+        return n > 65535 ? n % 65536 : n;
+    }
+
+    function of32(n) {
+        return n > 4294967295 ? n % 4294967296 : n;
+    }
+
+    /** Chain 4096-fixed modifiers the way Gen 5+ battles do. */
+    function chainMods(mods, lowerBound = 41, upperBound = 131072) {
+        let M = 4096;
+        for (const mod of mods) {
+            if (mod !== 4096) {
+                M = (M * mod + 2048) >> 12;
+            }
+        }
+        return Math.max(Math.min(M, upperBound), lowerBound);
+    }
+
+    function stabFloatToMod(stab) {
+        if (stab === 1) return 4096;
+        if (stab === 1.2) return 4915;
+        if (stab === 1.5) return 6144;
+        if (stab === 2) return 8192;
+        if (stab === 2.25) return 9216;
+        return Math.round(stab * 4096);
+    }
+
+    /**
+     * Apply random → STAB → type → burn → chained final mods (Showdown order).
+     * Spread / weather / crit must already be folded into baseAmount.
+     */
+    function getFinalDamage(baseAmount, rollIndex, effectiveness, isBurned, stabMod, finalMod) {
+        let damageAmount = Math.floor(of32(baseAmount * (85 + rollIndex)) / 100);
+        if (stabMod !== 4096) damageAmount = of32(damageAmount * stabMod) / 4096;
+        damageAmount = Math.floor(of32(pokeRound(damageAmount) * effectiveness));
+        if (isBurned) damageAmount = Math.floor(damageAmount / 2);
+        return of16(pokeRound(Math.max(1, of32(damageAmount * finalMod) / 4096)));
+    }
+
     function calculateDamage(attacker, defender, move, field) {
         const res = { move: move.name, attackerId: attacker.id, minPercent: 0, maxPercent: 0, rolls: [0] };
         if (move.basePower === 0) return res;
@@ -135,6 +180,30 @@
         if (typeResult.basePower !== move.basePower) basePower = typeResult.basePower;
         basePower = applyTeraBpFloor(attacker, move, moveType, basePower);
 
+        // -ate abilities (Pixilate etc.): +20% BP (4915/4096), not a late damage mult
+        if (abilityBoost && abilityBoost !== 1) {
+            basePower = pokeRound(of32(basePower * Math.round(abilityBoost * 4096)) / 4096);
+        }
+
+        // Helping Hand / Terrain are base-power modifiers in Gen 5+
+        if (attackerSide.helpingHand) {
+            basePower = pokeRound(of32(basePower * 6144) / 4096);
+        }
+        if (BC.getTerrainModifier) {
+            const terrainMult = BC.getTerrainModifier(moveType, field);
+            if (terrainMult !== 1) {
+                const tMod = terrainMult === 1.3 ? 5325
+                    : terrainMult === 0.5 ? 2048
+                    : Math.round(terrainMult * 4096);
+                basePower = pokeRound(of32(basePower * tMod) / 4096);
+            }
+        }
+
+        // Water Bubble doubles the offensive stat for Water moves
+        if (attacker.ability === 'Water Bubble' && moveType === 'Water') {
+            rawAtk = Math.floor(rawAtk * 2);
+        }
+
         let atk = getBoostValue(rawAtk, atkBoost);
         let def = getBoostValue(rawDef, defBoost);
 
@@ -144,32 +213,33 @@
             def = ruin.def;
         }
 
-        let baseDamage = Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * basePower * atk / def) / 50) + 2;
+        // Base damage (Showdown getBaseDamage floors)
+        let baseDamage = Math.floor(
+            of32(
+                Math.floor(
+                    of32(of32(Math.floor((2 * level) / 5 + 2) * basePower) * atk) / def
+                ) / 50 + 2
+            )
+        );
 
-        let modifier = 1.0;
         const weather = weatherFlags(field, attacker);
 
+        // Spread → weather → crit applied BEFORE the random roll (Showdown order)
         if (field.format === 'Doubles' && MoveIndex.isSpread(move.name)) {
-            modifier *= 0.75;
+            baseDamage = pokeRound(of32(baseDamage * 3072) / 4096);
         }
 
         if (weather.isSun) {
-            if (moveType === 'Fire') modifier *= 1.5;
-            if (moveType === 'Water') modifier *= 0.5;
+            if (moveType === 'Fire') baseDamage = pokeRound(of32(baseDamage * 6144) / 4096);
+            if (moveType === 'Water') baseDamage = pokeRound(of32(baseDamage * 2048) / 4096);
         } else if (weather.isRain) {
-            if (moveType === 'Water') modifier *= 1.5;
-            if (moveType === 'Fire') modifier *= 0.5;
+            if (moveType === 'Water') baseDamage = pokeRound(of32(baseDamage * 6144) / 4096);
+            if (moveType === 'Fire') baseDamage = pokeRound(of32(baseDamage * 2048) / 4096);
         }
 
-        modifier *= abilityBoost;
-
-        if (attacker.ability === 'Water Bubble' && moveType === 'Water') {
-            modifier *= 2;
+        if (move.crit) {
+            baseDamage = Math.floor(of32(baseDamage * 1.5));
         }
-
-        if (move.crit) modifier *= 1.5;
-
-        modifier *= calculateStab(attacker, moveType);
 
         let typeMod = 1.0;
         const defTypes = getDefenderTypes(defender);
@@ -184,39 +254,39 @@
         }
 
         if (checkAbilityImmunity(attacker, defender, moveType, typeMod, field)) return res;
-
-        if (typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock') && attacker.ability !== 'Mold Breaker') {
-            modifier *= 0.75;
-        }
-
-        modifier *= typeMod;
         if (typeMod === 0) return res;
 
-        if (attacker.status === 'Burned' && !isSpecial && attacker.ability !== 'Guts') {
-            modifier *= 0.5;
-        }
+        const stabMod = stabFloatToMod(calculateStab(attacker, moveType));
 
+        // Final (post-type) modifiers chained in 4096 fixed-point
+        const finalMods = [];
         const defSide = defender.id === 1 ? field.side1 : field.side2;
-        if (!move.crit && attacker.ability !== 'Infiltrator') {
-            if (isSpecial && (defSide.lightScreen || defSide.auroraVeil)) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
-            if (!isSpecial && (defSide.reflect || defSide.auroraVeil)) modifier *= (field.format === 'Doubles' ? 2 / 3 : 0.5);
+
+        if (typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock') && attacker.ability !== 'Mold Breaker') {
+            finalMods.push(3072);
         }
 
-        if (item === 'life orb') modifier *= 1.3;
-        if (item === 'expert belt' && typeMod > 1) modifier *= 1.2;
+        if (!move.crit && attacker.ability !== 'Infiltrator') {
+            if (isSpecial && (defSide.lightScreen || defSide.auroraVeil)) {
+                finalMods.push(field.format === 'Doubles' ? 2732 : 2048);
+            }
+            if (!isSpecial && (defSide.reflect || defSide.auroraVeil)) {
+                finalMods.push(field.format === 'Doubles' ? 2732 : 2048);
+            }
+        }
+
+        if (item === 'life orb') finalMods.push(5324);
+        if (item === 'expert belt' && typeMod > 1) finalMods.push(4915);
 
         const typeItemList = TYPE_ITEMS[moveType.toLowerCase()];
-        if (typeItemList && typeItemList.includes(item)) modifier *= 1.2;
+        if (typeItemList && typeItemList.includes(item)) finalMods.push(4915);
 
-        if (attackerSide.helpingHand) modifier *= 1.5;
-
-        if (BC.getTerrainModifier) modifier *= BC.getTerrainModifier(moveType, field);
+        const finalMod = chainMods(finalMods);
+        const applyBurn = attacker.status === 'Burned' && !isSpecial && attacker.ability !== 'Guts';
 
         let rolls = [];
-        for (let i = 85; i <= 100; i++) {
-            let r = Math.floor(baseDamage * i / 100);
-            r = Math.floor(r * modifier);
-            rolls.push(r);
+        for (let i = 0; i < 16; i++) {
+            rolls.push(getFinalDamage(baseDamage, i, typeMod, applyBurn, stabMod, finalMod));
         }
 
         if (defSide.protect && attacker.ability !== 'Unseen Fist') {
@@ -234,11 +304,13 @@
 
         const defHp = defender.stats.hp;
         const effHp = BC.getEffectiveDefenderHp ? BC.getEffectiveDefenderHp(defender, field) : Math.floor(defHp * (defender.hpPercent ?? 100) / 100);
+        // Showdown truncates % to 1 decimal (e.g. 80.193 → 80.1)
+        const pct = (dmg) => (Math.floor((dmg * 1000) / defHp) / 10).toFixed(1);
         res.minDmg = rolls[0];
         res.maxDmg = rolls[rolls.length - 1];
         res.effectiveHp = effHp;
-        res.minPercent = (rolls[0] / defHp * 100).toFixed(1);
-        res.maxPercent = (rolls[rolls.length - 1] / defHp * 100).toFixed(1);
+        res.minPercent = pct(rolls[0]);
+        res.maxPercent = pct(rolls[rolls.length - 1]);
         res.rolls = rolls;
         res.hitCount = hitCount;
         return res;

@@ -40,7 +40,10 @@ function getPokemonAbilities(db) {
  * @param {string} statKey - Stat identifier ('hp', 'atk', etc.)
  * @returns {number} The calculated stat
  */
-function calculateStat(base, iv, ev, level, natureType, statKey, championsMode = false) {
+function calculateStat(base, iv, ev, level, natureType, statKey, championsMode) {
+    if (championsMode === undefined) {
+        championsMode = isChampionsEvMode();
+    }
     const lvl = parseInt(level) || 50;
     const ivVal = parseInt(iv || 31);
     const evBonus = championsMode ? 0 : Math.floor(parseInt(ev || 0) / 4);
@@ -92,6 +95,53 @@ const CHAMPIONS_EV_TOTAL = 66;
 const CHAMPIONS_EV_MAX_STAT = 32;
 const STANDARD_EV_TOTAL = 508;
 const STANDARD_EV_MAX_STAT = 252;
+
+/** Site-wide Champions EV default. Pages set globalThis.isChampionsMode when toggling. */
+function isChampionsEvMode() {
+    if (typeof globalThis !== 'undefined' && typeof globalThis.isChampionsMode === 'boolean') {
+        return globalThis.isChampionsMode;
+    }
+    return true;
+}
+
+function setChampionsEvMode(on) {
+    if (typeof globalThis !== 'undefined') globalThis.isChampionsMode = !!on;
+    return !!on;
+}
+
+function getEvTotal(evs) {
+    return EV_STAT_KEYS.reduce((sum, k) => sum + (parseInt(evs?.[k], 10) || 0), 0);
+}
+
+function getEvMax(evs) {
+    return Math.max(0, ...EV_STAT_KEYS.map(k => parseInt(evs?.[k], 10) || 0));
+}
+
+/** True when a spread looks like Smogon/traditional EVs (not Champions 66/32). */
+function looksLikeTraditionalEvs(evs) {
+    return getEvMax(evs) > CHAMPIONS_EV_MAX_STAT || getEvTotal(evs) > CHAMPIONS_EV_TOTAL;
+}
+
+/**
+ * Coerce a paste/import spread into the active EV mode without double-converting.
+ * - Champions ON + traditional paste → convert ÷8 and normalize to 66
+ * - Champions ON + champions paste → normalize to 66 only
+ * - Champions OFF + champions paste → ×8 back to Smogon
+ * - Champions OFF + traditional paste → clamp Smogon limits
+ */
+function coerceEvsForMode(evs, championsMode = isChampionsEvMode()) {
+    const src = {};
+    EV_STAT_KEYS.forEach(k => { src[k] = parseInt(evs?.[k], 10) || 0; });
+    // Keep empty spreads empty (don't dump remainder into blank slots)
+    if (getEvTotal(src) === 0) return src;
+    if (championsMode) {
+        return looksLikeTraditionalEvs(src) ? convertEvsToChampions(src) : normalizeChampionsEvs(src);
+    }
+    if (!looksLikeTraditionalEvs(src) && getEvMax(src) > 0) {
+        return convertEvsFromChampions(src);
+    }
+    return clampEvsForMode(src, false);
+}
 
 /**
  * Normalizes Champions EVs to exactly 66 total (or less if capped).
@@ -283,6 +333,8 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getPokemonAbilities, calculateStat, getPermanentForm,
         normalizeChampionsEvs, convertEvsToChampions, convertEvsFromChampions, clampEvsForMode,
+        isChampionsEvMode, setChampionsEvMode, looksLikeTraditionalEvs, coerceEvsForMode,
+        getEvTotal, getEvMax, EV_STAT_KEYS, CHAMPIONS_EV_TOTAL, CHAMPIONS_EV_MAX_STAT,
         isBuildMarkedMeta, findMetaBuildForSpecies, findLatestBuildForSpecies, normalizeBuildSpeciesKey,
         getTopPokemonsCache, getTopPokemonsList, getMetaRankFromTop, getMetaNumberFromTop
     };

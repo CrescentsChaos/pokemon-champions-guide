@@ -306,18 +306,21 @@ function createDefaultOpponentSlot(species) {
     if (spe >= 90) {
         slot.nature = atk >= spa ? 'Jolly' : 'Timid';
         slot.evs = atk >= spa
-            ? { hp: 4, atk: 252, def: 0, spa: 0, spd: 0, spe: 252 }
-            : { hp: 4, atk: 0, def: 0, spa: 252, spd: 0, spe: 252 };
+            ? { hp: 2, atk: 32, def: 0, spa: 0, spd: 0, spe: 32 }
+            : { hp: 2, atk: 0, def: 0, spa: 32, spd: 0, spe: 32 };
     } else if (hp + def + spd >= 240) {
         slot.nature = def >= spd ? 'Impish' : 'Careful';
         slot.evs = def >= spd
-            ? { hp: 252, atk: 0, def: 252, spa: 0, spd: 4, spe: 0 }
-            : { hp: 252, atk: 0, def: 4, spa: 0, spd: 252, spe: 0 };
+            ? { hp: 32, atk: 0, def: 32, spa: 0, spd: 2, spe: 0 }
+            : { hp: 32, atk: 0, def: 2, spa: 0, spd: 32, spe: 0 };
     } else {
         slot.nature = atk >= spa ? 'Adamant' : 'Modest';
         slot.evs = atk >= spa
-            ? { hp: 252, atk: 252, def: 4, spa: 0, spd: 0, spe: 0 }
-            : { hp: 252, atk: 0, def: 4, spa: 252, spd: 0, spe: 0 };
+            ? { hp: 32, atk: 32, def: 2, spa: 0, spd: 0, spe: 0 }
+            : { hp: 32, atk: 0, def: 2, spa: 32, spd: 0, spe: 0 };
+    }
+    if (typeof coerceEvsForMode === 'function') {
+        slot.evs = coerceEvsForMode(slot.evs, typeof isChampionsEvMode === 'function' ? isChampionsEvMode() : true);
     }
 
     const t1 = (db.Type_1 || 'Normal').toLowerCase();

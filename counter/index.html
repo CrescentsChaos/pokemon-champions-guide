@@ -535,6 +535,8 @@
         let movesDB = [];
         let buildsDB = [];
         let topPokemons = { Singles: [], Doubles: [] };
+        if (typeof setChampionsEvMode === 'function') setChampionsEvMode(true);
+        else if (typeof globalThis !== 'undefined') globalThis.isChampionsMode = true;
 
         function getSpriteUrl(species, shiny) {
             if (!species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
@@ -1270,6 +1272,12 @@
                 }
                 if (line.startsWith('- ')) targetBuild.moves.push(line.replace('- ', '').trim());
             });
+            if (typeof coerceEvsForMode === 'function') {
+                targetBuild.evs = coerceEvsForMode(targetBuild.evs, true);
+            }
+            document.querySelectorAll('.target-ev').forEach(el => {
+                el.value = targetBuild.evs[el.dataset.stat] || 0;
+            });
             const moveInputs = document.querySelectorAll('.target-move');
             moveInputs.forEach((input, i) => { input.value = targetBuild.moves[i] || ''; });
             updateTargetFromUI();
@@ -1294,11 +1302,21 @@
         }
 
         function getStat(base, iv, ev, level, nature, type) {
-            if (type === 'hp') return Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + level + 10;
+            const champs = (typeof isChampionsEvMode === 'function') ? isChampionsEvMode() : true;
+            if (typeof calculateStat === 'function') {
+                return calculateStat(base, iv, ev, level, nature, type, champs);
+            }
+            if (type === 'hp') {
+                let val = Math.floor((2 * base + iv + (champs ? 0 : Math.floor(ev / 4))) * level / 100) + level + 10;
+                if (champs) val += ev;
+                return val;
+            }
             const stats = ['atk', 'def', 'spa', 'spd', 'spe'];
             const index = stats.indexOf(type);
             const natureMult = natureMap[nature] ? natureMap[nature][index] : 1;
-            return Math.floor((Math.floor((2 * base + iv + Math.floor(ev / 4)) * level / 100) + 5) * natureMult);
+            let val = Math.floor((2 * base + iv + (champs ? 0 : Math.floor(ev / 4))) * level / 100) + 5;
+            if (champs) val += ev;
+            return Math.floor(val * natureMult);
         }
 
         async function analyze() {

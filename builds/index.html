@@ -710,6 +710,8 @@
         let itemsMap = {};
         let allAbilities = [];
         let abilitiesMap = {};
+        if (typeof setChampionsEvMode === 'function') setChampionsEvMode(true);
+        else if (typeof globalThis !== 'undefined') globalThis.isChampionsMode = true;
         let selectedBuildId = null;
         let displayedCount = 12;
         const batchSize = 12;
@@ -1542,14 +1544,19 @@
         }
 
         function calculateStat(base, iv, ev, level, natureType, statKey) {
+            // Builds.json stores Champions EVs (1 EV = 1 stat point)
+            const champs = (typeof isChampionsEvMode === 'function') ? isChampionsEvMode() : true;
             const lvl = parseInt(level) || 50;
-            const evBonus = Math.floor(parseInt(ev || 0) / 4);
             const ivVal = parseInt(iv || 31);
+            const evBonus = champs ? 0 : Math.floor(parseInt(ev || 0) / 4);
             if (statKey === 'hp') {
                 if (parseInt(base) === 1) return 1;
-                return Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + lvl + 10;
+                let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + lvl + 10;
+                if (champs) val += parseInt(ev || 0);
+                return val;
             }
             let val = Math.floor(((2 * parseInt(base) + ivVal + evBonus) * lvl) / 100) + 5;
+            if (champs) val += parseInt(ev || 0);
             const nature = natureMap[natureType];
             if (nature) {
                 if (nature.pos === statKey) val = Math.floor(val * 1.1);
@@ -1614,6 +1621,9 @@
                 }
             });
             while (slot.moves.length < 4) slot.moves.push('');
+            if (typeof coerceEvsForMode === 'function') {
+                slot.evs = coerceEvsForMode(slot.evs, true);
+            }
             return slot;
         }
 
@@ -2567,28 +2577,31 @@
         }
 
         function copyChampPaste(text, type = 'Champ Build') {
+            // builds.json is already Champions EV; only convert if paste still looks traditional
             const transformed = text.replace(/EVs:\s*([^\n]+)/g, (match, evString) => {
-                const parts = evString.split('/').map(p => p.trim());
-                const newParts = parts.map(p => {
-                    const m = p.match(/(\d+)\s*([a-zA-Z]+)/);
-                    if (m) {
-                        const val = parseInt(m[1]);
-                        const stat = m[2];
-                        let champVal = 0;
-                        if (val > 0) {
-                            // Scale 252 -> 32, 4 -> 2
-                            // Champion system uses SP (Stat Points)
-                            // 32 SP is max (equiv to 252 EV)
-                            // User example: 32 atk, 32 speed, 2 hp (for 252/252/4)
-                            champVal = Math.round(val / 7.875);
-                            if (champVal < 2) champVal = 2; // Min 2 for non-zero as per user request
-                            if (champVal > 32) champVal = 32; // Hard cap at 32
-                        }
-                        return `${champVal} ${stat}`;
+                const evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+                const labels = {};
+                evString.split('/').forEach(p => {
+                    const m = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (!m) return;
+                    const val = parseInt(m[1], 10);
+                    const raw = m[2];
+                    let key = raw.toLowerCase();
+                    if (key === 'spatk' || key === 'satk') key = 'spa';
+                    else if (key === 'spdef' || key === 'sdef') key = 'spd';
+                    else if (key === 'speed') key = 'spe';
+                    if (evs.hasOwnProperty(key)) {
+                        evs[key] = val;
+                        labels[key] = raw;
                     }
-                    return p;
                 });
-                return `EVs: ${newParts.join(' / ')}`;
+                const champ = (typeof coerceEvsForMode === 'function')
+                    ? coerceEvsForMode(evs, true)
+                    : (typeof convertEvsToChampions === 'function' ? convertEvsToChampions(evs) : evs);
+                const order = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+                const defaultLabel = { hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe' };
+                const parts = order.filter(k => champ[k] > 0).map(k => `${champ[k]} ${labels[k] || defaultLabel[k]}`);
+                return parts.length ? `EVs: ${parts.join(' / ')}` : match;
             });
             copyPaste(transformed, type);
         }

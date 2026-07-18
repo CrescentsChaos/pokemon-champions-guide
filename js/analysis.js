@@ -1533,6 +1533,9 @@ function parseAnalysisBuild(text) {
         }
     });
     while (slot.moves.length < 4) slot.moves.push('');
+    if (typeof coerceEvsForMode === 'function') {
+        slot.evs = coerceEvsForMode(slot.evs, typeof isChampionsEvMode === 'function' ? isChampionsEvMode() : true);
+    }
     return slot;
 }
 

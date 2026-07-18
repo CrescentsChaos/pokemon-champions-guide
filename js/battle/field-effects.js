@@ -100,8 +100,8 @@
         const maxHp = defender.stats.hp || 1;
         const minDmg = res.rolls[0] || 0;
         const maxDmg = res.rolls[res.rolls.length - 1] || 0;
-        const minPct = (minDmg / maxHp * 100).toFixed(1);
-        const maxPct = (maxDmg / maxHp * 100).toFixed(1);
+        const minPct = (Math.floor((minDmg * 1000) / maxHp) / 10).toFixed(1);
+        const maxPct = (Math.floor((maxDmg * 1000) / maxHp) / 10).toFixed(1);
         const item = attacker.item && attacker.item !== 'None' ? ` ${attacker.item}` : '';
         const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
         const ko = BC.getKOChance(res.rolls, defHp);

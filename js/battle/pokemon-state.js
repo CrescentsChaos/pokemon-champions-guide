@@ -58,7 +58,8 @@
         pk.teraType = slot.tera || 'Normal';
         pk.hpPercent = 100;
         ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
-            pk.stats[k] = calculateStat(pk.baseStats[k], pk.ivs[k], pk.evs[k], pk.level, pk.nature, k);
+            const champs = (typeof isChampionsEvMode === 'function') ? isChampionsEvMode() : true;
+            pk.stats[k] = calculateStat(pk.baseStats[k], pk.ivs[k], pk.evs[k], pk.level, pk.nature, k, champs);
         });
         pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }));
         (slot.moves || []).filter(m => m).forEach((moveName, idx) => {
