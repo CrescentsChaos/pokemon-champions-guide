@@ -4861,7 +4861,7 @@
     "type": "Dragon",
     "generation": "Generation Iii",
     "short_descripton": "Raises the user's Attack and Speed by one stage.",
-    "damage_class": "Status"
+    "damage_class": "Status","tags":["Dance"]
   },
   {
     "name": "Rock Blast",
@@ -11412,7 +11412,7 @@
     "id": 848,
     "accuracy": 100,
     "pp": 15,
-    "power": 60,
+    "power": 80,
     "priority": 0,
     "type": "Poison",
     "generation": "Generation IX",
