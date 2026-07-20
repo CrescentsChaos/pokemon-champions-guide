@@ -1258,7 +1258,13 @@ function updateMove(pId, idx, moveName) {
 
 function toggleCrit(pId, idx, checked) {
     const pk = pId === 1 ? p1 : p2;
-    pk.moves[idx].crit = checked;
+    const move = pk.moves[idx];
+    if (BattleCalc.MoveIndex.isAlwaysCrit(move)) {
+        move.crit = true;
+        recalculate();
+        return;
+    }
+    move.crit = checked;
     recalculate();
 }
 
