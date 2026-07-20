@@ -1546,6 +1546,11 @@ function recalculate() {
         banner.innerText = "Select moves to see damage results";
         subBanner.innerText = "Damage rolls: (0)";
         koResult.innerText = '';
+        const accKoClear = document.getElementById('acc-ko-result');
+        if (accKoClear) {
+            accKoClear.hidden = true;
+            accKoClear.textContent = '';
+        }
         if (damageBar) damageBar.hidden = true;
         if (heatmapEl) {
             heatmapEl.hidden = true;
@@ -1570,6 +1575,19 @@ function recalculate() {
     subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
 
     koResult.innerText = getKOChance(res.rolls, effHp);
+
+    const accKoEl = document.getElementById('acc-ko-result');
+    const accToggle = document.getElementById('acc-adjusted-ko');
+    if (accKoEl) {
+        if (accToggle?.checked && move) {
+            const adj = getAccuracyAdjustedKo(res.rolls, effHp, move, attacker, field);
+            accKoEl.hidden = !adj;
+            accKoEl.textContent = adj || '';
+        } else {
+            accKoEl.hidden = true;
+            accKoEl.textContent = '';
+        }
+    }
 
     if (damageBar && damageBarFill && damageBarRange) {
         const minPct = Math.min(100, Math.max(0, Number(res.minPercent) || 0));
@@ -2580,6 +2598,474 @@ function swapCalcSides() {
     recalculate();
     showToast('Sides swapped');
 }
+
+function getEmptySideState() {
+    return {
+        reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false,
+        protect: false, helpingHand: false, friendGuard: false, battery: false, powerSpot: false,
+        steelySpirit: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false
+    };
+}
+
+function resetFieldConditions() {
+    field.weather = 'None';
+    field.terrain = 'None';
+    field.gravity = false;
+    field.magicRoom = false;
+    field.wonderRoom = false;
+    field.trickRoom = false;
+    field.ruins = { tablets: false, vessel: false, sword: false, beads: false };
+    field.side1 = getEmptySideState();
+    field.side2 = getEmptySideState();
+    syncFieldUIFromState();
+    updateFieldState();
+    recalculate();
+    showToast('Field reset');
+}
+
+function resetCalcSide(id, opts = {}) {
+    const pk = id === 1 ? p1 : p2;
+    if (!pk) return;
+    pk.boosts = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+    pk.status = 'Healthy';
+    pk.hpPercent = 100;
+    pk.alliesFainted = 0;
+    pk.timesHit = 0;
+    pk.abilityActive = false;
+    pk.itemEnabled = true;
+    pk.tera = false;
+    const statusEl = document.getElementById(`p${id}-status`);
+    if (statusEl) statusEl.value = 'Healthy';
+    const teraEl = document.getElementById(`p${id}-tera`);
+    if (teraEl) teraEl.checked = false;
+    updateStatsUI(pk);
+    syncHpUI(pk);
+    syncFallenUI(pk);
+    syncTimesHitUI(pk);
+    syncItemEnabledUI(pk);
+    syncAbilityBoostUI(pk);
+    populatePokemonUI(pk);
+    if (!opts.silent) {
+        recalculate();
+        showToast(`${pk.name || 'Side ' + id} reset`);
+    }
+}
+
+function resetBothSides() {
+    resetCalcSide(1, { silent: true });
+    resetCalcSide(2, { silent: true });
+    recalculate();
+    showToast('Both sides reset');
+}
+
+function getMoveAccuracy(move, attacker, fieldState) {
+    if (!move?.name || move.name === 'None') return 100;
+    const rec = BattleCalc.MoveIndex.findInArray(movesDB, move.name);
+    let acc = rec?.accuracy;
+    if (acc == null || acc === true || acc === -1) return 100;
+    acc = Number(acc);
+    if (!Number.isFinite(acc) || acc <= 0) return 100;
+
+    const nameKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const weather = fieldState?.weather || 'None';
+    if ((nameKey === 'thunder' || nameKey === 'hurricane') && (weather === 'Rain' || weather === 'Heavy Rain')) return 100;
+    if ((nameKey === 'thunder' || nameKey === 'hurricane') && (weather === 'Sun' || weather === 'Harsh Sun')) return Math.min(acc, 50);
+    if (nameKey === 'blizzard' && (weather === 'Snow' || weather === 'Hail')) return 100;
+    if (fieldState?.gravity) {
+        acc = Math.min(100, Math.floor(acc * 5 / 3));
+    }
+    if ((attacker?.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'compoundeyes') {
+        acc = Math.min(100, Math.floor(acc * 1.3));
+    }
+    return Math.max(1, Math.min(100, acc));
+}
+
+function getAccuracyAdjustedKo(rolls, hp, move, attacker, fieldState) {
+    const baseLabel = getKOChance(rolls, hp);
+    if (!baseLabel || baseLabel === 'No data' || baseLabel === 'No immediate KO') return '';
+
+    const acc = getMoveAccuracy(move, attacker, fieldState);
+    if (acc >= 100) return `Acc-adjusted: ${baseLabel} (100% acc)`;
+
+    const hit = acc / 100;
+    const ohkoCount = rolls.filter(r => r >= hp).length;
+    if (ohkoCount > 0) {
+        const ohkoProb = ohkoCount / rolls.length;
+        const adj = ohkoProb * hit * 100;
+        const label = adj >= 99.95 ? 'Guaranteed OHKO' : `${adj.toFixed(1)}% chance to OHKO`;
+        return `Acc-adjusted (${acc}%): ${label}`;
+    }
+
+    let twoHKOCount = 0;
+    for (let i = 0; i < rolls.length; i++) {
+        for (let j = 0; j < rolls.length; j++) {
+            if (rolls[i] + rolls[j] >= hp) twoHKOCount++;
+        }
+    }
+    const total2 = rolls.length * rolls.length;
+    if (twoHKOCount > 0) {
+        const twoProb = twoHKOCount / total2;
+        // Both hits must connect for a true 2HKO sequence
+        const adj = twoProb * hit * hit * 100;
+        const label = adj >= 99.95 ? 'Guaranteed 2HKO' : `${adj.toFixed(1)}% chance to 2HKO`;
+        return `Acc-adjusted (${acc}%): ${label}`;
+    }
+
+    let threeHKOCount = 0;
+    for (let i = 0; i < rolls.length; i++) {
+        for (let j = 0; j < rolls.length; j++) {
+            for (let k = 0; k < rolls.length; k++) {
+                if (rolls[i] + rolls[j] + rolls[k] >= hp) threeHKOCount++;
+            }
+        }
+    }
+    const total3 = Math.pow(rolls.length, 3);
+    if (threeHKOCount > 0) {
+        const threeProb = threeHKOCount / total3;
+        const adj = threeProb * hit * hit * hit * 100;
+        const label = adj >= 99.95 ? 'Guaranteed 3HKO' : `${adj.toFixed(1)}% chance to 3HKO`;
+        return `Acc-adjusted (${acc}%): ${label}`;
+    }
+    return '';
+}
+
+function getSelectedCalcContext() {
+    if (!p1 || !p2) return null;
+    let attacker = p1;
+    let defender = p2;
+    let moveIdx = selectedMoveIdx1;
+    if (selectedMoveIdx1 >= 0 && p1.moves[selectedMoveIdx1]?.name !== 'None') {
+        attacker = p1;
+        defender = p2;
+        moveIdx = selectedMoveIdx1;
+    } else if (selectedMoveIdx2 >= 0 && p2.moves[selectedMoveIdx2]?.name !== 'None') {
+        attacker = p2;
+        defender = p1;
+        moveIdx = selectedMoveIdx2;
+    } else {
+        const p1Hit = p1.moves.findIndex(m => m?.name && m.name !== 'None' && (m.basePower > 0 || m.category !== 'Status'));
+        const p2Hit = p2.moves.findIndex(m => m?.name && m.name !== 'None' && (m.basePower > 0 || m.category !== 'Status'));
+        if (p1Hit >= 0) {
+            attacker = p1;
+            defender = p2;
+            moveIdx = p1Hit;
+        } else if (p2Hit >= 0) {
+            attacker = p2;
+            defender = p1;
+            moveIdx = p2Hit;
+        } else {
+            return null;
+        }
+    }
+    const move = attacker.moves[moveIdx];
+    if (!move || move.name === 'None') return null;
+    return { attacker, defender, move, moveIdx };
+}
+
+function clonePkForCalc(pk) {
+    return {
+        ...pk,
+        baseStats: { ...pk.baseStats },
+        stats: { ...pk.stats },
+        ivs: { ...pk.ivs },
+        evs: { ...pk.evs },
+        boosts: { ...pk.boosts },
+        moves: (pk.moves || []).map(m => ({ ...m }))
+    };
+}
+
+function evBudgetUsed(evs, exceptKey) {
+    return ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].reduce((sum, k) => {
+        if (k === exceptKey) return sum;
+        return sum + (parseInt(evs[k], 10) || 0);
+    }, 0);
+}
+
+function rollsGuaranteeOhko(rolls, hp) {
+    return rolls.length > 0 && rolls.every(r => r >= hp);
+}
+
+function rollsGuarantee2hko(rolls, hp) {
+    if (!rolls.length) return false;
+    const min = rolls[0];
+    return min * 2 >= hp;
+}
+
+function rollsCanOhko(rolls, hp) {
+    return rolls.some(r => r >= hp);
+}
+
+let _evFinderPending = null;
+
+function runEvFinder() {
+    const ctx = getSelectedCalcContext();
+    const out = document.getElementById('ev-finder-result');
+    const applyBtn = document.getElementById('ev-finder-apply');
+    if (applyBtn) applyBtn.disabled = true;
+    _evFinderPending = null;
+
+    if (!ctx) {
+        if (out) out.textContent = 'Select a damaging move first.';
+        return;
+    }
+
+    const goal = document.getElementById('ev-finder-goal')?.value || 'ohko';
+    const limits = getEvLimits();
+    const attacker = clonePkForCalc(ctx.attacker);
+    const defender = clonePkForCalc(ctx.defender);
+    const move = { ...ctx.move };
+    const cat = (move.category || '').toLowerCase();
+    const isSpecial = cat === 'special';
+    const atkKey = isSpecial ? 'spa' : 'atk';
+    const defKey = isSpecial ? 'spd' : 'def';
+
+    syncBattleStats(attacker);
+    syncBattleStats(defender);
+
+    if (goal === 'ohko' || goal === '2hko') {
+        const otherUsed = evBudgetUsed(attacker.evs, atkKey);
+        const maxForStat = Math.min(limits.maxStat, Math.max(0, limits.maxTotal - otherUsed));
+        let found = null;
+        for (let ev = 0; ev <= maxForStat; ev++) {
+            attacker.evs[atkKey] = ev;
+            syncBattleStats(attacker);
+            const res = calculateDamage(attacker, defender, move, field);
+            const hp = res.effectiveHp ?? getEffectiveHp(defender);
+            const ok = goal === 'ohko'
+                ? rollsGuaranteeOhko(res.rolls, hp)
+                : rollsGuarantee2hko(res.rolls, hp);
+            if (ok) {
+                found = { side: attacker.id, key: atkKey, ev, label: goal.toUpperCase() };
+                break;
+            }
+        }
+        if (!found) {
+            if (out) {
+                out.textContent = `Cannot ${goal.toUpperCase()} even at ${maxForStat} ${atkKey.toUpperCase()} EV (budget left).`;
+            }
+            return;
+        }
+        _evFinderPending = found;
+        if (applyBtn) applyBtn.disabled = false;
+        if (out) {
+            out.textContent = `${found.ev} ${found.key.toUpperCase()} EV → guaranteed ${found.label} (${ctx.attacker.name} ${move.name})`;
+        }
+        return;
+    }
+
+    // Defensive: minimize HP then Def/SpD to live
+    const liveOhko = goal === 'live-ohko';
+    const atkClone = clonePkForCalc(ctx.attacker);
+    syncBattleStats(atkClone);
+    let best = null;
+
+    const hpOther = evBudgetUsed(defender.evs, 'hp');
+    const maxHp = Math.min(limits.maxStat, Math.max(0, limits.maxTotal - hpOther));
+
+    for (let hpEv = 0; hpEv <= maxHp; hpEv++) {
+        const defOtherBase = evBudgetUsed({ ...defender.evs, hp: hpEv }, defKey);
+        const maxDef = Math.min(limits.maxStat, Math.max(0, limits.maxTotal - defOtherBase));
+        for (let defEv = 0; defEv <= maxDef; defEv++) {
+            defender.evs.hp = hpEv;
+            defender.evs[defKey] = defEv;
+            syncBattleStats(defender);
+            const res = calculateDamage(atkClone, defender, move, field);
+            const hp = res.effectiveHp ?? getEffectiveHp(defender);
+
+            let survives;
+            if (liveOhko) {
+                survives = !rollsCanOhko(res.rolls, hp);
+            } else {
+                let can2 = false;
+                for (let i = 0; i < res.rolls.length && !can2; i++) {
+                    for (let j = 0; j < res.rolls.length; j++) {
+                        if (res.rolls[i] + res.rolls[j] >= hp) { can2 = true; break; }
+                    }
+                }
+                survives = !can2;
+            }
+
+            if (survives) {
+                const total = hpEv + defEv;
+                if (!best || total < best.total || (total === best.total && hpEv < best.hpEv)) {
+                    best = { side: defender.id, hpEv, defEv, defKey, total };
+                }
+                break; // min defEv for this hpEv
+            }
+        }
+        if (best && best.defEv === 0 && best.hpEv <= hpEv) {
+            // Already found a pure-HP solution; further HP only costs more
+            if (best.hpEv < hpEv) break;
+        }
+    }
+
+    if (!best) {
+        if (out) out.textContent = `Cannot live with current ${limits.maxStat}/${limits.maxTotal} EV limits.`;
+        return;
+    }
+
+    _evFinderPending = {
+        side: best.side,
+        mode: 'bulk',
+        hpEv: best.hpEv,
+        defKey: best.defKey,
+        defEv: best.defEv
+    };
+    if (applyBtn) applyBtn.disabled = false;
+    if (out) {
+        out.textContent = `${best.hpEv} HP / ${best.defEv} ${best.defKey.toUpperCase()} EV → lives ${liveOhko ? 'OHKO' : '2HKO'} from ${move.name}`;
+    }
+}
+
+function applyEvFinderResult() {
+    if (!_evFinderPending) return;
+    const pending = _evFinderPending;
+    const pk = pending.side === 1 ? p1 : p2;
+    if (!pk) return;
+
+    if (pending.mode === 'bulk') {
+        pk.evs.hp = pending.hpEv;
+        pk.evs[pending.defKey] = pending.defEv;
+    } else {
+        pk.evs[pending.key] = pending.ev;
+    }
+    clampPokemonEvs(pk);
+    updateStatsUI(pk);
+    populatePokemonUI(pk);
+    recalculate();
+    showToast('EV spread applied');
+}
+
+function buildTempPokemonFromSpecies(name, paste) {
+    const data = pokemonDB.find(x => x.Name === name);
+    if (!data) return null;
+    const pk = setupPokemonState(99);
+    pk.name = data.Name;
+    pk.type1 = data.Type_1;
+    pk.type2 = data.Type_2 || 'None';
+    pk.baseStats = {
+        hp: parseInt(data.HP) || 0,
+        atk: parseInt(data.Attack) || 0,
+        def: parseInt(data.Defense) || 0,
+        spa: parseInt(data['Sp.Atk']) || 0,
+        spd: parseInt(data['Sp.Def']) || 0,
+        spe: parseInt(data.Speed) || 0,
+        weight: parseFloat(data['Weight{kg}']) || 10.0
+    };
+    pk.ability = Array.isArray(data.Ability) ? data.Ability[0] : (data.Ability || 'None');
+    pk.level = p1?.level || 50;
+
+    if (paste) {
+        const lines = paste.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lines[0]) {
+            const itemSplit = lines[0].split('@');
+            if (itemSplit[1]) pk.item = itemSplit[1].trim();
+        }
+        lines.slice(1).forEach(line => {
+            if (line.match(/^Ability\s*:/i)) pk.ability = line.split(':')[1].trim();
+            else if (line.match(/^Level\s*:/i)) pk.level = parseInt(line.split(':')[1].trim(), 10) || pk.level;
+            else if (line.match(/^Tera Type\s*:/i)) pk.teraType = line.split(':')[1].trim();
+            else if (line.match(/^EVs\s*:/i)) {
+                line.split(':')[1].split('/').forEach(p => {
+                    const m = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (!m) return;
+                    let key = m[2].toLowerCase();
+                    if (key === 'spatk' || key === 'satk') key = 'spa';
+                    else if (key === 'spdef' || key === 'sdef') key = 'spd';
+                    else if (key === 'speed') key = 'spe';
+                    if (pk.evs[key] !== undefined) pk.evs[key] = parseInt(m[1], 10);
+                });
+            } else if (line.match(/^IVs\s*:/i)) {
+                line.split(':')[1].split('/').forEach(p => {
+                    const m = p.trim().match(/(\d+)\s*([a-zA-Z]+)/);
+                    if (!m) return;
+                    let key = m[2].toLowerCase();
+                    if (key === 'spatk' || key === 'satk') key = 'spa';
+                    else if (key === 'spdef' || key === 'sdef') key = 'spd';
+                    else if (key === 'speed') key = 'spe';
+                    if (pk.ivs[key] !== undefined) pk.ivs[key] = parseInt(m[1], 10);
+                });
+            } else if (line.toLowerCase().endsWith('nature')) {
+                pk.nature = line.substring(0, line.length - 6).trim();
+            } else if (line.startsWith('-')) {
+                const moveName = line.substring(1).trim();
+                const emptyIdx = pk.moves.findIndex(m => m.name === 'None');
+                if (emptyIdx === -1) return;
+                const mData = movesDB.find(m => m.name.toLowerCase() === moveName.toLowerCase());
+                if (!mData) return;
+                pk.moves[emptyIdx] = BattleCalc.MoveIndex.createMoveState(mData.name, { crit: false });
+            }
+        });
+        if (typeof coerceEvsForMode === 'function') {
+            pk.evs = coerceEvsForMode(pk.evs, isChampionsMode);
+        } else {
+            clampPokemonEvs(pk);
+        }
+    }
+    syncBattleStats(pk);
+    return pk;
+}
+
+function runCalcVsMeta() {
+    const list = document.getElementById('calc-vs-meta-list');
+    const ctx = getSelectedCalcContext();
+    if (!list) return;
+    if (!ctx) {
+        list.innerHTML = `<p class="calc-vs-meta-empty">Select a damaging move first.</p>`;
+        return;
+    }
+
+    const count = parseInt(document.getElementById('calc-vs-meta-count')?.value, 10) || 12;
+    const names = (topMetaNames.length ? topMetaNames : []).slice(0, count);
+    if (!names.length) {
+        list.innerHTML = `<p class="calc-vs-meta-empty">No meta list loaded for ${field.format}.</p>`;
+        return;
+    }
+
+    const attacker = clonePkForCalc(ctx.attacker);
+    syncBattleStats(attacker);
+    const move = { ...ctx.move };
+    const format = field.format || 'Doubles';
+
+    const rows = names.map((name, idx) => {
+        const latest = typeof findLatestBuildForSpecies === 'function'
+            ? findLatestBuildForSpecies(name, format, buildsDB)
+            : null;
+        const defender = buildTempPokemonFromSpecies(name, latest?.build || null);
+        if (!defender) return null;
+        defender.id = ctx.defender.id;
+        const res = calculateDamage(attacker, defender, move, field);
+        const hp = res.effectiveHp ?? getEffectiveHp(defender);
+        const ko = getKOChance(res.rolls, hp);
+        return {
+            rank: idx + 1,
+            name,
+            dmg: `${res.minPercent}–${res.maxPercent}%`,
+            ko: ko || '—',
+            build: !!latest?.build
+        };
+    }).filter(Boolean);
+
+    if (!rows.length) {
+        list.innerHTML = `<p class="calc-vs-meta-empty">Could not build meta targets.</p>`;
+        return;
+    }
+
+    list.innerHTML = rows.map(r => `
+        <div class="calc-vs-meta-row" title="${r.build ? 'Using library build' : 'Base species stats'}">
+            <span class="cvm-name">#${r.rank} ${r.name}${r.build ? '' : ' · base'}</span>
+            <span class="cvm-dmg">${r.dmg}</span>
+            <span class="cvm-ko">${r.ko}</span>
+        </div>
+    `).join('');
+}
+
+window.resetFieldConditions = resetFieldConditions;
+window.resetCalcSide = resetCalcSide;
+window.resetBothSides = resetBothSides;
+window.runEvFinder = runEvFinder;
+window.applyEvFinderResult = applyEvFinderResult;
+window.runCalcVsMeta = runCalcVsMeta;
 
 function initMobileCalcNav() {
     let tab = 'results';
