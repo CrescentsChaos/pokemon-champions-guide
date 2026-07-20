@@ -252,14 +252,38 @@ function populateItemSelects() {
 function updateItemSprite(pk) {
     const p = pk.id === 1 ? 'p1' : 'p2';
     const itemSprite = document.getElementById(`${p}-item-sprite`);
-    if (!itemSprite) return;
-    if (pk.item && pk.item !== 'None') {
-        itemSprite.src = getItemSpriteUrl(pk.item);
-        itemSprite.style.display = 'block';
-        itemSprite.dataset.fallback = '';
-    } else {
-        itemSprite.style.display = 'none';
-        itemSprite.src = '';
+    const badge = document.getElementById(`${p}-sprite-item`);
+    const hasItem = !!(pk.item && pk.item !== 'None');
+    const url = hasItem ? getItemSpriteUrl(pk.item) : '';
+
+    if (itemSprite) {
+        if (hasItem) {
+            itemSprite.src = url;
+            itemSprite.style.display = 'block';
+            itemSprite.dataset.fallback = '';
+            itemSprite.alt = pk.item;
+            itemSprite.title = pk.item;
+        } else {
+            itemSprite.style.display = 'none';
+            itemSprite.src = '';
+            itemSprite.alt = '';
+            itemSprite.title = '';
+        }
+    }
+
+    if (badge) {
+        if (hasItem) {
+            badge.src = url;
+            badge.hidden = false;
+            badge.dataset.fallback = '';
+            badge.alt = pk.item;
+            badge.title = pk.item;
+        } else {
+            badge.hidden = true;
+            badge.src = '';
+            badge.alt = '';
+            badge.title = '';
+        }
     }
 }
 
@@ -365,6 +389,7 @@ function setupEventListeners() {
         ['type1', 'type2'].forEach(tKey => {
             document.getElementById(`${p}-${tKey}`).addEventListener('change', (e) => {
                 pk[tKey] = e.target.value;
+                syncTypeIcons(pk);
                 recalculate();
             });
         });
@@ -414,7 +439,8 @@ function setupEventListeners() {
                     updateMegaButtonVisibility(pk);
                 }
 
-                if (field === 'ability' || field === 'item' || field === 'nature') updateStatsUI(pk);
+                if (field === 'ability' || field === 'item' || field === 'nature' || field === 'status') updateStatsUI(pk);
+                if (field === 'ability') syncAbilityBoostUI(pk);
                 recalculate();
             });
         });
@@ -434,6 +460,7 @@ function setupEventListeners() {
 
         document.getElementById(`${p}-tera-type`).addEventListener('change', (e) => {
             pk.teraType = e.target.value;
+            syncTypeIcons(pk);
             if (pk.name.startsWith("Terapagos") && pk.name !== "Terapagos") {
                 const target = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
                 if (pk.name !== target) {
@@ -467,6 +494,10 @@ function setupEventListeners() {
 
     document.querySelectorAll('.field-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            // Handled by dedicated onclick handlers
+            if (btn.classList.contains('item-effect-btn') || btn.classList.contains('ability-boost-btn')) {
+                return;
+            }
             if (btn.classList.contains('spikes-btn')) {
                 const group = btn.closest('.spikes-group');
                 if (group) {
@@ -490,6 +521,22 @@ function setupEventListeners() {
                     if (pk) {
                         pk.alliesFainted = parseInt(btn.getAttribute('data-fallen'), 10) || 0;
                         syncLastRespectsBpDisplay(pk);
+                    }
+                }
+                recalculate();
+                return;
+            }
+
+            if (btn.classList.contains('times-hit-btn')) {
+                const group = btn.closest('.times-hit-group');
+                if (group) {
+                    group.querySelectorAll('.times-hit-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const id = parseInt(group.getAttribute('data-pokemon'), 10);
+                    const pk = id === 1 ? p1 : p2;
+                    if (pk) {
+                        pk.timesHit = parseInt(btn.getAttribute('data-hits'), 10) || 0;
+                        syncRageFistBpDisplay(pk);
                     }
                 }
                 recalculate();
@@ -761,7 +808,11 @@ function populatePokemonUI(pk) {
     document.getElementById(`${p}-status`).value = pk.status || 'Healthy';
     document.getElementById(`${p}-tera`).checked = pk.tera || false;
     if (pk.teraType) document.getElementById(`${p}-tera-type`).value = pk.teraType;
+    syncTypeIcons(pk);
     syncFallenUI(pk);
+    syncTimesHitUI(pk);
+    syncItemEnabledUI(pk);
+    syncAbilityBoostUI(pk);
 
     let recAbilities = [];
     let recMoves = [];
@@ -863,10 +914,19 @@ function populatePokemonUI(pk) {
         const moveKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         const isLastRespects = moveKey === 'lastrespects'
             || (mData?.battle?.variablePower === 'fallen_allies');
+        const isRageFist = moveKey === 'ragefist'
+            || (mData?.battle?.variablePower === 'times_hit');
         const fallen = Math.max(0, Math.min(100, parseInt(pk.alliesFainted, 10) || 0));
-        const displayBp = isLastRespects ? (50 * (1 + fallen)) : (move.basePower ?? 0);
-        const bpMax = isLastRespects ? 5050 : 250;
-        const bpReadonly = isLastRespects ? 'readonly title="Scales with Fallen allies"' : '';
+        const timesHit = Math.max(0, Math.min(6, parseInt(pk.timesHit, 10) || 0));
+        const displayBp = isLastRespects
+            ? (50 * (1 + fallen))
+            : isRageFist
+                ? (50 * (1 + timesHit))
+                : (move.basePower ?? 0);
+        const bpMax = isLastRespects ? 5050 : (isRageFist ? 350 : 250);
+        const bpReadonly = (isLastRespects || isRageFist)
+            ? `readonly title="${isRageFist ? 'Scales with Times hit' : 'Scales with Fallen allies'}"`
+            : '';
 
         return `
         <div class="move-row">
@@ -908,8 +968,10 @@ function populatePokemonUI(pk) {
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${hitOptions.map(h => `<option value="${h}" ${(move.hits || getDefaultHitCount(move.name, pk)) == h ? 'selected' : ''}>${h} hit${h > 1 ? 's' : ''}</option>`).join('')}
                 </select>` : ''}
-                <label class="crit-label">
-                    <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)" ${move.crit ? 'checked' : ''}>
+                <label class="crit-label${BattleCalc.MoveIndex.isAlwaysCrit(move) ? ' crit-locked' : ''}" title="${BattleCalc.MoveIndex.isAlwaysCrit(move) ? 'This move always critically hits' : ''}">
+                    <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)"
+                        ${(move.crit || BattleCalc.MoveIndex.isAlwaysCrit(move)) ? 'checked' : ''}
+                        ${BattleCalc.MoveIndex.isAlwaysCrit(move) ? 'disabled' : ''}>
                     <span class="crit-text">CRIT</span>
                 </label>
             </div>
@@ -929,6 +991,70 @@ function syncFallenUI(pk) {
     });
 }
 
+function syncTimesHitUI(pk) {
+    if (!pk) return;
+    const hits = Math.max(0, Math.min(6, parseInt(pk.timesHit, 10) || 0));
+    pk.timesHit = hits;
+    const group = document.querySelector(`.times-hit-group[data-pokemon="${pk.id}"]`);
+    if (!group) return;
+    group.querySelectorAll('.times-hit-btn').forEach(btn => {
+        const n = parseInt(btn.getAttribute('data-hits'), 10) || 0;
+        btn.classList.toggle('active', n === hits);
+    });
+}
+
+function syncItemEnabledUI(pk) {
+    if (!pk) return;
+    if (pk.itemEnabled === undefined) pk.itemEnabled = true;
+    const btn = document.getElementById(`p${pk.id}-item-enabled`);
+    if (!btn) return;
+    const on = pk.itemEnabled !== false;
+    btn.classList.toggle('active', on);
+    btn.textContent = on ? 'ON' : 'OFF';
+    btn.title = on ? 'Item effects enabled — click to disable' : 'Item effects disabled — click to enable';
+}
+
+function syncAbilityBoostUI(pk) {
+    if (!pk) return;
+    const btn = document.getElementById(`p${pk.id}-ability-boost`);
+    if (!btn) return;
+    const ab = (pk.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const boostable = ab === 'flashfire' || ab === 'electromorphosis';
+    btn.style.display = boostable ? '' : 'none';
+    if (!boostable) {
+        pk.abilityActive = false;
+        btn.classList.remove('active');
+        return;
+    }
+    btn.classList.toggle('active', !!pk.abilityActive);
+    btn.textContent = pk.abilityActive
+        ? (ab === 'flashfire' ? 'Fired' : 'Charged')
+        : 'Boosted';
+    btn.title = ab === 'flashfire'
+        ? 'Flash Fire activated — Fire moves ×1.5'
+        : 'Electromorphosis charged — Electric moves ×2';
+}
+
+function toggleItemEnabled(id) {
+    const pk = id === 1 ? p1 : p2;
+    if (!pk) return;
+    pk.itemEnabled = pk.itemEnabled === false;
+    syncItemEnabledUI(pk);
+    updateStatsUI(pk);
+    recalculate();
+}
+
+function toggleAbilityBoost(id) {
+    const pk = id === 1 ? p1 : p2;
+    if (!pk) return;
+    pk.abilityActive = !pk.abilityActive;
+    syncAbilityBoostUI(pk);
+    recalculate();
+}
+
+window.toggleItemEnabled = toggleItemEnabled;
+window.toggleAbilityBoost = toggleAbilityBoost;
+
 function syncLastRespectsBpDisplay(pk) {
     if (!pk) return;
     const p = pk.id === 1 ? 'p1' : 'p2';
@@ -947,6 +1073,27 @@ function syncLastRespectsBpDisplay(pk) {
             input.title = 'Scales with Fallen allies';
         }
         // Keep stored catalog BP at 50; damage calc applies the fallen formula.
+        if (!move.customized) move.basePower = 50;
+    });
+}
+
+function syncRageFistBpDisplay(pk) {
+    if (!pk) return;
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const container = document.getElementById(`${p}-moves`);
+    if (!container) return;
+    const hits = Math.max(0, Math.min(6, parseInt(pk.timesHit, 10) || 0));
+    const rows = container.querySelectorAll('.move-row');
+    pk.moves.forEach((move, i) => {
+        const key = (move?.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (key !== 'ragefist') return;
+        const input = rows[i]?.querySelector('input[type="number"]');
+        if (input) {
+            input.value = String(50 * (1 + hits));
+            input.max = 350;
+            input.readOnly = true;
+            input.title = 'Scales with Times hit';
+        }
         if (!move.customized) move.basePower = 50;
     });
 }
@@ -1129,10 +1276,13 @@ function updateStatsUI(pk) {
     const choiceItem = (pk.item || '').toLowerCase();
     const choiceBoostStat = choiceItem === 'choice band' ? 'atk'
         : choiceItem === 'choice specs' ? 'spa'
-        : choiceItem === 'choice scarf' ? 'spe'
-        : null;
+        : null; // Choice Scarf is applied via getEffectiveSpeed
 
     const side = pk.id === 1 ? field.side1 : field.side2;
+    const speedMods = (typeof BattleCalc !== 'undefined' && BattleCalc.getSpeedModifiers)
+        ? BattleCalc.getSpeedModifiers(pk, field)
+        : [];
+    const speedModTitle = speedMods.map(m => `${m.label} ×${m.mult}`).join(', ');
 
     tbody.innerHTML = statsKeys.map(k => {
         const base = pk.baseStats[k] || 0;
@@ -1141,27 +1291,38 @@ function updateStatsUI(pk) {
         const boost = pk.boosts[k] || 0;
 
         let displayTotal = pk.stats[k];
-        if (k !== 'hp') {
+        if (k !== 'hp' && k !== 'spe') {
             displayTotal = applyParadoxBoost(pk, displayTotal, k, field, side);
         }
 
-        // Apply choice item visual multiplier
+        // Apply choice item visual multiplier (Band / Specs only — Scarf via speed path)
         const isChoiceBoosted = k !== 'hp' && k === choiceBoostStat;
         if (isChoiceBoosted) {
             displayTotal = Math.floor(displayTotal * 1.5);
         }
 
-        const boostedTotal = k === 'hp' ? displayTotal : getBoostValue(displayTotal, boost);
+        let boostedTotal;
+        let speedBoosted = false;
+        if (k === 'spe') {
+            boostedTotal = (typeof BattleCalc !== 'undefined' && BattleCalc.getEffectiveSpeed)
+                ? BattleCalc.getEffectiveSpeed(pk, field)
+                : getBoostValue(displayTotal, boost);
+            speedBoosted = speedMods.length > 0;
+        } else {
+            boostedTotal = k === 'hp' ? displayTotal : getBoostValue(displayTotal, boost);
+        }
 
-        const choiceStyle = isChoiceBoosted
+        const choiceStyle = isChoiceBoosted || speedBoosted
             ? 'color: #ffd76f; font-weight: 900; text-shadow: 0 0 8px rgba(255,200,80,0.6);'
             : '';
-        const choiceTitle = isChoiceBoosted ? ` title="×1.5 from ${pk.item}"` : '';
+        const choiceTitle = isChoiceBoosted
+            ? ` title="×1.5 from ${pk.item}"`
+            : (speedBoosted ? ` title="${speedModTitle}"` : '');
 
         const natureMods = natures[pk.nature] || [1, 1, 1, 1, 1];
         const natureStatIdx = { atk: 0, def: 1, spa: 2, spd: 3, spe: 4 };
         let natureStyle = choiceStyle;
-        if (!isChoiceBoosted && k !== 'hp') {
+        if (!isChoiceBoosted && !speedBoosted && k !== 'hp') {
             const mod = natureMods[natureStatIdx[k]] || 1;
             if (mod > 1) natureStyle = 'color: #ff5c5c; font-weight: 900;';
             else if (mod < 1) natureStyle = 'color: #9ec5ff; font-weight: 800;';
@@ -1169,6 +1330,9 @@ function updateStatsUI(pk) {
 
         const evMax = isChampionsMode ? 32 : 252;
         const evStep = isChampionsMode ? 1 : 1;
+        const speedHint = (k === 'spe' && speedBoosted)
+            ? `<span class="stat-mod-hint">×${speedMods.reduce((a, m) => a * m.mult, 1)}</span>`
+            : '';
 
         return `
             <tr>
@@ -1183,7 +1347,7 @@ function updateStatsUI(pk) {
                     </select>
                     `}
                 </td>
-                <td class="stat-total" id="${p}-${k}-total" style="${natureStyle}"${choiceTitle}>${boostedTotal}</td>
+                <td class="stat-total" id="${p}-${k}-total" style="${natureStyle}"${choiceTitle}>${boostedTotal}${speedHint}</td>
             </tr>
         `;
     }).join('');
@@ -1217,6 +1381,32 @@ function typeIconHtml(type, size = 22) {
     const raw = (type || 'Normal').toString();
     const key = raw.toLowerCase().replace(/[^a-z]/g, '') || 'normal';
     return `<img src="../assets/type-icons/${key}_type.png" class="move-type-icon" alt="${raw}" title="${raw}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+function typeIconSrc(type, { tera = false } = {}) {
+    const key = (type || 'Normal').toString().toLowerCase().replace(/[^a-z]/g, '') || 'normal';
+    if (tera) return `../assets/type-icons/tera_type_${key}.png`;
+    return `../assets/type-icons/${key}_type.png`;
+}
+
+function syncTypeIcons(pk) {
+    if (!pk) return;
+    const p = pk.id === 1 ? 'p1' : 'p2';
+    const setIcon = (id, type, opts = {}) => {
+        const img = document.getElementById(id);
+        if (!img) return;
+        const empty = !type || type === 'None' || type === '';
+        const fallback = opts.tera ? 'normal' : 'normal';
+        const useType = empty ? fallback : type;
+        img.src = typeIconSrc(useType, opts);
+        img.alt = empty ? '' : String(useType);
+        img.title = empty ? '' : String(useType);
+        img.classList.toggle('is-empty', empty);
+        img.style.display = empty && !opts.tera ? 'none' : '';
+    };
+    setIcon(`${p}-type1-icon`, pk.type1);
+    setIcon(`${p}-type2-icon`, pk.type2);
+    setIcon(`${p}-tera-type-icon`, pk.teraType || 'Normal', { tera: true });
 }
 
 function categoryIconHtml(category, size = 16) {
@@ -1332,14 +1522,17 @@ function recalculate() {
     const spe1 = BattleCalc.getEffectiveSpeed?.(p1, field) ?? 0;
     const spe2 = BattleCalc.getEffectiveSpeed?.(p2, field) ?? 0;
     const speedCmp = BattleCalc.compareSpeedTier?.(spe1, spe2, !!field.trickRoom) || 'tie';
+    const mods1 = BattleCalc.getSpeedModifiers?.(p1, field) || [];
+    const mods2 = BattleCalc.getSpeedModifiers?.(p2, field) || [];
+    const modTag = (mods) => mods.length ? ` (${mods.map(m => m.label).join(', ')})` : '';
     if (speedEl) {
         const trTag = field.trickRoom ? ' · Trick Room' : '';
         if (speedCmp === 'tie') {
-            speedEl.textContent = `Speed tie ${spe1} = ${spe2}${trTag}`;
+            speedEl.textContent = `Speed tie ${spe1}${modTag(mods1)} = ${spe2}${modTag(mods2)}${trTag}`;
         } else if (speedCmp === 'faster') {
-            speedEl.textContent = `${p1.name} outspeeds ${spe1} → ${spe2}${trTag}`;
+            speedEl.textContent = `${p1.name} outspeeds ${spe1}${modTag(mods1)} → ${spe2}${modTag(mods2)}${trTag}`;
         } else {
-            speedEl.textContent = `${p2.name} outspeeds ${spe2} → ${spe1}${trTag}`;
+            speedEl.textContent = `${p2.name} outspeeds ${spe2}${modTag(mods2)} → ${spe1}${modTag(mods1)}${trTag}`;
         }
     }
 
@@ -1983,9 +2176,14 @@ function populateDropdowns() {
 function showToast(msg) {
     const t = document.getElementById('toast');
     if (!t) return console.log("Toast:", msg);
-    t.innerText = msg;
+    t.innerText = msg || '';
+    if (!msg) {
+        t.classList.remove('active');
+        return;
+    }
     t.classList.add('active');
-    setTimeout(() => t.classList.remove('active'), 3000);
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(() => t.classList.remove('active'), 3000);
 }
 
 window.toggleChampionsMode = toggleChampionsMode;
@@ -2118,6 +2316,9 @@ function serializePokemon(pk) {
         st: pk.status,
         hp: pk.hpPercent,
         af: pk.alliesFainted || 0,
+        th: pk.timesHit || 0,
+        aa: !!pk.abilityActive,
+        ie: pk.itemEnabled !== false,
         ev: { ...pk.evs },
         iv: { ...pk.ivs },
         b: { ...pk.boosts },
@@ -2145,6 +2346,9 @@ function applySerializedPokemon(id, data) {
     if (data.st) pk.status = data.st;
     if (data.hp != null) pk.hpPercent = data.hp;
     if (data.af != null) pk.alliesFainted = data.af;
+    if (data.th != null) pk.timesHit = data.th;
+    if (data.aa != null) pk.abilityActive = !!data.aa;
+    if (data.ie != null) pk.itemEnabled = !!data.ie;
     if (data.ev) pk.evs = { ...pk.evs, ...data.ev };
     if (data.iv) pk.ivs = { ...pk.ivs, ...data.iv };
     if (data.b) pk.boosts = { ...pk.boosts, ...data.b };

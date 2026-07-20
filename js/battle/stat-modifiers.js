@@ -35,29 +35,52 @@
         return rawStat;
     }
 
+    function getSpeedModifiers(calcState, field) {
+        const mods = [];
+        const itemsOn = calcState.itemEnabled !== false && !(field && field.magicRoom);
+        const item = itemsOn ? (calcState.item || '').toLowerCase() : '';
+        const ab = (calcState.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const weather = field?.weather || 'None';
+        const side = calcState.id === 1 ? field?.side1 : field?.side2;
+
+        if (item === 'choice scarf') mods.push({ label: 'Choice Scarf', mult: 1.5 });
+        if (item === 'iron ball') mods.push({ label: 'Iron Ball', mult: 0.5 });
+        if ((calcState.status || '').toLowerCase() === 'paralyzed' && ab !== 'quickfeet') {
+            mods.push({ label: 'Paralysis', mult: 0.5 });
+        }
+        if (ab === 'quickfeet' && calcState.status && calcState.status !== 'Healthy') {
+            mods.push({ label: 'Quick Feet', mult: 1.5 });
+        }
+        if (side?.tailwind) mods.push({ label: 'Tailwind', mult: 2 });
+        if ((ab === 'chlorophyll' && (weather === 'Sun' || weather === 'Harsh Sun'))) {
+            mods.push({ label: 'Chlorophyll', mult: 2 });
+        } else if (ab === 'swiftswim' && (weather === 'Rain' || weather === 'Heavy Rain')) {
+            mods.push({ label: 'Swift Swim', mult: 2 });
+        } else if (ab === 'sandrush' && weather === 'Sand') {
+            mods.push({ label: 'Sand Rush', mult: 2 });
+        } else if (ab === 'slushrush' && (weather === 'Snow' || weather === 'Hail')) {
+            mods.push({ label: 'Slush Rush', mult: 2 });
+        } else if (ab === 'surgesurfer' && field?.terrain === 'Electric') {
+            mods.push({ label: 'Surge Surfer', mult: 2 });
+        }
+        if (ab === 'unburden' && calcState.unburdenActive) {
+            mods.push({ label: 'Unburden', mult: 2 });
+        }
+        return mods;
+    }
+
     function getEffectiveSpeed(calcState, field) {
         if (!calcState || !calcState.stats) return 0;
         let spe = calcState.stats.spe || 0;
-        const item = (calcState.item || '').toLowerCase();
-        const ab = (calcState.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (item === 'choice scarf') spe = Math.floor(spe * 1.5);
-        if (item === 'iron ball') spe = Math.floor(spe * 0.5);
-        if ((calcState.status || '').toLowerCase() === 'paralyzed' && ab !== 'quickfeet') {
-            spe = Math.floor(spe * 0.5);
-        }
-        if (ab === 'quickfeet' && calcState.status && calcState.status !== 'Healthy') {
-            spe = Math.floor(spe * 1.5);
-        }
+        const boost = calcState.boosts?.spe || 0;
+        spe = getBoostValue(spe, boost);
+
         const side = calcState.id === 1 ? field.side1 : field.side2;
-        if (side?.tailwind) spe = Math.floor(spe * 2);
         spe = applyParadoxBoost(calcState, spe, 'spe', field, side);
-        const weather = field?.weather || 'None';
-        if ((ab === 'chlorophyll' && (weather === 'Sun' || weather === 'Harsh Sun'))
-            || (ab === 'swiftswim' && (weather === 'Rain' || weather === 'Heavy Rain'))
-            || (ab === 'sandrush' && weather === 'Sand')
-            || (ab === 'slushrush' && (weather === 'Snow' || weather === 'Hail'))
-            || (ab === 'surgesurfer' && field?.terrain === 'Electric')) {
-            spe = Math.floor(spe * 2);
+
+        const mods = getSpeedModifiers(calcState, field);
+        for (const mod of mods) {
+            spe = Math.floor(spe * mod.mult);
         }
         return spe;
     }
@@ -75,6 +98,7 @@
 
     BC.getBoostValue = getBoostValue;
     BC.applyParadoxBoost = applyParadoxBoost;
+    BC.getSpeedModifiers = getSpeedModifiers;
     BC.getEffectiveSpeed = getEffectiveSpeed;
     BC.compareSpeedTier = compareSpeedTier;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

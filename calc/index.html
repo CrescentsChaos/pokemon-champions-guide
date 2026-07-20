@@ -30,7 +30,7 @@
             <p class="cms-line" id="mobile-line-mirror">Select moves to see damage</p>
         </aside>
 
-        <section class="calc-results-section fade-in" data-calc-pane="results" aria-label="Damage results">
+        <section class="calc-results-section fade-in appear" data-calc-pane="results" aria-label="Damage results">
             <div id="damage-banner" class="glass">
                 <div class="banner-content">
                     <div id="main-result">Select moves to see damage results</div>
@@ -66,6 +66,8 @@
                 <div class="panel-header">
                     <div class="sprite-container">
                         <img id="p1-sprite" src="" alt="" onerror="handleSpriteError(this, window.p1?.name, false)">
+                        <img id="p1-sprite-item" class="sprite-item-badge" src="" alt="" hidden
+                            onerror="handleItemError(this, window.p1?.item)">
                     </div>
                     <input type="text" id="p1-search" placeholder="Search Pokemon 1..." class="search-input">
                     <div class="search-results" id="p1-search-results"></div>
@@ -82,13 +84,22 @@
                             </select>
                         </div>
                         <div class="config-types">
-                            <select id="p1-type1" class="type-select"></select>
-                            <select id="p1-type2" class="type-select"></select>
+                            <label class="type-select-wrap">
+                                <img id="p1-type1-icon" class="pk-type-icon" src="../assets/type-icons/normal_type.png" alt="" width="22" height="22">
+                                <select id="p1-type1" class="type-select"></select>
+                            </label>
+                            <label class="type-select-wrap">
+                                <img id="p1-type2-icon" class="pk-type-icon" src="../assets/type-icons/normal_type.png" alt="" width="22" height="22">
+                                <select id="p1-type2" class="type-select"></select>
+                            </label>
                         </div>
                         <div class="config-extra">
                             <label class="tera-toggle">
                                 <input type="checkbox" id="p1-tera"> Tera
-                                <select id="p1-tera-type" class="type-select"></select>
+                                <span class="type-select-wrap type-select-wrap--tera">
+                                    <img id="p1-tera-type-icon" class="pk-type-icon pk-type-icon--tera" src="../assets/type-icons/tera_type_normal.png" alt="" width="22" height="22">
+                                    <select id="p1-tera-type" class="type-select"></select>
+                                </span>
                             </label>
                             <button class="field-btn toggle-btn mega-btn" id="p1-mega-toggle"
                                 onclick="toggleMega(1)" style="display:none;">MEGA</button>
@@ -130,11 +141,17 @@
                             <select id="p1-nature"></select>
                         </div>
                         <div class="select-group">
-                            <label>Ability</label>
+                            <label class="meta-label-row">Ability
+                                <button type="button" class="field-btn toggle-btn ability-boost-btn" id="p1-ability-boost"
+                                    onclick="toggleAbilityBoost(1)" style="display:none;" title="Flash Fire / Electromorphosis charged">Boosted</button>
+                            </label>
                             <select id="p1-ability"></select>
                         </div>
                         <div class="select-group">
-                            <label>Item</label>
+                            <label class="meta-label-row">Item
+                                <button type="button" class="field-btn toggle-btn item-effect-btn active" id="p1-item-enabled"
+                                    onclick="toggleItemEnabled(1)" title="Enable or disable held item effects">ON</button>
+                            </label>
                             <div class="item-select-wrap">
                                 <img src="" id="p1-item-sprite" class="item-sprite" alt=""
                                     onerror="handleItemError(this, window.p1?.item)">
@@ -167,6 +184,22 @@
                             <button type="button" class="field-btn fallen-btn" data-fallen="3">3</button>
                             <button type="button" class="field-btn fallen-btn" data-fallen="4">4</button>
                             <button type="button" class="field-btn fallen-btn" data-fallen="5">5</button>
+                        </div>
+                    </div>
+
+                    <div class="fallen-row" id="p1-times-hit-row">
+                        <div class="fallen-header">
+                            <label>Times hit</label>
+                            <span class="fallen-hint">Rage Fist</span>
+                        </div>
+                        <div class="spikes-group times-hit-group" data-pokemon="1">
+                            <button type="button" class="field-btn times-hit-btn active" data-hits="0">0</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="1">1</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="2">2</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="3">3</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="4">4</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="5">5</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="6">6</button>
                         </div>
                     </div>
 
@@ -332,6 +365,8 @@
                 <div class="panel-header">
                     <div class="sprite-container">
                         <img id="p2-sprite" src="" alt="" onerror="handleSpriteError(this, window.p2?.name, false)">
+                        <img id="p2-sprite-item" class="sprite-item-badge" src="" alt="" hidden
+                            onerror="handleItemError(this, window.p2?.item)">
                     </div>
                     <input type="text" id="p2-search" placeholder="Search Pokemon 2..." class="search-input">
                     <div class="search-results" id="p2-search-results"></div>
@@ -348,13 +383,22 @@
                             </select>
                         </div>
                         <div class="config-types">
-                            <select id="p2-type1" class="type-select"></select>
-                            <select id="p2-type2" class="type-select"></select>
+                            <label class="type-select-wrap">
+                                <img id="p2-type1-icon" class="pk-type-icon" src="../assets/type-icons/normal_type.png" alt="" width="22" height="22">
+                                <select id="p2-type1" class="type-select"></select>
+                            </label>
+                            <label class="type-select-wrap">
+                                <img id="p2-type2-icon" class="pk-type-icon" src="../assets/type-icons/normal_type.png" alt="" width="22" height="22">
+                                <select id="p2-type2" class="type-select"></select>
+                            </label>
                         </div>
                         <div class="config-extra">
                             <label class="tera-toggle">
                                 <input type="checkbox" id="p2-tera"> Tera
-                                <select id="p2-tera-type" class="type-select"></select>
+                                <span class="type-select-wrap type-select-wrap--tera">
+                                    <img id="p2-tera-type-icon" class="pk-type-icon pk-type-icon--tera" src="../assets/type-icons/tera_type_normal.png" alt="" width="22" height="22">
+                                    <select id="p2-tera-type" class="type-select"></select>
+                                </span>
                             </label>
                             <button class="field-btn toggle-btn mega-btn" id="p2-mega-toggle"
                                 onclick="toggleMega(2)" style="display:none;">MEGA</button>
@@ -396,11 +440,17 @@
                             <select id="p2-nature"></select>
                         </div>
                         <div class="select-group">
-                            <label>Ability</label>
+                            <label class="meta-label-row">Ability
+                                <button type="button" class="field-btn toggle-btn ability-boost-btn" id="p2-ability-boost"
+                                    onclick="toggleAbilityBoost(2)" style="display:none;" title="Flash Fire / Electromorphosis charged">Boosted</button>
+                            </label>
                             <select id="p2-ability"></select>
                         </div>
                         <div class="select-group">
-                            <label>Item</label>
+                            <label class="meta-label-row">Item
+                                <button type="button" class="field-btn toggle-btn item-effect-btn active" id="p2-item-enabled"
+                                    onclick="toggleItemEnabled(2)" title="Enable or disable held item effects">ON</button>
+                            </label>
                             <div class="item-select-wrap">
                                 <img src="" id="p2-item-sprite" class="item-sprite" alt=""
                                     onerror="handleItemError(this, window.p2?.item)">
@@ -433,6 +483,22 @@
                             <button type="button" class="field-btn fallen-btn" data-fallen="3">3</button>
                             <button type="button" class="field-btn fallen-btn" data-fallen="4">4</button>
                             <button type="button" class="field-btn fallen-btn" data-fallen="5">5</button>
+                        </div>
+                    </div>
+
+                    <div class="fallen-row" id="p2-times-hit-row">
+                        <div class="fallen-header">
+                            <label>Times hit</label>
+                            <span class="fallen-hint">Rage Fist</span>
+                        </div>
+                        <div class="spikes-group times-hit-group" data-pokemon="2">
+                            <button type="button" class="field-btn times-hit-btn active" data-hits="0">0</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="1">1</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="2">2</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="3">3</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="4">4</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="5">5</button>
+                            <button type="button" class="field-btn times-hit-btn" data-hits="6">6</button>
                         </div>
                     </div>
 
@@ -532,7 +598,7 @@
         </div>
     </div>
 
-    <div id="toast" class="toast">Calculation Error!</div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="../js/mega-sprites.js"></script>
     <script src="../js/utils.js"></script>

@@ -35,23 +35,36 @@
             battle: {
                 multiHit: battle.multiHit || null,
                 variablePower: battle.variablePower || null,
-                dynamicType: battle.dynamicType || null
+                dynamicType: battle.dynamicType || null,
+                alwaysCrit: !!battle.alwaysCrit,
+                ignoresDefenseBoosts: !!battle.ignoresDefenseBoosts
             }
         };
     }
+
+    const ALWAYS_CRIT_MOVES = new Set([
+        'flowertrick', 'wickedblow', 'surgingstrikes',
+        'stormthrow', 'frostbreath', 'zippyzap', 'wickedtorque'
+    ]);
+    const IGNORE_DEF_BOOST_MOVES = new Set([
+        'darkestlariat', 'kowtowcleave', 'sacredsword', 'secretsword'
+    ]);
 
     function createMoveState(record, overrides = {}) {
         if (!record) {
             return { name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false, ...overrides };
         }
+        const alwaysCrit = !!record.battle?.alwaysCrit || ALWAYS_CRIT_MOVES.has(normalizeMoveName(record.name));
         return {
             name: record.name,
             basePower: record.power,
             type: record.type,
             category: record.category,
             priority: record.priority,
-            crit: false,
-            ...overrides
+            crit: alwaysCrit,
+            ...overrides,
+            // Always-crit moves stay forced even if overrides try to clear them
+            ...(alwaysCrit ? { crit: true } : {})
         };
     }
 
@@ -153,6 +166,20 @@
         getDynamicType(nameOrRecord) {
             const rec = resolveRecord(nameOrRecord);
             return rec?.battle?.dynamicType || null;
+        },
+
+        isAlwaysCrit(nameOrRecord) {
+            const rec = resolveRecord(nameOrRecord);
+            if (rec?.battle?.alwaysCrit) return true;
+            const key = normalizeMoveName(typeof nameOrRecord === 'string' ? nameOrRecord : rec?.name || nameOrRecord?.name);
+            return ALWAYS_CRIT_MOVES.has(key);
+        },
+
+        ignoresDefenseBoosts(nameOrRecord) {
+            const rec = resolveRecord(nameOrRecord);
+            if (rec?.battle?.ignoresDefenseBoosts) return true;
+            const key = normalizeMoveName(typeof nameOrRecord === 'string' ? nameOrRecord : rec?.name || nameOrRecord?.name);
+            return IGNORE_DEF_BOOST_MOVES.has(key);
         },
 
         findInArray(movesDb, name) {

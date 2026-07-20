@@ -29,6 +29,35 @@
         fairy: ['pixie plate', 'fairy feather']
     };
 
+    /** Type-resist berries: halve SE damage of the matching type (Chilan = any Normal). */
+    const RESIST_BERRIES = {
+        'occa berry': 'Fire',
+        'passho berry': 'Water',
+        'wacan berry': 'Electric',
+        'rindo berry': 'Grass',
+        'yache berry': 'Ice',
+        'chople berry': 'Fighting',
+        'kebia berry': 'Poison',
+        'shuca berry': 'Ground',
+        'coba berry': 'Flying',
+        'payapa berry': 'Psychic',
+        'tanga berry': 'Bug',
+        'charti berry': 'Rock',
+        'kasib berry': 'Ghost',
+        'haban berry': 'Dragon',
+        'colbur berry': 'Dark',
+        'babiri berry': 'Steel',
+        'roseli berry': 'Fairy',
+        'chilan berry': 'Normal'
+    };
+
+    function itemsActiveFor(pk, field) {
+        if (!pk) return false;
+        if (pk.itemEnabled === false) return false;
+        if (field && field.magicRoom) return false;
+        return true;
+    }
+
     function getDefenderTypes(defender) {
         let defTypes = [defender.type1, defender.type2].filter(t => t && t !== 'None');
         if (defender.tera && defender.teraType !== 'Stellar') {
@@ -146,7 +175,16 @@
             : (isSpecial ? 'spd' : 'def');
         let defBoost = defender.boosts[defStatKey];
 
-        if (move.crit) {
+        const alwaysCrit = MoveIndex.isAlwaysCrit(move);
+        const isCrit = !!(move.crit || alwaysCrit);
+        const ignoresDefBoosts = MoveIndex.ignoresDefenseBoosts(move);
+
+        // Darkest Lariat / Kowtow Cleave / Sacred Sword: use unmodified Def/SpD stages
+        if (ignoresDefBoosts) {
+            defBoost = 0;
+        }
+
+        if (isCrit) {
             if (atkBoost < 0) atkBoost = 0;
             if (defBoost > 0) defBoost = 0;
         }
@@ -205,9 +243,10 @@
             if (defAb === 'icescales' && isSpecial) rawDef = Math.floor(rawDef * 2);
         }
 
-        const itemsActive = !field.magicRoom;
+        const itemsActive = itemsActiveFor(attacker, field);
+        const defItemsActive = itemsActiveFor(defender, field);
         const item = itemsActive ? (attacker.item || '').toLowerCase() : '';
-        const defenderItem = itemsActive ? (defender.item || '').toLowerCase() : '';
+        const defenderItem = defItemsActive ? (defender.item || '').toLowerCase() : '';
         if (item === 'choice band' && !isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
         if (item === 'choice specs' && isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
         // Eviolite: 1.5× Def/SpD when held (NFE data unavailable — honor the item when equipped)
@@ -238,6 +277,14 @@
                 const powMod = [4096, 4506, 4915, 5325, 5734, 6144];
                 bpMods.push(powMod[fallen]);
             }
+        }
+        // Flash Fire (activated): 1.5× Fire moves
+        if (atkAb === 'flashfire' && attacker.abilityActive && moveType === 'Fire') {
+            bpMods.push(6144);
+        }
+        // Electromorphosis (charged): 2× Electric moves (Charge effect)
+        if (atkAb === 'electromorphosis' && attacker.abilityActive && moveType === 'Electric') {
+            bpMods.push(8192);
         }
         // Offensive ability BP mods
         if (atkAb === 'technician' && basePower <= 60) bpMods.push(6144);
@@ -319,7 +366,7 @@
             if (moveType === 'Fire') baseDamage = pokeRound(of32(baseDamage * 2048) / 4096);
         }
 
-        if (move.crit) {
+        if (isCrit) {
             baseDamage = Math.floor(of32(baseDamage * 1.5));
         }
 
@@ -364,9 +411,9 @@
         }
         if (atkAb === 'neuroforce' && typeMod > 1) finalMods.push(5120);
         if (atkAb === 'punkrock' && MoveIndex.isSound(move)) finalMods.push(5325);
-        if (atkAb === 'sniper' && move.crit) finalMods.push(6144);
+        if (atkAb === 'sniper' && isCrit) finalMods.push(6144);
 
-        if (!move.crit && atkAb !== 'infiltrator') {
+        if (!isCrit && atkAb !== 'infiltrator') {
             if (isSpecial && (defSide.lightScreen || defSide.auroraVeil)) {
                 finalMods.push(field.format === 'Doubles' ? 2732 : 2048);
             }
@@ -378,6 +425,16 @@
         if (item === 'life orb') finalMods.push(5324);
         if (item === 'expert belt' && typeMod > 1) finalMods.push(4915);
 
+        // Type-resist berries (halve SE damage of matching type; Chilan = any Normal)
+        if (defItemsActive && defenderItem && RESIST_BERRIES[defenderItem]) {
+            const berryType = RESIST_BERRIES[defenderItem];
+            if (defenderItem === 'chilan berry') {
+                if (moveType === 'Normal') finalMods.push(2048);
+            } else if (typeMod > 1 && moveType === berryType) {
+                finalMods.push(2048);
+            }
+        }
+
         const finalMod = chainMods(finalMods);
         const applyBurn = attacker.status === 'Burned' && !isSpecial && atkAb !== 'guts';
 
@@ -386,17 +443,28 @@
             rolls.push(getFinalDamage(baseDamage, i, typeMod, applyBurn, stabMod, finalMod));
         }
 
-        if (defSide.protect && atkAb !== 'unseenfist') {
-            rolls = rolls.map(() => 0);
-        }
-
-        if (atkAb === 'parentalbond' && move.category !== 'Status') {
+        // Parental Bond: second hit at 25% (Gen 7+). Skip multi-hit / status moves.
+        const multiInfo = MoveIndex.getMultiHitInfo(move.name);
+        if (atkAb === 'parentalbond' && category !== 'Status' && !multiInfo) {
             rolls = rolls.map(r => r + Math.floor(r * 0.25));
         }
 
         const hitCount = BC.resolveHitCount(move, attacker);
         if (hitCount > 1) {
             rolls = BC.combineMultiHitRolls(rolls, hitCount);
+        }
+
+        // Protect / Detect interactions
+        if (defSide.protect) {
+            const isContact = MoveIndex.isContact(move);
+            if (atkAb === 'unseenfist' && isContact) {
+                // Full damage through Protect on contact moves
+            } else if (atkAb === 'piercingdrill' && isContact) {
+                // 1/4 damage through Protect on contact moves
+                rolls = rolls.map(r => Math.floor(r / 4));
+            } else {
+                rolls = rolls.map(() => 0);
+            }
         }
 
         const defHp = defender.stats.hp;
@@ -409,9 +477,11 @@
         res.minPercent = pct(rolls[0]);
         res.maxPercent = pct(rolls[rolls.length - 1]);
         res.rolls = rolls;
-        res.hitCount = hitCount;
+        res.hitCount = hitCount > 1 ? hitCount : (atkAb === 'parentalbond' && category !== 'Status' && !multiInfo ? 2 : 1);
         return res;
     }
 
     BC.calculateDamage = calculateDamage;
+    BC.itemsActiveFor = itemsActiveFor;
+    BC.RESIST_BERRIES = RESIST_BERRIES;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

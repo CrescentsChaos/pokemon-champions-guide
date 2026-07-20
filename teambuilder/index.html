@@ -1954,6 +1954,7 @@
                 ]);
                 allPokemon = p;
                 allBuilds = b;
+                if (typeof invalidateBestTeamsCache === 'function') invalidateBestTeamsCache();
                 pokemon_database = p;
                 allMoves = m;
                 moves_database = m;
@@ -3732,35 +3733,68 @@
             };
         }
 
+        let _buildsByIdCache = null;
+        let _bestTeamEntriesCache = null;
+
+        function getBuildsById() {
+            if (_buildsByIdCache) return _buildsByIdCache;
+            _buildsByIdCache = new Map();
+            (allBuilds || []).forEach(b => _buildsByIdCache.set(String(b.id), b));
+            return _buildsByIdCache;
+        }
+
+        /** Light peek at paste — species/item only, no full EV parse. */
+        function peekPasteMeta(paste) {
+            if (!paste) return { species: '', item: '' };
+            const first = paste.split(/\n/)[0] || '';
+            const parts = first.split('@');
+            let namePart = (parts[0] || '').trim();
+            const item = (parts[1] || '').trim();
+            const brackets = [];
+            const re = /\(([^)]+)\)/g;
+            let m;
+            while ((m = re.exec(namePart)) !== null) brackets.push(m[1].trim());
+            let mainName = namePart.split('(')[0].trim();
+            let species = mainName;
+            if (brackets.length === 2) species = brackets[0];
+            else if (brackets.length === 1 && brackets[0] !== 'M' && brackets[0] !== 'F') species = brackets[0];
+            return { species, item };
+        }
+
         function getBestTeamEntries() {
+            if (_bestTeamEntriesCache) return _bestTeamEntriesCache;
+            const byId = getBuildsById();
             const formats = ['Doubles', 'Singles'];
             const entries = [];
             formats.forEach(format => {
                 const teams = bestTeamsData?.[format] || {};
                 Object.entries(teams).forEach(([name, ids]) => {
                     const members = (ids || []).slice(0, 6).map(id => {
-                        const build = allBuilds.find(b => String(b.id) === String(id));
+                        const build = byId.get(String(id));
                         if (!build) {
-                            return { id, missing: true, species: `Missing #${id}`, item: '', build: null };
+                            return { id, missing: true, species: `Missing #${id}`, item: '', build: null, parsed: null };
                         }
-                        let parsed = null;
-                        try {
-                            parsed = parsePaste(build.build)[0];
-                        } catch (e) { /* ignore */ }
+                        const meta = peekPasteMeta(build.build);
                         return {
                             id,
                             missing: false,
-                            species: parsed?.species || build.pokemon,
-                            item: parsed?.item || '',
-                            ability: parsed?.ability || '',
+                            species: meta.species || build.pokemon,
+                            item: meta.item || '',
+                            ability: '',
                             build,
-                            parsed
+                            parsed: null // parse lazily on import
                         };
                     });
                     entries.push({ name, format, ids: ids || [], members });
                 });
             });
+            _bestTeamEntriesCache = entries;
             return entries;
+        }
+
+        function invalidateBestTeamsCache() {
+            _buildsByIdCache = null;
+            _bestTeamEntriesCache = null;
         }
 
         function openBestTeamsOverlay(dest) {
@@ -3871,21 +3905,30 @@
             const loaded = entry.members.filter(m => m.build && !m.missing);
 
             if (bestTeamsDest === 'opponent') {
-                if (typeof setOpponentPrepFormat === 'function') setOpponentPrepFormat(entry.format);
+                // Load roster only — skip analysis until the prep view opens (once).
                 const count = typeof loadOpponentTeamFromBuildIds === 'function'
-                    ? loadOpponentTeamFromBuildIds(entry.ids, entry.format)
+                    ? loadOpponentTeamFromBuildIds(entry.ids, entry.format, { skipAnalysis: true })
                     : 0;
                 document.getElementById('best-teams-overlay').style.display = 'none';
-                switchSlot(-3);
-                showToast(`Loaded ${count || loaded.length} Pokémon into opponent prep — ${entry.name}`);
+                showToast(`Loaded ${count || loaded.length} Pokémon — analyzing…`);
+                // Yield so the overlay can close and toast can paint before heavy calc.
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        switchSlot(-3);
+                    }, 0);
+                });
                 return;
             }
 
             const empty = createEmptyTeamSlot();
             for (let i = 0; i < 6; i++) {
                 const member = entry.members[i];
-                if (member?.parsed) {
-                    const pk = { ...empty, ...member.parsed };
+                let parsed = member?.parsed;
+                if (!parsed && member?.build?.build) {
+                    try { parsed = parsePaste(member.build.build)[0]; } catch (e) { parsed = null; }
+                }
+                if (parsed) {
+                    const pk = { ...empty, ...parsed };
                     if (!Array.isArray(pk.moves)) pk.moves = ['', '', '', ''];
                     while (pk.moves.length < 4) pk.moves.push('');
                     if (typeof coerceEvsForMode === 'function') {

@@ -156,16 +156,24 @@
             basePower = 50 * (1 + fallen);
         }
 
-        // Knock Off: 1.5× if target holds an item
-        if (variablePower === 'knock_off' || moveKey === 'knockoff') {
-            const defItem = (defender.item || '').toLowerCase();
-            if (defItem && defItem !== 'none') basePower = Math.floor(basePower * 1.5);
+        // Rage Fist: 50 × (1 + times the user has been hit), max 350 (6 hits)
+        if (variablePower === 'times_hit' || moveKey === 'ragefist') {
+            const hits = Math.max(0, Math.min(6, parseInt(attacker.timesHit, 10) || 0));
+            basePower = 50 * (1 + hits);
         }
 
-        // Acrobatics: 2× without a held item (or while Flying Gem is consumed — treat empty as boost)
+        // Knock Off: 1.5× if target holds an item (and item effects are active)
+        if (variablePower === 'knock_off' || moveKey === 'knockoff') {
+            const defItem = (defender.item || '').toLowerCase();
+            const defItemsOn = defender.itemEnabled !== false && !(field && field.magicRoom);
+            if (defItemsOn && defItem && defItem !== 'none') basePower = Math.floor(basePower * 1.5);
+        }
+
+        // Acrobatics: 2× without a held item (or while item effects disabled / Magic Room)
         if (variablePower === 'acrobatics' || moveKey === 'acrobatics') {
             const atkItem = (attacker.item || '').toLowerCase();
-            if (!atkItem || atkItem === 'none') basePower *= 2;
+            const atkItemsOn = attacker.itemEnabled !== false && !(field && field.magicRoom);
+            if (!atkItemsOn || !atkItem || atkItem === 'none') basePower *= 2;
         }
 
         // Expanding Force: 1.5× BP on Psychic Terrain (spread handled separately when grounded)

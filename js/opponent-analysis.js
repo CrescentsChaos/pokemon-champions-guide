@@ -1857,9 +1857,48 @@ function runOpponentPrepAnalysis() {
 
 function showOpponentPrepView() {
     const format = typeof _teamAnalysisFormat !== 'undefined' ? _teamAnalysisFormat : 'Singles';
-    setOpponentPrepFormat(format);
+    setOpponentPrepFormatQuiet(format);
     renderOpponentRoster();
-    runOpponentPrepAnalysis();
+    const results = document.getElementById('opponent-prep-results');
+    const gate = document.getElementById('opponent-prep-gate');
+    const ourTeam = _ourTeamGetter ? _ourTeamGetter() : [];
+    const ourActive = ourTeam.filter(p => p && p.species);
+    const teamFull = ourActive.length >= 6;
+    if (gate) gate.style.display = teamFull ? 'none' : 'block';
+    if (!teamFull) {
+        if (results) results.style.display = 'none';
+        return;
+    }
+    if (results) {
+        results.style.display = 'block';
+        const existing = results.querySelector('.opp-prep-loading');
+        if (!existing) {
+            const loading = document.createElement('div');
+            loading.className = 'opp-prep-loading';
+            loading.style.cssText = 'padding:16px;text-align:center;color:rgba(255,255,255,0.7);font-weight:700;font-size:0.85rem;';
+            loading.textContent = 'Analyzing matchup…';
+            results.insertBefore(loading, results.firstChild);
+        }
+    }
+    // Defer heavy calc so roster + loading UI paint first
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            runOpponentPrepAnalysis();
+            results?.querySelector('.opp-prep-loading')?.remove();
+        }, 0);
+    });
+}
+
+function setOpponentPrepFormatQuiet(format) {
+    _opponentFormat = format || 'Singles';
+    _opponentTopMetaCache = null;
+    updateOpponentFormatToggle(_opponentFormat);
+    if (typeof _teamAnalysisFormat !== 'undefined') {
+        _teamAnalysisFormat = _opponentFormat;
+    }
+    if (typeof updateAnalysisFormatToggle === 'function') {
+        updateAnalysisFormatToggle(_opponentFormat, 'analysis-toggle-singles', 'analysis-toggle-doubles');
+    }
 }
 
 function clearOpponentTeam() {
@@ -1871,15 +1910,37 @@ function clearOpponentTeam() {
 /**
  * Load a full opponent roster from library build IDs (best_teams.json).
  * Missing builds leave an empty slot.
+ * @param {string[]} buildIds
+ * @param {string} [format]
+ * @param {{ skipAnalysis?: boolean }} [opts] - skipAnalysis: defer prep calc to the caller
  */
-function loadOpponentTeamFromBuildIds(buildIds, format) {
+function loadOpponentTeamFromBuildIds(buildIds, format, opts = {}) {
     const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
     const ids = Array.isArray(buildIds) ? buildIds.slice(0, 6) : [];
-    if (format) setOpponentPrepFormat(format);
+    if (format) {
+        // Update format UI without re-running analysis mid-load
+        _opponentFormat = format || 'Singles';
+        _opponentTopMetaCache = null;
+        updateOpponentFormatToggle(_opponentFormat);
+        if (typeof _teamAnalysisFormat !== 'undefined') {
+            _teamAnalysisFormat = _opponentFormat;
+        }
+        if (typeof updateAnalysisFormatToggle === 'function') {
+            updateAnalysisFormatToggle(_opponentFormat, 'analysis-toggle-singles', 'analysis-toggle-doubles');
+        }
+    }
+
+    const byId = typeof buildsArr.find === 'function' && buildsArr.length
+        ? (() => {
+            const map = new Map();
+            buildsArr.forEach(b => map.set(String(b.id), b));
+            return map;
+        })()
+        : null;
 
     _opponentTeam = Array(6).fill(null).map(createEmptyOpponentSlot);
     ids.forEach((id, idx) => {
-        const record = buildsArr.find(b => String(b.id) === String(id));
+        const record = byId ? byId.get(String(id)) : buildsArr.find(b => String(b.id) === String(id));
         if (!record || typeof parseAnalysisBuild !== 'function') return;
         const slot = parseAnalysisBuild(record.build);
         slot._buildSource = 'library';
@@ -1888,7 +1949,9 @@ function loadOpponentTeamFromBuildIds(buildIds, format) {
     });
 
     renderOpponentRoster();
-    runOpponentPrepAnalysis();
+    if (!opts.skipAnalysis) {
+        runOpponentPrepAnalysis();
+    }
     return _opponentTeam.filter(p => p && p.species).length;
 }
 

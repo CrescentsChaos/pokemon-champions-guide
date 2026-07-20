@@ -17,7 +17,7 @@
     const exports = [
         'setupPokemonState', 'getBoostValue', 'applyParadoxBoost', 'getKOChance',
         'calculateDamage', 'getEffectiveSpeed', 'compareSpeedTier', 'getDefaultField',
-        'buildCalcStateFromSlot', 'findBestDamage', 'isStrongAnswer',
+        'getSpeedModifiers', 'buildCalcStateFromSlot', 'findBestDamage', 'isStrongAnswer',
         'getMoveMultiHitInfo', 'isMultiHitMove', 'getDefaultHitCount',
         'combineMultiHitRolls', 'resolveHitCount', 'initMoveIndex',
         'getHazardDamage', 'getEffectiveDefenderHp', 'formatShowdownLine', 'getTerrainModifier'

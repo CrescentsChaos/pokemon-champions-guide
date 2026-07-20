@@ -16,7 +16,10 @@
             type1: 'None', type2: 'None', tera: false, teraType: 'Normal',
             moves: Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false })),
             hpPercent: 100,
-            alliesFainted: 0
+            alliesFainted: 0,
+            timesHit: 0,
+            abilityActive: false,
+            itemEnabled: true
         };
     }
 
