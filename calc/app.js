@@ -6,8 +6,8 @@ let buildsDB = [];
 let bestTeamsData = { Doubles: {}, Singles: {} };
 let bestTeamsFormatFilter = 'All';
 let bestTeamsTargetId = 1;
-/** @type {{ name: string, format: string, members: Array<{id:string, species:string, item:string, build:object|null, missing?:boolean}> } | null} */
-let pinnedCalcTeam = null;
+/** @type {{ 1: object|null, 2: object|null }} */
+let pinnedCalcTeams = { 1: null, 2: null };
 let p1 = null;
 let p2 = null;
 let selectedMoveIdx1 = 0;
@@ -71,7 +71,7 @@ async function loadTopPokemonsForCalc(format) {
 }
 
 let field = {
-    format: 'Singles',
+    format: 'Doubles',
     weather: 'None',
     terrain: 'None',
     gravity: false,
@@ -1641,8 +1641,8 @@ function openCalcBestTeams(id) {
     const label = document.getElementById('best-teams-target-label');
     if (label) {
         label.textContent = bestTeamsTargetId === 1
-            ? 'Click a Pokémon to load into Attacker — team stays pinned for both sides'
-            : 'Click a Pokémon to load into Defender — team stays pinned for both sides';
+            ? 'Click a Pokémon to load into Attacker — pins this team on the attacker side only'
+            : 'Click a Pokémon to load into Defender — pins this team on the defender side only';
     }
     const search = document.getElementById('calc-best-teams-search');
     if (search) search.value = '';
@@ -1715,7 +1715,7 @@ function renderCalcBestTeamsList() {
                     <span class="${badgeClass}">${entry.format}</span>
                 </div>
                 <div class="calc-best-team-sprites">${mons}</div>
-                <p class="calc-best-team-hint">Click any Pokémon to load it into ${side}. The full team pins under both panels.</p>
+                <p class="calc-best-team-hint">Click any Pokémon to load it into ${side}. That team pins under this side only.</p>
             </article>`;
     }).join('');
 
@@ -1733,23 +1733,25 @@ function renderCalcBestTeamsList() {
 
 function loadCalcTeamMember(sideId, entry, member) {
     if (!member?.build?.build) return;
-    pinnedCalcTeam = {
+    const side = sideId === 2 ? 2 : 1;
+    pinnedCalcTeams[side] = {
         name: entry.name,
         format: entry.format,
         members: entry.members.map(m => ({ ...m }))
     };
-    importPokePaste(sideId, member.build.build, { silent: true });
+    importPokePaste(side, member.build.build, { silent: true });
     renderCalcTeamTrays();
     closeCalcBestTeams();
-    const side = sideId === 1 ? 'Attacker' : 'Defender';
-    showToast(`${member.species} → ${side} (${entry.name})`);
+    const sideLabel = side === 1 ? 'Attacker' : 'Defender';
+    showToast(`${member.species} → ${sideLabel} (${entry.name})`);
 }
 
 function renderCalcTeamTrays() {
     [1, 2].forEach(sideId => {
         const tray = document.getElementById(`p${sideId}-team-tray`);
         if (!tray) return;
-        if (!pinnedCalcTeam?.members?.length) {
+        const pinned = pinnedCalcTeams[sideId];
+        if (!pinned?.members?.length) {
             tray.hidden = true;
             tray.innerHTML = '';
             return;
@@ -1758,7 +1760,7 @@ function renderCalcTeamTrays() {
         const pk = sideId === 1 ? p1 : p2;
         const activeName = (pk?.name || '').toLowerCase();
         tray.hidden = false;
-        tray.innerHTML = pinnedCalcTeam.members.map((m, mi) => {
+        tray.innerHTML = pinned.members.map((m, mi) => {
             const isActive = !m.missing && m.species && m.species.toLowerCase() === activeName;
             return `
                 <button type="button" class="calc-team-tray__mon ${isActive ? 'is-active' : ''}" data-tray-member="${mi}"
@@ -1773,7 +1775,7 @@ function renderCalcTeamTrays() {
         tray.querySelectorAll('[data-tray-member]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const mi = parseInt(btn.getAttribute('data-tray-member'), 10);
-                const member = pinnedCalcTeam?.members?.[mi];
+                const member = pinnedCalcTeams[sideId]?.members?.[mi];
                 if (!member?.build?.build) return;
                 importPokePaste(sideId, member.build.build, { silent: true });
                 renderCalcTeamTrays();
@@ -1889,7 +1891,7 @@ function importPokePaste(id, paste, opts = {}) {
         clampPokemonEvs(pk);
         updateStatsUI(pk);
         recalculate();
-        if (pinnedCalcTeam) renderCalcTeamTrays();
+        if (pinnedCalcTeams[1] || pinnedCalcTeams[2]) renderCalcTeamTrays();
         if (!opts.silent) showToast("Import successful!");
     } catch (e) {
         console.error("Import error", e);
@@ -2061,6 +2063,9 @@ function swapCalcSides() {
     const s2 = document.getElementById('p2-search');
     if (s1) s1.value = p1.name || '';
     if (s2) s2.value = p2.name || '';
+    const tmpTeam = pinnedCalcTeams[1];
+    pinnedCalcTeams[1] = pinnedCalcTeams[2];
+    pinnedCalcTeams[2] = tmpTeam;
     renderCalcTeamTrays();
     recalculate();
     showToast('Sides swapped');

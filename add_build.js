@@ -122,7 +122,8 @@ async function main() {
             pokemon: pokemonName,
             build: paste.trim(),
             synergy: synergies,
-            format: format
+            format: format,
+            isMeta: false
         };
 
         // 8. Save
