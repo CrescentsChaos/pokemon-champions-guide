@@ -39,14 +39,35 @@
         if (!calcState || !calcState.stats) return 0;
         let spe = calcState.stats.spe || 0;
         const item = (calcState.item || '').toLowerCase();
+        const ab = (calcState.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         if (item === 'choice scarf') spe = Math.floor(spe * 1.5);
-        if ((calcState.status || '').toLowerCase() === 'paralyzed') spe = Math.floor(spe * 0.5);
+        if (item === 'iron ball') spe = Math.floor(spe * 0.5);
+        if ((calcState.status || '').toLowerCase() === 'paralyzed' && ab !== 'quickfeet') {
+            spe = Math.floor(spe * 0.5);
+        }
+        if (ab === 'quickfeet' && calcState.status && calcState.status !== 'Healthy') {
+            spe = Math.floor(spe * 1.5);
+        }
         const side = calcState.id === 1 ? field.side1 : field.side2;
         if (side?.tailwind) spe = Math.floor(spe * 2);
-        return applyParadoxBoost(calcState, spe, 'spe', field, side);
+        spe = applyParadoxBoost(calcState, spe, 'spe', field, side);
+        const weather = field?.weather || 'None';
+        if ((ab === 'chlorophyll' && (weather === 'Sun' || weather === 'Harsh Sun'))
+            || (ab === 'swiftswim' && (weather === 'Rain' || weather === 'Heavy Rain'))
+            || (ab === 'sandrush' && weather === 'Sand')
+            || (ab === 'slushrush' && (weather === 'Snow' || weather === 'Hail'))
+            || (ab === 'surgesurfer' && field?.terrain === 'Electric')) {
+            spe = Math.floor(spe * 2);
+        }
+        return spe;
     }
 
-    function compareSpeedTier(speedA, speedB) {
+    function compareSpeedTier(speedA, speedB, trickRoom = false) {
+        if (trickRoom) {
+            if (speedA < speedB) return 'faster';
+            if (speedA > speedB) return 'slower';
+            return 'tie';
+        }
         if (speedA > speedB) return 'faster';
         if (speedA < speedB) return 'slower';
         return 'tie';

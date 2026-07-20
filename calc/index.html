@@ -34,8 +34,18 @@
             <div id="damage-banner" class="glass">
                 <div class="banner-content">
                     <div id="main-result">Select moves to see damage results</div>
+                    <div id="speed-result" class="speed-result"></div>
+                    <div id="damage-bar" class="damage-bar" hidden>
+                        <div class="damage-bar__fill" id="damage-bar-fill"></div>
+                        <div class="damage-bar__range" id="damage-bar-range"></div>
+                    </div>
+                    <div id="roll-heatmap" class="roll-heatmap" hidden></div>
                     <div id="sub-result">Damage rolls: (0)</div>
                     <div id="ko-result"></div>
+                    <div class="banner-toolbar">
+                        <button type="button" class="field-btn" id="share-calc-btn" onclick="shareCalcLink()">Share calc</button>
+                        <button type="button" class="field-btn" id="copy-result-btn" onclick="copyCalcResult()">Copy result</button>
+                    </div>
                 </div>
             </div>
 
@@ -243,6 +253,10 @@
                             <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
                             <button class="field-btn toggle-btn" data-effect="Protect">Protect</button>
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
+                            <button class="field-btn toggle-btn" data-effect="Friend Guard">Friend Guard</button>
+                            <button class="field-btn toggle-btn" data-effect="Battery">Battery</button>
+                            <button class="field-btn toggle-btn" data-effect="Power Spot">Power Spot</button>
+                            <button class="field-btn toggle-btn" data-effect="Steely Spirit">Steely Spirit</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
                             <button class="field-btn toggle-btn" data-effect="Leech Seed">Leech Seed</button>
@@ -263,6 +277,10 @@
                             <button class="field-btn toggle-btn" data-effect="Aurora Veil">Aurora Veil</button>
                             <button class="field-btn toggle-btn" data-effect="Protect">Protect</button>
                             <button class="field-btn toggle-btn" data-effect="Helping Hand">Helping Hand</button>
+                            <button class="field-btn toggle-btn" data-effect="Friend Guard">Friend Guard</button>
+                            <button class="field-btn toggle-btn" data-effect="Battery">Battery</button>
+                            <button class="field-btn toggle-btn" data-effect="Power Spot">Power Spot</button>
+                            <button class="field-btn toggle-btn" data-effect="Steely Spirit">Steely Spirit</button>
                             <button class="field-btn toggle-btn" data-effect="Protosynthesis">Protosynthesis</button>
                             <button class="field-btn toggle-btn" data-effect="Quark Drive">Quark Drive</button>
                             <button class="field-btn toggle-btn" data-effect="Leech Seed">Leech Seed</button>
@@ -296,6 +314,7 @@
                         <button class="field-btn toggle-btn" data-effect="Gravity">Gravity</button>
                         <button class="field-btn toggle-btn" data-effect="Magic Room">Magic Room</button>
                         <button class="field-btn toggle-btn" data-effect="Wonder Room">Wonder Room</button>
+                        <button class="field-btn toggle-btn" data-effect="Trick Room">Trick Room</button>
                     </div>
                 </div>
 

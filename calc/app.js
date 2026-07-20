@@ -77,9 +77,10 @@ let field = {
     gravity: false,
     magicRoom: false,
     wonderRoom: false,
+    trickRoom: false,
     ruins: { tablets: false, vessel: false, sword: false, beads: false },
-    side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false },
-    side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false }
+    side1: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, friendGuard: false, battery: false, powerSpot: false, steelySpirit: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false },
+    side2: { reflect: false, lightScreen: false, auroraVeil: false, spikes: 0, stealthRock: false, protect: false, helpingHand: false, friendGuard: false, battery: false, powerSpot: false, steelySpirit: false, protosynthesis: false, quarkDrive: false, leechSeed: false, tailwind: false }
 };
 
 const natures = {
@@ -303,13 +304,19 @@ async function init() {
             console.warn('Meta list unavailable', e);
         }
 
-        // Load defaults — Champions meta pair, not the same species twice
-        const meta = topMetaNames.length ? topMetaNames : ['Garchomp', 'Mimikyu'];
-        loadPokemon(1, meta[0] || 'Garchomp');
-        loadPokemon(2, meta[1] || meta[0] || 'Mimikyu');
+        // Load shared calc from URL hash, else Champions meta defaults
+        const loadedShared = tryLoadCalcFromHash();
+        if (!loadedShared) {
+            const meta = topMetaNames.length ? topMetaNames : ['Garchomp', 'Mimikyu'];
+            loadPokemon(1, meta[0] || 'Garchomp');
+            loadPokemon(2, meta[1] || meta[0] || 'Mimikyu');
+        }
         syncChampionsModeButton();
 
         recalculate();
+        window.addEventListener('hashchange', () => {
+            if (tryLoadCalcFromHash()) recalculate();
+        });
     } catch (e) {
         console.error("Load fail", e);
         showToast("Error loading game data!");
@@ -801,20 +808,15 @@ function populatePokemonUI(pk) {
         const clean = pk.name.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
         const base = pk.shiny ? 'ani-shiny' : 'ani';
         const spriteUrl = `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
-        const megaUrl = getMegaSpriteUrl(pk);
 
+        // Only show the current forme — never flash mega while still base + stone.
         spriteImg.src = spriteUrl;
         spriteImg.dataset.base = spriteUrl;
         spriteImg.dataset.fallbackState = '';
         spriteImg.dataset.fallback = '';
-
-        if (megaUrl) {
-            spriteImg.dataset.mega = megaUrl;
-            spriteImg.dataset.currentSrc = 'base';
-            spriteImg.classList.add('mega-toggle');
-        } else {
-            spriteImg.classList.remove('mega-toggle');
-        }
+        spriteImg.classList.remove('mega-toggle');
+        delete spriteImg.dataset.mega;
+        delete spriteImg.dataset.currentSrc;
     }
 
     updateMegaButtonVisibility(pk);
@@ -1321,10 +1323,35 @@ function recalculate() {
     const subBanner = document.getElementById('sub-result');
     const koResult = document.getElementById('ko-result');
 
+    const speedEl = document.getElementById('speed-result');
+    const damageBar = document.getElementById('damage-bar');
+    const damageBarFill = document.getElementById('damage-bar-fill');
+    const damageBarRange = document.getElementById('damage-bar-range');
+    const heatmapEl = document.getElementById('roll-heatmap');
+
+    const spe1 = BattleCalc.getEffectiveSpeed?.(p1, field) ?? 0;
+    const spe2 = BattleCalc.getEffectiveSpeed?.(p2, field) ?? 0;
+    const speedCmp = BattleCalc.compareSpeedTier?.(spe1, spe2, !!field.trickRoom) || 'tie';
+    if (speedEl) {
+        const trTag = field.trickRoom ? ' · Trick Room' : '';
+        if (speedCmp === 'tie') {
+            speedEl.textContent = `Speed tie ${spe1} = ${spe2}${trTag}`;
+        } else if (speedCmp === 'faster') {
+            speedEl.textContent = `${p1.name} outspeeds ${spe1} → ${spe2}${trTag}`;
+        } else {
+            speedEl.textContent = `${p2.name} outspeeds ${spe2} → ${spe1}${trTag}`;
+        }
+    }
+
     if (!res) {
         banner.innerText = "Select moves to see damage results";
         subBanner.innerText = "Damage rolls: (0)";
         koResult.innerText = '';
+        if (damageBar) damageBar.hidden = true;
+        if (heatmapEl) {
+            heatmapEl.hidden = true;
+            heatmapEl.innerHTML = '';
+        }
         syncMobileSummary();
         return;
     }
@@ -1344,7 +1371,42 @@ function recalculate() {
     subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
 
     koResult.innerText = getKOChance(res.rolls, effHp);
+
+    if (damageBar && damageBarFill && damageBarRange) {
+        const minPct = Math.min(100, Math.max(0, Number(res.minPercent) || 0));
+        const maxPct = Math.min(100, Math.max(0, Number(res.maxPercent) || 0));
+        damageBar.hidden = false;
+        damageBarFill.style.width = `${maxPct}%`;
+        damageBarFill.style.setProperty('--bar-min', `${minPct}%`);
+        damageBarRange.textContent = `${minPct}% – ${maxPct}% of HP`;
+        damageBarFill.classList.toggle('ko', maxPct >= 100);
+        damageBarFill.classList.toggle('near-ko', maxPct >= 80 && maxPct < 100);
+    }
+
+    renderRollHeatmap(res.rolls, effHp);
+
     syncMobileSummary();
+}
+
+function renderRollHeatmap(rolls, hp) {
+    const el = document.getElementById('roll-heatmap');
+    if (!el) return;
+    if (!rolls?.length) {
+        el.hidden = true;
+        el.innerHTML = '';
+        return;
+    }
+    const counts = new Map();
+    rolls.forEach(r => counts.set(r, (counts.get(r) || 0) + 1));
+    const sorted = [...counts.entries()].sort((a, b) => a[0] - b[0]);
+    const maxCount = Math.max(...sorted.map(([, c]) => c));
+    el.hidden = false;
+    el.innerHTML = sorted.map(([dmg, count]) => {
+        const px = Math.max(4, Math.round((count / maxCount) * 32));
+        const ko = dmg >= hp ? ' is-ko' : '';
+        const pct = ((count / rolls.length) * 100).toFixed(1);
+        return `<div class="roll-heatmap__bar${ko}" style="height:${px}px" title="${dmg} dmg · ${count}/${rolls.length} (${pct}%)"></div>`;
+    }).join('');
 }
 
 
@@ -1416,6 +1478,7 @@ function updateFieldState() {
         field.gravity = fieldPanel.querySelector('[data-effect="Gravity"]')?.classList.contains('active') || false;
         field.magicRoom = fieldPanel.querySelector('[data-effect="Magic Room"]')?.classList.contains('active') || false;
         field.wonderRoom = fieldPanel.querySelector('[data-effect="Wonder Room"]')?.classList.contains('active') || false;
+        field.trickRoom = fieldPanel.querySelector('[data-effect="Trick Room"]')?.classList.contains('active') || false;
 
         field.ruins = {
             tablets: fieldPanel.querySelector('[data-ruin="tablets"]')?.classList.contains('active') || false,
@@ -1436,6 +1499,10 @@ function updateFieldState() {
                 auroraVeil: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Aurora Veil'),
                 protect: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protect'),
                 helpingHand: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Helping Hand'),
+                friendGuard: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Friend Guard'),
+                battery: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Battery'),
+                powerSpot: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Power Spot'),
+                steelySpirit: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Steely Spirit'),
                 protosynthesis: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Protosynthesis'),
                 quarkDrive: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Quark Drive'),
                 leechSeed: Array.from(btns).some(b => b.getAttribute('data-effect') === 'Leech Seed'),
@@ -1969,6 +2036,9 @@ window.handleSpriteError = function (img, name, shiny) {
 
 function getMegaSpriteUrl(p) {
     if (!p || !p.name || !p.item) return null;
+    // Only resolve mega art when the loaded species is already mega/primal.
+    const n = p.name;
+    if (!n.includes('-Mega') && !n.includes('-Primal')) return null;
 
     if (typeof MegaSprites !== 'undefined') {
         const resolved = MegaSprites.resolveMegaSpriteUrl(p.name, p.item, { shiny: !!p.shiny, preferLocal: true });
@@ -1990,21 +2060,7 @@ function getMegaSpriteUrl(p) {
     return `https://play.pokemonshowdown.com/sprites/${base}/${clean}${suffix}.gif`;
 }
 
-setInterval(() => {
-    document.querySelectorAll('img.mega-toggle').forEach(img => {
-        if (img.dataset.fallback === 'true') {
-            img.classList.remove('mega-toggle');
-            return;
-        }
-        if (img.dataset.currentSrc !== 'mega') {
-            img.src = img.dataset.mega;
-            img.dataset.currentSrc = 'mega';
-        } else {
-            img.src = img.dataset.base;
-            img.dataset.currentSrc = 'base';
-        }
-    });
-}, 3000);
+// Mega preview blinker removed — sprites must match the active forme only.
 
 function getItemSpriteUrl(item) {
     if (!item || item.toLowerCase() === 'none') return '';
@@ -2038,12 +2094,256 @@ function setMobileCalcTab(tab) {
 
 function syncMobileSummary() {
     const line = document.getElementById('main-result')?.innerText || '';
+    const speed = document.getElementById('speed-result')?.innerText || '';
     const ko = document.getElementById('ko-result')?.innerText || '';
     const lineEl = document.getElementById('mobile-line-mirror');
     const koEl = document.getElementById('mobile-ko-mirror');
-    if (lineEl) lineEl.textContent = line || 'Select moves to see damage';
+    if (lineEl) {
+        lineEl.textContent = [line, speed].filter(Boolean).join(' · ') || 'Select moves to see damage';
+    }
     if (koEl) koEl.textContent = ko || '—';
 }
+
+function serializePokemon(pk) {
+    return {
+        n: pk.name,
+        l: pk.level,
+        a: pk.ability,
+        i: pk.item,
+        nat: pk.nature,
+        t1: pk.type1,
+        t2: pk.type2,
+        tera: !!pk.tera,
+        tt: pk.teraType,
+        st: pk.status,
+        hp: pk.hpPercent,
+        af: pk.alliesFainted || 0,
+        ev: { ...pk.evs },
+        iv: { ...pk.ivs },
+        b: { ...pk.boosts },
+        m: (pk.moves || []).map(mv => ({
+            n: mv.name,
+            c: !!mv.crit,
+            h: mv.hits || undefined
+        })),
+        shiny: !!pk.shiny
+    };
+}
+
+function applySerializedPokemon(id, data) {
+    if (!data?.n) return;
+    loadPokemon(id, data.n);
+    const pk = id === 1 ? p1 : p2;
+    if (data.l != null) pk.level = data.l;
+    if (data.a) pk.ability = data.a;
+    if (data.i) pk.item = data.i;
+    if (data.nat) pk.nature = data.nat;
+    if (data.t1) pk.type1 = data.t1;
+    if (data.t2 != null) pk.type2 = data.t2;
+    pk.tera = !!data.tera;
+    if (data.tt) pk.teraType = data.tt;
+    if (data.st) pk.status = data.st;
+    if (data.hp != null) pk.hpPercent = data.hp;
+    if (data.af != null) pk.alliesFainted = data.af;
+    if (data.ev) pk.evs = { ...pk.evs, ...data.ev };
+    if (data.iv) pk.ivs = { ...pk.ivs, ...data.iv };
+    if (data.b) pk.boosts = { ...pk.boosts, ...data.b };
+    pk.shiny = !!data.shiny;
+    if (Array.isArray(data.m)) {
+        data.m.forEach((mv, idx) => {
+            if (idx >= 4 || !mv?.n || mv.n === 'None') return;
+            const rec = BattleCalc.MoveIndex.findInArray(movesDB, mv.n);
+            if (rec) {
+                pk.moves[idx] = BattleCalc.MoveIndex.createMoveState(rec.name, {
+                    crit: !!mv.c,
+                    ...(mv.h ? { hits: mv.h } : {})
+                });
+            }
+        });
+    }
+    const lvl = document.getElementById(`p${id}-level`);
+    if (lvl) lvl.value = pk.level;
+    populatePokemonUI(pk);
+}
+
+function serializeField() {
+    return {
+        f: field.format,
+        w: field.weather,
+        t: field.terrain,
+        g: !!field.gravity,
+        mr: !!field.magicRoom,
+        wr: !!field.wonderRoom,
+        tr: !!field.trickRoom,
+        r: { ...field.ruins },
+        s1: { ...field.side1 },
+        s2: { ...field.side2 }
+    };
+}
+
+function applySerializedField(data) {
+    if (!data) return;
+    if (data.f) field.format = data.f;
+    if (data.w) field.weather = data.w;
+    if (data.t) field.terrain = data.t;
+    field.gravity = !!data.g;
+    field.magicRoom = !!data.mr;
+    field.wonderRoom = !!data.wr;
+    field.trickRoom = !!data.tr;
+    if (data.r) field.ruins = { ...field.ruins, ...data.r };
+    if (data.s1) field.side1 = { ...field.side1, ...data.s1 };
+    if (data.s2) field.side2 = { ...field.side2, ...data.s2 };
+    syncFieldUIFromState();
+}
+
+function syncFieldUIFromState() {
+    const panel = document.getElementById('field-panel');
+    if (!panel) return;
+
+    const singles = document.getElementById('f-singles');
+    const doubles = document.getElementById('f-doubles');
+    if (singles && doubles) {
+        singles.classList.toggle('active', field.format === 'Singles');
+        doubles.classList.toggle('active', field.format === 'Doubles');
+    }
+    panel.querySelectorAll('[data-weather]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-weather') === field.weather);
+    });
+    panel.querySelectorAll('[data-terrain]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-terrain') === field.terrain);
+    });
+
+    const mechMap = {
+        Gravity: field.gravity,
+        'Magic Room': field.magicRoom,
+        'Wonder Room': field.wonderRoom,
+        'Trick Room': field.trickRoom
+    };
+    Object.entries(mechMap).forEach(([effect, on]) => {
+        panel.querySelectorAll(`[data-effect="${effect}"]`).forEach(btn => {
+            if (!btn.closest('.side-controls')) btn.classList.toggle('active', !!on);
+        });
+    });
+
+    Object.entries(field.ruins || {}).forEach(([key, on]) => {
+        panel.querySelectorAll(`[data-ruin="${key}"]`).forEach(btn => btn.classList.toggle('active', !!on));
+    });
+
+    ['side1', 'side2'].forEach((sideKey, i) => {
+        const sidePanel = document.querySelectorAll('.sides-row .side-controls')[i];
+        if (!sidePanel) return;
+        const side = field[sideKey] || {};
+        const effectMap = {
+            Reflect: side.reflect,
+            'Light Screen': side.lightScreen,
+            'Aurora Veil': side.auroraVeil,
+            Protect: side.protect,
+            'Helping Hand': side.helpingHand,
+            'Friend Guard': side.friendGuard,
+            Battery: side.battery,
+            'Power Spot': side.powerSpot,
+            'Steely Spirit': side.steelySpirit,
+            Protosynthesis: side.protosynthesis,
+            'Quark Drive': side.quarkDrive,
+            'Leech Seed': side.leechSeed,
+            Tailwind: side.tailwind,
+            'Stealth Rock': side.stealthRock
+        };
+        Object.entries(effectMap).forEach(([effect, on]) => {
+            sidePanel.querySelectorAll(`[data-effect="${effect}"]`).forEach(btn => {
+                if (!btn.classList.contains('spikes-btn')) btn.classList.toggle('active', !!on);
+            });
+        });
+        sidePanel.querySelectorAll('.spikes-btn').forEach(btn => {
+            const count = parseInt(btn.getAttribute('data-count') || '0', 10);
+            btn.classList.toggle('active', count === (side.spikes || 0));
+        });
+    });
+}
+
+function encodeCalcState() {
+    const payload = {
+        v: 1,
+        p1: serializePokemon(p1),
+        p2: serializePokemon(p2),
+        field: serializeField(),
+        sm1: selectedMoveIdx1,
+        sm2: selectedMoveIdx2,
+        champs: typeof isChampionsMode === 'boolean' ? isChampionsMode : true
+    };
+    const json = JSON.stringify(payload);
+    return btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeCalcState(token) {
+    try {
+        const b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+        const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
+        const json = decodeURIComponent(escape(atob(b64 + pad)));
+        return JSON.parse(json);
+    } catch (e) {
+        return null;
+    }
+}
+
+function shareCalcLink() {
+    if (!p1?.name || !p2?.name) {
+        showToast('Load both Pokémon first');
+        return;
+    }
+    const token = encodeCalcState();
+    const url = `${location.origin}${location.pathname}#calc=${token}`;
+    try {
+        history.replaceState(null, '', `#calc=${token}`);
+    } catch (_) { /* ignore */ }
+    if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(url).then(() => showToast('Calc link copied')).catch(() => {
+            prompt('Copy this calc link:', url);
+        });
+    } else {
+        prompt('Copy this calc link:', url);
+    }
+}
+
+function copyCalcResult() {
+    const main = document.getElementById('main-result')?.innerText || '';
+    const speed = document.getElementById('speed-result')?.innerText || '';
+    const sub = document.getElementById('sub-result')?.innerText || '';
+    const ko = document.getElementById('ko-result')?.innerText || '';
+    const text = [main, speed, sub, ko].filter(Boolean).join('\n');
+    if (!text || main.includes('Select moves')) {
+        showToast('No result to copy');
+        return;
+    }
+    if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast('Result copied')).catch(() => showToast('Copy failed'));
+    } else {
+        prompt('Copy result:', text);
+    }
+}
+
+function tryLoadCalcFromHash() {
+    const hash = location.hash || '';
+    const m = hash.match(/#calc=([A-Za-z0-9_-]+)/);
+    if (!m) return false;
+    const data = decodeCalcState(m[1]);
+    if (!data?.p1 || !data?.p2) return false;
+    applySerializedPokemon(1, data.p1);
+    applySerializedPokemon(2, data.p2);
+    applySerializedField(data.field);
+    if (typeof data.champs === 'boolean' && typeof isChampionsMode === 'boolean' && data.champs !== isChampionsMode) {
+        toggleChampionsMode();
+    }
+    selectedMoveIdx1 = data.sm1 ?? -1;
+    selectedMoveIdx2 = data.sm2 ?? -1;
+    updateFieldState();
+    recalculate();
+    showToast('Shared calc loaded');
+    return true;
+}
+
+window.shareCalcLink = shareCalcLink;
+window.copyCalcResult = copyCalcResult;
 
 function swapCalcSides() {
     if (!p1 || !p2) return;

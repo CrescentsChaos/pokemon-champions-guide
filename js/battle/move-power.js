@@ -156,6 +156,32 @@
             basePower = 50 * (1 + fallen);
         }
 
+        // Knock Off: 1.5× if target holds an item
+        if (variablePower === 'knock_off' || moveKey === 'knockoff') {
+            const defItem = (defender.item || '').toLowerCase();
+            if (defItem && defItem !== 'none') basePower = Math.floor(basePower * 1.5);
+        }
+
+        // Acrobatics: 2× without a held item (or while Flying Gem is consumed — treat empty as boost)
+        if (variablePower === 'acrobatics' || moveKey === 'acrobatics') {
+            const atkItem = (attacker.item || '').toLowerCase();
+            if (!atkItem || atkItem === 'none') basePower *= 2;
+        }
+
+        // Expanding Force: 1.5× BP on Psychic Terrain (spread handled separately when grounded)
+        if (variablePower === 'expanding_force' || moveKey === 'expandingforce') {
+            if ((field?.terrain || '') === 'Psychic' && BC.isGrounded?.(attacker, field) !== false) {
+                basePower = Math.floor(basePower * 1.5);
+            }
+        }
+
+        // Rising Voltage: 2× BP vs grounded target on Electric Terrain
+        if (variablePower === 'rising_voltage' || moveKey === 'risingvoltage') {
+            if ((field?.terrain || '') === 'Electric' && BC.isGrounded?.(defender, field)) {
+                basePower *= 2;
+            }
+        }
+
         if (attacker.hpPercent <= 33.33) {
             const typeResolved = resolveMoveType(attacker, move, moveRecord, (attacker.item || '').toLowerCase(), field);
             const moveType = typeResolved.moveType;

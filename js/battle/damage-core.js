@@ -166,6 +166,12 @@
             atkBoost = defender.boosts.atk;
             rawAtk = applyParadoxBoost(defender, rawAtk, 'atk', field, defenderSide);
         }
+        // Body Press uses user's Defense (with Def stages) as the offensive stat
+        if (variablePower === 'body_press' || (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === 'bodypress') {
+            rawAtk = attacker.stats.def;
+            atkBoost = attacker.boosts.def;
+            rawAtk = applyParadoxBoost(attacker, rawAtk, 'def', field, attackerSide);
+        }
 
         if (field.weather === 'Snow' && (defender.type1 === 'Ice' || defender.type2 === 'Ice' || (defender.tera && defender.teraType === 'Ice')) && !isSpecial) {
             rawDef = Math.floor(rawDef * 1.5);
@@ -174,11 +180,29 @@
             rawDef = Math.floor(rawDef * 1.5);
         }
 
-        if (attacker.ability === 'Huge Power' || attacker.ability === 'Pure Power') {
+        const atkAb = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const defAb = (defender.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const breaksAbility = atkAb === 'moldbreaker' || atkAb === 'teravolt' || atkAb === 'turboblaze';
+
+        if (atkAb === 'hugepower' || atkAb === 'purepower') {
             if (!isSpecial) rawAtk *= 2;
         }
-        if (attacker.ability === 'Guts' && attacker.status !== 'Healthy') {
+        if (atkAb === 'guts' && attacker.status !== 'Healthy') {
             if (!isSpecial) rawAtk = Math.floor(rawAtk * 1.5);
+        }
+        if (atkAb === 'hustle' && !isSpecial) {
+            rawAtk = Math.floor(rawAtk * 1.5);
+        }
+        if (atkAb === 'slowstart') {
+            if (!isSpecial) rawAtk = Math.floor(rawAtk * 0.5);
+        }
+        // Defensive ability stat mods (pre-boost)
+        if (!breaksAbility) {
+            if (defAb === 'furcoat' && !isSpecial) rawDef = Math.floor(rawDef * 2);
+            if (defAb === 'marvelscale' && defender.status !== 'Healthy' && !isSpecial) {
+                rawDef = Math.floor(rawDef * 1.5);
+            }
+            if (defAb === 'icescales' && isSpecial) rawDef = Math.floor(rawDef * 2);
         }
 
         const itemsActive = !field.magicRoom;
@@ -186,7 +210,10 @@
         const defenderItem = itemsActive ? (defender.item || '').toLowerCase() : '';
         if (item === 'choice band' && !isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
         if (item === 'choice specs' && isSpecial) rawAtk = pokeRound(of32(rawAtk * 6144) / 4096);
-        if (defenderItem === 'eviolite' && defender.name.includes('Line')) rawDef = Math.floor(rawDef * 1.5);
+        // Eviolite: 1.5× Def/SpD when held (NFE data unavailable — honor the item when equipped)
+        if (defenderItem === 'eviolite') rawDef = Math.floor(rawDef * 1.5);
+        if (attackerSide.battery && isSpecial) rawAtk = Math.floor(rawAtk * 1.3);
+        if (attackerSide.powerSpot) rawAtk = Math.floor(rawAtk * 1.3);
 
         const typeItem = itemsActive ? item : '';
         const typeResult = resolveMoveType(attacker, move, moveRecord, typeItem, field);
@@ -205,22 +232,48 @@
         }
         if (attackerSide.helpingHand) bpMods.push(6144);
         // Supreme Overlord: BP × (1.0–1.5) from fainted allies (capped at 5)
-        {
-            const abKey = (attacker.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (abKey === 'supremeoverlord') {
-                const fallen = Math.min(5, Math.max(0, parseInt(attacker.alliesFainted, 10) || 0));
-                if (fallen > 0) {
-                    const powMod = [4096, 4506, 4915, 5325, 5734, 6144];
-                    bpMods.push(powMod[fallen]);
-                }
+        if (atkAb === 'supremeoverlord') {
+            const fallen = Math.min(5, Math.max(0, parseInt(attacker.alliesFainted, 10) || 0));
+            if (fallen > 0) {
+                const powMod = [4096, 4506, 4915, 5325, 5734, 6144];
+                bpMods.push(powMod[fallen]);
             }
         }
+        // Offensive ability BP mods
+        if (atkAb === 'technician' && basePower <= 60) bpMods.push(6144);
+        if (atkAb === 'toughclaws' && MoveIndex.isContact(move)) bpMods.push(5325);
+        if (atkAb === 'ironfist' && MoveIndex.isPunching(move)) bpMods.push(4915);
+        if (atkAb === 'strongjaw' && MoveIndex.isBiting(move)) bpMods.push(6144);
+        if (atkAb === 'sharpness' && MoveIndex.isSlicing(move)) bpMods.push(6144);
+        if (atkAb === 'megalauncher' && MoveIndex.isPulse(move)) bpMods.push(6144);
+        {
+            const mk = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const recklessMoves = new Set(['takedown', 'doubleedge', 'submission', 'struggle', 'volttackle', 'flareblitz', 'bravebird', 'woodhammer', 'headsmash', 'wildcharge', 'headcharge', 'lightofruin', 'wavecrash', 'chloroblast', 'jumpkick', 'highjumpkick', 'axekick']);
+            if (atkAb === 'reckless' && recklessMoves.has(mk)) bpMods.push(4915);
+            const sheerForceCommon = new Set(['ironhead', 'playrough', 'crunch', 'scald', 'flamethrower', 'thunderbolt', 'icebeam', 'earthpower', 'darkpulse', 'shadowball', 'sludgebomb', 'dragonpulse', 'airslash', 'rockslide', 'waterfall', 'poisonjab', 'zenheadbutt', 'firepunch', 'thunderpunch', 'icepunch']);
+            if (atkAb === 'sheerforce' && sheerForceCommon.has(mk)) bpMods.push(5325);
+        }
+        if (atkAb === 'steelyspirit' || attackerSide.steelySpirit) {
+            if (moveType === 'Steel') bpMods.push(6144);
+        }
+        if (atkAb === 'waterbubble' && moveType === 'Water') bpMods.push(8192);
+        if (atkAb === 'dragonsmaw' && moveType === 'Dragon') bpMods.push(6144);
+        if (atkAb === 'transistor' && moveType === 'Electric') bpMods.push(5325);
+        if (atkAb === 'rockypayload' && moveType === 'Rock') bpMods.push(6144);
+
         if (BC.getTerrainModifier) {
-            const terrainMult = BC.getTerrainModifier(moveType, field);
+            const grounded = typeof BC.isGrounded === 'function' ? BC.isGrounded(attacker, field) : true;
+            const terrainMult = grounded ? BC.getTerrainModifier(moveType, field) : 1;
             if (terrainMult === 1.3) bpMods.push(5325);
             else if (terrainMult === 0.5) bpMods.push(2048);
             else if (terrainMult !== 1) bpMods.push(Math.round(terrainMult * 4096));
         }
+        // Expanding Force becomes spread on Psychic Terrain
+        const moveKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const expandingForceSpread = moveKey === 'expandingforce'
+            && field.terrain === 'Psychic'
+            && (typeof BC.isGrounded !== 'function' || BC.isGrounded(attacker, field));
+
         const typeItemList = TYPE_ITEMS[moveType.toLowerCase()];
         if (typeItemList && typeItemList.includes(item)) {
             bpMods.push(4915);
@@ -231,10 +284,7 @@
             basePower = of16(Math.max(1, pokeRound((basePower * chainMods(bpMods, 41, 2097152)) / 4096)));
         }
 
-        // Water Bubble doubles the offensive stat for Water moves
-        if (attacker.ability === 'Water Bubble' && moveType === 'Water') {
-            rawAtk = Math.floor(rawAtk * 2);
-        }
+        // Water Bubble BP path already applied 2× above — no extra rawAtk double-dip.
 
         let atk = getBoostValue(rawAtk, atkBoost);
         let def = getBoostValue(rawDef, defBoost);
@@ -257,7 +307,7 @@
         const weather = weatherFlags(field, attacker);
 
         // Spread → weather → crit applied BEFORE the random roll (Showdown order)
-        if (field.format === 'Doubles' && MoveIndex.isSpread(move.name)) {
+        if (field.format === 'Doubles' && (MoveIndex.isSpread(move.name) || expandingForceSpread)) {
             baseDamage = pokeRound(of32(baseDamage * 3072) / 4096);
         }
 
@@ -294,11 +344,29 @@
         const finalMods = [];
         const defSide = defender.id === 1 ? field.side1 : field.side2;
 
-        if (typeMod > 1 && (defender.ability === 'Filter' || defender.ability === 'Solid Rock') && attacker.ability !== 'Mold Breaker') {
-            finalMods.push(3072);
+        if (!breaksAbility) {
+            if (typeMod > 1 && (defAb === 'filter' || defAb === 'solidrock' || defAb === 'prismarmor')) {
+                finalMods.push(3072);
+            }
+            if ((defender.hpPercent ?? 100) >= 100 && (defAb === 'multiscale' || defAb === 'shadowshield')) {
+                finalMods.push(2048);
+            }
+            if (defAb === 'fluffy' && MoveIndex.isContact(move)) finalMods.push(2048);
+            if (defAb === 'fluffy' && moveType === 'Fire') finalMods.push(8192);
+            if (defAb === 'punkrock' && MoveIndex.isSound(move)) finalMods.push(2048);
+            if ((defAb === 'thickfat' || defAb === 'heatproof') && (moveType === 'Fire' || (defAb === 'thickfat' && moveType === 'Ice'))) {
+                if (defAb === 'thickfat') finalMods.push(2048);
+                if (defAb === 'heatproof' && moveType === 'Fire') finalMods.push(2048);
+            }
+            if (defAb === 'waterbubble' && moveType === 'Fire') finalMods.push(2048);
+            if (defAb === 'dryskin' && moveType === 'Fire') finalMods.push(5120);
+            if (defSide.friendGuard) finalMods.push(3072);
         }
+        if (atkAb === 'neuroforce' && typeMod > 1) finalMods.push(5120);
+        if (atkAb === 'punkrock' && MoveIndex.isSound(move)) finalMods.push(5325);
+        if (atkAb === 'sniper' && move.crit) finalMods.push(6144);
 
-        if (!move.crit && attacker.ability !== 'Infiltrator') {
+        if (!move.crit && atkAb !== 'infiltrator') {
             if (isSpecial && (defSide.lightScreen || defSide.auroraVeil)) {
                 finalMods.push(field.format === 'Doubles' ? 2732 : 2048);
             }
@@ -311,18 +379,18 @@
         if (item === 'expert belt' && typeMod > 1) finalMods.push(4915);
 
         const finalMod = chainMods(finalMods);
-        const applyBurn = attacker.status === 'Burned' && !isSpecial && attacker.ability !== 'Guts';
+        const applyBurn = attacker.status === 'Burned' && !isSpecial && atkAb !== 'guts';
 
         let rolls = [];
         for (let i = 0; i < 16; i++) {
             rolls.push(getFinalDamage(baseDamage, i, typeMod, applyBurn, stabMod, finalMod));
         }
 
-        if (defSide.protect && attacker.ability !== 'Unseen Fist') {
+        if (defSide.protect && atkAb !== 'unseenfist') {
             rolls = rolls.map(() => 0);
         }
 
-        if (attacker.ability === 'Parental Bond' && move.category !== 'Status') {
+        if (atkAb === 'parentalbond' && move.category !== 'Status') {
             rolls = rolls.map(r => r + Math.floor(r * 0.25));
         }
 

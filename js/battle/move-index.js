@@ -123,6 +123,18 @@
             return this.hasTag(nameOrRecord, 'Pulse');
         },
 
+        isPunching(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Punching');
+        },
+
+        isBiting(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Biting');
+        },
+
+        isSlicing(nameOrRecord) {
+            return this.hasTag(nameOrRecord, 'Slicing');
+        },
+
         isPriority(nameOrRecord) {
             const rec = resolveRecord(nameOrRecord);
             return (rec?.priority || 0) > 0;

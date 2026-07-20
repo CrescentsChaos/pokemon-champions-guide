@@ -157,6 +157,98 @@ body.calc-page main.container {
     word-break: break-word;
 }
 
+.speed-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: rgba(77, 148, 255, 0.95);
+    margin: 0.15rem 0 0.55rem;
+    letter-spacing: 0.02em;
+}
+
+.damage-bar {
+    position: relative;
+    height: 14px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin: 0.35rem 0 0.55rem;
+}
+
+.damage-bar__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: linear-gradient(90deg, #4d94ff, #ff4d4d);
+    transition: width 0.35s ease;
+    border-radius: 7px;
+}
+
+.damage-bar__fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--bar-min, 0%);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.damage-bar__fill.near-ko {
+    background: linear-gradient(90deg, #ffb347, #ff4d4d);
+}
+
+.damage-bar__fill.ko {
+    background: linear-gradient(90deg, #ff4d4d, #ff1a1a);
+}
+
+.damage-bar__range {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+.roll-heatmap {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 36px;
+    margin: 0.35rem 0 0.45rem;
+    padding: 0.25rem 0;
+}
+
+.roll-heatmap__bar {
+    flex: 1;
+    min-width: 3px;
+    border-radius: 2px 2px 0 0;
+    background: rgba(77, 148, 255, 0.55);
+    transition: height 0.25s ease, background 0.2s ease;
+}
+
+.roll-heatmap__bar.is-ko {
+    background: rgba(255, 77, 77, 0.85);
+}
+
+.banner-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+}
+
+.banner-toolbar .field-btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
+}
+
 #ko-result {
     margin-top: 0.5rem;
     font-weight: 800;
