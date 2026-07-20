@@ -360,6 +360,227 @@
             margin-bottom: 20px;
         }
 
+        /* Best Teams overlay */
+        .best-teams-overlay-content {
+            max-width: 920px;
+        }
+
+        .best-teams-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .best-teams-sub {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            line-height: 1.45;
+            max-width: 36rem;
+        }
+
+        .best-teams-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .best-teams-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .best-teams-format-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 2px;
+        }
+
+        .best-teams-dest {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .best-dest-btn {
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .best-dest-btn.active {
+            background: rgba(255, 196, 80, 0.18);
+            color: #ffd76f;
+        }
+
+        .best-teams-meta {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            margin: 0 0 12px;
+        }
+
+        .best-teams-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .best-team-card {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                linear-gradient(145deg, rgba(255, 196, 80, 0.07), transparent 42%),
+                rgba(255, 255, 255, 0.03);
+            transition: border-color 0.2s, transform 0.15s, background 0.2s;
+        }
+
+        .best-team-card:hover {
+            border-color: rgba(255, 196, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .best-team-card__top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .best-team-card__title {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .best-team-card__badge {
+            flex-shrink: 0;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(74, 144, 226, 0.2);
+            color: #8ec5ff;
+            border: 1px solid rgba(74, 144, 226, 0.35);
+        }
+
+        .best-team-card__badge--singles {
+            background: rgba(230, 57, 70, 0.18);
+            color: #ff8a94;
+            border-color: rgba(230, 57, 70, 0.35);
+        }
+
+        .best-team-sprites {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .best-team-mon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            padding: 8px 4px 10px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .best-team-mon__sprite-wrap {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .best-team-mon__sprite {
+            max-width: 58px;
+            max-height: 58px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+        }
+
+        .best-team-mon__name {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.78);
+            text-align: center;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .best-team-mon__item {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.38);
+            text-align: center;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .best-team-mon--missing {
+            opacity: 0.45;
+        }
+
+        .best-team-card__actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .best-team-empty {
+            text-align: center;
+            padding: 48px 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            .best-team-sprites {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .best-teams-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
         /* Buttons */
         .analyze-btn {
             display: inline-flex;
@@ -1093,6 +1314,8 @@
                 <div style="display: flex; gap: 10px;">
                     <button id="main-import-btn" class="analyze-btn"
                         style="padding: 10px 25px; font-size: 0.8rem;">IMPORT PASTE</button>
+                    <button id="best-teams-btn" class="analyze-btn"
+                        style="padding: 10px 25px; font-size: 0.8rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST TEAMS</button>
                     <button id="export-paste-btn" class="analyze-btn"
                         style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT
                         PASTE</button>
@@ -1271,8 +1494,12 @@
                 <div class="opp-roster-section">
                     <div class="opp-roster-head">
                         <h3 class="opp-section-title">Opponent Roster (6)</h3>
-                        <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
-                            style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR ALL</button>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" class="analyze-btn" onclick="openBestTeamsOverlay('opponent')"
+                                style="padding: 8px 16px; font-size: 0.75rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST TEAMS</button>
+                            <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
+                                style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR ALL</button>
+                        </div>
                     </div>
                     <div id="opponent-roster-grid"></div>
                 </div>
@@ -1526,6 +1753,38 @@
         </div>
     </div>
 
+    <!-- Best Teams Quick Search Overlay -->
+    <div class="overlay" id="best-teams-overlay">
+        <div class="overlay-content best-teams-overlay-content">
+            <div class="best-teams-head">
+                <div>
+                    <h2>Best Teams</h2>
+                    <p class="best-teams-sub">Curated library teams — preview the full six, then load into your builder or opponent prep.</p>
+                </div>
+                <button type="button" class="analyze-btn" id="close-best-teams"
+                    style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE</button>
+            </div>
+
+            <div class="best-teams-controls">
+                <input type="search" id="best-teams-search" class="builder-input" placeholder="Search team name or Pokémon…">
+                <div class="best-teams-filters">
+                    <div class="format-toggle-wrapper best-teams-format-toggle">
+                        <button type="button" class="toggle-btn active" data-best-format="All">ALL</button>
+                        <button type="button" class="toggle-btn" data-best-format="Doubles">DOUBLES</button>
+                        <button type="button" class="toggle-btn" data-best-format="Singles">SINGLES</button>
+                    </div>
+                    <div class="best-teams-dest" role="group" aria-label="Import destination">
+                        <button type="button" class="best-dest-btn active" data-best-dest="team">My Team</button>
+                        <button type="button" class="best-dest-btn" data-best-dest="opponent">Opponent</button>
+                    </div>
+                </div>
+            </div>
+
+            <p id="best-teams-meta" class="best-teams-meta"></p>
+            <div id="best-teams-list" class="best-teams-list"></div>
+        </div>
+    </div>
+
     <!-- Paste Export Overlay -->
     <div class="overlay" id="export-overlay">
         <div class="overlay-content">
@@ -1570,7 +1829,7 @@
     <script src="../js/analysis.js?v=5"></script>
     <script src="../js/build-narrative.js?v=5"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
-    <script src="../js/opponent-analysis.js?v=7"></script>
+    <script src="../js/opponent-analysis.js?v=8"></script>
 
     <script>
 
@@ -1582,6 +1841,9 @@
         let allAbilities = [];
         let abilitiesMap = {};
         let allBuilds = [];
+        let bestTeamsData = { Doubles: {}, Singles: {} };
+        let bestTeamsFormatFilter = 'All';
+        let bestTeamsDest = 'team';
         let pokemon_database = []; // Alias for user request
         let moves_database = [];   // Alias for user request
         let currentSlot = 0;
@@ -1682,12 +1944,13 @@
         async function init() {
             try {
                 const cb = '?v=' + Date.now();
-                const [p, m, i, b, topResp] = await Promise.all([
+                const [p, m, i, b, topResp, bestTeamsResp] = await Promise.all([
                     fetch('../assets/pokemon.json' + cb).then(r => r.json()),
                     fetch('../assets/moves.json' + cb).then(r => r.json()),
                     fetch('../assets/items.json' + cb).then(r => r.json()),
                     fetch('../assets/builds.json' + cb).then(r => r.json()).catch(() => []),
-                    fetch('../assets/top_pokemons.json' + cb).catch(() => null)
+                    fetch('../assets/top_pokemons.json' + cb).catch(() => null),
+                    fetch('../assets/best_teams.json' + cb).catch(() => null)
                 ]);
                 allPokemon = p;
                 allBuilds = b;
@@ -1696,6 +1959,11 @@
                 moves_database = m;
                 initMoveIndex(allMoves);
                 allItems = i;
+                if (bestTeamsResp) {
+                    try {
+                        bestTeamsData = await bestTeamsResp.json();
+                    } catch (e) { bestTeamsData = { Doubles: {}, Singles: {} }; }
+                }
                 if (topResp) {
                     try {
                         globalThis._topPokemonsCache = await topResp.json();
@@ -3430,6 +3698,230 @@
         // Import paste button
         document.getElementById('main-import-btn').onclick = () => document.getElementById('import-overlay').style.display = 'flex';
         document.getElementById('close-import').onclick = () => document.getElementById('import-overlay').style.display = 'none';
+        document.getElementById('best-teams-btn').onclick = () => openBestTeamsOverlay('team');
+        document.getElementById('close-best-teams').onclick = () => {
+            document.getElementById('best-teams-overlay').style.display = 'none';
+        };
+        document.getElementById('best-teams-search').oninput = () => renderBestTeamsList();
+        document.querySelectorAll('[data-best-format]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                bestTeamsFormatFilter = btn.getAttribute('data-best-format') || 'All';
+                document.querySelectorAll('[data-best-format]').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-best-format') === bestTeamsFormatFilter);
+                });
+                renderBestTeamsList();
+            });
+        });
+        document.querySelectorAll('[data-best-dest]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                bestTeamsDest = btn.getAttribute('data-best-dest') || 'team';
+                document.querySelectorAll('[data-best-dest]').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-best-dest') === bestTeamsDest);
+                });
+                renderBestTeamsList();
+            });
+        });
+
+        function createEmptyTeamSlot() {
+            return {
+                species: '', item: '', ability: '', level: 50, shiny: false,
+                tera: '', nickname: '', gender: '-', nature: 'Serious',
+                evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+                ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+                moves: ['', '', '', '']
+            };
+        }
+
+        function getBestTeamEntries() {
+            const formats = ['Doubles', 'Singles'];
+            const entries = [];
+            formats.forEach(format => {
+                const teams = bestTeamsData?.[format] || {};
+                Object.entries(teams).forEach(([name, ids]) => {
+                    const members = (ids || []).slice(0, 6).map(id => {
+                        const build = allBuilds.find(b => String(b.id) === String(id));
+                        if (!build) {
+                            return { id, missing: true, species: `Missing #${id}`, item: '', build: null };
+                        }
+                        let parsed = null;
+                        try {
+                            parsed = parsePaste(build.build)[0];
+                        } catch (e) { /* ignore */ }
+                        return {
+                            id,
+                            missing: false,
+                            species: parsed?.species || build.pokemon,
+                            item: parsed?.item || '',
+                            ability: parsed?.ability || '',
+                            build,
+                            parsed
+                        };
+                    });
+                    entries.push({ name, format, ids: ids || [], members });
+                });
+            });
+            return entries;
+        }
+
+        function openBestTeamsOverlay(dest) {
+            if (dest === 'opponent' || dest === 'team') {
+                bestTeamsDest = dest;
+                document.querySelectorAll('[data-best-dest]').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-best-dest') === bestTeamsDest);
+                });
+            }
+            // Prefer the active prep/analysis format when browsing for opponent scouting
+            if (dest === 'opponent' && bestTeamsFormatFilter === 'All') {
+                const doublesActive = document.getElementById('opponent-toggle-doubles')?.classList.contains('active');
+                if (doublesActive) {
+                    bestTeamsFormatFilter = 'Doubles';
+                    document.querySelectorAll('[data-best-format]').forEach(b => {
+                        b.classList.toggle('active', b.getAttribute('data-best-format') === bestTeamsFormatFilter);
+                    });
+                }
+            }
+            const search = document.getElementById('best-teams-search');
+            if (search) search.value = '';
+            renderBestTeamsList();
+            document.getElementById('best-teams-overlay').style.display = 'flex';
+            const panel = document.querySelector('#best-teams-overlay .overlay-content');
+            if (panel) panel.scrollTop = 0;
+        }
+
+        function renderBestTeamsList() {
+            const list = document.getElementById('best-teams-list');
+            const meta = document.getElementById('best-teams-meta');
+            if (!list) return;
+
+            const q = (document.getElementById('best-teams-search')?.value || '').trim().toLowerCase();
+            let entries = getBestTeamEntries();
+            if (bestTeamsFormatFilter !== 'All') {
+                entries = entries.filter(e => e.format === bestTeamsFormatFilter);
+            }
+            if (q) {
+                entries = entries.filter(e => {
+                    if (e.name.toLowerCase().includes(q)) return true;
+                    return e.members.some(m =>
+                        (m.species || '').toLowerCase().includes(q) ||
+                        (m.item || '').toLowerCase().includes(q)
+                    );
+                });
+            }
+
+            const destLabel = bestTeamsDest === 'opponent' ? 'opponent prep' : 'your team';
+            if (meta) {
+                meta.textContent = entries.length
+                    ? `${entries.length} team${entries.length === 1 ? '' : 's'} · load into ${destLabel}`
+                    : 'No matching teams';
+            }
+
+            if (!entries.length) {
+                list.innerHTML = `<div class="best-team-empty">No best teams found. Add entries in <code>assets/best_teams.json</code>.</div>`;
+                return;
+            }
+
+            list.innerHTML = entries.map((entry) => {
+                const badgeClass = entry.format === 'Singles'
+                    ? 'best-team-card__badge best-team-card__badge--singles'
+                    : 'best-team-card__badge';
+                const mons = entry.members.map(m => {
+                    const sprite = m.missing
+                        ? 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif'
+                        : getSpriteUrl({ species: m.species, shiny: false });
+                    return `
+                        <div class="best-team-mon ${m.missing ? 'best-team-mon--missing' : ''}" title="${(m.species || '').replace(/"/g, '&quot;')}${m.item ? ' @ ' + m.item.replace(/"/g, '&quot;') : ''}">
+                            <div class="best-team-mon__sprite-wrap">
+                                <img class="best-team-mon__sprite" src="${sprite}" alt="${(m.species || '').replace(/"/g, '&quot;')}"
+                                    onerror="handleSpriteError(this, '${(m.species || '').replace(/'/g, "\\'")}', false)">
+                            </div>
+                            <span class="best-team-mon__name">${m.species || '—'}</span>
+                            <span class="best-team-mon__item">${m.item ? '@ ' + m.item : (m.missing ? 'build missing' : '—')}</span>
+                        </div>`;
+                }).join('') + Array(Math.max(0, 6 - entry.members.length)).fill(`
+                        <div class="best-team-mon best-team-mon--missing">
+                            <div class="best-team-mon__sprite-wrap">
+                                <img class="best-team-mon__sprite" src="https://play.pokemonshowdown.com/sprites/ani/substitute.gif" alt="">
+                            </div>
+                            <span class="best-team-mon__name">Empty</span>
+                            <span class="best-team-mon__item">—</span>
+                        </div>`).join('');
+
+                const actionLabel = bestTeamsDest === 'opponent' ? 'Load Opponent' : 'Load My Team';
+                return `
+                    <article class="best-team-card">
+                        <div class="best-team-card__top">
+                            <h3 class="best-team-card__title">${entry.name.replace(/</g, '&lt;')}</h3>
+                            <span class="${badgeClass}">${entry.format}</span>
+                        </div>
+                        <div class="best-team-sprites">${mons}</div>
+                        <div class="best-team-card__actions">
+                            <button type="button" class="analyze-btn best-team-load-btn"
+                                style="padding: 10px 18px; font-size: 0.75rem;">${actionLabel}</button>
+                        </div>
+                    </article>`;
+            }).join('');
+
+            list.querySelectorAll('.best-team-load-btn').forEach((btn, i) => {
+                btn.onclick = () => importBestTeam(entries[i]);
+            });
+        }
+
+        function importBestTeam(entry) {
+            if (!entry) return;
+            const loaded = entry.members.filter(m => m.build && !m.missing);
+
+            if (bestTeamsDest === 'opponent') {
+                if (typeof setOpponentPrepFormat === 'function') setOpponentPrepFormat(entry.format);
+                const count = typeof loadOpponentTeamFromBuildIds === 'function'
+                    ? loadOpponentTeamFromBuildIds(entry.ids, entry.format)
+                    : 0;
+                document.getElementById('best-teams-overlay').style.display = 'none';
+                switchSlot(-3);
+                showToast(`Loaded ${count || loaded.length} Pokémon into opponent prep — ${entry.name}`);
+                return;
+            }
+
+            const empty = createEmptyTeamSlot();
+            for (let i = 0; i < 6; i++) {
+                const member = entry.members[i];
+                if (member?.parsed) {
+                    const pk = { ...empty, ...member.parsed };
+                    if (!Array.isArray(pk.moves)) pk.moves = ['', '', '', ''];
+                    while (pk.moves.length < 4) pk.moves.push('');
+                    if (typeof coerceEvsForMode === 'function') {
+                        pk.evs = coerceEvsForMode(pk.evs, isChampionsMode);
+                    }
+                    team[i] = pk;
+                } else {
+                    team[i] = createEmptyTeamSlot();
+                }
+            }
+
+            document.getElementById('best-teams-overlay').style.display = 'none';
+            currentSlot = -1;
+            setupTabs();
+            syncChampionsModeButton();
+            switchSlot(-1);
+            if (typeof saveTeam === 'function') saveTeam();
+            showToast(`Loaded ${loaded.length} Pokémon into your team — ${entry.name}`);
+        }
+
+        function showToast(message) {
+            let el = document.getElementById('builder-toast');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'builder-toast';
+                el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2000;padding:12px 18px;border-radius:12px;background:rgba(20,20,24,0.95);border:1px solid rgba(255,196,80,0.35);color:#fff;font-size:0.82rem;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,0.45);pointer-events:none;opacity:0;transition:opacity 0.2s;';
+                document.body.appendChild(el);
+            }
+            el.textContent = message;
+            el.style.opacity = '1';
+            clearTimeout(el._hideTimer);
+            el._hideTimer = setTimeout(() => { el.style.opacity = '0'; }, 2200);
+        }
+
+        window.openBestTeamsOverlay = openBestTeamsOverlay;
+
         document.getElementById('confirm-import').onclick = async () => {
             const raw = document.getElementById('import-textarea').value.trim();
             const statusEl = document.getElementById('import-status');

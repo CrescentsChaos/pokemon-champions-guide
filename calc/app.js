@@ -3,6 +3,11 @@ let pokemonDB = [];
 let movesDB = [];
 let itemsDB = [];
 let buildsDB = [];
+let bestTeamsData = { Doubles: {}, Singles: {} };
+let bestTeamsFormatFilter = 'All';
+let bestTeamsTargetId = 1;
+/** @type {{ name: string, format: string, members: Array<{id:string, species:string, item:string, build:object|null, missing?:boolean}> } | null} */
+let pinnedCalcTeam = null;
 let p1 = null;
 let p2 = null;
 let selectedMoveIdx1 = 0;
@@ -261,16 +266,24 @@ function updateItemSprite(pk) {
 // Initialize
 async function init() {
     try {
-        const [pkmn, mvs, itms, blds] = await Promise.all([
+        const [pkmn, mvs, itms, blds, bestTeamsResp] = await Promise.all([
             fetch('../assets/pokemon.json').then(res => res.json()),
             fetch('../assets/moves.json').then(res => res.json()),
             fetch('../assets/items.json').then(res => res.json()),
-            fetch('../assets/builds.json').then(res => res.json())
+            fetch('../assets/builds.json').then(res => res.json()),
+            fetch('../assets/best_teams.json').catch(() => null)
         ]);
         pokemonDB = pkmn;
         movesDB = mvs;
         itemsDB = itms;
         buildsDB = blds;
+        if (bestTeamsResp) {
+            try {
+                bestTeamsData = await bestTeamsResp.json();
+            } catch (e) {
+                bestTeamsData = { Doubles: {}, Singles: {} };
+            }
+        }
         initMoveIndex(movesDB);
 
         window.p1 = setupPokemonState(1);
@@ -502,6 +515,8 @@ function setupEventListeners() {
         importPokePaste(importTargetId, paste);
         closeImportModal();
     });
+
+    setupCalcBestTeamsUI();
 
     // --- Build Pokepaste Hover Tooltip ---
     const pasteTooltip = document.getElementById('build-paste-tooltip');
@@ -1550,7 +1565,225 @@ function closeImportModal() {
     document.getElementById('import-modal').classList.remove('active');
 }
 
-function importPokePaste(id, paste) {
+function calcSpeciesSpriteUrl(species, shiny = false) {
+    if (!species) return 'https://play.pokemonshowdown.com/sprites/ani/substitute.gif';
+    const clean = species.toLowerCase().replace(/ /g, '-').replace(/\./g, '').replace(/[^a-z0-9-]/g, '');
+    const base = shiny ? 'ani-shiny' : 'ani';
+    return `https://play.pokemonshowdown.com/sprites/${base}/${clean}.gif`;
+}
+
+function parseBuildHead(buildStr) {
+    const lines = String(buildStr || '').split('\n').map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return { species: '', item: '' };
+    const head = lines[0];
+    const itemSplit = head.split('@');
+    const item = itemSplit[1] ? itemSplit[1].trim() : '';
+    let namePart = itemSplit[0].trim();
+    const brackets = [];
+    const bracketRegex = /\(([^)]+)\)/g;
+    let match;
+    while ((match = bracketRegex.exec(namePart)) !== null) brackets.push(match[1].trim());
+    let mainName = namePart.split('(')[0].trim();
+    let species = mainName;
+    if (brackets.length === 2) species = brackets[0];
+    else if (brackets.length === 1 && brackets[0] !== 'M' && brackets[0] !== 'F') species = brackets[0];
+    return { species, item };
+}
+
+function getCalcBestTeamEntries() {
+    const entries = [];
+    ['Doubles', 'Singles'].forEach(format => {
+        const teams = bestTeamsData?.[format] || {};
+        Object.entries(teams).forEach(([name, ids]) => {
+            const members = (ids || []).slice(0, 6).map(id => {
+                const build = buildsDB.find(b => String(b.id) === String(id));
+                if (!build) {
+                    return { id, missing: true, species: `Missing #${id}`, item: '', build: null };
+                }
+                const head = parseBuildHead(build.build);
+                return {
+                    id,
+                    missing: false,
+                    species: head.species || build.pokemon,
+                    item: head.item || '',
+                    build
+                };
+            });
+            entries.push({ name, format, ids: ids || [], members });
+        });
+    });
+    return entries;
+}
+
+function setupCalcBestTeamsUI() {
+    const search = document.getElementById('calc-best-teams-search');
+    if (search) search.addEventListener('input', renderCalcBestTeamsList);
+    document.querySelectorAll('[data-calc-best-format]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            bestTeamsFormatFilter = btn.getAttribute('data-calc-best-format') || 'All';
+            document.querySelectorAll('[data-calc-best-format]').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-calc-best-format') === bestTeamsFormatFilter);
+            });
+            renderCalcBestTeamsList();
+        });
+    });
+
+    const modal = document.getElementById('best-teams-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCalcBestTeams();
+        });
+    }
+}
+
+function openCalcBestTeams(id) {
+    bestTeamsTargetId = id === 2 ? 2 : 1;
+    const label = document.getElementById('best-teams-target-label');
+    if (label) {
+        label.textContent = bestTeamsTargetId === 1
+            ? 'Click a Pokémon to load into Attacker — team stays pinned for both sides'
+            : 'Click a Pokémon to load into Defender — team stays pinned for both sides';
+    }
+    const search = document.getElementById('calc-best-teams-search');
+    if (search) search.value = '';
+    renderCalcBestTeamsList();
+    const modal = document.getElementById('best-teams-modal');
+    if (modal) {
+        modal.classList.add('active');
+        const panel = modal.querySelector('.modal-content');
+        if (panel) panel.scrollTop = 0;
+    }
+}
+
+function closeCalcBestTeams() {
+    document.getElementById('best-teams-modal')?.classList.remove('active');
+}
+
+function renderCalcBestTeamsList() {
+    const list = document.getElementById('calc-best-teams-list');
+    const meta = document.getElementById('calc-best-teams-meta');
+    if (!list) return;
+
+    const q = (document.getElementById('calc-best-teams-search')?.value || '').trim().toLowerCase();
+    let entries = getCalcBestTeamEntries();
+    if (bestTeamsFormatFilter !== 'All') {
+        entries = entries.filter(e => e.format === bestTeamsFormatFilter);
+    }
+    if (q) {
+        entries = entries.filter(e =>
+            e.name.toLowerCase().includes(q) ||
+            e.members.some(m =>
+                (m.species || '').toLowerCase().includes(q) ||
+                (m.item || '').toLowerCase().includes(q)
+            )
+        );
+    }
+
+    const side = bestTeamsTargetId === 1 ? 'Attacker' : 'Defender';
+    if (meta) {
+        meta.textContent = entries.length
+            ? `${entries.length} team${entries.length === 1 ? '' : 's'} · loading into ${side}`
+            : 'No matching teams';
+    }
+
+    if (!entries.length) {
+        list.innerHTML = `<div class="calc-best-teams-empty">No best teams found. Add entries in <code>assets/best_teams.json</code>.</div>`;
+        return;
+    }
+
+    list.innerHTML = entries.map((entry) => {
+        const badgeClass = entry.format === 'Singles'
+            ? 'calc-best-team-card__badge calc-best-team-card__badge--singles'
+            : 'calc-best-team-card__badge';
+        const mons = entry.members.map((m, mi) => {
+            const sprite = calcSpeciesSpriteUrl(m.missing ? '' : m.species);
+            return `
+                <button type="button" class="calc-best-team-mon" data-entry="${entry.format}::${entry.name}" data-member="${mi}"
+                    ${m.missing || !m.build ? 'disabled' : ''}
+                    title="${(m.species || '').replace(/"/g, '&quot;')}${m.item ? ' @ ' + m.item.replace(/"/g, '&quot;') : ''}">
+                    <img class="calc-best-team-mon__sprite" src="${sprite}" alt=""
+                        onerror="handleSpriteError(this, '${(m.species || '').replace(/'/g, "\\'")}', false)">
+                    <span class="calc-best-team-mon__name">${(m.species || '—').replace(/</g, '&lt;')}</span>
+                    <span class="calc-best-team-mon__item">${m.item ? '@ ' + m.item.replace(/</g, '&lt;') : (m.missing ? 'missing' : '—')}</span>
+                </button>`;
+        }).join('');
+
+        return `
+            <article class="calc-best-team-card">
+                <div class="calc-best-team-card__top">
+                    <h4 class="calc-best-team-card__title">${entry.name.replace(/</g, '&lt;')}</h4>
+                    <span class="${badgeClass}">${entry.format}</span>
+                </div>
+                <div class="calc-best-team-sprites">${mons}</div>
+                <p class="calc-best-team-hint">Click any Pokémon to load it into ${side}. The full team pins under both panels.</p>
+            </article>`;
+    }).join('');
+
+    list.querySelectorAll('.calc-best-team-mon').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-entry') || '';
+            const mi = parseInt(btn.getAttribute('data-member'), 10);
+            const entry = entries.find(e => `${e.format}::${e.name}` === key);
+            const member = entry?.members?.[mi];
+            if (!entry || !member?.build) return;
+            loadCalcTeamMember(bestTeamsTargetId, entry, member);
+        });
+    });
+}
+
+function loadCalcTeamMember(sideId, entry, member) {
+    if (!member?.build?.build) return;
+    pinnedCalcTeam = {
+        name: entry.name,
+        format: entry.format,
+        members: entry.members.map(m => ({ ...m }))
+    };
+    importPokePaste(sideId, member.build.build, { silent: true });
+    renderCalcTeamTrays();
+    closeCalcBestTeams();
+    const side = sideId === 1 ? 'Attacker' : 'Defender';
+    showToast(`${member.species} → ${side} (${entry.name})`);
+}
+
+function renderCalcTeamTrays() {
+    [1, 2].forEach(sideId => {
+        const tray = document.getElementById(`p${sideId}-team-tray`);
+        if (!tray) return;
+        if (!pinnedCalcTeam?.members?.length) {
+            tray.hidden = true;
+            tray.innerHTML = '';
+            return;
+        }
+
+        const pk = sideId === 1 ? p1 : p2;
+        const activeName = (pk?.name || '').toLowerCase();
+        tray.hidden = false;
+        tray.innerHTML = pinnedCalcTeam.members.map((m, mi) => {
+            const isActive = !m.missing && m.species && m.species.toLowerCase() === activeName;
+            return `
+                <button type="button" class="calc-team-tray__mon ${isActive ? 'is-active' : ''}" data-tray-member="${mi}"
+                    ${m.missing || !m.build ? 'disabled' : ''}
+                    title="${(m.species || '').replace(/"/g, '&quot;')}${m.item ? ' @ ' + m.item.replace(/"/g, '&quot;') : ''}">
+                    <img class="calc-team-tray__sprite" src="${calcSpeciesSpriteUrl(m.missing ? '' : m.species)}" alt=""
+                        onerror="handleSpriteError(this, '${(m.species || '').replace(/'/g, "\\'")}', false)">
+                    <span class="calc-team-tray__name">${(m.species || '—').replace(/</g, '&lt;')}</span>
+                </button>`;
+        }).join('');
+
+        tray.querySelectorAll('[data-tray-member]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mi = parseInt(btn.getAttribute('data-tray-member'), 10);
+                const member = pinnedCalcTeam?.members?.[mi];
+                if (!member?.build?.build) return;
+                importPokePaste(sideId, member.build.build, { silent: true });
+                renderCalcTeamTrays();
+                showToast(`${member.species} → ${sideId === 1 ? 'Attacker' : 'Defender'}`);
+            });
+        });
+    });
+}
+
+function importPokePaste(id, paste, opts = {}) {
     const pk = id === 1 ? p1 : p2;
     const lines = paste.split('\n').map(l => l.trim()).filter(l => !!l);
     if (!lines.length) return;
@@ -1656,7 +1889,8 @@ function importPokePaste(id, paste) {
         clampPokemonEvs(pk);
         updateStatsUI(pk);
         recalculate();
-        showToast("Import successful!");
+        if (pinnedCalcTeam) renderCalcTeamTrays();
+        if (!opts.silent) showToast("Import successful!");
     } catch (e) {
         console.error("Import error", e);
         showToast("Failed to parse PokePaste!");
@@ -1694,6 +1928,10 @@ window.selectMove = selectMove;
 window.openExportModal = openExportModal;
 window.closeExportModal = closeExportModal;
 window.copyExportPaste = copyExportPaste;
+window.openImportModal = openImportModal;
+window.closeImportModal = closeImportModal;
+window.openCalcBestTeams = openCalcBestTeams;
+window.closeCalcBestTeams = closeCalcBestTeams;
 window.handleSpriteError = function (img, name, shiny) {
     if (!name || img.dataset.fallbackState === 'final' || img.dataset.fallback === 'true') return;
 
@@ -1823,6 +2061,7 @@ function swapCalcSides() {
     const s2 = document.getElementById('p2-search');
     if (s1) s1.value = p1.name || '';
     if (s2) s2.value = p2.name || '';
+    renderCalcTeamTrays();
     recalculate();
     showToast('Sides swapped');
 }

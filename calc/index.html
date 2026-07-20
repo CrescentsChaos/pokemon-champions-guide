@@ -92,9 +92,11 @@
                         <input type="number" id="p1-level" value="50" min="1" max="100">
                         <div class="paste-actions">
                             <button class="import-btn" onclick="openImportModal(1)">Import</button>
+                            <button type="button" class="teams-btn" onclick="openCalcBestTeams(1)">Teams</button>
                             <button class="export-btn" onclick="openExportModal(1)">Export</button>
                         </div>
                     </div>
+                    <div class="calc-team-tray" id="p1-team-tray" hidden></div>
 
                     <table class="stats-table">
                         <thead>
@@ -347,9 +349,11 @@
                         <input type="number" id="p2-level" value="50" min="1" max="100">
                         <div class="paste-actions">
                             <button class="import-btn" onclick="openImportModal(2)">Import</button>
+                            <button type="button" class="teams-btn" onclick="openCalcBestTeams(2)">Teams</button>
                             <button class="export-btn" onclick="openExportModal(2)">Export</button>
                         </div>
                     </div>
+                    <div class="calc-team-tray" id="p2-team-tray" hidden></div>
 
                     <table class="stats-table">
                         <thead>
@@ -488,6 +492,24 @@
                 <button class="field-btn cancel-btn" onclick="closeImportModal()">Cancel</button>
                 <button class="field-btn active confirm-btn" id="confirm-import">Import Paste</button>
             </div>
+        </div>
+    </div>
+
+    <div id="best-teams-modal" class="modal">
+        <div class="modal-content glass best-teams-modal-content">
+            <button class="modal-close" onclick="closeCalcBestTeams()">&times;</button>
+            <h3>Best Teams</h3>
+            <p id="best-teams-target-label" class="modal-subtitle">Load a teammate into Attacker</p>
+            <div class="best-teams-controls">
+                <input type="search" id="calc-best-teams-search" class="search-input" placeholder="Search team or Pokémon…">
+                <div class="best-teams-format-toggle" role="group" aria-label="Format filter">
+                    <button type="button" class="field-btn active" data-calc-best-format="All">All</button>
+                    <button type="button" class="field-btn" data-calc-best-format="Doubles">Doubles</button>
+                    <button type="button" class="field-btn" data-calc-best-format="Singles">Singles</button>
+                </div>
+            </div>
+            <p id="calc-best-teams-meta" class="best-teams-meta"></p>
+            <div id="calc-best-teams-list" class="calc-best-teams-list"></div>
         </div>
     </div>
 

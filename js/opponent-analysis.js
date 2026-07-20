@@ -1868,6 +1868,30 @@ function clearOpponentTeam() {
     runOpponentPrepAnalysis();
 }
 
+/**
+ * Load a full opponent roster from library build IDs (best_teams.json).
+ * Missing builds leave an empty slot.
+ */
+function loadOpponentTeamFromBuildIds(buildIds, format) {
+    const buildsArr = (typeof allBuilds !== 'undefined') ? allBuilds : [];
+    const ids = Array.isArray(buildIds) ? buildIds.slice(0, 6) : [];
+    if (format) setOpponentPrepFormat(format);
+
+    _opponentTeam = Array(6).fill(null).map(createEmptyOpponentSlot);
+    ids.forEach((id, idx) => {
+        const record = buildsArr.find(b => String(b.id) === String(id));
+        if (!record || typeof parseAnalysisBuild !== 'function') return;
+        const slot = parseAnalysisBuild(record.build);
+        slot._buildSource = 'library';
+        slot._buildId = record.id;
+        _opponentTeam[idx] = slot;
+    });
+
+    renderOpponentRoster();
+    runOpponentPrepAnalysis();
+    return _opponentTeam.filter(p => p && p.species).length;
+}
+
 if (typeof globalThis !== 'undefined') {
     globalThis.registerOpponentPrep = registerOpponentPrep;
     globalThis.setOpponentPrepFormat = setOpponentPrepFormat;
@@ -1875,6 +1899,7 @@ if (typeof globalThis !== 'undefined') {
     globalThis.openOpponentSearch = openOpponentSearch;
     globalThis.clearOpponentSlot = clearOpponentSlot;
     globalThis.clearOpponentTeam = clearOpponentTeam;
+    globalThis.loadOpponentTeamFromBuildIds = loadOpponentTeamFromBuildIds;
     globalThis.setOpponentSpecies = setOpponentSpecies;
     globalThis.openOpponentBuildSwap = openOpponentBuildSwap;
     globalThis.applyOpponentBuildRecord = applyOpponentBuildRecord;
