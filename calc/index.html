@@ -54,42 +54,6 @@
                 </div>
             </div>
 
-            <div class="calc-tools-grid">
-                <div class="calc-tool-card glass" id="ev-finder-card">
-                    <div class="calc-tool-head">
-                        <h4>EV Finder</h4>
-                        <span class="calc-tool-hint">Champions-aware · uses selected move</span>
-                    </div>
-                    <div class="calc-tool-controls">
-                        <select id="ev-finder-goal" aria-label="EV finder goal">
-                            <option value="ohko">Min Atk/SpA to OHKO</option>
-                            <option value="2hko">Min Atk/SpA to 2HKO</option>
-                            <option value="live-ohko">Min HP/Def to live OHKO</option>
-                            <option value="live-2hko">Min HP/Def to live 2HKO</option>
-                        </select>
-                        <button type="button" class="field-btn active" id="ev-finder-run" onclick="runEvFinder()">Find EVs</button>
-                        <button type="button" class="field-btn" id="ev-finder-apply" onclick="applyEvFinderResult()" disabled>Apply</button>
-                    </div>
-                    <p id="ev-finder-result" class="calc-tool-result">Select a damaging move, then Find EVs.</p>
-                </div>
-
-                <div class="calc-tool-card glass" id="calc-vs-meta-card">
-                    <div class="calc-tool-head">
-                        <h4>Calc vs Meta</h4>
-                        <span class="calc-tool-hint">Selected move vs top ladder</span>
-                    </div>
-                    <div class="calc-tool-controls">
-                        <select id="calc-vs-meta-count" aria-label="Meta count">
-                            <option value="8">Top 8</option>
-                            <option value="12" selected>Top 12</option>
-                            <option value="20">Top 20</option>
-                        </select>
-                        <button type="button" class="field-btn active" id="calc-vs-meta-run" onclick="runCalcVsMeta()">Run</button>
-                    </div>
-                    <div id="calc-vs-meta-list" class="calc-vs-meta-list"></div>
-                </div>
-            </div>
-
             <div class="move-results-container">
                 <div class="move-results-column" id="p1-move-results">
                     <!-- P1 Moves vs P2 -->
@@ -584,6 +548,44 @@
                 </div>
             </div>
         </div>
+
+        <section class="calc-bottom-tools" data-calc-pane="results" aria-label="Advanced calculator tools">
+            <div class="calc-tools-grid">
+                <div class="calc-tool-card glass" id="ev-finder-card">
+                    <div class="calc-tool-head">
+                        <h4>EV Finder</h4>
+                        <span class="calc-tool-hint">Champions-aware · uses selected move</span>
+                    </div>
+                    <div class="calc-tool-controls">
+                        <select id="ev-finder-goal" aria-label="EV finder goal">
+                            <option value="ohko">Min Atk/SpA to OHKO</option>
+                            <option value="2hko">Min Atk/SpA to 2HKO</option>
+                            <option value="live-ohko">Min HP/Def to live OHKO</option>
+                            <option value="live-2hko">Min HP/Def to live 2HKO</option>
+                        </select>
+                        <button type="button" class="field-btn active" id="ev-finder-run" onclick="runEvFinder()">Find EVs</button>
+                        <button type="button" class="field-btn" id="ev-finder-apply" onclick="applyEvFinderResult()" disabled>Apply</button>
+                    </div>
+                    <p id="ev-finder-result" class="calc-tool-result">Select a damaging move, then Find EVs.</p>
+                </div>
+
+                <div class="calc-tool-card glass" id="calc-vs-meta-card">
+                    <div class="calc-tool-head">
+                        <h4>Calc vs Meta</h4>
+                        <span class="calc-tool-hint">Selected move vs top ladder</span>
+                    </div>
+                    <div class="calc-tool-controls">
+                        <select id="calc-vs-meta-count" aria-label="Meta count">
+                            <option value="8">Top 8</option>
+                            <option value="12" selected>Top 12</option>
+                            <option value="20">Top 20</option>
+                        </select>
+                        <button type="button" class="field-btn active" id="calc-vs-meta-run" onclick="runCalcVsMeta()">Run</button>
+                    </div>
+                    <div id="calc-vs-meta-list" class="calc-vs-meta-list"></div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Mobile-only bottom navigation -->

@@ -284,6 +284,14 @@ body.calc-page main.container {
     margin: 0 0 1rem;
 }
 
+.calc-bottom-tools {
+    margin-top: 1rem;
+}
+
+.calc-bottom-tools .calc-tools-grid {
+    margin-bottom: 0;
+}
+
 .calc-tool-card {
     padding: 0.85rem 1rem;
     border-radius: 12px;

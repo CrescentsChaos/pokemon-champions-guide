@@ -1803,7 +1803,7 @@
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js?v=10"></script>
-    <script src="../js/build-narrative.js?v=14"></script>
+    <script src="../js/build-narrative.js?v=15"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
     <script src="../js/opponent-analysis.js?v=8"></script>
 
@@ -4025,17 +4025,6 @@
             document.getElementById('export-overlay').style.display = 'flex';
         };
 
-        async function shortenURL(longUrl) {
-            try {
-                const response = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(longUrl)}`);
-                const data = await response.json();
-                return data.shorturl || null;
-            } catch (e) {
-                console.error('Shortening failed:', e);
-                return null;
-            }
-        }
-
         // Share link button
         document.getElementById('share-link-btn').onclick = async function () {
             const btn = this;
@@ -4052,21 +4041,13 @@
             try {
                 const encoded = LZString.compressToEncodedURIComponent(pasteStr);
                 const longUrl = window.location.origin + window.location.pathname + '?team=' + encoded;
-
-                // Attempt to shorten
-                const shortUrl = await shortenURL(longUrl);
-                const finalUrl = shortUrl || longUrl;
-
-                await navigator.clipboard.writeText(finalUrl);
+                const shortUrl = await createShortShareUrl(longUrl);
+                await navigator.clipboard.writeText(shortUrl);
 
                 btn.style.background = '#4CAF50';
                 btn.innerHTML = '<span>COPIED!</span> ✅';
-
-                if (!shortUrl) {
-                    console.warn('Fallback to long URL used.');
-                }
             } catch (e) {
-                alert('Could not generate share link.');
+                alert(e.message || 'Could not generate a short share link. Please try again.');
             } finally {
                 setTimeout(() => {
                     btn.disabled = false;

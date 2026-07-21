@@ -38,13 +38,6 @@
     box-shadow: inset 0 0 0 1px rgba(255, 62, 62, 0.28);
 }
 
-.a11y-settings-fallback {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9991;
-}
-
 .a11y-panel {
     position: fixed;
     top: 4.75rem;
@@ -401,6 +394,15 @@ html[data-theme="light"] h4 {
     color: #15151c;
 }
 
+html[data-theme="light"] .logo-text__brand {
+    -webkit-text-fill-color: #15151c;
+}
+
+html[data-theme="light"] .logo-text__accent {
+    color: var(--primary-red);
+    -webkit-text-fill-color: var(--primary-red);
+}
+
 html[data-theme="light"] .glass,
 html[data-theme="light"] .home-tool-card,
 html[data-theme="light"] .home-workflow__step,
@@ -474,11 +476,37 @@ html[data-theme="light"] .field-controls,
 html[data-theme="light"] .dex-toolbar,
 html[data-theme="light"] .dex-card,
 html[data-theme="light"] .build-card,
-html[data-theme="light"] .counter-card-premium,
-html[data-theme="light"] .analysis-card {
+html[data-theme="light"] .counter-card-premium {
     background: rgba(255, 255, 255, 0.85) !important;
     border-color: rgba(20, 20, 30, 0.12) !important;
     color: var(--text-main);
+}
+
+/* Analysis components contain extensive strategy-specific light text and badges. */
+html[data-theme="light"] .analysis-card {
+    background: rgba(24, 24, 30, 0.94) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #f4f4f7;
+}
+
+html[data-theme="light"] .analysis-card h1,
+html[data-theme="light"] .analysis-card h2,
+html[data-theme="light"] .analysis-card h3,
+html[data-theme="light"] .analysis-card h4 {
+    color: #f4f4f7;
+}
+
+html[data-theme="light"] #analysis-view > p {
+    color: #5a5a68 !important;
+}
+
+html[data-theme="light"] .toggle-btn:not(.active) {
+    color: #4d4d5c;
+}
+
+html[data-theme="light"] .toggle-btn:hover:not(.active) {
+    color: #15151c;
+    background: rgba(0, 0, 0, 0.06);
 }
 
 html[data-theme="light"] .dex-header h1,
@@ -533,6 +561,48 @@ html[data-theme="light"] .pkd-panel__meta,
 html[data-theme="light"] .pkd-hero__id,
 html[data-theme="light"] .pkd-fact span {
     color: #5a5a68;
+}
+
+/* Builder tabs sit directly on the light page rather than on dark editor panels. */
+html[data-theme="light"] .team-tabs .team-tab {
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(20, 20, 30, 0.12);
+}
+
+html[data-theme="light"] .team-tabs .team-tab.active {
+    background: rgba(225, 36, 36, 0.08);
+}
+
+html[data-theme="light"] .team-tabs .tab-name {
+    color: #15151c;
+}
+
+html[data-theme="light"] .team-tabs .tab-role {
+    color: #5a5a68;
+}
+
+/* Calculator controls were authored for dark panels and used fixed white text. */
+html[data-theme="light"] body.calc-page input:not([type="checkbox"]):not([type="range"]),
+html[data-theme="light"] body.calc-page select,
+html[data-theme="light"] body.calc-page textarea {
+    color: #15151c !important;
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(20, 20, 30, 0.14) !important;
+}
+
+html[data-theme="light"] body.calc-page input::placeholder,
+html[data-theme="light"] body.calc-page textarea::placeholder {
+    color: #656573 !important;
+    opacity: 1;
+}
+
+html[data-theme="light"] body.calc-page #main-result,
+html[data-theme="light"] body.calc-page .stat-total,
+html[data-theme="light"] body.calc-page .hp-max-label,
+html[data-theme="light"] body.calc-page .calc-tool-result,
+html[data-theme="light"] body.calc-page .reset-side-btn {
+    color: #15151c !important;
+    -webkit-text-fill-color: #15151c !important;
 }
 
 html[data-a11y-motion="reduce"] *,

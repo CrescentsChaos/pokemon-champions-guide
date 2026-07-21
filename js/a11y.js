@@ -87,7 +87,7 @@
         const link = document.createElement('link');
         link.id = 'a11y-css';
         link.rel = 'stylesheet';
-        link.href = getPrefix() + 'css/a11y.css?v=2';
+        link.href = getPrefix() + 'css/a11y.css?v=4';
         document.head.appendChild(link);
     }
 
@@ -172,15 +172,17 @@
 
         let fab = document.getElementById('a11y-fab');
         if (!fab) {
+            const nav = document.getElementById('primary-nav');
+            if (!nav) return;
             fab = document.createElement('button');
             fab.type = 'button';
-            fab.className = 'nav-settings-tab a11y-settings-fallback';
+            fab.className = 'nav-settings-tab';
             fab.id = 'a11y-fab';
             fab.textContent = 'Settings';
             fab.setAttribute('aria-expanded', 'false');
             fab.setAttribute('aria-controls', 'a11y-panel');
             fab.setAttribute('aria-haspopup', 'dialog');
-            (document.getElementById('primary-nav') || document.body).appendChild(fab);
+            nav.appendChild(fab);
         }
         const panel = document.getElementById('a11y-panel');
         const closeBtn = document.getElementById('a11y-close');

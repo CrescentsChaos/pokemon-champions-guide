@@ -389,3 +389,35 @@ function getPermanentForm(p) {
 
     return null;
 }
+
+const MAX_SHARE_URL_LENGTH = 50;
+
+/**
+ * Creates a public short URL for large builder/calculator state links.
+ * This never returns the original long URL or a result over the limit.
+ */
+async function createShortShareUrl(longUrl, maxLength = MAX_SHARE_URL_LENGTH) {
+    const source = String(longUrl || '');
+    if (!source) throw new Error('No URL was provided.');
+
+    const services = [
+        {
+            url: `https://tinyurl.com/api-create.php?url=${encodeURIComponent(source)}`,
+            read: response => response.text()
+        }
+    ];
+
+    for (const service of services) {
+        try {
+            const response = await fetch(service.url, { headers: { Accept: 'text/plain' } });
+            if (!response.ok) continue;
+            const shortUrl = String(await service.read(response) || '').trim();
+            const parsed = new URL(shortUrl);
+            if (parsed.protocol === 'https:' && shortUrl.length <= maxLength) return shortUrl;
+        } catch (error) {
+            console.warn('Short-link service unavailable:', error);
+        }
+    }
+
+    throw new Error(`Could not create a share link under ${maxLength} characters. Please try again.`);
+}

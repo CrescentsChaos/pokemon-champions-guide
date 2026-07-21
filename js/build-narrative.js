@@ -302,58 +302,6 @@
         return res;
     }
 
-    function explainTeammateFit(mainMon, teammate, mainRoles, tRoles, ctx, teamIndex) {
-        const tDb = typeof getMonDb === 'function' ? getMonDb(teammate) : null;
-        const mainDb = typeof getMonDb === 'function' ? getMonDb(mainMon) : null;
-        const reasons = [];
-        const tTypes = getMonTypes(tDb, teammate);
-        const mainWeak = getWeaknessList(mainDb, mainMon);
-
-        tTypes.forEach(tt => {
-            if (mainWeak.includes((tt || '').toLowerCase())) reasons.push(`resists ${link(tt)}`);
-        });
-
-        if (tRoles.includes('Redirection') && (mainRoles.includes('Setup Sweeper') || mainRoles.includes('Wallbreaker'))) {
-            reasons.push('redirects attacks so your ace can attack');
-        }
-        if (tRoles.includes('Fake Out Pressure')) reasons.push('buys a free turn with Fake Out');
-        if (tRoles.includes('Speed Control') && !mainRoles.includes('Speed Control')) reasons.push('provides Tailwind or speed drops');
-        if (tRoles.includes('Damage Mitigation') && mainRoles.some(r => ['Physical Sweeper', 'Wallbreaker'].includes(r))) {
-            reasons.push('softens physical hits via Intimidate or Parting Shot');
-        }
-        if (tRoles.includes('Trick Room Setter') && mainRoles.includes('Trick Room Abuser')) {
-            reasons.push('sets Trick Room for your slow sweepers');
-        }
-        if (tRoles.includes('Weather Setter') && mainRoles.includes('Weather Abuser')) reasons.push('enables weather-boosted offense');
-        if (tRoles.includes('Terrain Setter') && mainRoles.includes('Terrain Abuser')) reasons.push('sets terrain for boosted attacks');
-
-        const overlap = (teammate.moves || []).filter(m => m && (mainMon.moves || []).includes(m));
-        if (overlap.length >= 2) reasons.push('shares move overlap for flexible positioning');
-
-        if (reasons.length === 0) {
-            reasons.push(`rounds out team coverage as a ${(tRoles[0] || 'flex').toLowerCase()} slot`);
-        }
-
-        const primaryRole = tRoles[0] || 'Flex';
-        const movePreview = (teammate.moves || []).filter(Boolean).slice(0, 2).map(m => link(m)).join(', ');
-        const roleIcon = tRoles.includes('Speed Control') ? 'tailwind.png'
-            : tRoles.includes('Trick Room Setter') ? 'trick_room.png'
-                : tRoles.some(r => ['Physical Sweeper', 'Wallbreaker'].includes(r)) ? 'move-physical.png'
-                    : tRoles.includes('Special Sweeper') ? 'move-special.png' : 'move-status.png';
-        return `<article class="build-prose-teammate-card">
-            <div class="build-prose-teammate-card__visual">
-                <img src="${getStrategySprite(teammate)}" alt="${esc(teammate.species)}" class="build-prose-teammate-card__sprite">
-                <img src="${getStrategyAsset(roleIcon)}" alt="" class="build-prose-teammate-card__role-icon">
-            </div>
-            <div>
-                <span class="build-prose-eyebrow">${esc(primaryRole)}</span>
-                <h6>${link(teammate.species)}</h6>
-                <p>${reasons.join(', ')}.</p>
-                ${movePreview ? `<div class="build-prose-teammate-card__moves">${movePreview}</div>` : ''}
-            </div>
-        </article>`;
-    }
-
     function findAlternateBuilds(species, format, currentBuildId) {
         if (typeof allBuilds === 'undefined') return [];
         const key = normKey(species);
@@ -1392,7 +1340,6 @@
             return '<p>Shuffle or accept recommended teammates to populate full synergy and meta matchup analysis.</p>';
         }
 
-        const mainRoles = roles[0] || [];
         const leadPair = typeof describeLeadPair === 'function' ? describeLeadPair(ctx, [mainMon, ...teammates], roles) : { summary: '' };
         let html = `<div class="build-prose-core-banner">
             <img src="${getStrategySprite(mainMon)}" alt="${esc(mainMon.species)}">
@@ -1406,21 +1353,6 @@
             html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Team archetypes detected</h5><ul class="build-prose-bullet-list">';
             matchedSynergy.forEach(r => {
                 html += `<li><strong>${esc(r.text)}</strong> — ${esc(r.tip)}</li>`;
-            });
-            html += '</ul></div>';
-        }
-
-        html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Teammate roles</h5><div class="build-prose-teammate-grid">';
-        teammates.forEach((t, i) => {
-            html += explainTeammateFit(mainMon, t, mainRoles, roles[i + 1] || [], ctx, i);
-        });
-        html += '</div></div>';
-
-        if (ctx.leadReasons?.length) {
-            html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Lead options</h5><ul class="build-prose-bullet-list">';
-            ctx.leadMons?.forEach((lead, i) => {
-                const reason = ctx.leadReasons[i] || 'Flexible lead';
-                html += `<li>${link(lead?.species)} — ${esc(reason)}</li>`;
             });
             html += '</ul></div>';
         }

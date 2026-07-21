@@ -39,7 +39,7 @@
         const a11yCss = document.createElement('link');
         a11yCss.id = 'a11y-css';
         a11yCss.rel = 'stylesheet';
-        a11yCss.href = prefix + 'css/a11y.css?v=2';
+        a11yCss.href = prefix + 'css/a11y.css?v=4';
         document.head.appendChild(a11yCss);
     }
 

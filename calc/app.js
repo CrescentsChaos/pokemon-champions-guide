@@ -2514,22 +2514,24 @@ function decodeCalcState(token) {
     }
 }
 
-function shareCalcLink() {
+async function shareCalcLink() {
     if (!p1?.name || !p2?.name) {
         showToast('Load both Pokémon first');
         return;
     }
     const token = encodeCalcState();
-    const url = `${location.origin}${location.pathname}#calc=${token}`;
+    const longUrl = `${location.origin}${location.pathname}#calc=${token}`;
     try {
-        history.replaceState(null, '', `#calc=${token}`);
-    } catch (_) { /* ignore */ }
-    if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(url).then(() => showToast('Calc link copied')).catch(() => {
-            prompt('Copy this calc link:', url);
-        });
-    } else {
-        prompt('Copy this calc link:', url);
+        showToast('Creating short calc link…');
+        const shortUrl = await createShortShareUrl(longUrl);
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shortUrl);
+            showToast('Short calc link copied');
+        } else {
+            prompt('Copy this calc link:', shortUrl);
+        }
+    } catch (error) {
+        showToast(error.message || 'Could not create a short calc link');
     }
 }
 
