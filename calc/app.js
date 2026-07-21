@@ -1177,7 +1177,12 @@ function toggleMega(id) {
             loaded.item = heldItem;
             const itemSel = document.getElementById(`p${id}-item`);
             if (itemSel) itemSel.value = heldItem;
+            updateItemSprite(loaded);
+            updateMegaButtonVisibility(loaded);
+            updateStatsUI(loaded);
+            recalculate();
         }
+        btn.classList.toggle('active', /-Mega|-Primal/i.test(loaded.name));
     }
 }
 
@@ -1744,10 +1749,21 @@ function updateHPBar(id, percent) {
 
 function canUseMegaEvolution(pk) {
     if (!pk?.name || !pk?.item || pk.item === 'None') return false;
-    if (!getMegaSpriteUrl(pk)) return false;
-    const base = pk.name.split('-Mega')[0];
-    return pokemonDB.some(p =>
-        p.Name === `${base}-Mega` || p.Name === `${base}-Mega-X` || p.Name === `${base}-Mega-Y` || p.Name === `${base}-Mega-Z`
+    const form = typeof MegaSprites !== 'undefined' && MegaSprites.megaFormSuffixFromItem
+        ? MegaSprites.megaFormSuffixFromItem(pk.item)
+        : null;
+    if (!form) return false;
+
+    const base = pk.name.replace(/-Mega(?:-[XYZ])?$|-Primal$/i, '');
+    const suffixes = {
+        'mega-x': ['-Mega-X'],
+        'mega-y': ['-Mega-Y'],
+        'mega-z': ['-Mega-Z'],
+        primal: ['-Primal'],
+        mega: ['-Mega', '-Mega-X', '-Mega-Y', '-Mega-Z']
+    };
+    return (suffixes[form] || []).some(suffix =>
+        pokemonDB.some(p => p.Name === `${base}${suffix}`)
     );
 }
 
@@ -1756,7 +1772,7 @@ function updateMegaButtonVisibility(pk) {
     if (!btn) return;
     const show = canUseMegaEvolution(pk);
     btn.style.display = show ? 'inline-block' : 'none';
-    if (!show) btn.classList.remove('active');
+    btn.classList.toggle('active', show && /-Mega|-Primal/i.test(pk.name));
 }
 
 function generatePokemonPaste(pk) {
@@ -1893,9 +1909,38 @@ function getCalcBestTeamEntries() {
                     build
                 };
             });
-            entries.push({ name, format, ids: ids || [], members });
+            entries.push({ name, format, source: 'curated', ids: ids || [], members });
         });
     });
+
+    let savedLibrary = [];
+    try {
+        const parsed = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+        if (Array.isArray(parsed)) savedLibrary = parsed;
+    } catch (_) { /* ignore malformed local data */ }
+
+    savedLibrary.forEach((saved) => {
+        const sections = String(saved?.paste || '').trim().split(/\n\s*\n/).filter(Boolean).slice(0, 6);
+        const members = sections.map((section, index) => {
+            const head = parseBuildHead(section);
+            return {
+                id: `${saved.id || 'saved'}-${index}`,
+                missing: !head.species,
+                species: head.species || 'Unknown',
+                item: head.item || '',
+                build: head.species ? { id: `${saved.id || 'saved'}-${index}`, pokemon: head.species, build: section } : null
+            };
+        }).filter(member => !member.missing);
+        if (!members.length) return;
+        entries.push({
+            name: saved.name || saved.pokemon || 'Saved Team',
+            format: 'Library',
+            source: 'library',
+            ids: members.map(member => member.id),
+            members
+        });
+    });
+
     return entries;
 }
 
@@ -1971,18 +2016,18 @@ function renderCalcBestTeamsList() {
     }
 
     if (!entries.length) {
-        list.innerHTML = `<div class="calc-best-teams-empty">No best teams found. Add entries in <code>assets/best_teams.json</code>.</div>`;
+        list.innerHTML = '<div class="calc-best-teams-empty">No matching curated or saved teams found.</div>';
         return;
     }
 
-    list.innerHTML = entries.map((entry) => {
+    list.innerHTML = entries.map((entry, entryIndex) => {
         const badgeClass = entry.format === 'Singles'
             ? 'calc-best-team-card__badge calc-best-team-card__badge--singles'
             : 'calc-best-team-card__badge';
         const mons = entry.members.map((m, mi) => {
             const sprite = calcSpeciesSpriteUrl(m.missing ? '' : m.species);
             return `
-                <button type="button" class="calc-best-team-mon" data-entry="${entry.format}::${entry.name}" data-member="${mi}"
+                <button type="button" class="calc-best-team-mon" data-entry-index="${entryIndex}" data-member="${mi}"
                     ${m.missing || !m.build ? 'disabled' : ''}
                     title="${(m.species || '').replace(/"/g, '&quot;')}${m.item ? ' @ ' + m.item.replace(/"/g, '&quot;') : ''}">
                     <img class="calc-best-team-mon__sprite" src="${sprite}" alt=""
@@ -2005,9 +2050,9 @@ function renderCalcBestTeamsList() {
 
     list.querySelectorAll('.calc-best-team-mon').forEach(btn => {
         btn.addEventListener('click', () => {
-            const key = btn.getAttribute('data-entry') || '';
+            const entryIndex = parseInt(btn.getAttribute('data-entry-index'), 10);
             const mi = parseInt(btn.getAttribute('data-member'), 10);
-            const entry = entries.find(e => `${e.format}::${e.name}` === key);
+            const entry = entries[entryIndex];
             const member = entry?.members?.[mi];
             if (!entry || !member?.build) return;
             loadCalcTeamMember(bestTeamsTargetId, entry, member);

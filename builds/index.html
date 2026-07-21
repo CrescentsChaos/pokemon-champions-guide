@@ -514,6 +514,61 @@
                     TO LIBRARY</button>
             </div>
 
+            <div class="teammates-toolbar"
+                style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
+                <div class="teammates-toolbar-controls" style="display: flex; gap: 15px; align-items: center;">
+                    <div class="format-toggle-wrapper"
+                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
+                        <div style="display: flex; gap: 2px;">
+                            <button id="toggle-singles" class="toggle-btn"
+                                onclick="setRecommendationFormat('Singles')">SINGLES</button>
+                            <button id="toggle-doubles" class="toggle-btn"
+                                onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
+                        </div>
+                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)"
+                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span
+                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
+                                MEGAS</span>
+                        </label>
+                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="exclude-bst" onchange="toggleExcludeHighBST(this.checked)"
+                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
+                            <span
+                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
+                                > 600 BST</span>
+                        </label>
+                    </div>
+                    <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
+                        <span>SMART RCMD</span> 🧠
+                    </button>
+                    <button id="shuffle-team" onclick="shuffleTeammates()">
+                        <span>SHUFFLE TEAM</span> 🎲
+                    </button>
+                    <div class="teammates-export-row" style="display: flex; gap: 10px;">
+                        <button id="export-synergy-team" class="btn"
+                            style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
+                            FULL TEAM PASTE 📋</button>
+                        <button id="export-champ-team" class="btn"
+                            style="background: #4a90e2; border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">CHAMP
+                            EXPORT 🏆</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="synergy-error"
+                style="display:none; background:rgba(255, 59, 48, 0.15); color:#ff453a; padding:15px; border-radius:12px; border:1px solid rgba(255, 59, 48, 0.3); margin-bottom:20px; font-size:0.9rem; font-weight:600; text-align:center;">
+            </div>
+            <div id="synergy-grid">
+                <!-- Synergy cards injected here -->
+            </div>
+
             <!-- Analysis Dashboard -->
             <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
                 <div class="analysis-card build-prose-panel" id="build-prose-panel" data-analysis-mode="build" style="display:none;">
@@ -623,60 +678,6 @@
                 </div>
             </div>
 
-            <div class="teammates-toolbar"
-                style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-weight: 900; color: white;">RECOMMENDED TEAMMATES</h3>
-                <div class="teammates-toolbar-controls" style="display: flex; gap: 15px; align-items: center;">
-                    <div class="format-toggle-wrapper"
-                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); gap: 5px; align-items: center; padding-right: 12px;">
-                        <div style="display: flex; gap: 2px;">
-                            <button id="toggle-singles" class="toggle-btn"
-                                onclick="setRecommendationFormat('Singles')">SINGLES</button>
-                            <button id="toggle-doubles" class="toggle-btn"
-                                onclick="setRecommendationFormat('Doubles')">DOUBLES</button>
-                        </div>
-                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                        <label
-                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="exclude-megas" onchange="toggleExcludeMegas(this.checked)"
-                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
-                            <span
-                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
-                                MEGAS</span>
-                        </label>
-                        <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                        <label
-                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="exclude-bst" onchange="toggleExcludeHighBST(this.checked)"
-                                style="accent-color: var(--primary-red); width: 14px; height: 14px;">
-                            <span
-                                style="font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 0.5px; white-space: nowrap;">EXCLUDE
-                                > 600 BST</span>
-                        </label>
-                    </div>
-                    <button id="rcmd-team" onclick="smartRecommendTeammates()" style="display: none;">
-                        <span>SMART RCMD</span> 🧠
-                    </button>
-                    <button id="shuffle-team" onclick="shuffleTeammates()">
-                        <span>SHUFFLE TEAM</span> 🎲
-                    </button>
-                    <div class="teammates-export-row" style="display: flex; gap: 10px;">
-                        <button id="export-synergy-team" class="btn"
-                            style="background: var(--primary-red); border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">EXPORT
-                            FULL TEAM PASTE 📋</button>
-                        <button id="export-champ-team" class="btn"
-                            style="background: #4a90e2; border: none; padding: 10px 20px; font-size: 0.75rem; font-weight: 800; border-radius: 8px;">CHAMP
-                            EXPORT 🏆</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="synergy-error"
-                style="display:none; background:rgba(255, 59, 48, 0.15); color:#ff453a; padding:15px; border-radius:12px; border:1px solid rgba(255, 59, 48, 0.3); margin-bottom:20px; font-size:0.9rem; font-weight:600; text-align:center;">
-            </div>
-            <div id="synergy-grid">
-                <!-- Synergy cards injected here -->
-            </div>
         </div>
 
         <div id="library-section">

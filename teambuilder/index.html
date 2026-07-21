@@ -1471,6 +1471,8 @@
                     <div class="opp-roster-head">
                         <h3 class="opp-section-title">Opponent Roster (6)</h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" class="analyze-btn" onclick="toggleLibrary('opponent')"
+                                style="padding: 8px 16px; font-size: 0.75rem; background: #4a90e2; border-color: rgba(120, 185, 255, 0.4);">MY LIBRARY</button>
                             <button type="button" class="analyze-btn" onclick="openBestTeamsOverlay('opponent')"
                                 style="padding: 8px 16px; font-size: 0.75rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST TEAMS</button>
                             <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
@@ -1767,6 +1769,8 @@
             <h2>Export PokePaste</h2>
             <textarea id="export-textarea" class="builder-input" style="height: 300px; margin-top: 20px;"
                 readonly></textarea>
+            <input id="library-name-input" class="builder-input" type="text" maxlength="60"
+                placeholder="Team name (optional)" aria-label="Saved team name" style="margin-top: 12px;">
             <div style="display: flex; justify-content: space-between; margin-top: 20px;">
                 <button onclick="saveToLibrary()" class="analyze-btn" style="background: #2196F3;">SAVE TO
                     LIBRARY</button>
@@ -1805,7 +1809,7 @@
     <script src="../js/analysis.js?v=10"></script>
     <script src="../js/build-narrative.js?v=15"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
-    <script src="../js/opponent-analysis.js?v=8"></script>
+    <script src="../js/opponent-analysis.js?v=9"></script>
 
     <script>
 
@@ -3361,7 +3365,28 @@
             }
         };
 
-        window.toggleLibrary = () => {
+        let libraryLoadTarget = 'builder';
+
+        function getSavedLibrary() {
+            try {
+                const value = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+                return Array.isArray(value) ? value : [];
+            } catch (_) {
+                return [];
+            }
+        }
+
+        function escapeLibraryHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        window.toggleLibrary = (target = 'builder') => {
+            libraryLoadTarget = target === 'opponent' ? 'opponent' : 'builder';
             const lib = document.getElementById('library-overlay');
             lib.style.display = lib.style.display === 'flex' ? 'none' : 'flex';
             if (lib.style.display === 'flex') {
@@ -3373,24 +3398,30 @@
             const text = document.getElementById('export-textarea').value;
             if (!text) return;
 
-            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const library = getSavedLibrary();
             const p = team[currentSlot === -1 ? 0 : currentSlot]; // Get info from first slot if team view
+            const members = parsePaste(text);
+            const requestedName = document.getElementById('library-name-input')?.value.trim();
+            const defaultName = members.length > 1
+                ? `${p.species || 'Untitled'} Team`
+                : (p.species || 'Untitled Build');
 
             const entry = {
                 id: Date.now(),
                 timestamp: new Date().toLocaleString(),
+                name: requestedName || defaultName,
                 pokemon: p.species || 'Unknown',
                 paste: text
             };
 
             library.unshift(entry);
             localStorage.setItem('pkm_library', JSON.stringify(library));
-            alert('Build saved to your local library!');
+            alert(`${members.length > 1 ? 'Team' : 'Build'} saved to your local library!`);
         }
 
         function renderLibrary() {
             const grid = document.getElementById('library-grid');
-            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const library = getSavedLibrary();
             grid.innerHTML = '';
 
             if (library.length === 0) {
@@ -3406,14 +3437,20 @@
                 card.style.alignItems = 'center';
                 card.style.gap = '10px';
 
-                const pTemp = parsePaste(item.paste)[0];
+                const parsedTeam = parsePaste(item.paste);
+                const pTemp = parsedTeam[0];
+                if (!pTemp) return;
+                const displayName = item.name || item.pokemon || 'Untitled';
+                const loadLabel = libraryLoadTarget === 'opponent' ? 'LOAD OPP' : 'LOAD';
 
                 card.innerHTML = `
                     <img src="${getSpriteUrl(pTemp)}" onerror="handleSpriteError(this, '${pTemp.species}', false)" style="width: 80px; height: 80px; object-fit: contain;">
-                    <div style="font-weight: 800;">${item.pokemon.toUpperCase()}</div>
+                    <div style="font-weight: 800;">${escapeLibraryHtml(displayName)}</div>
+                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.55);">${parsedTeam.length} Pokémon</div>
                     <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4);">${item.timestamp}</div>
                     <div style="display: flex; gap: 5px; width: 100%; margin-top: 10px;">
-                        <button onclick="loadFromLibrary(${item.id})" class="analyze-btn" style="flex: 1; padding: 5px; font-size: 0.7rem;">LOAD</button>
+                        <button onclick="loadFromLibrary(${item.id})" class="analyze-btn" style="flex: 1; padding: 5px; font-size: 0.7rem;">${loadLabel}</button>
+                        <button onclick="renameLibraryTeam(${item.id})" class="analyze-btn" aria-label="Rename saved team" style="flex: 0; padding: 5px 8px; font-size: 0.65rem; background: rgba(74,144,226,0.2); border-color: rgba(74,144,226,0.35);">RENAME</button>
                         <button onclick="deleteFromLibrary(${item.id})" class="analyze-btn" aria-label="Delete this build" style="flex: 0; padding: 5px; font-size: 0.7rem; background: rgba(255,51,51,0.2); border-color: rgba(255,51,51,0.3);">🗑️</button>
                     </div>
                 `;
@@ -3422,9 +3459,22 @@
         }
 
         window.loadFromLibrary = (id) => {
-            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const library = getSavedLibrary();
             const item = library.find(x => x.id === id);
             if (!item) return;
+
+            if (libraryLoadTarget === 'opponent') {
+                const count = typeof loadOpponentTeamFromPaste === 'function'
+                    ? loadOpponentTeamFromPaste(item.paste)
+                    : 0;
+                if (!count) {
+                    alert('Could not load this saved team into Opp Prep.');
+                    return;
+                }
+                document.getElementById('library-overlay').style.display = 'none';
+                alert(`Loaded ${count} Pokémon into the opponent roster.`);
+                return;
+            }
 
             const importedTeam = parsePaste(item.paste);
             if (importedTeam.length === 1) {
@@ -3443,9 +3493,26 @@
             alert('Build loaded successfully!');
         };
 
+        window.renameLibraryTeam = (id) => {
+            const library = getSavedLibrary();
+            const item = library.find(x => x.id === id);
+            if (!item) return;
+            const currentName = item.name || item.pokemon || 'Untitled';
+            const nextName = prompt('Rename saved team:', currentName);
+            if (nextName === null) return;
+            const cleanName = nextName.trim().slice(0, 60);
+            if (!cleanName) {
+                alert('Team name cannot be empty.');
+                return;
+            }
+            item.name = cleanName;
+            localStorage.setItem('pkm_library', JSON.stringify(library));
+            renderLibrary();
+        };
+
         window.deleteFromLibrary = (id) => {
             if (!confirm('Are you sure you want to delete this build from your library?')) return;
-            const library = JSON.parse(localStorage.getItem('pkm_library') || '[]');
+            const library = getSavedLibrary();
             const filtered = library.filter(x => x.id !== id);
             localStorage.setItem('pkm_library', JSON.stringify(filtered));
             renderLibrary();
@@ -4022,6 +4089,8 @@
         // Export paste button
         document.getElementById('export-paste-btn').onclick = () => {
             document.getElementById('export-textarea').value = getTeamPasteText();
+            const nameInput = document.getElementById('library-name-input');
+            if (nameInput) nameInput.value = '';
             document.getElementById('export-overlay').style.display = 'flex';
         };
 

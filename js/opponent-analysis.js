@@ -1399,7 +1399,9 @@ function renderOpponentRoster() {
         const buildCount = filled ? getSpeciesBuildList(p.species, _opponentFormat).length : 0;
         const buildBadge = p._buildSource === 'library'
             ? `<span class="opp-slot-badge opp-slot-badge--lib">Build #${p._buildId || '?'}</span>`
-            : (filled ? `<span class="opp-slot-badge opp-slot-badge--default">Default set</span>` : '');
+            : p._buildSource === 'saved'
+                ? '<span class="opp-slot-badge opp-slot-badge--lib">Saved team</span>'
+                : (filled ? `<span class="opp-slot-badge opp-slot-badge--default">Default set</span>` : '');
 
         return `
             <div class="opp-slot ${filled ? 'opp-slot--filled' : ''}" data-slot="${i}">
@@ -1908,6 +1910,30 @@ function clearOpponentTeam() {
 }
 
 /**
+ * Load a saved Builder-library paste into the opponent roster.
+ * @param {string} paste
+ * @returns {number} number of loaded Pokémon
+ */
+function loadOpponentTeamFromPaste(paste) {
+    if (typeof parseAnalysisBuild !== 'function') return 0;
+    const sections = String(paste || '').trim().split(/\n\s*\n/).filter(Boolean).slice(0, 6);
+    _opponentTeam = Array(6).fill(null).map(createEmptyOpponentSlot);
+
+    let loaded = 0;
+    sections.forEach((section, idx) => {
+        const slot = parseAnalysisBuild(section);
+        if (!slot?.species) return;
+        slot._buildSource = 'saved';
+        _opponentTeam[idx] = slot;
+        loaded += 1;
+    });
+
+    renderOpponentRoster();
+    runOpponentPrepAnalysis();
+    return loaded;
+}
+
+/**
  * Load a full opponent roster from library build IDs (best_teams.json).
  * Missing builds leave an empty slot.
  * @param {string[]} buildIds
@@ -1962,6 +1988,7 @@ if (typeof globalThis !== 'undefined') {
     globalThis.openOpponentSearch = openOpponentSearch;
     globalThis.clearOpponentSlot = clearOpponentSlot;
     globalThis.clearOpponentTeam = clearOpponentTeam;
+    globalThis.loadOpponentTeamFromPaste = loadOpponentTeamFromPaste;
     globalThis.loadOpponentTeamFromBuildIds = loadOpponentTeamFromBuildIds;
     globalThis.setOpponentSpecies = setOpponentSpecies;
     globalThis.openOpponentBuildSwap = openOpponentBuildSwap;
