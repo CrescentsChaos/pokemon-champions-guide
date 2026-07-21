@@ -39,14 +39,14 @@
         const a11yCss = document.createElement('link');
         a11yCss.id = 'a11y-css';
         a11yCss.rel = 'stylesheet';
-        a11yCss.href = prefix + 'css/a11y.css';
+        a11yCss.href = prefix + 'css/a11y.css?v=2';
         document.head.appendChild(a11yCss);
     }
 
     if (!document.getElementById('a11y-js')) {
         const a11yScript = document.createElement('script');
         a11yScript.id = 'a11y-js';
-        a11yScript.src = prefix + 'js/a11y.js';
+        a11yScript.src = prefix + 'js/a11y.js?v=2';
         document.head.appendChild(a11yScript);
     }
 })();
@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="${prefix}calc/" data-page="calc">Calc</a>
                     <a href="${prefix}compare/" data-page="compare">Compare</a>
                     <a href="${prefix}counter/" data-page="counter">Counters</a>
+                    <button type="button" class="nav-settings-tab" id="a11y-fab" aria-label="Open settings" aria-expanded="false" aria-controls="a11y-panel" aria-haspopup="dialog">Settings</button>
                 </nav>
             </div>
         </header>
@@ -121,9 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </ul>
                     </div>
                     <div>
-                        <h4 class="site-footer__heading">Accessibility</h4>
+                        <h4 class="site-footer__heading">Settings</h4>
                         <ul class="site-footer__list">
-                            <li><a href="#a11y-fab" id="footer-a11y-link">Open accessibility options</a></li>
+                            <li><a href="#a11y-fab" id="footer-a11y-link">Open display &amp; accessibility settings</a></li>
                             <li><a href="#main-content">Skip to content</a></li>
                             <li><span style="color: var(--text-muted); font-size: 0.92rem;">Preferences save locally</span></li>
                         </ul>
@@ -188,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setMenuOpen(!navLinksContainer.classList.contains('active'));
         });
 
-        document.querySelectorAll('.nav-links a').forEach(link => {
+        document.querySelectorAll('.nav-links a, .nav-links button').forEach(link => {
             link.addEventListener('click', () => setMenuOpen(false));
         });
 

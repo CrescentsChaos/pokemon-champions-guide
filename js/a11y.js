@@ -87,7 +87,7 @@
         const link = document.createElement('link');
         link.id = 'a11y-css';
         link.rel = 'stylesheet';
-        link.href = getPrefix() + 'css/a11y.css';
+        link.href = getPrefix() + 'css/a11y.css?v=2';
         document.head.appendChild(link);
     }
 
@@ -105,7 +105,7 @@
             <div class="a11y-panel" id="a11y-panel" role="dialog" aria-modal="false" aria-labelledby="a11y-title" hidden>
                 <div class="a11y-panel__head">
                     <div>
-                        <h2 class="a11y-panel__title" id="a11y-title">Accessibility</h2>
+                        <h2 class="a11y-panel__title" id="a11y-title">Settings</h2>
                         <p class="a11y-panel__sub">Personalize contrast, motion, text, and theme. Preferences save on this device.</p>
                     </div>
                     <button type="button" class="a11y-panel__close" id="a11y-close" aria-label="Close accessibility panel">&times;</button>
@@ -166,18 +166,22 @@
                 </div>
                 <div class="a11y-sr-status" id="a11y-status" role="status" aria-live="polite"></div>
             </div>
-
-            <button type="button" class="a11y-fab" id="a11y-fab" aria-expanded="false" aria-controls="a11y-panel" aria-haspopup="dialog" title="Accessibility options" aria-label="Open accessibility options">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-                    <circle cx="12" cy="4.5" r="2.25" fill="currentColor"/>
-                    <path d="M7 9.5h10M12 9.5v5.5M8.5 21l2-6h3l2 6M5.5 12.5 8 9.5M18.5 12.5 16 9.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
         `;
 
         document.body.appendChild(root);
 
-        const fab = document.getElementById('a11y-fab');
+        let fab = document.getElementById('a11y-fab');
+        if (!fab) {
+            fab = document.createElement('button');
+            fab.type = 'button';
+            fab.className = 'nav-settings-tab a11y-settings-fallback';
+            fab.id = 'a11y-fab';
+            fab.textContent = 'Settings';
+            fab.setAttribute('aria-expanded', 'false');
+            fab.setAttribute('aria-controls', 'a11y-panel');
+            fab.setAttribute('aria-haspopup', 'dialog');
+            (document.getElementById('primary-nav') || document.body).appendChild(fab);
+        }
         const panel = document.getElementById('a11y-panel');
         const closeBtn = document.getElementById('a11y-close');
         const resetBtn = document.getElementById('a11y-reset');
@@ -199,14 +203,14 @@
             panel.hidden = false;
             panel.classList.add('is-open');
             fab.setAttribute('aria-expanded', 'true');
-            fab.setAttribute('aria-label', 'Close accessibility options');
+            fab.setAttribute('aria-label', 'Close settings');
             closeBtn.focus();
         }
 
         function closePanel(returnFocus) {
             panel.classList.remove('is-open');
             fab.setAttribute('aria-expanded', 'false');
-            fab.setAttribute('aria-label', 'Open accessibility options');
+            fab.setAttribute('aria-label', 'Open settings');
             setTimeout(() => {
                 if (!panel.classList.contains('is-open')) panel.hidden = true;
             }, 200);
@@ -275,7 +279,7 @@
 
         document.addEventListener('click', (e) => {
             if (!panel.classList.contains('is-open')) return;
-            if (!root.contains(e.target)) closePanel(false);
+            if (!root.contains(e.target) && !fab.contains(e.target)) closePanel(false);
         });
 
         const colorMq = mq('(prefers-color-scheme: light)');

@@ -12,7 +12,11 @@ const pokemonDb = {
     Cresselia: { Name: 'Cresselia', Attack: 70, 'Sp.Atk': 75, Speed: 85, Total_Stats: 580, Ability: ['Levitate'] },
     Ursaluna: { Name: 'Ursaluna', Attack: 140, 'Sp.Atk': 45, Speed: 50, Total_Stats: 550, Ability: ['Guts'] },
     Toxapex: { Name: 'Toxapex', Attack: 63, 'Sp.Atk': 53, Speed: 35, Total_Stats: 495, Ability: ['Regenerator'] },
-    Blissey: { Name: 'Blissey', Attack: 10, 'Sp.Atk': 75, Speed: 55, Total_Stats: 540, Ability: ['Natural Cure'] }
+    Blissey: { Name: 'Blissey', Attack: 10, 'Sp.Atk': 75, Speed: 55, Total_Stats: 540, Ability: ['Natural Cure'] },
+    Serperior: { Name: 'Serperior', Attack: 75, 'Sp.Atk': 75, Speed: 113, Total_Stats: 528, Ability: ['Contrary'] },
+    'Meowstic-M': { Name: 'Meowstic-M', Attack: 48, 'Sp.Atk': 83, Speed: 104, Total_Stats: 466, Ability: ['Prankster'] },
+    'Ninetales-Alola': { Name: 'Ninetales-Alola', Attack: 67, 'Sp.Atk': 81, Speed: 109, Total_Stats: 505, Ability: ['Snow Warning'] },
+    Cetitan: { Name: 'Cetitan', Attack: 113, 'Sp.Atk': 45, Speed: 73, Total_Stats: 521, Ability: ['Slush Rush'] }
 };
 
 const moveData = [
@@ -23,7 +27,10 @@ const moveData = [
     ['Hurricane', 'Flying', 'Special', 110],
     ['Liquidation', 'Water', 'Physical', 85],
     ['Facade', 'Normal', 'Physical', 70],
-    ['Headlong Rush', 'Ground', 'Physical', 120]
+    ['Headlong Rush', 'Ground', 'Physical', 120],
+    ['Leaf Storm', 'Grass', 'Special', 130],
+    ['Blizzard', 'Ice', 'Special', 110],
+    ['Icicle Crash', 'Ice', 'Physical', 85]
 ].map(([name, type, damage_class, power]) => ({ name, type, damage_class, power, tags: [] }));
 
 const context = {
@@ -125,6 +132,38 @@ const mon = (species, moves, extra = {}) => ({
     }));
     assert.strictEqual(result.archetype, 'Supported Setup Sweep');
     assert.deepStrictEqual(Array.from(result.core), ['Garchomp', 'Clefairy']);
+}
+
+{
+    const team = [
+        mon('Serperior', ['Leaf Storm', 'Protect'], { ability: 'Contrary', evs: { atk: 0, spa: 32 } }),
+        mon('Meowstic-M', ['Tickle', 'Fake Tears', 'Protect'], { ability: 'Prankster' })
+    ];
+    const roles = [['Special Sweeper', 'Contrary Abuser'], ['Disruptor']];
+    const result = context.BuildNarrative.inspectTeamStrategy(team, roles, makeCtx({
+        flatRoles: roles.flat()
+    }));
+    assert.strictEqual(result.archetype, 'Contrary Ally-Boost Engine');
+    assert.strictEqual(result.ace, 'Serperior');
+    assert.deepStrictEqual(Array.from(result.core), ['Serperior', 'Meowstic-M']);
+    assert.strictEqual(
+        context.BuildNarrative.getStrategySpriteUrl(team[1]),
+        'https://play.pokemonshowdown.com/sprites/ani/meowstic.gif'
+    );
+}
+
+{
+    const team = [
+        mon('Ninetales-Alola', ['Blizzard', 'Aurora Veil', 'Protect'], { ability: 'Snow Warning' }),
+        mon('Cetitan', ['Icicle Crash', 'Protect'], { ability: 'Slush Rush', evs: { atk: 32, spa: 0 } })
+    ];
+    const roles = [['Weather Setter', 'Screener'], ['Physical Sweeper', 'Weather Abuser']];
+    const result = context.BuildNarrative.inspectTeamStrategy(team, roles, makeCtx({
+        utils: { snow: true, screens: true },
+        flatRoles: roles.flat()
+    }));
+    assert.strictEqual(result.archetype, 'Snow / Aurora Veil Offense');
+    assert(result.strategies.includes('Screens Offense'));
 }
 
 {

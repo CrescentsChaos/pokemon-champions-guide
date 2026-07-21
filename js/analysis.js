@@ -65,6 +65,7 @@ const roleDescriptions = {
     'Phazer/Hazer': 'Forces switches or removes stat boosts to stop sweeps.',
     'Weather Setter': 'Automatically or manually establishes weather conditions.',
     'Weather Abuser': 'Gains massive benefits (Speed, Power) in specific weather.',
+    'Contrary Abuser': 'Turns self-inflicted or allied stat drops into boosts with Contrary.',
     'Terrain Setter': 'Automatically or manually establishes terrain conditions.',
     'Terrain Abuser': 'Gains massive benefits in specific terrain.',
     'Damage Amplification': 'Boosts ally damage via Helping Hand or specific abilities.',
@@ -793,6 +794,7 @@ function detectRole(p, dbList) {
         if (['drought', 'drizzle', 'sand stream', 'snow warning', 'sand spit', 'orichalcum pulse', 'desolate land', 'primordial sea'].includes(ab) || hasMove(['sunny day', 'rain dance', 'sandstorm', 'hail', 'snowscape', 'chilly reception'])) allRoles.add('Weather Setter');
         if (['psychic surge', 'grassy surge', 'misty surge', 'electric surge', 'hadron engine'].includes(ab) || hasMove(['psychic terrain', 'grassy terrain', 'misty terrain', 'electric terrain'])) allRoles.add('Terrain Setter');
         if (['solar power', 'sand rush', 'slush rush', 'swift swim', 'chlorophyll', 'snow cloak', 'sand veil', 'protosynthesis'].includes(ab) || hasMove(['weather ball', 'hydro steam', 'solar beam', 'solar blade', 'electro shot'])) allRoles.add('Weather Abuser');
+        if (ab === 'contrary' && hasMove(['leaf storm', 'overheat', 'draco meteor', 'superpower', 'close combat', 'v-create', 'make it rain', 'fleur cannon', 'psycho boost', 'armor cannon', 'headlong rush', 'hammer arm', 'spin out'])) allRoles.add('Contrary Abuser');
         if (['quark drive', 'surge surfer'].includes(ab) || hasMove(['expanding force', 'terrain pulse', 'rising voltage', 'grassy glide']) || ['psychic seed', 'electric seed', 'grassy seed', 'misty seed'].includes(item)) allRoles.add('Terrain Abuser');
         if (bst >= 670) allRoles.add('Restricted Legendary');
     });
