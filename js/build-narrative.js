@@ -527,6 +527,233 @@
         return `${(mainRoles[0] || 'flex').toLowerCase()} archetype`;
     }
 
+    function getDamagingMoves(mon) {
+        return (mon.moves || []).filter(Boolean).map(name => ({ name, ref: getMoveRef(name) }))
+            .filter(move => {
+                const category = (move.ref?.damage_class || move.ref?.category || '').toLowerCase();
+                return (move.ref?.power || 0) > 0 && category !== 'status';
+            });
+    }
+
+    function getTeamStrategyArchetype(ctx, roles) {
+        const u = ctx.utils || {};
+        const offenseCount = roles.filter(rs => rs.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r))).length;
+        const wallCount = roles.filter(rs => rs.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r))).length;
+        if (u.tr && ctx.speedTiers.trAbuser) return 'Trick Room Offense';
+        if (u.drought && offenseCount >= 2) return u.tailwind ? 'Sun Tailwind Hyper-Offense' : 'Sun Offense';
+        if (u.drizzle && offenseCount >= 2) return u.tailwind ? 'Rain Tailwind Hyper-Offense' : 'Rain Offense';
+        if (u.psychicterrain && u.expandingforce) return 'Psychic Terrain Offense';
+        if (u.tailwind && offenseCount >= 2) return 'Tailwind Hyper-Offense';
+        if (offenseCount >= Math.max(3, ctx.teamSize - 2) && wallCount === 0) return 'Hyper-Offense';
+        if (offenseCount >= 2 && wallCount >= 1) return 'Bulky Offense';
+        if (wallCount >= 2) return 'Balance';
+        return 'Flexible Offense';
+    }
+
+    function scoreTeamAce(mon, monRoles) {
+        const db = typeof getMonDb === 'function' ? getMonDb(mon) : null;
+        const moves = getDamagingMoves(mon);
+        const item = normKey(mon.item);
+        let score = Math.max(parseInt(db?.Attack, 10) || 0, parseInt(db?.['Sp.Atk'], 10) || 0);
+        score += (parseInt(db?.Speed, 10) || 0) * 0.45;
+        if (monRoles.includes('Wallbreaker')) score += 55;
+        if (monRoles.includes('Physical Sweeper') || monRoles.includes('Special Sweeper')) score += 45;
+        if (monRoles.includes('Setup Sweeper')) score += 25;
+        if (monRoles.includes('Revenge Killer')) score += 18;
+        if (item.includes('choiceband') || item.includes('choicespecs') || item.includes('lifeorb')) score += 22;
+        if (moves.some(m => (m.ref?.tags || []).some(t => /all opponents|all pokemon/i.test(t)))) score += 12;
+        return score;
+    }
+
+    function pickTeamAces(activeMons, roles) {
+        return activeMons.map((mon, i) => ({ mon, roles: roles[i] || [], score: scoreTeamAce(mon, roles[i] || []) }))
+            .sort((a, b) => b.score - a.score);
+    }
+
+    function describeRosterFunction(mon, monRoles, ctx, isAce) {
+        const moves = (mon.moves || []).map(normKey);
+        const jobs = [];
+        if (isAce) jobs.push('primary win condition');
+        if (moves.includes('tailwind')) jobs.push('sets Tailwind');
+        if (moves.includes('trickroom')) jobs.push('sets or reverses Trick Room');
+        if (moves.includes('fakeout')) jobs.push('creates a free turn with Fake Out');
+        if (moves.includes('helpinghand')) jobs.push('amplifies an ally’s knockout');
+        if (moves.includes('faketears') || moves.includes('metalsound')) jobs.push('breaks special walls');
+        if (moves.includes('screech')) jobs.push('breaks physical walls');
+        if (moves.includes('sunnyday') || normKey(mon.ability) === 'drought') jobs.push('establishes Sun');
+        if (moves.includes('raindance') || normKey(mon.ability) === 'drizzle') jobs.push('establishes Rain');
+        if (monRoles.includes('Priority Denial')) jobs.push('blocks opposing priority');
+        if (monRoles.includes('Redirection')) jobs.push('protects the active attacker');
+        if (monRoles.includes('Pivot')) jobs.push('preserves momentum');
+        if (!jobs.length) jobs.push((monRoles[0] || 'flex slot').toLowerCase());
+        return jobs.slice(0, 3).join('; ');
+    }
+
+    function buildEngineLayers(ace, ctx, activeMons) {
+        const layers = [];
+        const aceDb = typeof getMonDb === 'function' ? getMonDb(ace) : null;
+        const speed = typeof getMonSpeed === 'function' ? getMonSpeed(ace, aceDb, ctx.format) : null;
+        const aceMoves = getDamagingMoves(ace);
+        const aceTypes = getMonTypes(aceDb, ace).map(t => (t || '').toLowerCase());
+        const abilities = activeMons.map(m => normKey(m.ability));
+        const allMoveKeys = activeMons.flatMap(m => (m.moves || []).map(normKey));
+        const aceItem = normKey(ace.item);
+        const aceAbility = normKey(ace.ability);
+
+        if (speed != null) {
+            layers.push({ label: 'Base Speed', text: `${link(ace.species)} reaches <strong>${speed} Speed</strong> before field control, defining which threats it can pressure naturally.` });
+        }
+        if (ctx.utils.tailwind) {
+            const setter = activeMons.find(m => (m.moves || []).map(normKey).includes('tailwind'));
+            layers.push({ label: 'Speed Control', text: `${setter ? link(setter.species) : 'A teammate'} supplies ${link('Tailwind')}, doubling allied Speed for four turns and opening a short attack window.` });
+        }
+        if (ctx.utils.tr) {
+            const setter = activeMons.find(m => (m.moves || []).map(normKey).includes('trickroom'));
+            layers.push({ label: 'Turn Order', text: `${setter ? link(setter.species) : 'The team'} can use ${link('Trick Room')} to enable slow attackers or reverse opposing Trick Room.` });
+        }
+        if (ctx.utils.drought && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'fire')) {
+            const setter = activeMons.find(m => normKey(m.ability) === 'drought' || (m.moves || []).map(normKey).includes('sunnyday'));
+            layers.push({ label: 'Weather Boost', text: `${setter ? link(setter.species) : 'Sun support'} powers ${link(ace.species)}’s Fire attacks by <strong>1.5×</strong> while Sun remains active.` });
+        }
+        if (ctx.utils.drizzle && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'water')) {
+            const setter = activeMons.find(m => normKey(m.ability) === 'drizzle' || (m.moves || []).map(normKey).includes('raindance'));
+            layers.push({ label: 'Weather Boost', text: `${setter ? link(setter.species) : 'Rain support'} powers ${link(ace.species)}’s Water attacks by <strong>1.5×</strong> while Rain remains active.` });
+        }
+        if (allMoveKeys.includes('helpinghand')) {
+            const helper = activeMons.find(m => (m.moves || []).map(normKey).includes('helpinghand'));
+            layers.push({ label: 'Direct Amplification', text: `${link(helper?.species || 'Helping Hand user')} adds a <strong>1.5×</strong> modifier to the ace’s selected move.` });
+        }
+        if (allMoveKeys.includes('faketears') || allMoveKeys.includes('metalsound')) {
+            const debuffer = activeMons.find(m => (m.moves || []).map(normKey).some(k => k === 'faketears' || k === 'metalsound'));
+            layers.push({ label: 'Special Defense Break', text: `${link(debuffer?.species || 'The support slot')} can apply a <strong>−2 Sp. Def</strong> drop, effectively doubling special damage before other modifiers.` });
+        }
+        if (allMoveKeys.includes('screech')) {
+            const debuffer = activeMons.find(m => (m.moves || []).map(normKey).includes('screech'));
+            layers.push({ label: 'Defense Break', text: `${link(debuffer?.species || 'The support slot')} can apply a <strong>−2 Defense</strong> drop, effectively doubling physical damage before other modifiers.` });
+        }
+        if (aceItem.includes('lifeorb')) layers.push({ label: 'Item Boost', text: `${link('Life Orb')} multiplies attack damage by <strong>1.3×</strong> at the cost of recoil.` });
+        if (aceItem.includes('choicespecs') || aceItem.includes('choiceband')) layers.push({ label: 'Item Boost', text: `${link(ace.item)} multiplies the relevant attacking stat by <strong>1.5×</strong>, but locks ${link(ace.species)} into one move.` });
+        if (aceAbility === 'hugepower' || aceAbility === 'purepower') layers.push({ label: 'Ability Boost', text: `${link(ace.ability)} doubles ${link(ace.species)}’s effective Attack.` });
+        if (aceAbility === 'solarpower' && ctx.utils.drought) layers.push({ label: 'Ability Boost', text: `${link('Solar Power')} multiplies Special Attack by <strong>1.5×</strong> in Sun, trading HP for immediate pressure.` });
+        if (aceAbility === 'firemane' && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'fire')) layers.push({ label: 'Ability Boost', text: `${link('Fire Mane')} adds a <strong>1.5×</strong> boost to Fire attacks.` });
+
+        if (layers.length === 1 && aceTypes.length) {
+            layers.push({ label: 'STAB Pressure', text: `${link(ace.species)} converts its ${aceTypes.map(t => link(capitalize(t))).join('/')} typing into reliable same-type damage; preserve it until checks are chipped.` });
+        }
+        return layers;
+    }
+
+    function buildProblemMatchups(ace, aces, activeMons, roles, ctx) {
+        const rows = [];
+        const weaknessCounts = {};
+        activeMons.forEach(mon => {
+            const db = typeof getMonDb === 'function' ? getMonDb(mon) : null;
+            getWeaknessList(db, mon).forEach(type => { weaknessCounts[type] = (weaknessCounts[type] || 0) + 1; });
+        });
+        Object.entries(weaknessCounts).filter(([, count]) => count >= 2).sort((a, b) => b[1] - a[1]).slice(0, 2).forEach(([type, count]) => {
+            const answers = activeMons.filter(mon => {
+                const db = typeof getMonDb === 'function' ? getMonDb(mon) : null;
+                return getResistanceList(db, mon).some(r => r.startsWith(type));
+            });
+            rows.push({
+                threat: `${capitalize(type)} pressure`,
+                problem: `${count} team members are weak to ${capitalize(type)}, so repeated spread or coverage damage can overwhelm the core.`,
+                solution: answers.length ? `Preserve ${joinList(answers.slice(0, 2), m => link(m.species))} as the defensive pivot${answers.length > 1 ? 's' : ''}.` : 'Use Tera defensively or deny the attacker a free turn; the roster has no natural resistance.'
+            });
+        });
+        if (ctx.utils.drought || ctx.utils.drizzle || ctx.utils.snow || ctx.utils.sand) {
+            const manualSetter = activeMons.find(m => (m.moves || []).map(normKey).some(k => ['sunnyday', 'raindance', 'snowscape', 'sandstorm'].includes(k)));
+            rows.push({
+                threat: 'Opposing weather',
+                problem: 'A slower weather setter can overwrite the field and remove the team’s speed or damage multiplier.',
+                solution: manualSetter ? `Keep ${link(manualSetter.species)} healthy to reset weather manually after the opposing setter moves.` : 'Pressure the opposing setter immediately and avoid committing the weather abuser before field control is secure.'
+            });
+        }
+        const priorityBlocker = activeMons.find((m, i) => (roles[i] || []).includes('Priority Denial'));
+        if (scoreTeamAce(ace, aces[0]?.roles || []) >= 150) {
+            const aceSpeed = typeof getMonSpeed === 'function' ? getMonSpeed(ace, getMonDb(ace), ctx.format) : null;
+            const speedProblem = ctx.utils.tr && aceSpeed != null && aceSpeed < 85
+                ? `Outside Trick Room, faster attackers can move before ${link(ace.species)}; priority can still finish it after chip.`
+                : `${link(ace.species)} can be revenge-killed after chip, while Trick Room or opposing speed control can erase its normal turn-order advantage.`;
+            rows.push({
+                threat: 'Priority & speed reversal',
+                problem: speedProblem,
+                solution: priorityBlocker ? `Position ${link(priorityBlocker.species)} beside the ace to deny priority; use Protect or reverse Trick Room before attacking.` : ctx.utils.tr ? 'Use your own Trick Room user to reverse opposing Trick Room, and scout priority with Protect.' : 'Preserve HP, scout with Protect, and remove priority users before revealing the ace.'
+            });
+        }
+        const physical = ctx.physicalMoveCount;
+        const special = ctx.specialMoveCount;
+        const alternate = aces.find(x => x.mon.species !== ace.species && (
+            special > physical ? x.roles.includes('Physical Sweeper') || parseInt(getMonDb(x.mon)?.Attack, 10) > parseInt(getMonDb(x.mon)?.['Sp.Atk'], 10)
+                : x.roles.includes('Special Sweeper') || parseInt(getMonDb(x.mon)?.['Sp.Atk'], 10) > parseInt(getMonDb(x.mon)?.Attack, 10)
+        ));
+        if (Math.abs(physical - special) >= 4) {
+            rows.push({
+                threat: special > physical ? 'Special walls' : 'Physical walls & Intimidate',
+                problem: `The roster is ${special > physical ? 'special' : 'physical'}-leaning, allowing one defensive profile to absorb most attacks.`,
+                solution: alternate ? `Pivot the win condition to ${link(alternate.mon.species)}, which attacks from the opposite side.` : `Use ${special > physical ? 'Sp. Def drops' : 'Defense drops, clear stat drops,'} or revise one coverage slot to diversify damage.`
+            });
+        }
+        return rows.slice(0, 4);
+    }
+
+    function composeTeamStrategy(activeMons, roles, ctx, format) {
+        if (!activeMons.length) return '<p>Add a complete team to generate an in-depth strategy.</p>';
+        const rankedAces = pickTeamAces(activeMons, roles);
+        const ace = rankedAces[0].mon;
+        const archetype = getTeamStrategyArchetype(ctx, roles);
+        const engine = buildEngineLayers(ace, ctx, activeMons);
+        const leads = (ctx.leadMons || activeMons.slice(0, format === 'Doubles' ? 2 : 1));
+        const leadNames = joinList(leads, mon => link(mon.species));
+        const alternate = rankedAces.find(x => x.mon.species !== ace.species && x.roles.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r)));
+        const problems = buildProblemMatchups(ace, rankedAces, activeMons, roles, ctx);
+        const firstAttack = getDamagingMoves(ace).sort((a, b) => (b.ref?.power || 0) - (a.ref?.power || 0))[0];
+        const rosterRows = activeMons.map((mon, i) => {
+            const monRoles = roles[i] || [];
+            return `<tr>
+                <td><strong>${link(mon.species)}</strong></td>
+                <td>${mon.item && normKey(mon.item) !== 'none' ? link(mon.item) : 'No item'}<br><span class="team-strategy-muted">${esc(monRoles.slice(0, 2).join(' / ') || 'Flex')}</span></td>
+                <td>${describeRosterFunction(mon, monRoles, ctx, mon.species === ace.species)}</td>
+            </tr>`;
+        }).join('');
+
+        return `
+            <div class="team-strategy-hero">
+                <span class="team-strategy-kicker">Dynamic ${esc(format)} game plan</span>
+                <h3>${link(ace.species)} ${esc(archetype)} Strategy</h3>
+                <p>This team is built to create a controlled attack window for <strong>${link(ace.species)}</strong>, then convert speed, field, and support advantages into knockouts. ${alternate ? `${link(alternate.mon.species)} is the secondary win condition when the primary line is checked.` : 'Preserve the ace until opposing checks are weakened.'}</p>
+            </div>
+            <div class="team-strategy-part">
+                <h4><span>1</span> Core Engine: ${esc(archetype)}</h4>
+                <p>The central plan is <strong>layered advantage</strong>: establish turn order, activate available damage modifiers, and attack before the opponent can reset the board.</p>
+                <div class="team-strategy-layers">${engine.map(layer => `<div class="team-strategy-layer"><strong>${layer.label}</strong><p>${layer.text}</p></div>`).join('')}</div>
+                ${firstAttack ? `<p class="team-strategy-callout"><strong>Conversion point:</strong> once targets enter range, ${link(ace.species)} converts the setup with ${link(firstAttack.name)}${firstAttack.ref?.power ? ` (${firstAttack.ref.power} BP)` : ''}. Use the damage calculator for the final matchup-specific threshold.</p>` : ''}
+            </div>
+            <div class="team-strategy-part">
+                <h4><span>2</span> Team Roster &amp; Tactical Roles</h4>
+                <div class="team-strategy-table-wrap"><table class="team-strategy-table">
+                    <thead><tr><th>Pokémon</th><th>Item / Role</th><th>Strategic function</th></tr></thead>
+                    <tbody>${rosterRows}</tbody>
+                </table></div>
+            </div>
+            <div class="team-strategy-part">
+                <h4><span>3</span> Playstyle Execution &amp; Decision Making</h4>
+                <ol class="team-strategy-sequence">
+                    <li><strong>Lead:</strong> open with ${leadNames}. ${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Use this lead to establish immediate board control.'}</li>
+                    <li><strong>Develop:</strong> ${archetype.startsWith('Trick Room') ? 'secure Trick Room before committing the slow attackers' : ctx.utils.tailwind ? 'set Tailwind before committing the ace' : ctx.utils.tr ? 'secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'use Fake Out to create the first safe attack' : 'scout the opposing response and trade only when it improves positioning'}${ctx.utils.helpinghand ? ', then reserve Helping Hand for a calc-confirmed knockout' : ''}.</li>
+                    <li><strong>Break:</strong> use the strongest wallbreaker to remove the opponent’s dedicated answer; do not expose ${link(ace.species)} merely for neutral chip.</li>
+                    <li><strong>Close:</strong> bring in ${link(ace.species)} after checks are weakened and preserve the remaining speed-control turns for the sweep.${alternate ? ` If its route is blocked, pivot to ${link(alternate.mon.species)} instead of forcing the primary line.` : ''}</li>
+                </ol>
+            </div>
+            <div class="team-strategy-part">
+                <h4><span>4</span> Problem Matchups &amp; Counter-Adjustments</h4>
+                ${problems.length ? `<div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--matchups">
+                    <thead><tr><th>Threat / scenario</th><th>Strategic problem</th><th>Tactical solution</th></tr></thead>
+                    <tbody>${problems.map(row => `<tr><td><strong>${row.threat}</strong></td><td>${row.problem}</td><td>${row.solution}</td></tr>`).join('')}</tbody>
+                </table></div>` : '<p>No major structural matchup warning was detected. Use opponent prep for set-specific counter assignments.</p>'}
+            </div>`;
+    }
+
     function composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons) {
         const types = getMonTypes(db, mainMon).join('/') || 'Unknown';
         const speed = typeof getMonSpeed === 'function' ? getMonSpeed(mainMon, db, format) : null;
@@ -820,6 +1047,8 @@
         const setTitleEl = document.getElementById('build-prose-set-title');
         if (setTitleEl) setTitleEl.textContent = `${setSection.setName} Set`;
 
+        setProseSection('build-prose-section-strategy', 'build-prose-strategy',
+            safeCompose('strategy', () => composeTeamStrategy(activeMons, roles, ctx, format), '<p>Team strategy analysis unavailable.</p>'));
         setProseSection('build-prose-section-overview', 'build-prose-overview',
             safeCompose('overview', () => composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons), `<p>${link(mainMon.species)} — analysis loading.</p>`));
         setProseSection('build-prose-section-set', 'build-prose-set', setSection.html);

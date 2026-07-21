@@ -837,6 +837,163 @@
     font-weight: 800;
 }
 
+.build-prose-section--strategy {
+    padding: 1rem;
+    border: 1px solid rgba(110, 181, 255, 0.16);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(110, 181, 255, 0.055), rgba(0, 0, 0, 0.16));
+}
+
+.team-strategy-hero {
+    margin-bottom: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.team-strategy-kicker {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #81c4ff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.team-strategy-hero h3 {
+    margin: 0 0 0.45rem;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1.25;
+}
+
+.team-strategy-part {
+    padding: 0.95rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.team-strategy-part:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.team-strategy-part h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 0.65rem;
+    color: #fff;
+    font-size: 0.86rem;
+}
+
+.team-strategy-part h4 > span {
+    display: inline-grid;
+    width: 1.45rem;
+    height: 1.45rem;
+    flex: 0 0 1.45rem;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(110, 181, 255, 0.16);
+    border: 1px solid rgba(110, 181, 255, 0.34);
+    color: #9dccff;
+    font-size: 0.68rem;
+}
+
+.team-strategy-layers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.55rem;
+    margin: 0.7rem 0;
+}
+
+.team-strategy-layer {
+    padding: 0.7rem 0.75rem;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.24);
+    border-left: 2px solid rgba(110, 181, 255, 0.48);
+}
+
+.team-strategy-layer > strong {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: #9dccff !important;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.team-strategy-layer p {
+    margin: 0;
+    font-size: 0.81rem;
+}
+
+.team-strategy-callout {
+    padding: 0.65rem 0.75rem;
+    border-radius: 9px;
+    background: rgba(255, 193, 7, 0.06);
+    border: 1px solid rgba(255, 193, 7, 0.18);
+}
+
+.team-strategy-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.team-strategy-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.team-strategy-table th {
+    padding: 0.55rem 0.65rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.61rem;
+    letter-spacing: 0.07em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.team-strategy-table td {
+    padding: 0.65rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    vertical-align: top;
+}
+
+.team-strategy-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.team-strategy-table--matchups td:first-child {
+    width: 18%;
+    color: #ffcc80;
+}
+
+.team-strategy-muted {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.7rem;
+}
+
+.team-strategy-sequence {
+    margin: 0.4rem 0 0;
+    padding-left: 1.2rem;
+}
+
+.team-strategy-sequence li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+}
+
+.team-strategy-sequence li::marker {
+    color: #6eb5ff;
+    font-weight: 900;
+}
+
 @media (max-width: 768px) {
     .build-prose-panel {
         padding: 1.25rem 1rem !important;
@@ -844,6 +1001,14 @@
 
     .build-prose-body {
         font-size: 0.84rem;
+    }
+
+    .build-prose-section--strategy {
+        padding: 0.8rem;
+    }
+
+    .team-strategy-layers {
+        grid-template-columns: 1fr;
     }
 }
 

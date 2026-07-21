@@ -1369,16 +1369,21 @@
                 <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
                     <div class="analysis-card build-prose-panel" id="build-prose-panel" style="display:none;">
                         <div class="build-prose-panel__head">
-                            <h3 class="build-prose-panel__title">Build Analysis</h3>
+                            <h3 class="build-prose-panel__title">Team Analysis</h3>
                             <span class="build-prose-panel__format" id="build-prose-format"></span>
                         </div>
                         <nav class="build-prose-nav" aria-label="Analysis sections">
+                            <a href="#build-prose-section-strategy">Strategy</a>
                             <a href="#build-prose-section-overview">Overview</a>
                             <a href="#build-prose-section-set">Set</a>
                             <a href="#build-prose-section-teammates">Teammates</a>
                             <a href="#build-prose-section-checks">Checks</a>
                             <a href="#build-prose-section-meta">Meta</a>
                         </nav>
+                        <section class="build-prose-section build-prose-section--strategy" id="build-prose-section-strategy">
+                            <h4 class="build-prose-section__title">In-Depth Team Strategy</h4>
+                            <div id="build-prose-strategy" class="build-prose-body"></div>
+                        </section>
                         <section class="build-prose-section" id="build-prose-section-overview">
                             <h4 class="build-prose-section__title">Overview</h4>
                             <div id="build-prose-overview" class="build-prose-body"></div>
@@ -1827,7 +1832,7 @@
     <script src="../js/battle/pokemon-state.js"></script>
     <script src="../js/damage-calc.js"></script>
     <script src="../js/analysis.js?v=5"></script>
-    <script src="../js/build-narrative.js?v=5"></script>
+    <script src="../js/build-narrative.js?v=7"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
     <script src="../js/opponent-analysis.js?v=8"></script>
 
