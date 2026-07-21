@@ -2103,7 +2103,7 @@
         "build": "Froslass @ Froslassite  \nAbility: Snow Cloak  \nLevel: 50  \nTera Type: Ice  \nEVs: 26 HP / 1 Def / 9 SpA / 15 SpD / 15 Spe\nTimid Nature    \n- Protect  \n- Aurora Veil  \n- Blizzard  \n- Shadow Ball",
         "synergy": [],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "265",
@@ -3437,7 +3437,7 @@
         "build": "Maushold @ Wide Lens\nLevel: 50\nAbility: Technician\nEVs: 2 HP / 32 Atk / 32 Spe\nTera Type: Ghost\nJolly Nature\n- Follow Me\n- Population Bomb\n- Taunt\n- Protect",
         "synergy": [],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "428",
@@ -4642,7 +4642,7 @@
             "587"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "565",
@@ -4690,7 +4690,7 @@
             "535"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "570",
@@ -4780,7 +4780,7 @@
             "576"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "578",
@@ -4803,7 +4803,7 @@
             "578"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "580",
@@ -4816,7 +4816,7 @@
             "579"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "581",
@@ -4827,7 +4827,7 @@
             "583"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "582",
@@ -5379,7 +5379,7 @@
             "635"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "637",
