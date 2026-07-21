@@ -274,7 +274,13 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
     const moves = activeMons.flatMap(p => (p.moves || []).map(m => normalizeMoveKey(m)));
     const hasMove = (list) => list.some(m => moves.includes(m));
     const speciesList = activeMons.map(p => normalizeSpeciesKey(p.species));
-    const abilities = activeMons.map(p => (p.ability || '').toLowerCase().replace(/[^a-z0-9]/g, ''));
+    const abilities = activeMons.map(p => {
+        const db = getMonDb(p);
+        const dbAbilities = typeof getPokemonAbilities === 'function' ? getPokemonAbilities(db) : [];
+        const isBattleForm = (db?.Name || '').toLowerCase().includes('-mega');
+        const activeAbility = isBattleForm ? dbAbilities[0] : (p.ability || dbAbilities[0] || '');
+        return (activeAbility || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    });
     const flatRoles = roles.flat();
     const activeTypes = new Set(activeMons.flatMap(p => {
         const db = getMonDb(p);
@@ -344,8 +350,8 @@ function buildTeamContext(activeMons, format, coverage, weaknesses, resistances,
         spread: hasMove(spreadMoveKeysRef),
         priority: hasMove(['extremespeed', 'suckerpunch', 'aquajet', 'machpunch', 'bulletpunch', 'iceshard', 'shadowsneak', 'vacuumwave', 'watershuriken', 'grassyglide', 'firstimpression', 'accelerock', 'thunderclap']),
         intimidate: abilities.includes('intimidate') || speciesList.includes('incineroar') || speciesList.includes('landorustherian'),
-        drizzle: abilities.includes('drizzle') || hasMove(['raindance']),
-        drought: abilities.includes('drought') || hasMove(['sunnyday']),
+        drizzle: abilities.some(ability => ['drizzle', 'primordialsea'].includes(ability)) || hasMove(['raindance']),
+        drought: abilities.some(ability => ['drought', 'desolateland', 'orichalcumpulse'].includes(ability)) || hasMove(['sunnyday']),
         snow: abilities.includes('snowwarning') || hasMove(['snowscape', 'chillyreception']),
         sand: abilities.includes('sandstream') || hasMove(['sandstorm']),
         psychicterrain: abilities.includes('psychicsurge') || hasMove(['psychicterrain']),

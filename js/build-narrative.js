@@ -550,45 +550,176 @@
             });
     }
 
-    function getTeamStrategyArchetype(ctx, roles) {
-        const u = ctx.utils || {};
-        const offenseCount = roles.filter(rs => rs.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r))).length;
-        const wallCount = roles.filter(rs => rs.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r))).length;
-        if (u.tr && ctx.speedTiers.trAbuser) return 'Trick Room Offense';
-        if (u.sand && (ctx.hasAbility?.(['sandrush', 'sandforce']) || ctx.flatRoles.includes('Weather Abuser'))) return u.tailwind ? 'Sand Speed-Control Offense' : 'Sand Offense';
-        if (u.drought && offenseCount >= 2) return u.tailwind ? 'Sun Tailwind Hyper-Offense' : 'Sun Offense';
-        if (u.drizzle && offenseCount >= 2) return u.tailwind ? 'Rain Tailwind Hyper-Offense' : 'Rain Offense';
-        if (u.psychicterrain && u.expandingforce) return 'Psychic Terrain Offense';
-        if (u.tailwind && offenseCount >= 2) return 'Tailwind Hyper-Offense';
-        if (offenseCount >= Math.max(3, ctx.teamSize - 2) && wallCount === 0) return 'Hyper-Offense';
-        if (offenseCount >= 2 && wallCount >= 1) return 'Bulky Offense';
-        if (wallCount >= 2) return 'Balance';
-        return 'Flexible Offense';
+    const STRATEGY_MOVES = {
+        setup: ['swordsdance', 'calmmind', 'nastyplot', 'dragondance', 'quiverdance', 'bulkup', 'irondefense', 'agility', 'shellsmash', 'bellydrum', 'coil', 'tidyup', 'victorydance', 'geomancy'],
+        recovery: ['recover', 'roost', 'softboiled', 'slackoff', 'milkdrink', 'shoreup', 'strengthsap', 'synthesis', 'morningsun', 'moonlight', 'rest', 'wish', 'leechseed', 'aquaring'],
+        status: ['toxic', 'willowisp', 'thunderwave', 'glare', 'nuzzle', 'spore', 'sleeppowder', 'hypnosis', 'yawn', 'saltcure'],
+        hazards: ['stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'ceaselessedge', 'stoneaxe'],
+        pivot: ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception', 'batonpass'],
+        trapping: ['meanlook', 'block', 'whirlpool', 'firespin', 'infestation', 'magmastorm', 'jawlock', 'thousandwaves'],
+        screens: ['reflect', 'lightscreen', 'auroraveil'],
+        rainPayoff: ['thunder', 'hurricane', 'weatherball', 'electroshot', 'hydropump', 'wavecrash', 'surgingstrikes'],
+        sunPayoff: ['solarbeam', 'solarblade', 'weatherball', 'growth', 'hydrosteam', 'eruption', 'heatwave'],
+        snowPayoff: ['blizzard', 'auroraveil'],
+        sandPayoff: ['shoreup']
+    };
+
+    function monMoveKeys(mon) {
+        return (mon.moves || []).filter(Boolean).map(normKey);
     }
 
-    function scoreTeamAce(mon, monRoles) {
+    function countMonsWithMoves(activeMons, moveKeys) {
+        return activeMons.filter(mon => monMoveKeys(mon).some(move => moveKeys.includes(move))).length;
+    }
+
+    function getEffectiveAbilityKey(mon, db) {
+        const dbAbilities = Array.isArray(db?.Ability) ? db.Ability : (db?.Ability ? [db.Ability] : []);
+        if ((db?.Name || '').toLowerCase().includes('-mega') && dbAbilities.length) return normKey(dbAbilities[0]);
+        return normKey(mon.ability || dbAbilities[0]);
+    }
+
+    function detectTeamStrategies(activeMons, roles, ctx) {
+        const u = ctx.utils || {};
+        const teamSize = Math.max(1, activeMons.length);
+        const offenseCount = roles.filter(rs => rs.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper', 'Revenge Killer'].includes(r))).length;
+        const wallCount = roles.filter(rs => rs.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r))).length;
+        const setupCount = Math.max(
+            roles.filter(rs => rs.includes('Setup Sweeper')).length,
+            countMonsWithMoves(activeMons, STRATEGY_MOVES.setup)
+        );
+        const recoveryCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.recovery);
+        const statusCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.status);
+        const hazardCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.hazards);
+        const pivotCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.pivot);
+        const screenCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.screens);
+        const trapCount = countMonsWithMoves(activeMons, STRATEGY_MOVES.trapping);
+        const trCount = roles.filter(rs => rs.includes('Trick Room Abuser')).length;
+        const weatherAbusers = roles.filter(rs => rs.includes('Weather Abuser')).length;
+        const strategies = [];
+        const add = (name, score, detail) => strategies.push({ name, score, detail });
+
+        if (u.drizzle) {
+            const payoff = weatherAbusers + countMonsWithMoves(activeMons, STRATEGY_MOVES.rainPayoff);
+            add(u.tailwind && offenseCount >= 2 ? 'Rain Tailwind Offense' : 'Rain Offense', 94 + Math.min(8, payoff * 2), 'Rain boosts Water damage and enables Swift Swim, accurate Thunder/Hurricane, and other weather payoffs.');
+        }
+        if (u.drought) {
+            const payoff = weatherAbusers + countMonsWithMoves(activeMons, STRATEGY_MOVES.sunPayoff);
+            add(u.tailwind && offenseCount >= 2 ? 'Sun Tailwind Offense' : (u.tr && trCount ? 'Trick Room Sun' : 'Sun Offense'), 93 + Math.min(8, payoff * 2), 'Sun boosts Fire damage while enabling Chlorophyll, Protosynthesis, Solar moves, and weather-based coverage.');
+        }
+        if (u.sand) add('Sand Offense', 91 + Math.min(8, weatherAbusers * 3), 'Sand enables Sand Rush and residual chip while improving Rock-type special bulk.');
+        if (u.snow) add(screenCount ? 'Snow / Aurora Veil Offense' : 'Snow Offense', 88 + Math.min(8, weatherAbusers * 3), 'Snow enables Blizzard and Aurora Veil while improving Ice-type physical bulk.');
+        if (u.tr && trCount) add('Trick Room Offense', 96 + Math.min(8, trCount * 2), 'Trick Room reverses turn order so the team’s slow attackers become its fastest threats.');
+        else if (u.tr) add('Trick Room Control', 78, 'Trick Room can reverse opposing speed control even without a dedicated slow-mode core.');
+        if (u.psychicterrain && u.expandingforce) add('Psychic Terrain Offense', 92, 'Psychic Terrain blocks grounded priority and turns Expanding Force into boosted spread pressure.');
+        else if (u.psychicterrain || u.grassyterrain || u.electricterrain) add('Terrain Offense', 82, 'Terrain supplies an immediate field bonus for compatible attacks, abilities, and seeds.');
+        if (setupCount) {
+            const supported = u.redirection || u.screens || u.fakeout || roles.some(rs => rs.includes('Damage Mitigation'));
+            add(supported ? 'Supported Setup Sweep' : 'Setup Offense', 86 + Math.min(10, setupCount * 3) + (supported ? 5 : 0), 'Create a safe boosting turn, remove revenge killers, then preserve the boosted attacker as the win condition.');
+        }
+        if (wallCount >= 2 && recoveryCount >= Math.min(2, teamSize) && (statusCount || hazardCount)) {
+            add(statusCount >= 2 ? 'Status Stall / Attrition' : 'Stall / Attrition', 90 + Math.min(8, recoveryCount + statusCount + hazardCount), 'Recovery, status, and entry hazards win through accumulated chip rather than one short damage window.');
+        } else if (wallCount >= 2 && (recoveryCount || statusCount)) {
+            add('Defensive Balance', 77 + wallCount * 2, 'Bulky pivots absorb pressure and create repeatable openings for the team’s attackers.');
+        }
+        if (activeMons.some(mon => monMoveKeys(mon).includes('perishsong'))) {
+            add(trapCount ? 'Perish Trap' : 'Perish Song Control', trapCount ? 89 : 75, trapCount
+                ? 'Trap or pin targets while the Perish Song count advances, then switch before the final count.'
+                : 'Use Perish Song to force switches, end prolonged setup lines, or close a favorable endgame.');
+        }
+        if (hazardCount >= 2 || (hazardCount && pivotCount >= 2)) add('Hazard Stack', 80 + hazardCount * 3, 'Layer hazards and force switches so every pivot moves the opponent closer to KO range.');
+        if (pivotCount >= 2) add('Pivot / VoltTurn', 76 + pivotCount * 3, 'Repeated pivot moves retain initiative and bring the correct breaker in without spending a naked switch.');
+        if (u.screens && (setupCount || offenseCount >= 2)) add('Screens Offense', 85 + screenCount * 2, 'Screens manufacture setup turns and let offensive pieces survive revenge attempts.');
+        if (u.tailwind && offenseCount >= 2) add('Tailwind Hyper-Offense', 84 + Math.min(8, offenseCount * 2), 'Tailwind creates a four-turn window for the roster’s strongest attackers.');
+        if (u.redirection && (setupCount || offenseCount >= 2)) add('Redirection Offense', 83, 'Redirection protects the active carry while it boosts or attacks.');
+        if (u.spread && offenseCount >= 2) add('Spread-Damage Offense', 72 + offenseCount, 'Spread attacks pressure both opposing slots and punish passive positioning.');
+
+        if (!strategies.length) {
+            if (offenseCount >= Math.max(3, teamSize - 2) && wallCount === 0) add('Hyper-Offense', 70, 'Use immediate damage and speed to trade faster than the opponent can stabilize.');
+            else if (offenseCount >= 2 && wallCount >= 1) add('Bulky Offense', 68, 'Bulky support creates repeated entries for two or more attacking routes.');
+            else if (wallCount >= 2) add('Balance', 65, 'Defensive pivots and flexible attackers adapt the win condition to the matchup.');
+            else add('Flexible Offense', 50, 'Use type coverage and positioning to identify the best attacker for each matchup.');
+        }
+
+        return strategies.sort((a, b) => b.score - a.score);
+    }
+
+    function getTeamStrategyArchetype(activeMons, ctx, roles) {
+        return detectTeamStrategies(activeMons, roles, ctx)[0].name;
+    }
+
+    function scoreTeamAce(mon, monRoles, ctx) {
         const db = typeof getMonDb === 'function' ? getMonDb(mon) : null;
         const moves = getDamagingMoves(mon);
         const item = normKey(mon.item);
-        let score = Math.max(parseInt(db?.Attack, 10) || 0, parseInt(db?.['Sp.Atk'], 10) || 0);
-        score += (parseInt(db?.Speed, 10) || 0) * 0.45;
+        const moveKeys = monMoveKeys(mon);
+        const attack = parseInt(db?.Attack, 10) || 0;
+        const specialAttack = parseInt(db?.['Sp.Atk'], 10) || 0;
+        const speed = parseInt(db?.Speed, 10) || 0;
+        const ability = getEffectiveAbilityKey(mon, db);
+        const offensiveEvs = Math.max(parseInt(mon.evs?.atk, 10) || 0, parseInt(mon.evs?.spa, 10) || 0);
+        let score = Math.max(attack, specialAttack);
+        score += speed * 0.38;
+        score += Math.min(20, offensiveEvs * 0.25);
+        score += Math.min(18, moves.length * 5);
         if (monRoles.includes('Wallbreaker')) score += 55;
         if (monRoles.includes('Physical Sweeper') || monRoles.includes('Special Sweeper')) score += 45;
-        if (monRoles.includes('Setup Sweeper')) score += 25;
+        if (monRoles.includes('Setup Sweeper') || moveKeys.some(move => STRATEGY_MOVES.setup.includes(move))) score += 42;
         if (monRoles.includes('Revenge Killer')) score += 18;
         if (item.includes('choiceband') || item.includes('choicespecs') || item.includes('lifeorb')) score += 22;
+        if (item.includes('ite') && (db?.Name || '').toLowerCase().includes('-mega')) score += 70;
+        if (monRoles.includes('Restricted Legendary')) score += 28;
+        if (ability === 'hugepower' || ability === 'purepower') score += 35;
+        if (ability === 'supremeoverlord' || moveKeys.includes('lastrespects')) score += 28;
+        if (ctx?.utils?.drought && (ability === 'drought' || ability === 'solarpower') && moves.some(m => (m.ref?.type || '').toLowerCase() === 'fire')) score += 28;
+        if (ctx?.utils?.drizzle && ['swiftswim', 'drizzle'].includes(ability) && moves.some(m => (m.ref?.type || '').toLowerCase() === 'water')) score += 28;
+        if (ctx?.utils?.sand && ability === 'sandrush') score += 26;
+        if (ctx?.utils?.snow && ability === 'slushrush') score += 26;
+        if (ctx?.utils?.tr && monRoles.includes('Trick Room Abuser')) score += 30;
         if (moves.some(m => (m.ref?.tags || []).some(t => /all opponents|all pokemon/i.test(t)))) score += 12;
+        if (moves.length <= 1 && monRoles.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer', 'Redirection'].includes(r))) score -= 35;
         return score;
     }
 
-    function pickTeamAces(activeMons, roles) {
-        return activeMons.map((mon, i) => ({ mon, roles: roles[i] || [], score: scoreTeamAce(mon, roles[i] || []) }))
+    function pickTeamAces(activeMons, roles, ctx) {
+        return activeMons.map((mon, i) => ({ mon, roles: roles[i] || [], score: scoreTeamAce(mon, roles[i] || [], ctx), index: i }))
             .sort((a, b) => b.score - a.score);
+    }
+
+    function scoreCorePartner(aceEntry, candidate, ctx) {
+        const ace = aceEntry.mon;
+        const aceRoles = aceEntry.roles;
+        const roles = candidate.roles;
+        const moves = monMoveKeys(candidate.mon);
+        const ability = getEffectiveAbilityKey(candidate.mon, typeof getMonDb === 'function' ? getMonDb(candidate.mon) : null);
+        let score = candidate.score * 0.18;
+        if (roles.includes('Redirection') && aceRoles.some(r => ['Setup Sweeper', 'Wallbreaker', 'Physical Sweeper', 'Special Sweeper'].includes(r))) score += 55;
+        if (roles.includes('Damage Mitigation') || roles.includes('Screener')) score += 28;
+        if (roles.includes('Fake Out Pressure')) score += 25;
+        if (roles.includes('Speed Control')) score += 24;
+        if (roles.includes('Pivot')) score += 20;
+        if (ctx.utils?.tr && roles.includes('Trick Room Setter') && aceRoles.includes('Trick Room Abuser')) score += 60;
+        if (ctx.utils?.drought && (ability === 'drought' || moves.includes('sunnyday'))) score += 48;
+        if (ctx.utils?.drizzle && (ability === 'drizzle' || moves.includes('raindance'))) score += 48;
+        if (ctx.utils?.sand && (ability === 'sandstream' || moves.includes('sandstorm'))) score += 48;
+        if (ctx.utils?.snow && (ability === 'snowwarning' || moves.includes('snowscape') || moves.includes('chillyreception'))) score += 48;
+        if (moves.includes('helpinghand')) score += 22;
+        if (moves.some(move => STRATEGY_MOVES.recovery.includes(move))) score += 12;
+        if (candidate.mon === ace) return -Infinity;
+        return score;
+    }
+
+    function pickPrimaryCore(rankedAces, ctx) {
+        if (!rankedAces.length) return [];
+        const ace = rankedAces[0];
+        const partner = rankedAces.slice(1)
+            .map(candidate => ({ ...candidate, coreScore: scoreCorePartner(ace, candidate, ctx) }))
+            .sort((a, b) => b.coreScore - a.coreScore)[0];
+        return partner ? [ace, partner] : [ace];
     }
 
     function describeRosterFunction(mon, monRoles, ctx, isAce) {
         const moves = (mon.moves || []).map(normKey);
-        const ability = normKey(mon.ability);
+        const ability = getEffectiveAbilityKey(mon, typeof getMonDb === 'function' ? getMonDb(mon) : null);
         const item = normKey(mon.item);
         const originalMoves = mon.moves || [];
         const moveName = key => originalMoves.find(move => normKey(move) === key) || key;
@@ -682,6 +813,8 @@
         if (key.includes('trick room') || ctx.utils?.tr) return getStrategyAsset('trick_room.png');
         if (key.includes('tailwind') || ctx.utils?.tailwind) return getStrategyAsset('tailwind.png');
         if (key.includes('psychic')) return getStrategyAsset('psychicterrain.png');
+        if (key.includes('stall') || key.includes('attrition') || key.includes('balance')) return getStrategyAsset('move-status.png');
+        if (key.includes('setup') || key.includes('screen')) return getStrategyAsset('move-special.png');
         return getStrategyAsset('move-special.png');
     }
 
@@ -691,7 +824,7 @@
         if (key.includes('weather')) return getArchetypeAsset(archetype, ctx);
         if (key.includes('speed')) return getStrategyAsset('tailwind.png');
         if (key.includes('turn order')) return getStrategyAsset('trick_room.png');
-        if (key.includes('denial') || key.includes('break') || key.includes('suppression')) return getStrategyAsset('move-status.png');
+        if (key.includes('denial') || key.includes('break') || key.includes('suppression') || key.includes('attrition') || key.includes('residual') || key.includes('buffer')) return getStrategyAsset('move-status.png');
         if (key.includes('late-game')) return getStrategyAsset('move-physical.png');
         if (key.includes('item') || key.includes('ability') || key.includes('amplification')) return getStrategyAsset('move-special.png');
         return getStrategyAsset('move-physical.png');
@@ -719,16 +852,26 @@
             const setter = activeMons.find(m => (m.moves || []).map(normKey).includes('trickroom'));
             layers.push({ label: 'Turn Order', text: `${setter ? link(setter.species) : 'The team'} can use ${link('Trick Room')} to enable slow attackers or reverse opposing Trick Room.` });
         }
+        const setupMove = (ace.moves || []).find(move => STRATEGY_MOVES.setup.includes(normKey(move)));
+        if (setupMove) {
+            const protector = activeMons.find(mon => mon !== ace && (
+                (mon.moves || []).map(normKey).some(move => ['followme', 'ragepowder', 'fakeout', 'reflect', 'lightscreen', 'auroraveil', 'partingshot'].includes(move))
+            ));
+            layers.push({
+                label: 'Setup Window',
+                text: `${link(ace.species)} uses ${link(setupMove)} as its conversion turn${protector ? ` while ${link(protector.species)} supplies disruption or protection` : ''}. Do not boost until immediate revenge tools are controlled.`
+            });
+        }
         if (ctx.utils.drought && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'fire')) {
-            const setter = activeMons.find(m => normKey(m.ability) === 'drought' || (m.moves || []).map(normKey).includes('sunnyday'));
+            const setter = activeMons.find(m => getEffectiveAbilityKey(m, typeof getMonDb === 'function' ? getMonDb(m) : null) === 'drought' || (m.moves || []).map(normKey).includes('sunnyday'));
             layers.push({ label: 'Weather Boost', text: `${setter ? link(setter.species) : 'Sun support'} powers ${link(ace.species)}’s Fire attacks by <strong>1.5×</strong> while Sun remains active.` });
         }
         if (ctx.utils.drizzle && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'water')) {
-            const setter = activeMons.find(m => normKey(m.ability) === 'drizzle' || (m.moves || []).map(normKey).includes('raindance'));
+            const setter = activeMons.find(m => getEffectiveAbilityKey(m, typeof getMonDb === 'function' ? getMonDb(m) : null) === 'drizzle' || (m.moves || []).map(normKey).includes('raindance'));
             layers.push({ label: 'Weather Boost', text: `${setter ? link(setter.species) : 'Rain support'} powers ${link(ace.species)}’s Water attacks by <strong>1.5×</strong> while Rain remains active.` });
         }
         if (ctx.utils.sand) {
-            const setter = activeMons.find(m => normKey(m.ability) === 'sandstream' || (m.moves || []).map(normKey).includes('sandstorm'));
+            const setter = activeMons.find(m => getEffectiveAbilityKey(m, typeof getMonDb === 'function' ? getMonDb(m) : null) === 'sandstream' || (m.moves || []).map(normKey).includes('sandstorm'));
             const rushUsers = activeMons.filter(m => normKey(m.ability) === 'sandrush');
             layers.push({
                 label: 'Sand Activation',
@@ -756,6 +899,29 @@
             layers.push({
                 label: 'Physical Suppression',
                 text: `${link(intimidateUser.species)} cycles ${link('Intimidate')} while ${link(burnUser.species)} threatens ${link('Will-O-Wisp')}, sharply reducing physical damage and buying extra Sand or status turns.`
+            });
+        }
+        const recoveryUsers = activeMons.filter(mon => monMoveKeys(mon).some(move => STRATEGY_MOVES.recovery.includes(move)));
+        const statusUsers = activeMons.filter(mon => monMoveKeys(mon).some(move => STRATEGY_MOVES.status.includes(move)));
+        if (recoveryUsers.length >= 2 && statusUsers.length) {
+            layers.push({
+                label: 'Attrition Loop',
+                text: `${joinList(recoveryUsers.slice(0, 2), mon => link(mon.species))} sustain the defensive core while ${joinList(statusUsers.slice(0, 2), mon => link(mon.species))} apply status or unavoidable chip. Rotate rather than accepting losing trades.`
+            });
+        }
+        const hazardUsers = activeMons.filter(mon => monMoveKeys(mon).some(move => STRATEGY_MOVES.hazards.includes(move)));
+        if (hazardUsers.length) {
+            const pivotUsers = activeMons.filter(mon => monMoveKeys(mon).some(move => STRATEGY_MOVES.pivot.includes(move)));
+            layers.push({
+                label: 'Residual Damage',
+                text: `${joinList(hazardUsers.slice(0, 2), mon => link(mon.species))} establish entry hazards${pivotUsers.length ? ` while ${joinList(pivotUsers.slice(0, 2), mon => link(mon.species))} force repeated switches` : ''}, moving opposing checks into the ace’s KO range.`
+            });
+        }
+        if (ctx.utils.screens) {
+            const screenUser = activeMons.find(mon => monMoveKeys(mon).some(move => STRATEGY_MOVES.screens.includes(move)));
+            layers.push({
+                label: 'Damage Buffer',
+                text: `${screenUser ? link(screenUser.species) : 'The screen setter'} uses Reflect, Light Screen, or Aurora Veil to create safer setup and attack turns. Track remaining screen turns before committing the carry.`
             });
         }
         if (allMoveKeys.includes('helpinghand')) {
@@ -809,7 +975,7 @@
             });
         }
         const priorityBlocker = activeMons.find((m, i) => (roles[i] || []).includes('Priority Denial'));
-        if (scoreTeamAce(ace, aces[0]?.roles || []) >= 150) {
+        if (scoreTeamAce(ace, aces[0]?.roles || [], ctx) >= 150) {
             const aceSpeed = typeof getMonSpeed === 'function' ? getMonSpeed(ace, getMonDb(ace), ctx.format) : null;
             const speedProblem = ctx.utils.tr && aceSpeed != null && aceSpeed < 85
                 ? `Outside Trick Room, faster attackers can move before ${link(ace.species)}; priority can still finish it after chip.`
@@ -857,7 +1023,7 @@
         });
 
         const pivot = findMonWithMoves(activeMons, ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception']);
-        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(normKey(mon.ability)))
+        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(getEffectiveAbilityKey(mon, typeof getMonDb === 'function' ? getMonDb(mon) : null)))
             || findMonWithMoves(activeMons, ['sandstorm', 'sunnyday', 'raindance', 'snowscape']);
         const weatherAbuser = activeMons.find((mon, i) => mon !== weatherSetter && (roles[i] || []).includes('Weather Abuser'));
         if (weatherSetter && weatherAbuser) {
@@ -937,7 +1103,7 @@
             });
         }
 
-        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(normKey(mon.ability)))
+        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(getEffectiveAbilityKey(mon, typeof getMonDb === 'function' ? getMonDb(mon) : null)))
             || findMonWithMoves(activeMons, ['sandstorm', 'sunnyday', 'raindance', 'snowscape']);
         const pivot = findMonWithMoves(activeMons, ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception']);
         if (weatherSetter) {
@@ -970,9 +1136,12 @@
 
     function composeTeamStrategy(activeMons, roles, ctx, format) {
         if (!activeMons.length) return '<p>Add a complete team to generate an in-depth strategy.</p>';
-        const rankedAces = pickTeamAces(activeMons, roles);
+        const rankedAces = pickTeamAces(activeMons, roles, ctx);
         const ace = rankedAces[0].mon;
-        const archetype = getTeamStrategyArchetype(ctx, roles);
+        const detectedStrategies = detectTeamStrategies(activeMons, roles, ctx);
+        const archetype = getTeamStrategyArchetype(activeMons, ctx, roles);
+        const primaryCore = pickPrimaryCore(rankedAces, ctx);
+        const coreNames = joinList(primaryCore, entry => link(entry.mon.species));
         const engine = buildEngineLayers(ace, ctx, activeMons);
         const leads = (ctx.leadMons || activeMons.slice(0, format === 'Doubles' ? 2 : 1));
         const leadNames = joinList(leads, mon => link(mon.species));
@@ -1004,10 +1173,11 @@
         }).join('');
         const sequence = [
             { label: 'Lead', text: `Open with ${leadNames}. ${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Establish immediate board control.'}`, icon: getStrategyAsset('tailwind.png') },
-            { label: 'Develop', text: `${archetype.startsWith('Trick Room') ? 'Secure Trick Room before committing slow attackers' : ctx.utils.tailwind ? 'Set Tailwind before committing the ace' : ctx.utils.tr ? 'Secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'Use Fake Out to create the first safe attack' : 'Scout the response and improve positioning'}${ctx.utils.helpinghand ? '; reserve Helping Hand for a confirmed knockout' : ''}.`, icon: ctx.utils.tr ? getStrategyAsset('trick_room.png') : archetypeAsset },
+            { label: 'Develop', text: `${archetype.includes('Trick Room') ? 'Secure Trick Room before committing slow attackers' : archetype.includes('Stall') || archetype.includes('Attrition') ? 'Establish recovery, status, and hazard loops before taking direct trades' : archetype.includes('Setup') ? 'Remove immediate revenge tools and create one protected setup turn' : ctx.utils.tailwind ? 'Set Tailwind before committing the ace' : ctx.utils.tr ? 'Secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'Use Fake Out to create the first safe attack' : 'Scout the response and improve positioning'}${ctx.utils.helpinghand ? '; reserve Helping Hand for a confirmed knockout' : ''}.`, icon: ctx.utils.tr ? getStrategyAsset('trick_room.png') : archetypeAsset },
             { label: 'Break', text: `Remove the opponent’s dedicated answer without exposing ${link(ace.species)} merely for neutral chip.`, icon: getStrategyAsset('move-physical.png') },
             { label: 'Close', text: `Deploy ${link(ace.species)} after checks are weakened.${alternate ? ` Pivot to ${link(alternate.mon.species)} if the primary route is blocked.` : ''}`, icon: getStrategyAsset('move-special.png') }
         ];
+        const secondaryStrategyText = detectedStrategies.slice(1, 4).map(strategy => strategy.name);
 
         return `
             <div class="team-strategy-hero">
@@ -1015,9 +1185,9 @@
                 <div class="team-strategy-hero__copy">
                     <span class="team-strategy-kicker">Dynamic ${esc(format)} game plan</span>
                     <h3>${esc(archetype)}</h3>
-                    <p>Create a controlled attack window for <strong>${link(ace.species)}</strong>, then convert field and turn-order advantages into knockouts. ${alternate ? `${link(alternate.mon.species)} provides the alternate win route.` : 'Preserve the ace until opposing checks are weakened.'}</p>
+                    <p>${esc(detectedStrategies[0].detail)} The primary core is <strong>${coreNames}</strong>, built around ${link(ace.species)} as the main win condition. ${alternate ? `${link(alternate.mon.species)} provides the alternate win route.` : 'Preserve the ace until opposing checks are weakened.'}</p>
                     <div class="team-strategy-hero__chips">
-                        <span>${esc(format)}</span><span>${activeMons.length} Pokémon</span><span>${engine.length} engine layers</span>
+                        <span>${esc(format)}</span><span>${activeMons.length} Pokémon</span><span>${engine.length} engine layers</span>${secondaryStrategyText.map(name => `<span>${esc(name)}</span>`).join('')}
                     </div>
                 </div>
                 <div class="team-strategy-hero__ace">
@@ -1028,7 +1198,7 @@
             </div>
             <div class="team-strategy-part">
                 <h4><span>01</span><img src="${archetypeAsset}" alt="">Core Engine</h4>
-                <p class="team-strategy-part__intro">Stack field, speed, and disruption advantages before committing the primary attacker.</p>
+                <p class="team-strategy-part__intro"><strong>${coreNames}</strong> form the primary core. ${detectedStrategies.slice(0, 3).map(strategy => esc(strategy.detail)).join(' ')}</p>
                 <div class="team-strategy-layers">${engine.map(layer => `<article class="team-strategy-layer"><img src="${getLayerAsset(layer.label, archetype, ctx)}" alt=""><div><strong>${layer.label}</strong><p>${layer.text}</p></div></article>`).join('')}</div>
                 ${firstAttack ? `<div class="team-strategy-callout"><img src="${getStrategyAsset((firstAttack.ref?.damage_class || firstAttack.ref?.category || '').toLowerCase() === 'special' ? 'move-special.png' : 'move-physical.png')}" alt=""><p><strong>Conversion point</strong><br>${link(ace.species)} closes with ${link(firstAttack.name)}${firstAttack.ref?.power ? ` · ${firstAttack.ref.power} BP` : ''} once checks enter range.</p></div>` : ''}
             </div>
@@ -1358,6 +1528,22 @@
         if (body) body.innerHTML = html || '';
         if (section) section.style.display = (html && String(html).trim()) ? '' : 'none';
     }
+
+    BN.inspectTeamStrategy = function (activeMons, roles, ctx) {
+        const safeMons = activeMons || [];
+        const safeRoles = roles || safeMons.map(() => []);
+        const safeCtx = ctx || { utils: {}, speedTiers: {}, teamSize: safeMons.length, flatRoles: safeRoles.flat() };
+        const strategies = safeMons.length ? detectTeamStrategies(safeMons, safeRoles, safeCtx) : [];
+        const rankedAces = pickTeamAces(safeMons, safeRoles, safeCtx);
+        const core = pickPrimaryCore(rankedAces, safeCtx);
+        return {
+            archetype: strategies[0]?.name || '',
+            strategies: strategies.map(strategy => strategy.name),
+            ace: rankedAces[0]?.mon?.species || '',
+            core: core.map(entry => entry.mon.species),
+            aceScores: rankedAces.map(entry => ({ species: entry.mon.species, score: Math.round(entry.score) }))
+        };
+    };
 
     BN.renderFullAnalysis = function (mainMon, activeMons, format, ctx, roles, options = {}) {
         const panel = document.getElementById('build-prose-panel');

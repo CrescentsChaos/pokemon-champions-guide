@@ -2285,14 +2285,6 @@
         "isMeta": false
     },
     {
-        "id": "287",
-        "pokemon": "Aegislash",
-        "build": "Aegislash @ Leftovers\nAbility: Stance Change\nEVs: 30 HP / 3 Atk / 31 SpA / 2 Spe\nQuiet Nature\n- Shadow Ball\n- Close Combat\n- King's Shield\n- Shadow Sneak",
-        "synergy": [],
-        "format": "Singles",
-        "isMeta": false
-    },
-    {
         "id": "288",
         "pokemon": "Aromatisse",
         "build": "Aromatisse @ Leftovers\nAbility: Aroma Veil\nEVs: 32 HP / 32 Def / 2 SpD\nBold Nature\n- Moonblast\n- Wish\n- Protect\n- Heal Bell",
