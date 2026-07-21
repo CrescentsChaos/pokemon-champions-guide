@@ -540,6 +540,7 @@
         const offenseCount = roles.filter(rs => rs.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r))).length;
         const wallCount = roles.filter(rs => rs.some(r => ['Physical Wall', 'Special Wall', 'Cleric/Healer'].includes(r))).length;
         if (u.tr && ctx.speedTiers.trAbuser) return 'Trick Room Offense';
+        if (u.sand && (ctx.hasAbility?.(['sandrush', 'sandforce']) || ctx.flatRoles.includes('Weather Abuser'))) return u.tailwind ? 'Sand Speed-Control Offense' : 'Sand Offense';
         if (u.drought && offenseCount >= 2) return u.tailwind ? 'Sun Tailwind Hyper-Offense' : 'Sun Offense';
         if (u.drizzle && offenseCount >= 2) return u.tailwind ? 'Rain Tailwind Hyper-Offense' : 'Rain Offense';
         if (u.psychicterrain && u.expandingforce) return 'Psychic Terrain Offense';
@@ -582,11 +583,31 @@
         if (moves.includes('screech')) jobs.push('breaks physical walls');
         if (moves.includes('sunnyday') || normKey(mon.ability) === 'drought') jobs.push('establishes Sun');
         if (moves.includes('raindance') || normKey(mon.ability) === 'drizzle') jobs.push('establishes Rain');
+        if (moves.includes('sandstorm') || normKey(mon.ability) === 'sandstream') jobs.push('establishes Sand');
+        if (normKey(mon.ability) === 'sandrush') jobs.push('becomes the Sand-speed attacker');
+        if (moves.includes('lastrespects')) jobs.push('scales into a late-game cleaner');
+        if (moves.includes('sleeppowder') || moves.includes('spore') || moves.includes('hypnosis')) jobs.push('denies turns with sleep');
+        if (moves.includes('willowisp')) jobs.push('neutralizes physical attackers');
         if (monRoles.includes('Priority Denial')) jobs.push('blocks opposing priority');
         if (monRoles.includes('Redirection')) jobs.push('protects the active attacker');
         if (monRoles.includes('Pivot')) jobs.push('preserves momentum');
         if (!jobs.length) jobs.push((monRoles[0] || 'flex slot').toLowerCase());
         return jobs.slice(0, 3).join('; ');
+    }
+
+    function getKeyStrategicMoves(mon) {
+        const priority = [
+            'tailwind', 'trickroom', 'fakeout', 'helpinghand', 'faketears', 'metalsound',
+            'screech', 'sleeppowder', 'spore', 'hypnosis', 'willowisp', 'allyswitch',
+            'followme', 'ragepowder', 'rockslide', 'lastrespects', 'uturn', 'voltswitch',
+            'flipturn', 'partingshot', 'sunnyday', 'raindance', 'sandstorm', 'snowscape'
+        ];
+        const moves = (mon.moves || []).filter(Boolean);
+        return [...moves].sort((a, b) => {
+            const ai = priority.indexOf(normKey(a));
+            const bi = priority.indexOf(normKey(b));
+            return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+        }).slice(0, 3);
     }
 
     function buildEngineLayers(ace, ctx, activeMons) {
@@ -618,6 +639,37 @@
         if (ctx.utils.drizzle && aceMoves.some(m => (m.ref?.type || '').toLowerCase() === 'water')) {
             const setter = activeMons.find(m => normKey(m.ability) === 'drizzle' || (m.moves || []).map(normKey).includes('raindance'));
             layers.push({ label: 'Weather Boost', text: `${setter ? link(setter.species) : 'Rain support'} powers ${link(ace.species)}’s Water attacks by <strong>1.5×</strong> while Rain remains active.` });
+        }
+        if (ctx.utils.sand) {
+            const setter = activeMons.find(m => normKey(m.ability) === 'sandstream' || (m.moves || []).map(normKey).includes('sandstorm'));
+            const rushUsers = activeMons.filter(m => normKey(m.ability) === 'sandrush');
+            layers.push({
+                label: 'Sand Activation',
+                text: `${setter ? link(setter.species) : 'The weather setter'} establishes Sand${rushUsers.length ? `, doubling ${joinList(rushUsers, m => link(m.species))}’s Speed through ${link('Sand Rush')}` : ' to enable the team’s weather interactions'}. Preserve the setter when another weather team can overwrite the field.`
+            });
+        }
+        const sleepUser = activeMons.find(m => (m.moves || []).map(normKey).some(k => ['sleeppowder', 'spore', 'hypnosis'].includes(k)));
+        const rockSlideUser = activeMons.find(m => (m.moves || []).map(normKey).includes('rockslide'));
+        if (sleepUser && rockSlideUser) {
+            layers.push({
+                label: 'Turn Denial',
+                text: `${link(sleepUser.species)} applies sleep while ${link(rockSlideUser.species)} threatens spread flinches with ${link('Rock Slide')}; together they can deny setup and recovery turns without relying only on raw damage.`
+            });
+        }
+        const lastRespectsUser = activeMons.find(m => (m.moves || []).map(normKey).includes('lastrespects'));
+        if (lastRespectsUser) {
+            layers.push({
+                label: 'Late-Game Insurance',
+                text: `${link(lastRespectsUser.species)}’s ${link('Last Respects')} gains <strong>50 base power per fainted ally</strong>. Keep this cleaner healthy while the early core trades, then deploy it only after the move has scaled.`
+            });
+        }
+        const intimidateUser = activeMons.find(m => normKey(m.ability) === 'intimidate');
+        const burnUser = activeMons.find(m => (m.moves || []).map(normKey).includes('willowisp'));
+        if (intimidateUser && burnUser) {
+            layers.push({
+                label: 'Physical Suppression',
+                text: `${link(intimidateUser.species)} cycles ${link('Intimidate')} while ${link(burnUser.species)} threatens ${link('Will-O-Wisp')}, sharply reducing physical damage and buying extra Sand or status turns.`
+            });
         }
         if (allMoveKeys.includes('helpinghand')) {
             const helper = activeMons.find(m => (m.moves || []).map(normKey).includes('helpinghand'));
@@ -697,6 +749,133 @@
         return rows.slice(0, 4);
     }
 
+    function findMonWithMoves(activeMons, moveKeys) {
+        return activeMons.find(mon => (mon.moves || []).map(normKey).some(key => moveKeys.includes(key)));
+    }
+
+    function formatLeadPair(mons, format) {
+        const unique = mons.filter((mon, i, list) => mon && list.indexOf(mon) === i);
+        const count = format === 'Doubles' ? 2 : 1;
+        return joinList(unique.slice(0, count), mon => link(mon.species)) || 'Matchup-dependent lead';
+    }
+
+    function buildLeadAdjustments(activeMons, roles, ctx, format, ace) {
+        const rows = [];
+        const defaultLeads = ctx.leadMons?.length ? ctx.leadMons : activeMons.slice(0, format === 'Doubles' ? 2 : 1);
+        rows.push({
+            matchup: 'Standard / neutral',
+            lead: formatLeadPair(defaultLeads, format),
+            execution: `${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Establish safe board control, identify their primary answer, and preserve the cleaner.'}`
+        });
+
+        const pivot = findMonWithMoves(activeMons, ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception']);
+        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(normKey(mon.ability)))
+            || findMonWithMoves(activeMons, ['sandstorm', 'sunnyday', 'raindance', 'snowscape']);
+        const weatherAbuser = activeMons.find((mon, i) => mon !== weatherSetter && (roles[i] || []).includes('Weather Abuser'));
+        if (weatherSetter && weatherAbuser) {
+            const safePartner = pivot || activeMons.find(mon => mon !== weatherSetter && mon !== weatherAbuser) || weatherAbuser;
+            rows.push({
+                matchup: 'Aggressive fast leads',
+                lead: formatLeadPair([safePartner, weatherAbuser], format),
+                execution: pivot
+                    ? `Apply immediate pressure, then use a pivot move to bring in ${link(weatherSetter.species)} safely and activate ${link(weatherAbuser.species)}’s weather advantage mid-turn.`
+                    : `Pressure immediately while keeping ${link(weatherSetter.species)} available to restore weather as soon as the field is overwritten.`
+            });
+        }
+
+        const intimidateUser = activeMons.find(mon => normKey(mon.ability) === 'intimidate');
+        const burnUser = findMonWithMoves(activeMons, ['willowisp']);
+        if (intimidateUser || burnUser) {
+            const mitigationPartner = burnUser || activeMons.find((mon, i) => (roles[i] || []).includes('Damage Mitigation') && mon !== intimidateUser);
+            rows.push({
+                matchup: 'Heavy physical offense',
+                lead: formatLeadPair([intimidateUser || mitigationPartner, mitigationPartner || ace], format),
+                execution: `${intimidateUser ? `Cycle ${link('Intimidate')} with ${link(intimidateUser.species)}` : 'Lead the damage-mitigation slot'}${burnUser ? ` and threaten ${link('Will-O-Wisp')} from ${link(burnUser.species)}` : ''}; trade speed for survivability until their physical carry is neutralized.`
+            });
+        }
+
+        const sleepUser = findMonWithMoves(activeMons, ['sleeppowder', 'spore', 'hypnosis']);
+        const tauntUser = findMonWithMoves(activeMons, ['taunt', 'encore']);
+        if (sleepUser || tauntUser) {
+            const disruptor = sleepUser || tauntUser;
+            const partner = activeMons.find((mon, i) => mon !== disruptor && (roles[i] || []).some(r => ['Wallbreaker', 'Physical Sweeper', 'Special Sweeper'].includes(r))) || ace;
+            rows.push({
+                matchup: 'Trick Room / setup',
+                lead: formatLeadPair([disruptor, partner], format),
+                execution: sleepUser
+                    ? `Target the setter with ${link((sleepUser.moves || []).find(m => ['sleeppowder', 'spore', 'hypnosis'].includes(normKey(m))))}; use the partner’s damage to punish failed or delayed setup.`
+                    : `Use ${link((tauntUser.moves || []).find(m => ['taunt', 'encore'].includes(normKey(m))))} before the opponent establishes its speed or setup engine.`
+            });
+        }
+
+        const tailwindUser = findMonWithMoves(activeMons, ['tailwind']);
+        const rockSlideUser = findMonWithMoves(activeMons, ['rockslide']);
+        if (tailwindUser && rockSlideUser && tailwindUser !== rockSlideUser) {
+            rows.push({
+                matchup: 'Tailwind / hyper-speed mirror',
+                lead: formatLeadPair([tailwindUser, rockSlideUser], format),
+                execution: `Match speed control with ${link('Tailwind')} while ${link(rockSlideUser.species)} applies spread ${link('Rock Slide')} pressure; preserve priority or the weather abuser for the final turns.`
+            });
+        }
+        return rows.slice(0, 5);
+    }
+
+    function buildOperationalAdjustments(activeMons, roles, ctx) {
+        const rows = [];
+        const intimidateUser = activeMons.find(mon => normKey(mon.ability) === 'intimidate');
+        const burnUser = findMonWithMoves(activeMons, ['willowisp']);
+        if (intimidateUser || burnUser) {
+            const names = [intimidateUser, burnUser].filter((mon, i, list) => mon && list.indexOf(mon) === i);
+            rows.push({
+                situation: 'Opponent commits heavy physical offense',
+                adjustment: `Reduce pure offense and position ${joinList(names, mon => link(mon.species))}.`,
+                outcome: `${intimidateUser ? 'Attack drops' : ''}${intimidateUser && burnUser ? ' plus ' : ''}${burnUser ? 'burn pressure' : ''} lower incoming physical damage and extend the team’s setup window.`
+            });
+        }
+
+        const sleepUser = findMonWithMoves(activeMons, ['sleeppowder', 'spore', 'hypnosis']);
+        const trAnswer = findMonWithMoves(activeMons, ['trickroom', 'taunt', 'encore', 'haze', 'clearsmog']);
+        if (sleepUser || trAnswer) {
+            const answer = sleepUser || trAnswer;
+            const move = (answer.moves || []).find(m => ['sleeppowder', 'spore', 'hypnosis', 'trickroom', 'taunt', 'encore', 'haze', 'clearsmog'].includes(normKey(m)));
+            rows.push({
+                situation: 'Opponent relies on Trick Room or setup',
+                adjustment: `Prioritize ${link(answer.species)} and preserve ${link(move || 'disruption')} until the setter is exposed.`,
+                outcome: sleepUser ? 'Sleep denies the setup turn and creates a safe attack window.' : 'The opposing setup is prevented, reversed, or cleared before it can snowball.'
+            });
+        }
+
+        const weatherSetter = activeMons.find(mon => ['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(normKey(mon.ability)))
+            || findMonWithMoves(activeMons, ['sandstorm', 'sunnyday', 'raindance', 'snowscape']);
+        const pivot = findMonWithMoves(activeMons, ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception']);
+        if (weatherSetter) {
+            rows.push({
+                situation: 'Facing an opposing weather setter',
+                adjustment: `Keep ${link(weatherSetter.species)} available in the back${pivot ? ` and bring it in through ${link(pivot.species)}’s pivot move` : ' instead of spending it at lead'} whenever possible.`,
+                outcome: 'Delayed entry wins the weather exchange and restores the team’s speed, damage, or defensive weather benefits.'
+            });
+        }
+
+        const lastRespectsUser = findMonWithMoves(activeMons, ['lastrespects']);
+        if (lastRespectsUser) {
+            rows.push({
+                situation: 'Two or more teammates have fainted',
+                adjustment: `Stop exposing ${link(lastRespectsUser.species)} to chip and pivot it onto the field for the endgame.`,
+                outcome: `${link('Last Respects')} reaches at least <strong>150 base power</strong> after two fainted allies and continues scaling with every additional loss.`
+            });
+        }
+
+        const tailwindUser = findMonWithMoves(activeMons, ['tailwind']);
+        if (tailwindUser) {
+            rows.push({
+                situation: 'Opponent wins the natural Speed race',
+                adjustment: `Lead or pivot to ${link(tailwindUser.species)} and set ${link('Tailwind')} before committing the primary attacker.`,
+                outcome: 'The team gains a four-turn offensive window; avoid wasting those turns on unnecessary switches.'
+            });
+        }
+        return rows.slice(0, 5);
+    }
+
     function composeTeamStrategy(activeMons, roles, ctx, format) {
         if (!activeMons.length) return '<p>Add a complete team to generate an in-depth strategy.</p>';
         const rankedAces = pickTeamAces(activeMons, roles);
@@ -707,12 +886,16 @@
         const leadNames = joinList(leads, mon => link(mon.species));
         const alternate = rankedAces.find(x => x.mon.species !== ace.species && x.roles.some(r => ['Physical Sweeper', 'Special Sweeper', 'Wallbreaker', 'Setup Sweeper'].includes(r)));
         const problems = buildProblemMatchups(ace, rankedAces, activeMons, roles, ctx);
+        const leadAdjustments = buildLeadAdjustments(activeMons, roles, ctx, format, ace);
+        const operationalAdjustments = buildOperationalAdjustments(activeMons, roles, ctx);
         const firstAttack = getDamagingMoves(ace).sort((a, b) => (b.ref?.power || 0) - (a.ref?.power || 0))[0];
         const rosterRows = activeMons.map((mon, i) => {
             const monRoles = roles[i] || [];
+            const keyMoves = getKeyStrategicMoves(mon);
             return `<tr>
                 <td><strong>${link(mon.species)}</strong></td>
                 <td>${mon.item && normKey(mon.item) !== 'none' ? link(mon.item) : 'No item'}<br><span class="team-strategy-muted">${esc(monRoles.slice(0, 2).join(' / ') || 'Flex')}</span></td>
+                <td>${keyMoves.length ? keyMoves.map(move => link(move)).join(', ') : 'No moves listed'}</td>
                 <td>${describeRosterFunction(mon, monRoles, ctx, mon.species === ace.species)}</td>
             </tr>`;
         }).join('');
@@ -732,12 +915,17 @@
             <div class="team-strategy-part">
                 <h4><span>2</span> Team Roster &amp; Tactical Roles</h4>
                 <div class="team-strategy-table-wrap"><table class="team-strategy-table">
-                    <thead><tr><th>Pokémon</th><th>Item / Role</th><th>Strategic function</th></tr></thead>
+                    <thead><tr><th>Pokémon</th><th>Item / Role</th><th>Key moves</th><th>Strategic function</th></tr></thead>
                     <tbody>${rosterRows}</tbody>
                 </table></div>
             </div>
             <div class="team-strategy-part">
-                <h4><span>3</span> Playstyle Execution &amp; Decision Making</h4>
+                <h4><span>3</span> Lead Combinations &amp; Matchup Adjustments</h4>
+                <div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--leads">
+                    <thead><tr><th>Opposing style / threat</th><th>Recommended lead</th><th>Tactical execution</th></tr></thead>
+                    <tbody>${leadAdjustments.map(row => `<tr><td><strong>${row.matchup}</strong></td><td>${row.lead}</td><td>${row.execution}</td></tr>`).join('')}</tbody>
+                </table></div>
+                <h5 class="team-strategy-subheading">Default game sequence</h5>
                 <ol class="team-strategy-sequence">
                     <li><strong>Lead:</strong> open with ${leadNames}. ${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Use this lead to establish immediate board control.'}</li>
                     <li><strong>Develop:</strong> ${archetype.startsWith('Trick Room') ? 'secure Trick Room before committing the slow attackers' : ctx.utils.tailwind ? 'set Tailwind before committing the ace' : ctx.utils.tr ? 'secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'use Fake Out to create the first safe attack' : 'scout the opposing response and trade only when it improves positioning'}${ctx.utils.helpinghand ? ', then reserve Helping Hand for a calc-confirmed knockout' : ''}.</li>
@@ -746,7 +934,12 @@
                 </ol>
             </div>
             <div class="team-strategy-part">
-                <h4><span>4</span> Problem Matchups &amp; Counter-Adjustments</h4>
+                <h4><span>4</span> Key Strategic Adjustments</h4>
+                ${operationalAdjustments.length ? `<div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--adjustments">
+                    <thead><tr><th>Current board situation</th><th>Operational adjustment</th><th>Expected outcome</th></tr></thead>
+                    <tbody>${operationalAdjustments.map(row => `<tr><td><strong>${row.situation}</strong></td><td>${row.adjustment}</td><td>${row.outcome}</td></tr>`).join('')}</tbody>
+                </table></div>` : '<p>No specialized board-state adjustment was detected; preserve the primary attacker and respond through type advantage.</p>'}
+                <h5 class="team-strategy-subheading">Structural problem matchups</h5>
                 ${problems.length ? `<div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--matchups">
                     <thead><tr><th>Threat / scenario</th><th>Strategic problem</th><th>Tactical solution</th></tr></thead>
                     <tbody>${problems.map(row => `<tr><td><strong>${row.threat}</strong></td><td>${row.problem}</td><td>${row.solution}</td></tr>`).join('')}</tbody>

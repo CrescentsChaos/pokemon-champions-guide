@@ -2073,7 +2073,11 @@
         "id": "260",
         "pokemon": "Tyranitar",
         "build": "Tyranitar @ Choice Scarf  \nAbility: Sand Stream  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 Atk / 2 SpD / 32 Spe\nJolly Nature  \n- Rock Slide  \n- Ice Punch  \n- Low Kick  \n- Rock Slide",
-        "synergy": ["545","653","670"],
+        "synergy": [
+            "545",
+            "653",
+            "670"
+        ],
         "format": "Doubles",
         "isMeta": true
     },
@@ -2177,7 +2181,10 @@
         "id": "274",
         "pokemon": "Vivillon",
         "build": "Vivillon @ Focus Sash\nLevel: 50\nAbility: Compound Eyes\nEVs: 2 HP / 32 SpA / 32 Spe\nTera Type: Ghost\nTimid Nature\n- Hurricane\n- Rage Powder\n- Sleep Powder\n- Protect",
-        "synergy": ["657","658"],
+        "synergy": [
+            "657",
+            "658"
+        ],
         "format": "Doubles",
         "isMeta": true
     },
@@ -2617,7 +2624,11 @@
         "id": "329",
         "pokemon": "Rotom-Wash",
         "build": "Rotom-Wash @ Magnet  \nAbility: Levitate  \nLevel: 50  \nTera Type: Electric  \nEVs: 32 HP / 12 Def / 15 SpA / 1 SpD / 6 Spe\nTimid Nature    \n- Hydro Pump  \n- Thunderbolt  \n- Volt Switch  \n- Protect",
-        "synergy": ["219","670","545"],
+        "synergy": [
+            "219",
+            "670",
+            "545"
+        ],
         "format": "Doubles",
         "isMeta": false
     },
@@ -4660,7 +4671,7 @@
     {
         "id": "567",
         "pokemon": "Sceptile",
-        "build": "Sceptile @ Sceptilite  \nAbility: Overgrow  \nLevel: 50  \nTera Type: Grass  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Grass Knot  \n- Dragon Dance  \n- Earth Power  \n- Detect",
+        "build": "Sceptile @ Sceptilite  \nAbility: Overgrow  \nLevel: 50  \nTera Type: Grass  \nEVs: 2 HP / 32 SpA / 32 Spe\nTimid Nature    \n- Grass Knot  \n- Dragon Pulse  \n- Earth Power  \n- Detect",
         "synergy": [
             "532",
             "535"
@@ -5165,7 +5176,10 @@
         "build": "Tyranitar @ Tyranitarite  \nAbility: Sand Stream  \nLevel: 50  \nTera Type: Rock  \nEVs: 32 HP / 9 Atk / 25 Spe\nAdamant Nature  \n- Protect  \n- Rock Slide  \n- Knock Off  \n- Dragon Dance",
         "synergy": [
             "614",
-            "613","670","653","545"
+            "613",
+            "670",
+            "653",
+            "545"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -5564,7 +5578,9 @@
         "id": "657",
         "pokemon": "Politoed",
         "build": "Politoed @ Sitrus Berry  \nAbility: Drizzle  \nEVs: 32 HP / 23 Def / 11 SpD\nCalm Nature    \n- Weather Ball  \n- Hypnosis  \n- Protect  \n- Perish Song",
-        "synergy": ["658"],
+        "synergy": [
+            "658"
+        ],
         "format": "Doubles",
         "isMeta": true
     },
@@ -5573,7 +5589,9 @@
         "pokemon": "Gengar",
         "build": "Gengar @ Gengarite  \nAbility: Cursed Body  \nEVs: 30 HP / 1 Def / 1 SpA / 28 SpD / 6 Spe\nModest Nature    \n- Shadow Ball  \n- Sludge Bomb  \n- Perish Song  \n- Protect",
         "synergy": [
-            "657","524","274"
+            "657",
+            "524",
+            "274"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -5705,7 +5723,9 @@
         "pokemon": "Snorlax",
         "build": "Snorlax @ Leftovers  \nAbility: Thick Fat  \nEVs: 32 HP / 2 Atk / 32 Def\nRelaxed Nature    \n- Body Slam  \n- Yawn  \n- Fissure  \n- Protect",
         "synergy": [
-            "658","684","614"
+            "658",
+            "684",
+            "614"
         ],
         "format": "Doubles",
         "isMeta": true
@@ -5819,14 +5839,20 @@
         "id": "684",
         "pokemon": "Hawlucha",
         "build": "Hawlucha @ Hawluchanite  \nAbility: Mold Breaker  \nLevel: 50  \nEVs: 32 HP / 2 Atk / 32 Spe  \n- Detect  \n- Entrainment  \n- Sky Attack  \n- Cross Chop",
-        "synergy": ["672"],
+        "synergy": [
+            "672"
+        ],
         "format": "Doubles",
         "isMeta": true
-    },{
+    },
+    {
         "id": "219",
         "pokemon": "Venusaur",
         "build": "Venusaur @ Venusaurite\nAbility: Chlorophyll\nEVs: 30 HP / 18 SpA / 18 Spe\nModest Nature\n- Sleep Powder\n- Sludge Bomb\n- Earth Power\n- Protect",
-        "synergy": ["545","670"],
+        "synergy": [
+            "545",
+            "670"
+        ],
         "format": "Doubles",
         "isMeta": false
     }

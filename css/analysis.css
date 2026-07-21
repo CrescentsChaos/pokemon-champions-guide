@@ -974,6 +974,25 @@
     color: #ffcc80;
 }
 
+.team-strategy-table--leads td:first-child,
+.team-strategy-table--adjustments td:first-child {
+    width: 22%;
+    color: #9dccff;
+}
+
+.team-strategy-subheading {
+    margin: 0.9rem 0 0.55rem;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.66rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.team-strategy-table-wrap + .team-strategy-subheading {
+    margin-top: 1rem;
+}
+
 .team-strategy-muted {
     color: rgba(255, 255, 255, 0.48);
     font-size: 0.7rem;
