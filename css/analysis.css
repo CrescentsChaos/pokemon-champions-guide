@@ -838,16 +838,55 @@
 }
 
 .build-prose-section--strategy {
-    padding: 1rem;
-    border: 1px solid rgba(110, 181, 255, 0.16);
-    border-radius: 16px;
-    background: linear-gradient(145deg, rgba(110, 181, 255, 0.055), rgba(0, 0, 0, 0.16));
+    padding: 0;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
+    overflow: hidden;
 }
 
 .team-strategy-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    min-height: 190px;
     margin-bottom: 1rem;
-    padding-bottom: 0.9rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.45rem 1.55rem;
+    overflow: hidden;
+    border: 1px solid rgba(110, 181, 255, 0.2);
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(110, 181, 255, 0.22), transparent 34%),
+        linear-gradient(135deg, rgba(27, 38, 57, 0.98), rgba(10, 13, 20, 0.98));
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.team-strategy-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(90deg, #000, transparent 75%);
+}
+
+.team-strategy-hero__field {
+    position: absolute;
+    right: 105px;
+    top: -40px;
+    width: 210px;
+    height: 210px;
+    object-fit: contain;
+    opacity: 0.1;
+    filter: saturate(1.25);
+    transform: rotate(-8deg);
+}
+
+.team-strategy-hero__copy {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
 }
 
 .team-strategy-kicker {
@@ -861,59 +900,158 @@
 }
 
 .team-strategy-hero h3 {
-    margin: 0 0 0.45rem;
+    margin: 0 0 0.55rem;
     color: #fff;
-    font-size: 1.2rem;
-    line-height: 1.25;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+}
+
+.team-strategy-hero p {
+    max-width: 650px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.84rem;
+    line-height: 1.65;
+}
+
+.team-strategy-hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+}
+
+.team-strategy-hero__chips span {
+    padding: 0.28rem 0.55rem;
+    border: 1px solid rgba(110, 181, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(110, 181, 255, 0.08);
+    color: #b9dcff;
+    font-size: 0.61rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.team-strategy-hero__ace {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    padding: 0.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(8px);
+}
+
+.team-strategy-hero__ace span {
+    color: #ffcc80;
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.team-strategy-hero__ace img {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    image-rendering: auto;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45));
+}
+
+.team-strategy-hero__ace strong {
+    font-size: 0.77rem;
+    text-align: center;
 }
 
 .team-strategy-part {
-    padding: 0.95rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 0.75rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(255,255,255,.034), rgba(0,0,0,.16));
 }
 
 .team-strategy-part:first-of-type {
-    border-top: 0;
-    padding-top: 0;
+    margin-top: 0;
 }
 
 .team-strategy-part h4 {
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    margin: 0 0 0.65rem;
+    margin: 0 0 0.35rem;
     color: #fff;
-    font-size: 0.86rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
 }
 
 .team-strategy-part h4 > span {
     display: inline-grid;
-    width: 1.45rem;
-    height: 1.45rem;
-    flex: 0 0 1.45rem;
+    width: 1.65rem;
+    height: 1.35rem;
+    flex: 0 0 1.65rem;
     place-items: center;
-    border-radius: 50%;
+    border-radius: 6px;
     background: rgba(110, 181, 255, 0.16);
     border: 1px solid rgba(110, 181, 255, 0.34);
     color: #9dccff;
     font-size: 0.68rem;
 }
 
+.team-strategy-part h4 > img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,.35));
+}
+
+.team-strategy-part__intro {
+    margin: 0 0 0.8rem !important;
+    padding-left: 2.2rem;
+    color: rgba(255,255,255,.55);
+    font-size: .76rem;
+}
+
 .team-strategy-layers {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 0.55rem;
-    margin: 0.7rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+    gap: 0.65rem;
+    margin: 0;
 }
 
 .team-strategy-layer {
-    padding: 0.7rem 0.75rem;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.24);
-    border-left: 2px solid rgba(110, 181, 255, 0.48);
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    gap: 0.7rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(110, 181, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(7, 12, 20, 0.48);
+    transition: transform .18s ease, border-color .18s ease;
 }
 
-.team-strategy-layer > strong {
+.team-strategy-layer:hover {
+    transform: translateY(-2px);
+    border-color: rgba(110, 181, 255, 0.28);
+}
+
+.team-strategy-layer > img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    padding: 5px;
+    border-radius: 9px;
+    background: rgba(110, 181, 255, 0.08);
+}
+
+.team-strategy-layer strong {
     display: block;
     margin-bottom: 0.2rem;
     color: #9dccff !important;
@@ -925,92 +1063,318 @@
 .team-strategy-layer p {
     margin: 0;
     font-size: 0.81rem;
+    color: rgba(255,255,255,.7);
+    line-height: 1.5;
 }
 
 .team-strategy-callout {
-    padding: 0.65rem 0.75rem;
-    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-top: .7rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 11px;
     background: rgba(255, 193, 7, 0.06);
     border: 1px solid rgba(255, 193, 7, 0.18);
 }
 
-.team-strategy-table-wrap {
-    max-width: 100%;
-    overflow-x: auto;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+.team-strategy-callout img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
 }
 
-.team-strategy-table {
-    width: 100%;
-    min-width: 620px;
-    border-collapse: collapse;
-    font-size: 0.78rem;
+.team-strategy-callout p {
+    margin: 0;
+    color: rgba(255,255,255,.72);
+    font-size: .79rem;
+}
+
+.team-strategy-roster {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+    gap: .65rem;
+    margin-top: .8rem;
+}
+
+.team-strategy-mon-card {
+    position: relative;
+    min-width: 0;
+    padding: .75rem;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 12px;
+    background: rgba(5, 8, 14, .42);
+    overflow: hidden;
+}
+
+.team-strategy-mon-card--ace {
+    border-color: rgba(255, 193, 7, .27);
+    background: linear-gradient(145deg, rgba(255,193,7,.07), rgba(5,8,14,.48));
+}
+
+.team-strategy-mon-card__head {
+    display: grid;
+    grid-template-columns: 52px minmax(0,1fr) auto;
+    gap: .6rem;
+    align-items: center;
+}
+
+.team-strategy-mon-card__sprite-wrap {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border-radius: 11px;
+    background: radial-gradient(circle, rgba(110,181,255,.14), transparent 70%);
+}
+
+.team-strategy-mon-card__sprite {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 7px rgba(0,0,0,.45));
+}
+
+.team-strategy-mon-card__identity {
+    min-width: 0;
+}
+
+.team-strategy-mon-card__identity strong,
+.team-strategy-mon-card__identity span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.team-strategy-mon-card__identity strong {
+    color: #fff;
+    font-size: .83rem;
+}
+
+.team-strategy-mon-card__identity span {
+    color: rgba(255,255,255,.45);
+    font-size: .66rem;
+}
+
+.team-strategy-ace-badge {
+    padding: .2rem .4rem;
+    border: 1px solid rgba(255,193,7,.28);
+    border-radius: 5px;
+    color: #ffd76a;
+    font-size: .56rem;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.team-strategy-role-row,
+.team-strategy-move-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+}
+
+.team-strategy-role-row {
+    margin-top: .55rem;
+}
+
+.team-strategy-role-row span {
+    color: #a9d5ff;
+    font-size: .6rem;
+    font-weight: 800;
+}
+
+.team-strategy-move-row {
+    margin-top: .45rem;
+}
+
+.team-strategy-move-row span {
+    padding: .18rem .38rem;
+    border-radius: 5px;
+    background: rgba(255,255,255,.055);
+    color: rgba(255,255,255,.72);
+    font-size: .6rem;
+}
+
+.team-strategy-mon-card > p {
+    margin: .55rem 0 0;
+    color: rgba(255,255,255,.58);
+    font-size: .7rem;
+    line-height: 1.45;
+}
+
+.team-strategy-lead-grid,
+.team-strategy-adjust-grid,
+.team-strategy-problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: .65rem;
+    margin-top: .8rem;
+}
+
+.team-strategy-lead-card {
+    padding: .75rem;
+    border: 1px solid rgba(110,181,255,.11);
+    border-radius: 12px;
+    background: rgba(5,8,14,.42);
+}
+
+.team-strategy-lead-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.team-strategy-lead-card__top > span {
+    color: #9dccff;
+    font-size: .63rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.team-strategy-lead-card__top div {
+    display: flex;
+}
+
+.team-strategy-lead-card__top img {
+    width: 36px;
+    height: 36px;
+    margin-left: -7px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,.4));
+}
+
+.team-strategy-lead-card > strong {
+    display: block;
+    margin-top: .4rem;
+    font-size: .78rem;
+}
+
+.team-strategy-lead-card > p {
+    margin: .35rem 0 0;
+    color: rgba(255,255,255,.58);
+    font-size: .7rem;
     line-height: 1.5;
 }
 
-.team-strategy-table th {
-    padding: 0.55rem 0.65rem;
-    background: rgba(0, 0, 0, 0.3);
-    color: rgba(255, 255, 255, 0.58);
-    font-size: 0.61rem;
-    letter-spacing: 0.07em;
-    text-align: left;
-    text-transform: uppercase;
-}
-
-.team-strategy-table td {
-    padding: 0.65rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
-    vertical-align: top;
-}
-
-.team-strategy-table tbody tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.018);
-}
-
-.team-strategy-table--matchups td:first-child {
-    width: 18%;
-    color: #ffcc80;
-}
-
-.team-strategy-table--leads td:first-child,
-.team-strategy-table--adjustments td:first-child {
-    width: 22%;
-    color: #9dccff;
-}
-
 .team-strategy-subheading {
-    margin: 0.9rem 0 0.55rem;
-    color: rgba(255, 255, 255, 0.68);
-    font-size: 0.66rem;
+    margin: 1rem 0 0.55rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.63rem;
     font-weight: 900;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
-.team-strategy-table-wrap + .team-strategy-subheading {
-    margin-top: 1rem;
+.team-strategy-flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .5rem;
 }
 
-.team-strategy-muted {
-    color: rgba(255, 255, 255, 0.48);
-    font-size: 0.7rem;
+.team-strategy-flow article {
+    position: relative;
+    min-width: 0;
+    padding: .7rem;
+    border-radius: 11px;
+    background: rgba(255,255,255,.035);
 }
 
-.team-strategy-sequence {
-    margin: 0.4rem 0 0;
-    padding-left: 1.2rem;
-}
-
-.team-strategy-sequence li {
-    margin-bottom: 0.5rem;
-    padding-left: 0.25rem;
-}
-
-.team-strategy-sequence li::marker {
-    color: #6eb5ff;
+.team-strategy-flow article > span {
+    position: absolute;
+    right: .5rem;
+    top: .35rem;
+    color: rgba(255,255,255,.12);
+    font-size: 1.2rem;
     font-weight: 900;
+}
+
+.team-strategy-flow img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    margin-bottom: .35rem;
+}
+
+.team-strategy-flow strong {
+    display: block;
+    font-size: .7rem;
+    color: #fff;
+}
+
+.team-strategy-flow p {
+    margin: .25rem 0 0;
+    color: rgba(255,255,255,.55);
+    font-size: .65rem;
+    line-height: 1.45;
+}
+
+.team-strategy-adjust-card,
+.team-strategy-problem-card {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr);
+    gap: .65rem;
+    padding: .75rem;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 12px;
+    background: rgba(5,8,14,.42);
+}
+
+.team-strategy-adjust-card > img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.team-strategy-adjust-card strong,
+.team-strategy-problem-card strong {
+    display: block;
+    color: #fff;
+    font-size: .74rem;
+}
+
+.team-strategy-adjust-card p,
+.team-strategy-problem-card p {
+    margin: .25rem 0;
+    color: rgba(255,255,255,.58);
+    font-size: .68rem;
+    line-height: 1.45;
+}
+
+.team-strategy-adjust-card div > span,
+.team-strategy-problem-card div > span {
+    display: block;
+    margin-top: .35rem;
+    padding-top: .35rem;
+    border-top: 1px solid rgba(255,255,255,.055);
+    color: #a5d6a7;
+    font-size: .64rem;
+    line-height: 1.45;
+}
+
+.team-strategy-problem-card {
+    border-color: rgba(255,152,0,.14);
+}
+
+.team-strategy-problem-card__icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(255,152,0,.12);
+    color: #ffb74d;
+    font-weight: 900;
+}
+
+.team-strategy-problem-card div > span b {
+    margin-right: .35rem;
+    color: #81c784;
+    text-transform: uppercase;
 }
 
 @media (max-width: 768px) {
@@ -1023,10 +1387,55 @@
     }
 
     .build-prose-section--strategy {
-        padding: 0.8rem;
+        padding: 0;
     }
 
     .team-strategy-layers {
+        grid-template-columns: 1fr;
+    }
+
+    .team-strategy-hero {
+        grid-template-columns: 1fr 105px;
+        min-height: 165px;
+        padding: 1rem;
+    }
+
+    .team-strategy-hero__ace {
+        min-width: 0;
+    }
+
+    .team-strategy-hero__ace img {
+        width: 68px;
+        height: 68px;
+    }
+
+    .team-strategy-flow {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .team-strategy-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .team-strategy-hero__ace {
+        display: grid;
+        grid-template-columns: 1fr 64px;
+        justify-items: start;
+        margin-top: .8rem;
+    }
+
+    .team-strategy-hero__ace img {
+        grid-row: 1 / span 2;
+        grid-column: 2;
+    }
+
+    .team-strategy-roster,
+    .team-strategy-lead-grid,
+    .team-strategy-adjust-grid,
+    .team-strategy-problem-grid,
+    .team-strategy-flow {
         grid-template-columns: 1fr;
     }
 }

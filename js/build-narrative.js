@@ -610,6 +610,39 @@
         }).slice(0, 3);
     }
 
+    function getStrategySprite(mon) {
+        if (typeof getSpriteUrl === 'function') return getSpriteUrl(mon);
+        const slug = (mon?.species || '').toLowerCase().replace(/\./g, '').replace(/[^a-z0-9-]+/g, '-');
+        return `https://play.pokemonshowdown.com/sprites/ani/${slug}.gif`;
+    }
+
+    function getStrategyAsset(name) {
+        return `${typeof getAssetPrefix === 'function' ? getAssetPrefix() : '../'}assets/${name}`;
+    }
+
+    function getArchetypeAsset(archetype, ctx) {
+        const key = (archetype || '').toLowerCase();
+        if (key.includes('sand') || ctx.utils?.sand) return getStrategyAsset('sandstorm.png');
+        if (key.includes('sun') || ctx.utils?.drought) return getStrategyAsset('sun.png');
+        if (key.includes('rain') || ctx.utils?.drizzle) return getStrategyAsset('rain.png');
+        if (key.includes('trick room') || ctx.utils?.tr) return getStrategyAsset('trick_room.png');
+        if (key.includes('tailwind') || ctx.utils?.tailwind) return getStrategyAsset('tailwind.png');
+        if (key.includes('psychic')) return getStrategyAsset('psychicterrain.png');
+        return getStrategyAsset('move-special.png');
+    }
+
+    function getLayerAsset(label, archetype, ctx) {
+        const key = (label || '').toLowerCase();
+        if (key.includes('sand')) return getStrategyAsset('sandstorm.png');
+        if (key.includes('weather')) return getArchetypeAsset(archetype, ctx);
+        if (key.includes('speed')) return getStrategyAsset('tailwind.png');
+        if (key.includes('turn order')) return getStrategyAsset('trick_room.png');
+        if (key.includes('denial') || key.includes('break') || key.includes('suppression')) return getStrategyAsset('move-status.png');
+        if (key.includes('late-game')) return getStrategyAsset('move-physical.png');
+        if (key.includes('item') || key.includes('ability') || key.includes('amplification')) return getStrategyAsset('move-special.png');
+        return getStrategyAsset('move-physical.png');
+    }
+
     function buildEngineLayers(ace, ctx, activeMons) {
         const layers = [];
         const aceDb = typeof getMonDb === 'function' ? getMonDb(ace) : null;
@@ -764,6 +797,7 @@
         const defaultLeads = ctx.leadMons?.length ? ctx.leadMons : activeMons.slice(0, format === 'Doubles' ? 2 : 1);
         rows.push({
             matchup: 'Standard / neutral',
+            mons: defaultLeads,
             lead: formatLeadPair(defaultLeads, format),
             execution: `${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Establish safe board control, identify their primary answer, and preserve the cleaner.'}`
         });
@@ -776,6 +810,7 @@
             const safePartner = pivot || activeMons.find(mon => mon !== weatherSetter && mon !== weatherAbuser) || weatherAbuser;
             rows.push({
                 matchup: 'Aggressive fast leads',
+                mons: [safePartner, weatherAbuser],
                 lead: formatLeadPair([safePartner, weatherAbuser], format),
                 execution: pivot
                     ? `Apply immediate pressure, then use a pivot move to bring in ${link(weatherSetter.species)} safely and activate ${link(weatherAbuser.species)}’s weather advantage mid-turn.`
@@ -789,6 +824,7 @@
             const mitigationPartner = burnUser || activeMons.find((mon, i) => (roles[i] || []).includes('Damage Mitigation') && mon !== intimidateUser);
             rows.push({
                 matchup: 'Heavy physical offense',
+                mons: [intimidateUser || mitigationPartner, mitigationPartner || ace],
                 lead: formatLeadPair([intimidateUser || mitigationPartner, mitigationPartner || ace], format),
                 execution: `${intimidateUser ? `Cycle ${link('Intimidate')} with ${link(intimidateUser.species)}` : 'Lead the damage-mitigation slot'}${burnUser ? ` and threaten ${link('Will-O-Wisp')} from ${link(burnUser.species)}` : ''}; trade speed for survivability until their physical carry is neutralized.`
             });
@@ -801,6 +837,7 @@
             const partner = activeMons.find((mon, i) => mon !== disruptor && (roles[i] || []).some(r => ['Wallbreaker', 'Physical Sweeper', 'Special Sweeper'].includes(r))) || ace;
             rows.push({
                 matchup: 'Trick Room / setup',
+                mons: [disruptor, partner],
                 lead: formatLeadPair([disruptor, partner], format),
                 execution: sleepUser
                     ? `Target the setter with ${link((sleepUser.moves || []).find(m => ['sleeppowder', 'spore', 'hypnosis'].includes(normKey(m))))}; use the partner’s damage to punish failed or delayed setup.`
@@ -813,6 +850,7 @@
         if (tailwindUser && rockSlideUser && tailwindUser !== rockSlideUser) {
             rows.push({
                 matchup: 'Tailwind / hyper-speed mirror',
+                mons: [tailwindUser, rockSlideUser],
                 lead: formatLeadPair([tailwindUser, rockSlideUser], format),
                 execution: `Match speed control with ${link('Tailwind')} while ${link(rockSlideUser.species)} applies spread ${link('Rock Slide')} pressure; preserve priority or the weather abuser for the final turns.`
             });
@@ -889,61 +927,75 @@
         const leadAdjustments = buildLeadAdjustments(activeMons, roles, ctx, format, ace);
         const operationalAdjustments = buildOperationalAdjustments(activeMons, roles, ctx);
         const firstAttack = getDamagingMoves(ace).sort((a, b) => (b.ref?.power || 0) - (a.ref?.power || 0))[0];
-        const rosterRows = activeMons.map((mon, i) => {
+        const archetypeAsset = getArchetypeAsset(archetype, ctx);
+        const rosterCards = activeMons.map((mon, i) => {
             const monRoles = roles[i] || [];
             const keyMoves = getKeyStrategicMoves(mon);
-            return `<tr>
-                <td><strong>${link(mon.species)}</strong></td>
-                <td>${mon.item && normKey(mon.item) !== 'none' ? link(mon.item) : 'No item'}<br><span class="team-strategy-muted">${esc(monRoles.slice(0, 2).join(' / ') || 'Flex')}</span></td>
-                <td>${keyMoves.length ? keyMoves.map(move => link(move)).join(', ') : 'No moves listed'}</td>
-                <td>${describeRosterFunction(mon, monRoles, ctx, mon.species === ace.species)}</td>
-            </tr>`;
+            const isAce = mon.species === ace.species;
+            return `<article class="team-strategy-mon-card ${isAce ? 'team-strategy-mon-card--ace' : ''}">
+                <div class="team-strategy-mon-card__head">
+                    <div class="team-strategy-mon-card__sprite-wrap">
+                        <img src="${getStrategySprite(mon)}" alt="${esc(mon.species)}" class="team-strategy-mon-card__sprite">
+                    </div>
+                    <div class="team-strategy-mon-card__identity">
+                        <strong>${esc(mon.species)}</strong>
+                        <span>${mon.item && normKey(mon.item) !== 'none' ? esc(mon.item) : 'No held item'}</span>
+                    </div>
+                    ${isAce ? '<span class="team-strategy-ace-badge">ACE</span>' : ''}
+                </div>
+                <div class="team-strategy-role-row">${monRoles.slice(0, 2).map(role => `<span>${esc(role)}</span>`).join('') || '<span>Flex</span>'}</div>
+                <div class="team-strategy-move-row">${keyMoves.length ? keyMoves.map(move => `<span>${esc(move)}</span>`).join('') : '<span>No moves listed</span>'}</div>
+                <p>${describeRosterFunction(mon, monRoles, ctx, isAce)}</p>
+            </article>`;
         }).join('');
+        const sequence = [
+            { label: 'Lead', text: `Open with ${leadNames}. ${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Establish immediate board control.'}`, icon: getStrategyAsset('tailwind.png') },
+            { label: 'Develop', text: `${archetype.startsWith('Trick Room') ? 'Secure Trick Room before committing slow attackers' : ctx.utils.tailwind ? 'Set Tailwind before committing the ace' : ctx.utils.tr ? 'Secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'Use Fake Out to create the first safe attack' : 'Scout the response and improve positioning'}${ctx.utils.helpinghand ? '; reserve Helping Hand for a confirmed knockout' : ''}.`, icon: ctx.utils.tr ? getStrategyAsset('trick_room.png') : archetypeAsset },
+            { label: 'Break', text: `Remove the opponent’s dedicated answer without exposing ${link(ace.species)} merely for neutral chip.`, icon: getStrategyAsset('move-physical.png') },
+            { label: 'Close', text: `Deploy ${link(ace.species)} after checks are weakened.${alternate ? ` Pivot to ${link(alternate.mon.species)} if the primary route is blocked.` : ''}`, icon: getStrategyAsset('move-special.png') }
+        ];
 
         return `
             <div class="team-strategy-hero">
-                <span class="team-strategy-kicker">Dynamic ${esc(format)} game plan</span>
-                <h3>${link(ace.species)} ${esc(archetype)} Strategy</h3>
-                <p>This team is built to create a controlled attack window for <strong>${link(ace.species)}</strong>, then convert speed, field, and support advantages into knockouts. ${alternate ? `${link(alternate.mon.species)} is the secondary win condition when the primary line is checked.` : 'Preserve the ace until opposing checks are weakened.'}</p>
+                <img src="${archetypeAsset}" alt="" class="team-strategy-hero__field">
+                <div class="team-strategy-hero__copy">
+                    <span class="team-strategy-kicker">Dynamic ${esc(format)} game plan</span>
+                    <h3>${esc(archetype)}</h3>
+                    <p>Create a controlled attack window for <strong>${link(ace.species)}</strong>, then convert field and turn-order advantages into knockouts. ${alternate ? `${link(alternate.mon.species)} provides the alternate win route.` : 'Preserve the ace until opposing checks are weakened.'}</p>
+                    <div class="team-strategy-hero__chips">
+                        <span>${esc(format)}</span><span>${activeMons.length} Pokémon</span><span>${engine.length} engine layers</span>
+                    </div>
+                </div>
+                <div class="team-strategy-hero__ace">
+                    <span>Primary ace</span>
+                    <img src="${getStrategySprite(ace)}" alt="${esc(ace.species)}">
+                    <strong>${esc(ace.species)}</strong>
+                </div>
             </div>
             <div class="team-strategy-part">
-                <h4><span>1</span> Core Engine: ${esc(archetype)}</h4>
-                <p>The central plan is <strong>layered advantage</strong>: establish turn order, activate available damage modifiers, and attack before the opponent can reset the board.</p>
-                <div class="team-strategy-layers">${engine.map(layer => `<div class="team-strategy-layer"><strong>${layer.label}</strong><p>${layer.text}</p></div>`).join('')}</div>
-                ${firstAttack ? `<p class="team-strategy-callout"><strong>Conversion point:</strong> once targets enter range, ${link(ace.species)} converts the setup with ${link(firstAttack.name)}${firstAttack.ref?.power ? ` (${firstAttack.ref.power} BP)` : ''}. Use the damage calculator for the final matchup-specific threshold.</p>` : ''}
+                <h4><span>01</span><img src="${archetypeAsset}" alt="">Core Engine</h4>
+                <p class="team-strategy-part__intro">Stack field, speed, and disruption advantages before committing the primary attacker.</p>
+                <div class="team-strategy-layers">${engine.map(layer => `<article class="team-strategy-layer"><img src="${getLayerAsset(layer.label, archetype, ctx)}" alt=""><div><strong>${layer.label}</strong><p>${layer.text}</p></div></article>`).join('')}</div>
+                ${firstAttack ? `<div class="team-strategy-callout"><img src="${getStrategyAsset((firstAttack.ref?.damage_class || firstAttack.ref?.category || '').toLowerCase() === 'special' ? 'move-special.png' : 'move-physical.png')}" alt=""><p><strong>Conversion point</strong><br>${link(ace.species)} closes with ${link(firstAttack.name)}${firstAttack.ref?.power ? ` · ${firstAttack.ref.power} BP` : ''} once checks enter range.</p></div>` : ''}
             </div>
             <div class="team-strategy-part">
-                <h4><span>2</span> Team Roster &amp; Tactical Roles</h4>
-                <div class="team-strategy-table-wrap"><table class="team-strategy-table">
-                    <thead><tr><th>Pokémon</th><th>Item / Role</th><th>Key moves</th><th>Strategic function</th></tr></thead>
-                    <tbody>${rosterRows}</tbody>
-                </table></div>
+                <h4><span>02</span><img src="${getStrategyAsset('move-status.png')}" alt="">Roster &amp; Tactical Roles</h4>
+                <div class="team-strategy-roster">${rosterCards}</div>
             </div>
             <div class="team-strategy-part">
-                <h4><span>3</span> Lead Combinations &amp; Matchup Adjustments</h4>
-                <div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--leads">
-                    <thead><tr><th>Opposing style / threat</th><th>Recommended lead</th><th>Tactical execution</th></tr></thead>
-                    <tbody>${leadAdjustments.map(row => `<tr><td><strong>${row.matchup}</strong></td><td>${row.lead}</td><td>${row.execution}</td></tr>`).join('')}</tbody>
-                </table></div>
+                <h4><span>03</span><img src="${ctx.utils.tr ? getStrategyAsset('trick_room.png') : getStrategyAsset('tailwind.png')}" alt="">Lead Matchup Board</h4>
+                <div class="team-strategy-lead-grid">${leadAdjustments.map(row => `<article class="team-strategy-lead-card">
+                    <div class="team-strategy-lead-card__top"><span>${esc(row.matchup)}</span><div>${(row.mons || []).filter((mon, i, list) => mon && list.indexOf(mon) === i).slice(0, format === 'Doubles' ? 2 : 1).map(mon => `<img src="${getStrategySprite(mon)}" alt="${esc(mon.species)}" title="${esc(mon.species)}">`).join('')}</div></div>
+                    <strong>${row.lead}</strong><p>${row.execution}</p>
+                </article>`).join('')}</div>
                 <h5 class="team-strategy-subheading">Default game sequence</h5>
-                <ol class="team-strategy-sequence">
-                    <li><strong>Lead:</strong> open with ${leadNames}. ${(ctx.leadReasons || []).filter(Boolean).join(' ') || 'Use this lead to establish immediate board control.'}</li>
-                    <li><strong>Develop:</strong> ${archetype.startsWith('Trick Room') ? 'secure Trick Room before committing the slow attackers' : ctx.utils.tailwind ? 'set Tailwind before committing the ace' : ctx.utils.tr ? 'secure or reverse Trick Room before attacking' : ctx.utils.fakeout ? 'use Fake Out to create the first safe attack' : 'scout the opposing response and trade only when it improves positioning'}${ctx.utils.helpinghand ? ', then reserve Helping Hand for a calc-confirmed knockout' : ''}.</li>
-                    <li><strong>Break:</strong> use the strongest wallbreaker to remove the opponent’s dedicated answer; do not expose ${link(ace.species)} merely for neutral chip.</li>
-                    <li><strong>Close:</strong> bring in ${link(ace.species)} after checks are weakened and preserve the remaining speed-control turns for the sweep.${alternate ? ` If its route is blocked, pivot to ${link(alternate.mon.species)} instead of forcing the primary line.` : ''}</li>
-                </ol>
+                <div class="team-strategy-flow">${sequence.map((step, i) => `<article><span>${i + 1}</span><img src="${step.icon}" alt=""><div><strong>${step.label}</strong><p>${step.text}</p></div></article>`).join('')}</div>
             </div>
             <div class="team-strategy-part">
-                <h4><span>4</span> Key Strategic Adjustments</h4>
-                ${operationalAdjustments.length ? `<div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--adjustments">
-                    <thead><tr><th>Current board situation</th><th>Operational adjustment</th><th>Expected outcome</th></tr></thead>
-                    <tbody>${operationalAdjustments.map(row => `<tr><td><strong>${row.situation}</strong></td><td>${row.adjustment}</td><td>${row.outcome}</td></tr>`).join('')}</tbody>
-                </table></div>` : '<p>No specialized board-state adjustment was detected; preserve the primary attacker and respond through type advantage.</p>'}
+                <h4><span>04</span><img src="${getStrategyAsset('move-status.png')}" alt="">Board-State Adjustments</h4>
+                ${operationalAdjustments.length ? `<div class="team-strategy-adjust-grid">${operationalAdjustments.map(row => `<article class="team-strategy-adjust-card"><img src="${getStrategyAsset('move-status.png')}" alt=""><div><strong>${row.situation}</strong><p>${row.adjustment}</p><span>${row.outcome}</span></div></article>`).join('')}</div>` : '<p>No specialized board-state adjustment was detected; preserve the primary attacker and respond through type advantage.</p>'}
                 <h5 class="team-strategy-subheading">Structural problem matchups</h5>
-                ${problems.length ? `<div class="team-strategy-table-wrap"><table class="team-strategy-table team-strategy-table--matchups">
-                    <thead><tr><th>Threat / scenario</th><th>Strategic problem</th><th>Tactical solution</th></tr></thead>
-                    <tbody>${problems.map(row => `<tr><td><strong>${row.threat}</strong></td><td>${row.problem}</td><td>${row.solution}</td></tr>`).join('')}</tbody>
-                </table></div>` : '<p>No major structural matchup warning was detected. Use opponent prep for set-specific counter assignments.</p>'}
+                ${problems.length ? `<div class="team-strategy-problem-grid">${problems.map(row => `<article class="team-strategy-problem-card"><div class="team-strategy-problem-card__icon">!</div><div><strong>${row.threat}</strong><p>${row.problem}</p><span><b>Answer</b>${row.solution}</span></div></article>`).join('')}</div>` : '<p>No major structural matchup warning was detected. Use opponent prep for set-specific counter assignments.</p>'}
             </div>`;
     }
 
@@ -1228,20 +1280,29 @@
         const dashboard = document.getElementById('analysis-dashboard');
         if (dashboard) dashboard.classList.add('synergy-analysis-active');
 
+        const analysisMode = panel.dataset.analysisMode || (window.location.pathname.toLowerCase().includes('/teambuilder/') ? 'team' : 'build');
+        const panelTitle = panel.querySelector('.build-prose-panel__title');
+        if (panelTitle) panelTitle.textContent = analysisMode === 'team' ? 'Team Analysis' : 'Build Analysis';
+
+        const fmtEl = document.getElementById('build-prose-format');
+        if (fmtEl) fmtEl.textContent = format;
+
+        setProseSection('build-prose-section-strategy', 'build-prose-strategy',
+            safeCompose('strategy', () => composeTeamStrategy(activeMons, roles, ctx, format), '<p>Team strategy analysis unavailable.</p>'));
+
+        // Team Builder intentionally renders only roster-level strategy. Set-specific
+        // prose remains exclusive to the Builds page, though both use this module.
+        if (analysisMode === 'team') return;
+
         const db = typeof getMonDb === 'function' ? getMonDb(mainMon) : null;
         const mainRoles = roles[0] || [];
         const teammates = activeMons.slice(1);
         const matchedSynergy = options.matchedSynergy || [];
 
-        const fmtEl = document.getElementById('build-prose-format');
-        if (fmtEl) fmtEl.textContent = format;
-
         const setSection = safeCompose('set', () => composeSetSection(mainMon, db, mainRoles, format, ctx), { setName: 'Standard', html: '<p>Set analysis unavailable.</p>' });
         const setTitleEl = document.getElementById('build-prose-set-title');
         if (setTitleEl) setTitleEl.textContent = `${setSection.setName} Set`;
 
-        setProseSection('build-prose-section-strategy', 'build-prose-strategy',
-            safeCompose('strategy', () => composeTeamStrategy(activeMons, roles, ctx, format), '<p>Team strategy analysis unavailable.</p>'));
         setProseSection('build-prose-section-overview', 'build-prose-overview',
             safeCompose('overview', () => composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons), `<p>${link(mainMon.species)} — analysis loading.</p>`));
         setProseSection('build-prose-section-set', 'build-prose-set', setSection.html);

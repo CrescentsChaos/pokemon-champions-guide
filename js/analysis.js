@@ -10,7 +10,7 @@
         const link = document.createElement('link');
         link.id = 'analysis-css';
         link.rel = 'stylesheet';
-        link.href = prefix + 'css/analysis.css';
+        link.href = prefix + 'css/analysis.css?v=3';
         document.head.appendChild(link);
     }
 })();
