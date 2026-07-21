@@ -336,7 +336,22 @@
 
         const primaryRole = tRoles[0] || 'Flex';
         const movePreview = (teammate.moves || []).filter(Boolean).slice(0, 2).map(m => link(m)).join(', ');
-        return `<p>${link(teammate.species)} (${primaryRole}) ${reasons.join(', ')}${movePreview ? ` — key tools: ${movePreview}` : ''}.</p>`;
+        const roleIcon = tRoles.includes('Speed Control') ? 'tailwind.png'
+            : tRoles.includes('Trick Room Setter') ? 'trick_room.png'
+                : tRoles.some(r => ['Physical Sweeper', 'Wallbreaker'].includes(r)) ? 'move-physical.png'
+                    : tRoles.includes('Special Sweeper') ? 'move-special.png' : 'move-status.png';
+        return `<article class="build-prose-teammate-card">
+            <div class="build-prose-teammate-card__visual">
+                <img src="${getStrategySprite(teammate)}" alt="${esc(teammate.species)}" class="build-prose-teammate-card__sprite">
+                <img src="${getStrategyAsset(roleIcon)}" alt="" class="build-prose-teammate-card__role-icon">
+            </div>
+            <div>
+                <span class="build-prose-eyebrow">${esc(primaryRole)}</span>
+                <h6>${link(teammate.species)}</h6>
+                <p>${reasons.join(', ')}.</p>
+                ${movePreview ? `<div class="build-prose-teammate-card__moves">${movePreview}</div>` : ''}
+            </div>
+        </article>`;
     }
 
     function findAlternateBuilds(species, format, currentBuildId) {
@@ -573,26 +588,65 @@
 
     function describeRosterFunction(mon, monRoles, ctx, isAce) {
         const moves = (mon.moves || []).map(normKey);
-        const jobs = [];
-        if (isAce) jobs.push('primary win condition');
-        if (moves.includes('tailwind')) jobs.push('sets Tailwind');
-        if (moves.includes('trickroom')) jobs.push('sets or reverses Trick Room');
-        if (moves.includes('fakeout')) jobs.push('creates a free turn with Fake Out');
-        if (moves.includes('helpinghand')) jobs.push('amplifies an ally’s knockout');
-        if (moves.includes('faketears') || moves.includes('metalsound')) jobs.push('breaks special walls');
-        if (moves.includes('screech')) jobs.push('breaks physical walls');
-        if (moves.includes('sunnyday') || normKey(mon.ability) === 'drought') jobs.push('establishes Sun');
-        if (moves.includes('raindance') || normKey(mon.ability) === 'drizzle') jobs.push('establishes Rain');
-        if (moves.includes('sandstorm') || normKey(mon.ability) === 'sandstream') jobs.push('establishes Sand');
-        if (normKey(mon.ability) === 'sandrush') jobs.push('becomes the Sand-speed attacker');
-        if (moves.includes('lastrespects')) jobs.push('scales into a late-game cleaner');
-        if (moves.includes('sleeppowder') || moves.includes('spore') || moves.includes('hypnosis')) jobs.push('denies turns with sleep');
-        if (moves.includes('willowisp')) jobs.push('neutralizes physical attackers');
-        if (monRoles.includes('Priority Denial')) jobs.push('blocks opposing priority');
-        if (monRoles.includes('Redirection')) jobs.push('protects the active attacker');
-        if (monRoles.includes('Pivot')) jobs.push('preserves momentum');
-        if (!jobs.length) jobs.push((monRoles[0] || 'flex slot').toLowerCase());
-        return jobs.slice(0, 3).join('; ');
+        const ability = normKey(mon.ability);
+        const item = normKey(mon.item);
+        const originalMoves = mon.moves || [];
+        const moveName = key => originalMoves.find(move => normKey(move) === key) || key;
+        const damaging = getDamagingMoves(mon);
+        let identity = '';
+        let operation = '';
+
+        if (isAce) {
+            identity = `${link(mon.species)} is the primary win condition: preserve its HP until field control is established, then use it to convert the team’s support into consecutive knockouts.`;
+        } else if (moves.includes('lastrespects')) {
+            identity = `${link(mon.species)} is late-game insurance rather than an early trade piece; every fainted ally increases ${link(moveName('lastrespects'))} by 50 base power.`;
+        } else if (['sandstream', 'drought', 'drizzle', 'snowwarning'].includes(ability) || moves.some(m => ['sandstorm', 'sunnyday', 'raindance', 'snowscape'].includes(m))) {
+            identity = `${link(mon.species)} controls the weather layer and should often be held in reserve so its entry can overwrite opposing weather at the decisive moment.`;
+        } else if (moves.includes('tailwind')) {
+            identity = `${link(mon.species)} is the team’s tempo setter, creating a four-turn ${link(moveName('tailwind'))} window that lets slower wallbreakers attack before they are pressured.`;
+        } else if (moves.includes('trickroom')) {
+            identity = `${link(mon.species)} manages reversed turn order, either establishing ${link(moveName('trickroom'))} for slow attackers or cancelling the opponent’s room with a second use.`;
+        } else if (monRoles.includes('Redirection')) {
+            identity = `${link(mon.species)} protects the active win condition by redirecting single-target attacks, turning dangerous setup or attack turns into controlled exchanges.`;
+        } else if (monRoles.includes('Priority Denial')) {
+            identity = `${link(mon.species)} creates a priority-safe zone for fragile attackers, shutting down common revenge tools such as Fake Out, Sucker Punch, and Extreme Speed.`;
+        } else if (monRoles.includes('Pivot')) {
+            const pivotMove = originalMoves.find(move => ['uturn', 'voltswitch', 'flipturn', 'partingshot', 'teleport', 'chillyreception'].includes(normKey(move)));
+            identity = `${link(mon.species)} is the positioning hinge: ${pivotMove ? link(pivotMove) : 'its pivot utility'} chips or weakens the board while escorting a setter or attacker into play safely.`;
+        } else if (monRoles.includes('Physical Wall') || monRoles.includes('Special Wall')) {
+            identity = `${link(mon.species)} absorbs ${monRoles.includes('Physical Wall') ? 'physical' : 'special'} pressure and stabilizes unfavorable boards, preserving the offensive slots for matchups they can actually win.`;
+        } else if (monRoles.includes('Wallbreaker')) {
+            identity = `${link(mon.species)} is the early-to-midgame breaker, tasked with forcing defensive Terastallization and pushing the opponent’s dedicated wall into the ace’s cleanup range.`;
+        } else {
+            identity = `${link(mon.species)} fills a flexible ${(monRoles[0] || 'support').toLowerCase()} slot, covering lines the primary core cannot execute safely on its own.`;
+        }
+
+        if (ability === 'sandrush' && ctx.utils?.sand) {
+            operation = `Under Sand, ${link(mon.ability)} doubles its Speed; bring it in after weather is secured rather than exposing it before the setter acts.`;
+        } else if (ability === 'intimidate' && moves.some(m => ['uturn', 'voltswitch', 'partingshot'].includes(m))) {
+            operation = `${link(mon.ability)} plus pivoting enables repeated Attack drops, so cycle this slot instead of leaving it in for low-value neutral damage.`;
+        } else if (moves.includes('willowisp') && moves.includes('allyswitch')) {
+            operation = `${link(moveName('willowisp'))} suppresses physical carries while ${link(moveName('allyswitch'))} punishes predictable single-target attacks; alternate them only after identifying the opponent’s target.`;
+        } else if (moves.some(m => ['sleeppowder', 'spore', 'hypnosis'].includes(m))) {
+            const sleepMove = originalMoves.find(move => ['sleeppowder', 'spore', 'hypnosis'].includes(normKey(move)));
+            operation = `${link(sleepMove)} denies setup and Trick Room turns, but its best value comes when a partner simultaneously threatens damage rather than waiting passively.`;
+        } else if (moves.includes('helpinghand')) {
+            operation = `Reserve ${link(moveName('helpinghand'))} for a damage-calculator-confirmed knockout; using it into Protect wastes both active slots for the turn.`;
+        } else if (moves.includes('faketears') || moves.includes('metalsound') || moves.includes('screech')) {
+            const dropMove = originalMoves.find(move => ['faketears', 'metalsound', 'screech'].includes(normKey(move)));
+            operation = `${link(dropMove)} turns bulky neutral targets into immediate KO ranges, especially when applied before a partner’s spread attack.`;
+        } else if (item.includes('choicescarf')) {
+            operation = `${link(mon.item)} provides surprise speed, but move lock makes positioning critical—pivot out rather than donating momentum into a resistance or Protect.`;
+        } else if (moves.includes('fakeout')) {
+            operation = `${link(moveName('fakeout'))} buys one uncontested partner action; spend that turn on speed control, weather positioning, or a guaranteed knockout.`;
+        } else if (damaging.length) {
+            const attacks = damaging.slice(0, 2).map(move => link(move.name));
+            operation = `${joinList(attacks)} supply its immediate pressure; choose the attack that advances the team’s win condition instead of chasing isolated chip.`;
+        } else if (moves.includes('protect')) {
+            operation = `${link(moveName('protect'))} scouts double-targets and stalls opposing field turns while the partner continues making progress.`;
+        }
+
+        return `${identity}${operation ? ` ${operation}` : ''}`;
     }
 
     function getKeyStrategicMoves(mon) {
@@ -1012,6 +1066,18 @@
         const bst = parseInt(db?.Total_Stats, 10) || 0;
         const itemKey = (mainMon.item || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
+        paras.push(`<div class="build-prose-overview-hero">
+            <div class="build-prose-overview-hero__sprite"><img src="${getStrategySprite(mainMon)}" alt="${esc(mainMon.species)}"></div>
+            <div>
+                <span class="build-prose-eyebrow">${esc(format)} build identity</span>
+                <h5>${esc(mainMon.species)}</h5>
+                <div class="build-prose-overview-hero__tags">
+                    ${getMonTypes(db, mainMon).map(type => `<span><img src="${getStrategyAsset(`type-icons/${type.toLowerCase()}_type.png`)}" alt="">${esc(type)}</span>`).join('')}
+                    <span>${esc(archetype)}</span>
+                    ${speed != null ? `<span>${speed} Speed</span>` : ''}
+                </div>
+            </div>
+        </div>`);
         paras.push(`<p>${link(mainMon.species)} is a ${joinList(getMonTypes(db, mainMon).map(t => link(t)))} ${format} Pokémon built for the Champions meta as a <strong>${archetype}</strong>. This spread is tuned as a <strong>${roleText.toLowerCase()}</strong>.</p>`);
 
         mainRoles.slice(0, 3).forEach(r => {
@@ -1070,16 +1136,21 @@
         <div class="build-prose-set-card">
             <div>
                 <div class="build-prose-set-card__label">Moves</div>
-                <ul>${moves.map((m, i) => `<li><span class="build-prose-move-num">Move ${i + 1}:</span> ${link(m)}</li>`).join('') || '<li>No moves parsed</li>'}</ul>
+                <ul>${moves.map((m, i) => {
+                    const ref = getMoveRef(m);
+                    const category = (ref?.damage_class || ref?.category || 'status').toLowerCase();
+                    const icon = category === 'physical' ? 'move-physical.png' : category === 'special' ? 'move-special.png' : 'move-status.png';
+                    return `<li class="build-prose-set-move"><img src="${getStrategyAsset(icon)}" alt=""><span><span class="build-prose-move-num">Move ${i + 1}</span>${link(m)}</span></li>`;
+                }).join('') || '<li>No moves parsed</li>'}</ul>
             </div>
             <div>
                 <div class="build-prose-set-card__label">Set details</div>
-                <ul>
-                    <li><strong>Item:</strong> ${item ? link(item) : 'None'}</li>
-                    <li><strong>Ability:</strong> ${mainMon.ability ? link(mainMon.ability) : '—'}</li>
-                    <li><strong>Nature:</strong> ${mainMon.nature || 'Serious'}</li>
-                    <li><strong>EVs:</strong> ${formatEvSpread(mainMon.evs)}</li>
-                    ${mainMon.tera && mainMon.tera !== 'Normal' ? `<li><strong>Tera Type:</strong> ${link(mainMon.tera)}</li>` : ''}
+                <ul class="build-prose-detail-list">
+                    <li><img src="${getStrategyAsset('move-physical.png')}" alt=""><span><strong>Item</strong>${item ? link(item) : 'None'}</span></li>
+                    <li><img src="${getStrategyAsset('move-special.png')}" alt=""><span><strong>Ability</strong>${mainMon.ability ? link(mainMon.ability) : '—'}</span></li>
+                    <li><img src="${getStrategyAsset('move-status.png')}" alt=""><span><strong>Nature</strong>${esc(mainMon.nature || 'Serious')}</span></li>
+                    <li><img src="${getStrategyAsset('tailwind.png')}" alt=""><span><strong>EV spread</strong>${esc(formatEvSpread(mainMon.evs))}</span></li>
+                    ${mainMon.tera && mainMon.tera !== 'Normal' ? `<li><img src="${getStrategyAsset(`type-icons/tera_type_${mainMon.tera.toLowerCase()}.png`)}" alt=""><span><strong>Tera Type</strong>${link(mainMon.tera)}</span></li>` : ''}
                 </ul>
             </div>
         </div>`;
@@ -1102,7 +1173,11 @@
 
         const mainRoles = roles[0] || [];
         const leadPair = typeof describeLeadPair === 'function' ? describeLeadPair(ctx, [mainMon, ...teammates], roles) : { summary: '' };
-        let html = `<p><strong>Recommended core:</strong> ${joinList(teammates.map(t => link(t.species)))} round out this ${format} team around ${link(mainMon.species)}. ${leadPair.summary}</p>`;
+        let html = `<div class="build-prose-core-banner">
+            <img src="${getStrategySprite(mainMon)}" alt="${esc(mainMon.species)}">
+            <div><span class="build-prose-eyebrow">Recommended core</span><strong>${link(mainMon.species)} + ${joinList(teammates.slice(0, 3).map(t => link(t.species)))}</strong><p>${leadPair.summary || `${teammates.length} teammates support this ${format} build.`}</p></div>
+            <div class="build-prose-core-banner__team">${teammates.slice(0, 5).map(t => `<img src="${getStrategySprite(t)}" alt="${esc(t.species)}" title="${esc(t.species)}">`).join('')}</div>
+        </div>`;
 
         html += `<p>In ${format}, team synergy is not just type coverage — it is turn order, redirection, and speed control working together. ${link(mainMon.species)} should know which partner sets snow, Tailwind, or Trick Room before you click moves, because this set's damage moves assume those conditions when applicable.</p>`;
 
@@ -1114,11 +1189,11 @@
             html += '</ul></div>';
         }
 
-        html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Teammate roles</h5>';
+        html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Teammate roles</h5><div class="build-prose-teammate-grid">';
         teammates.forEach((t, i) => {
             html += explainTeammateFit(mainMon, t, mainRoles, roles[i + 1] || [], ctx, i);
         });
-        html += '</div>';
+        html += '</div></div>';
 
         if (ctx.leadReasons?.length) {
             html += '<div class="build-prose-subblock"><h5 class="build-prose-subtitle">Lead options</h5><ul class="build-prose-bullet-list">';
@@ -1137,6 +1212,17 @@
         const moves = (mainMon.moves || []).map(m => normKey(m));
         let html = '';
 
+        html += `<div class="build-prose-checks-banner">
+            <div class="build-prose-checks-banner__visual">
+                <img src="${getStrategySprite(mainMon)}" alt="${esc(mainMon.species)}">
+                <img src="${getStrategyAsset('move-status.png')}" alt="">
+            </div>
+            <div>
+                <span class="build-prose-eyebrow">Defensive risk profile</span>
+                <strong>Plan around ${weak.length ? weak.length : 'unknown'} pressure type${weak.length === 1 ? '' : 's'}</strong>
+                <div>${weak.slice(0, 6).map(type => `<span><img src="${getStrategyAsset(`type-icons/${type}_type.png`)}" alt="">${esc(capitalize(type))}</span>`).join('') || '<span>Neutral coverage</span>'}</div>
+            </div>
+        </div>`;
         html += '<p><strong>What threatens this set:</strong> ';
         html += `${link(mainMon.species)} is pressured by ${weak.length ? joinList(weak.map(t => link(t))) : 'common coverage types'}. `;
         if (mainRoles.includes('Physical Sweeper') || mainRoles.includes('Wallbreaker')) {
@@ -1227,6 +1313,7 @@
             const statusLabel = t.dangerLevel === 'critical' ? 'Gap' : t.dangerLevel === 'covered' ? 'Covered' : t.dangerLevel === 'warning' ? 'Caution' : 'Neutral';
 
             let para = '<p class="build-prose-matchup build-prose-matchup--' + statusCls + '">';
+            para += `<img src="${getStrategySprite({ species: t.name })}" alt="${esc(t.name)}" class="build-prose-matchup__sprite">`;
             para += '<span class="build-prose-matchup__rank">#' + t.rank + '</span> ';
             para += '<strong>' + link(t.name) + '</strong> <span class="build-prose-matchup__tag">' + statusLabel + '</span> — ';
 
@@ -1301,7 +1388,7 @@
 
         const setSection = safeCompose('set', () => composeSetSection(mainMon, db, mainRoles, format, ctx), { setName: 'Standard', html: '<p>Set analysis unavailable.</p>' });
         const setTitleEl = document.getElementById('build-prose-set-title');
-        if (setTitleEl) setTitleEl.textContent = `${setSection.setName} Set`;
+        if (setTitleEl) setTitleEl.innerHTML = `<img src="${getStrategyAsset('move-physical.png')}" alt="">${esc(setSection.setName)} Set`;
 
         setProseSection('build-prose-section-overview', 'build-prose-overview',
             safeCompose('overview', () => composeOverview(mainMon, db, mainRoles, format, ctx, roles, activeMons), `<p>${link(mainMon.species)} — analysis loading.</p>`));
