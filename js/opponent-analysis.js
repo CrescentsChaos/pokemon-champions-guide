@@ -1910,6 +1910,36 @@ function clearOpponentTeam() {
 }
 
 /**
+ * Load Builder-shaped slots directly, preserving gendered species and set data.
+ * @param {Object[]} slots
+ * @returns {number} number of loaded Pokémon
+ */
+function loadOpponentTeamFromSlots(slots) {
+    const source = Array.isArray(slots) ? slots.slice(0, 6) : [];
+    _opponentTeam = Array(6).fill(null).map(createEmptyOpponentSlot);
+
+    let loaded = 0;
+    source.forEach((input, idx) => {
+        if (!input?.species) return;
+        const slot = {
+            ...createEmptyOpponentSlot(),
+            ...input,
+            evs: { ...createEmptyOpponentSlot().evs, ...(input.evs || {}) },
+            ivs: { ...createEmptyOpponentSlot().ivs, ...(input.ivs || {}) },
+            moves: Array.isArray(input.moves) ? input.moves.slice(0, 4) : [],
+            _buildSource: 'saved',
+            _buildId: null
+        };
+        _opponentTeam[idx] = slot;
+        loaded += 1;
+    });
+
+    renderOpponentRoster();
+    runOpponentPrepAnalysis();
+    return loaded;
+}
+
+/**
  * Load a saved Builder-library paste into the opponent roster.
  * @param {string} paste
  * @returns {number} number of loaded Pokémon
@@ -1988,6 +2018,7 @@ if (typeof globalThis !== 'undefined') {
     globalThis.openOpponentSearch = openOpponentSearch;
     globalThis.clearOpponentSlot = clearOpponentSlot;
     globalThis.clearOpponentTeam = clearOpponentTeam;
+    globalThis.loadOpponentTeamFromSlots = loadOpponentTeamFromSlots;
     globalThis.loadOpponentTeamFromPaste = loadOpponentTeamFromPaste;
     globalThis.loadOpponentTeamFromBuildIds = loadOpponentTeamFromBuildIds;
     globalThis.setOpponentSpecies = setOpponentSpecies;

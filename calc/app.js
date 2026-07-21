@@ -2143,15 +2143,35 @@ function importPokePaste(id, paste, opts = {}) {
             if (b !== 'M' && b !== 'F') speciesName = b;
         }
 
+        if (!pokemonDB.some(entry => entry.Name === speciesName)) {
+            showToast(`Unknown Pokémon: ${speciesName}`);
+            return;
+        }
+
+        pk.level = 50;
+        pk.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
+        pk.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        pk.boosts = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        pk.nature = 'Hardy';
+        pk.item = 'None';
+        pk.status = 'Healthy';
+        pk.tera = false;
+        pk.teraType = 'Normal';
+        pk.hpPercent = 100;
+        pk.alliesFainted = 0;
+        pk.timesHit = 0;
+        pk.abilityActive = false;
+        pk.itemEnabled = true;
+        pk.shiny = false;
+        pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }));
         loadPokemon(id, speciesName);
         pk.item = itemPart;
-        pk.level = 50;
-        pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }));
 
         lines.slice(1).forEach(l => {
             const line = l.trim();
             if (line.match(/^Ability\s*:/i)) pk.ability = line.split(':')[1].trim();
             else if (line.match(/^Level\s*:/i)) pk.level = parseInt(line.split(':')[1].trim());
+            else if (line.match(/^Shiny\s*:\s*Yes/i)) pk.shiny = true;
             else if (line.match(/^Tera Type\s*:/i)) pk.teraType = line.split(':')[1].trim();
             else if (line.match(/^EVs\s*:/i)) {
                 line.split(':')[1].split('/').forEach(p => {

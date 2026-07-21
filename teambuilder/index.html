@@ -1809,7 +1809,7 @@
     <script src="../js/analysis.js?v=10"></script>
     <script src="../js/build-narrative.js?v=15"></script>
     <script src="../js/opponent-interactions.js?v=3"></script>
-    <script src="../js/opponent-analysis.js?v=9"></script>
+    <script src="../js/opponent-analysis.js?v=10"></script>
 
     <script>
 
@@ -3464,8 +3464,9 @@
             if (!item) return;
 
             if (libraryLoadTarget === 'opponent') {
-                const count = typeof loadOpponentTeamFromPaste === 'function'
-                    ? loadOpponentTeamFromPaste(item.paste)
+                const savedSlots = parsePaste(item.paste);
+                const count = typeof loadOpponentTeamFromSlots === 'function'
+                    ? loadOpponentTeamFromSlots(savedSlots)
                     : 0;
                 if (!count) {
                     alert('Could not load this saved team into Opp Prep.');
@@ -3482,6 +3483,7 @@
                 if (currentSlot === -1) switchSlot(0);
                 else syncUI();
             } else {
+                for (let i = 0; i < 6; i++) team[i] = createEmptyTeamSlot();
                 for (let i = 0; i < Math.min(importedTeam.length, 6); i++) {
                     team[i] = importedTeam[i];
                 }
