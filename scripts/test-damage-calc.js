@@ -234,6 +234,10 @@ const recover = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMov
 assert(recover.healMin === 100 && recover.hpAfter === 150, 'Recover reports actual HP and percentage healing');
 const lifeDew = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Life Dew'), field);
 assert(lifeDew.healMin === 50, 'Life Dew heals one quarter max HP');
+hpUser.hpPercent = 100;
+const fullHpRecover = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Recover'), field);
+assert(fullHpRecover.healMin === 100 && fullHpRecover.actualHealMin === 0, 'Healing moves show potential healing even at full HP');
+hpUser.hpPercent = 25;
 
 hpUser.item = 'Big Root';
 const strengthSap = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Strength Sap'), field);
@@ -256,6 +260,10 @@ hpTarget.hpPercent = 1;
 const overkillDrain = sandbox.calculateDamage(hpUser, hpTarget, gigaDrainMove, field);
 assert(overkillDrain.healMax === 2, 'Draining move healing is capped by target current HP lost');
 hpTarget.hpPercent = 50;
+hpUser.hpPercent = 100;
+const fullHpDrain = sandbox.calculateDamage(hpUser, hpTarget, gigaDrainMove, field);
+assert(fullHpDrain.healMax > 0 && fullHpDrain.actualHealMax === 0, 'Draining moves show potential healing at full HP');
+hpUser.hpPercent = 25;
 
 const roundingTarget = sandbox.setupPokemonState(2);
 roundingTarget.stats.hp = 101;

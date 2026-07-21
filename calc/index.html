@@ -120,7 +120,7 @@
                             <button class="import-btn" onclick="openImportModal(1)">Import</button>
                             <button type="button" class="teams-btn" onclick="openCalcBestTeams(1)">Teams</button>
                             <button class="export-btn" onclick="openExportModal(1)">Export</button>
-                            <button type="button" class="reset-side-btn" onclick="resetCalcSide(1)" title="Clear boosts, status, HP">Reset</button>
+                            <button type="button" class="reset-side-btn" onclick="resetCalcSide(1)" title="Clear this side's build, moves, HP, boosts, and field effects">Reset Side</button>
                         </div>
                     </div>
                     <div class="calc-team-tray" id="p1-team-tray" hidden></div>
@@ -370,7 +370,7 @@
                         <button type="button" class="field-btn" onclick="resetFieldConditions()">Reset Field</button>
                         <button type="button" class="field-btn" onclick="resetBothSides()">Reset Both Sides</button>
                     </div>
-                    <p class="field-hint">Field clears weather, terrain, screens &amp; hazards. Sides clear boosts, status &amp; HP.</p>
+                    <p class="field-hint">Field clears weather, terrain, screens &amp; hazards. Side resets clear the full build and that side's effects.</p>
                 </div>
             </div>
 
@@ -429,7 +429,7 @@
                             <button class="import-btn" onclick="openImportModal(2)">Import</button>
                             <button type="button" class="teams-btn" onclick="openCalcBestTeams(2)">Teams</button>
                             <button class="export-btn" onclick="openExportModal(2)">Export</button>
-                            <button type="button" class="reset-side-btn" onclick="resetCalcSide(2)" title="Clear boosts, status, HP">Reset</button>
+                            <button type="button" class="reset-side-btn" onclick="resetCalcSide(2)" title="Clear this side's build, moves, HP, boosts, and field effects">Reset Side</button>
                         </div>
                     </div>
                     <div class="calc-team-tray" id="p2-team-tray" hidden></div>

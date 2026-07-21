@@ -286,10 +286,14 @@
             const requested = Math.floor(attackerMaxHp * recoveryFraction);
             const healed = Math.min(Math.max(0, attackerMaxHp - attackerHp), requested);
             res.effectKind = 'healing';
-            res.healMin = healed;
-            res.healMax = healed;
-            res.healPercentMin = (healed * 100 / attackerMaxHp).toFixed(1);
+            res.healMin = requested;
+            res.healMax = requested;
+            res.healPercentMin = (requested * 100 / attackerMaxHp).toFixed(1);
             res.healPercentMax = res.healPercentMin;
+            res.actualHealMin = healed;
+            res.actualHealMax = healed;
+            res.actualHealPercentMin = (healed * 100 / attackerMaxHp).toFixed(1);
+            res.actualHealPercentMax = res.actualHealPercentMin;
             res.hpAfter = attackerHp + healed;
             res.recoveryPercent = recoveryFraction * 100;
             res.healsAllies = moveKey === 'lifedew' || moveKey === 'junglehealing' || moveKey === 'lunarblessing';
@@ -322,11 +326,16 @@
             const hpChange = liquidOoze
                 ? -Math.min(attackerHp, restored)
                 : Math.min(Math.max(0, attackerMaxHp - attackerHp), restored);
+            const potentialHpChange = liquidOoze ? -restored : restored;
             res.effectKind = liquidOoze ? 'hp_loss' : 'healing';
-            res.healMin = hpChange;
-            res.healMax = hpChange;
-            res.healPercentMin = (hpChange * 100 / attackerMaxHp).toFixed(1);
+            res.healMin = potentialHpChange;
+            res.healMax = potentialHpChange;
+            res.healPercentMin = (potentialHpChange * 100 / attackerMaxHp).toFixed(1);
             res.healPercentMax = res.healPercentMin;
+            res.actualHealMin = hpChange;
+            res.actualHealMax = hpChange;
+            res.actualHealPercentMin = (hpChange * 100 / attackerMaxHp).toFixed(1);
+            res.actualHealPercentMax = res.actualHealPercentMin;
             res.hpAfter = attackerHp + hpChange;
             const blocksAttackDrop = targetAbility === 'clearbody'
                 || targetAbility === 'hypercutter'
@@ -676,17 +685,24 @@
             const missingHp = Math.max(0, attackerMaxHp - attackerHp);
             const defenderHp = getCurrentHp(defender, field);
             const liquidOoze = defAb === 'liquidooze' && !breaksAbility;
-            const healingRolls = rolls.map(damage => {
+            const potentialHealingRolls = rolls.map(damage => {
                 const actualDamage = Math.min(damage, defenderHp);
                 const baseHealing = actualDamage > 0 ? Math.max(1, Math.round(actualDamage * drainRatio)) : 0;
                 const restored = applyBigRoot(baseHealing, attacker, field);
-                return liquidOoze ? -Math.min(attackerHp, restored) : Math.min(missingHp, restored);
+                return liquidOoze ? -restored : restored;
             });
+            const actualHealingRolls = potentialHealingRolls.map(healing =>
+                healing < 0 ? -Math.min(attackerHp, Math.abs(healing)) : Math.min(missingHp, healing)
+            );
             res.effectKind = liquidOoze ? 'damage_and_hp_loss' : 'damage_and_healing';
-            res.healMin = Math.min(...healingRolls);
-            res.healMax = Math.max(...healingRolls);
+            res.healMin = Math.min(...potentialHealingRolls);
+            res.healMax = Math.max(...potentialHealingRolls);
             res.healPercentMin = (res.healMin * 100 / attackerMaxHp).toFixed(1);
             res.healPercentMax = (res.healMax * 100 / attackerMaxHp).toFixed(1);
+            res.actualHealMin = Math.min(...actualHealingRolls);
+            res.actualHealMax = Math.max(...actualHealingRolls);
+            res.actualHealPercentMin = (res.actualHealMin * 100 / attackerMaxHp).toFixed(1);
+            res.actualHealPercentMax = (res.actualHealMax * 100 / attackerMaxHp).toFixed(1);
             res.bigRootBoosted = itemsActiveFor(attacker, field) && (attacker.item || '').toLowerCase() === 'big root';
         }
         return res;

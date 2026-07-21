@@ -408,7 +408,7 @@ function setupEventListeners() {
         if (formeSelect) {
             formeSelect.addEventListener('change', (e) => {
                 const forme = e.target.value;
-                if (forme && forme !== pk.name) loadPokemon(id, forme);
+                if (forme && forme !== pk.name) loadPokemon(id, forme, { preserveSet: true, preservePinned: true });
             });
         }
 
@@ -432,7 +432,7 @@ function setupEventListeners() {
                 if (field === 'item') {
                     const nextForm = getPermanentForm(pk);
                     if (nextForm && nextForm !== pk.name) {
-                        loadPokemon(id, nextForm);
+                        loadPokemon(id, nextForm, { preserveSet: true, preservePinned: true });
                         return;
                     }
                     updateItemSprite(pk);
@@ -451,7 +451,7 @@ function setupEventListeners() {
             if (pk.name.startsWith("Terapagos") && pk.name !== "Terapagos") {
                 const target = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
                 if (pk.name !== target) {
-                    loadPokemon(id, target);
+                    loadPokemon(id, target, { preserveSet: true, preservePinned: true });
                     return; // loadPokemon calls recalculate
                 }
             }
@@ -464,7 +464,7 @@ function setupEventListeners() {
             if (pk.name.startsWith("Terapagos") && pk.name !== "Terapagos") {
                 const target = (pk.tera && pk.teraType === "Stellar") ? "Terapagos-Stellar" : "Terapagos-Terastal";
                 if (pk.name !== target) {
-                    loadPokemon(id, target);
+                    loadPokemon(id, target, { preserveSet: true, preservePinned: true });
                     return; // loadPokemon calls recalculate
                 }
             }
@@ -773,10 +773,25 @@ function handleSearch(p, query) {
     resultsDiv.classList.add('active');
 }
 
-function loadPokemon(id, name) {
+function clearPokemonSetState(pk) {
+    if (!pk) return;
+    const fresh = setupPokemonState(pk.id);
+    Object.assign(pk, fresh);
+}
+
+function loadPokemon(id, name, opts = {}) {
     const pk = id === 1 ? p1 : p2;
     const data = pokemonDB.find(x => x.Name === name);
     if (!data) return;
+
+    const changingSpecies = !!pk.name && pk.name !== data.Name;
+    if (changingSpecies && !opts.preserveSet) {
+        clearPokemonSetState(pk);
+        if (!opts.preservePinned) {
+            pinnedCalcTeams[id] = null;
+            renderCalcTeamTrays();
+        }
+    }
 
     pk.name = data.Name;
     pk.type1 = data.Type_1;
@@ -796,7 +811,7 @@ function loadPokemon(id, name) {
 
     populatePokemonUI(pk);
     updateStatsUI(pk);
-    recalculate();
+    if (!opts.silent) recalculate();
 }
 
 function populatePokemonUI(pk) {
@@ -1191,7 +1206,7 @@ function toggleMega(id) {
     }
 
     if (targetName) {
-        loadPokemon(id, targetName);
+        loadPokemon(id, targetName, { preserveSet: true, preservePinned: true });
         const loaded = id === 1 ? p1 : p2;
         if (heldItem && heldItem !== 'None') {
             loaded.item = heldItem;
@@ -1248,7 +1263,7 @@ function toggleForme(id) {
         return;
     }
 
-    if (targetName) loadPokemon(id, targetName);
+    if (targetName) loadPokemon(id, targetName, { preserveSet: true, preservePinned: true });
 }
 
 function updateMove(pId, idx, moveName) {
@@ -1507,7 +1522,15 @@ function formatHealingRange(res) {
         ? `${res.healPercentMin}%`
         : `${res.healPercentMin}%–${res.healPercentMax}%`;
     const label = res.healMax < 0 ? 'HP loss' : 'Healing';
-    return `${label}: ${hp} HP (${pct} max HP)${res.bigRootBoosted ? ' · Big Root' : ''}`;
+    let actual = '';
+    if (res.actualHealMin != null && res.actualHealMax != null
+        && (res.actualHealMin !== res.healMin || res.actualHealMax !== res.healMax)) {
+        const actualHp = res.actualHealMin === res.actualHealMax
+            ? `${res.actualHealMin}`
+            : `${res.actualHealMin}–${res.actualHealMax}`;
+        actual = ` · Actual at current HP: ${actualHp} HP`;
+    }
+    return `${label}: ${hp} HP (${pct} max HP)${actual}${res.bigRootBoosted ? ' · Big Root' : ''}`;
 }
 
 function signedHp(value) {
@@ -2189,6 +2212,10 @@ function importPokePaste(id, paste, opts = {}) {
     const pk = id === 1 ? p1 : p2;
     const lines = paste.split('\n').map(l => l.trim()).filter(l => !!l);
     if (!lines.length) return;
+    if (!opts.silent) {
+        pinnedCalcTeams[id] = null;
+        renderCalcTeamTrays();
+    }
 
     try {
         const head = lines[0];
@@ -2235,7 +2262,7 @@ function importPokePaste(id, paste, opts = {}) {
         pk.itemEnabled = true;
         pk.shiny = false;
         pk.moves = Array(4).fill().map(() => ({ name: 'None', basePower: 0, type: 'Normal', category: 'Physical', crit: false }));
-        loadPokemon(id, speciesName);
+        loadPokemon(id, speciesName, { preserveSet: true, preservePinned: true, silent: true });
         pk.item = itemPart;
 
         lines.slice(1).forEach(l => {
@@ -2766,28 +2793,19 @@ function resetFieldConditions() {
 function resetCalcSide(id, opts = {}) {
     const pk = id === 1 ? p1 : p2;
     if (!pk) return;
-    pk.boosts = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-    pk.status = 'Healthy';
-    pk.hpPercent = 100;
-    pk.alliesFainted = 0;
-    pk.timesHit = 0;
-    pk.abilityActive = false;
-    pk.itemEnabled = true;
-    pk.tera = false;
-    const statusEl = document.getElementById(`p${id}-status`);
-    if (statusEl) statusEl.value = 'Healthy';
-    const teraEl = document.getElementById(`p${id}-tera`);
-    if (teraEl) teraEl.checked = false;
-    updateStatsUI(pk);
-    syncHpUI(pk);
-    syncFallenUI(pk);
-    syncTimesHitUI(pk);
-    syncItemEnabledUI(pk);
-    syncAbilityBoostUI(pk);
-    populatePokemonUI(pk);
+    const speciesName = pk.name;
+    clearPokemonSetState(pk);
+    if (speciesName) loadPokemon(id, speciesName, { preserveSet: true, preservePinned: true, silent: true });
+
+    pinnedCalcTeams[id] = null;
+    renderCalcTeamTrays();
+    field[id === 1 ? 'side1' : 'side2'] = getEmptySideState();
+    syncFieldUIFromState();
+    updateFieldState();
+
     if (!opts.silent) {
         recalculate();
-        showToast(`${pk.name || 'Side ' + id} reset`);
+        showToast(`${pk.name || 'Side ' + id} fully reset`);
     }
 }
 
