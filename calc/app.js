@@ -916,16 +916,19 @@ function populatePokemonUI(pk) {
             || (mData?.battle?.variablePower === 'fallen_allies');
         const isRageFist = moveKey === 'ragefist'
             || (mData?.battle?.variablePower === 'times_hit');
+        const isRound = moveKey === 'round';
         const fallen = Math.max(0, Math.min(100, parseInt(pk.alliesFainted, 10) || 0));
         const timesHit = Math.max(0, Math.min(6, parseInt(pk.timesHit, 10) || 0));
         const displayBp = isLastRespects
             ? (50 * (1 + fallen))
             : isRageFist
                 ? (50 * (1 + timesHit))
-                : (move.basePower ?? 0);
+                : isRound
+                    ? (move.roundBoosted ? 120 : 60)
+                    : (move.basePower ?? 0);
         const bpMax = isLastRespects ? 5050 : (isRageFist ? 350 : 250);
-        const bpReadonly = (isLastRespects || isRageFist)
-            ? `readonly title="${isRageFist ? 'Scales with Times hit' : 'Scales with Fallen allies'}"`
+        const bpReadonly = (isLastRespects || isRageFist || isRound)
+            ? `readonly title="${isRound ? '60 BP, or 120 BP after another Round this turn' : (isRageFist ? 'Scales with Times hit' : 'Scales with Fallen allies')}"`
             : '';
 
         return `
@@ -968,6 +971,12 @@ function populatePokemonUI(pk) {
                 <select class="hits-select" onchange="updateHits(${pk.id}, ${i}, this.value)">
                     ${hitOptions.map(h => `<option value="${h}" ${(move.hits || getDefaultHitCount(move.name, pk)) == h ? 'selected' : ''}>${h} hit${h > 1 ? 's' : ''}</option>`).join('')}
                 </select>` : ''}
+                ${isRound ? `
+                <label class="crit-label" title="Boost to 120 BP when another Pokémon already used Round this turn">
+                    <input type="checkbox" onchange="toggleRoundBoost(${pk.id}, ${i}, this.checked)"
+                        ${move.roundBoosted ? 'checked' : ''}>
+                    <span class="crit-text">ROUND ×2</span>
+                </label>` : ''}
                 <label class="crit-label${BattleCalc.MoveIndex.isAlwaysCrit(move) ? ' crit-locked' : ''}" title="${BattleCalc.MoveIndex.isAlwaysCrit(move) ? 'This move always critically hits' : ''}">
                     <input type="checkbox" onchange="toggleCrit(${pk.id}, ${i}, this.checked)"
                         ${(move.crit || BattleCalc.MoveIndex.isAlwaysCrit(move)) ? 'checked' : ''}
@@ -1103,6 +1112,17 @@ function updateHits(pId, idx, hits) {
     pk.moves[idx].hits = parseInt(hits, 10);
     recalculate();
 }
+
+function toggleRoundBoost(pId, idx, checked) {
+    const pk = pId === 1 ? p1 : p2;
+    if (!pk?.moves?.[idx]) return;
+    pk.moves[idx].roundBoosted = !!checked;
+    const bpInput = document.querySelectorAll(`#p${pId}-moves .move-row`)[idx]?.querySelector('input[type="number"]');
+    if (bpInput) bpInput.value = checked ? '120' : '60';
+    recalculate();
+}
+
+window.toggleRoundBoost = toggleRoundBoost;
 
 function updateMoveField(pId, idx, field, value) {
     const pk = pId === 1 ? p1 : p2;
@@ -1480,6 +1500,20 @@ function formatRollsDisplay(rolls) {
     return `(${unique[0]}, ${unique[1]}, …, ${unique[unique.length - 2]}, ${unique[unique.length - 1]}) · ${rolls.length} combinations`;
 }
 
+function formatHealingRange(res) {
+    if (res.healMin == null || res.healMax == null) return '';
+    const hp = res.healMin === res.healMax ? `${res.healMin}` : `${res.healMin}–${res.healMax}`;
+    const pct = res.healPercentMin === res.healPercentMax
+        ? `${res.healPercentMin}%`
+        : `${res.healPercentMin}%–${res.healPercentMax}%`;
+    const label = res.healMax < 0 ? 'HP loss' : 'Healing';
+    return `${label}: ${hp} HP (${pct} max HP)${res.bigRootBoosted ? ' · Big Root' : ''}`;
+}
+
+function signedHp(value) {
+    return `${value > 0 ? '+' : ''}${value}`;
+}
+
 function recalculate() {
     if (!p1 || !p2) return;
 
@@ -1571,20 +1605,42 @@ function recalculate() {
     const effHp = res.effectiveHp ?? getEffectiveHp(defender);
     const hazardNote = getHazardDamageFor(defender) > 0 ? ` (${effHp} HP after hazards)` : '';
 
-    if (BattleCalc.formatShowdownLine && move) {
+    if (res.effectKind === 'pain_split') {
+        banner.innerText = `${attacker.name} Pain Split: ${attacker.name} ${res.userHpBefore}→${res.userHpAfter} HP, ${defender.name} ${res.targetHpBefore}→${res.targetHpAfter} HP`;
+    } else if (res.effectKind === 'healing' || res.effectKind === 'hp_loss') {
+        banner.innerText = `${attacker.name} used ${res.move}: ${formatHealingRange(res)}${res.healsAllies ? ' · also heals its ally' : ''}`;
+    } else if (res.effectKind === 'failed') {
+        banner.innerText = `${attacker.name} used ${res.move}: ${res.effectLabel || 'No effect'}`;
+    } else if (BattleCalc.formatShowdownLine && move) {
         banner.innerText = BattleCalc.formatShowdownLine(attacker, defender, move, res, field) + hazardNote;
+        if (res.userFaints) banner.innerText += ` · ${attacker.name} faints`;
     } else {
         const hitLabel = res.hitCount > 1 ? ` (${res.hitCount} hits)` : '';
         banner.innerText = `${attacker.name} ${res.move}${hitLabel} vs. ${defender.name}: ${res.minDmg ?? res.minPercent}-${res.maxDmg ?? res.maxPercent}%`;
     }
-    subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}`;
+    if (res.effectKind === 'pain_split') {
+        subBanner.innerText = `${attacker.name}: ${signedHp(res.userHpChange)} HP · ${defender.name}: ${signedHp(res.targetHpChange)} HP`;
+    } else if (res.effectKind === 'healing' || res.effectKind === 'hp_loss' || res.effectKind === 'failed') {
+        const attackChange = res.targetAttackChange === 1
+            ? 'Target Attack: +1 stage (Contrary)'
+            : res.targetAttackChange === 0
+                ? 'Target Attack: unchanged'
+                : res.targetAttackChange === -1
+                    ? 'Target Attack: −1 stage'
+                    : '';
+        subBanner.innerText = res.effectLabel || attackChange;
+    } else {
+        const healing = formatHealingRange(res);
+        subBanner.innerText = `Damage rolls: ${formatRollsDisplay(res.rolls)}${healing ? ` · ${healing}` : ''}`;
+    }
 
-    koResult.innerText = getKOChance(res.rolls, effHp);
+    const utilityResult = ['pain_split', 'healing', 'hp_loss', 'failed'].includes(res.effectKind);
+    koResult.innerText = utilityResult ? '' : getKOChance(res.rolls, effHp);
 
     const accKoEl = document.getElementById('acc-ko-result');
     const accToggle = document.getElementById('acc-adjusted-ko');
     if (accKoEl) {
-        if (accToggle?.checked && move) {
+        if (!utilityResult && accToggle?.checked && move) {
             const adj = getAccuracyAdjustedKo(res.rolls, effHp, move, attacker, field);
             accKoEl.hidden = !adj;
             accKoEl.textContent = adj || '';
@@ -1594,7 +1650,7 @@ function recalculate() {
         }
     }
 
-    if (damageBar && damageBarFill && damageBarRange) {
+    if (damageBar && damageBarFill && damageBarRange && !utilityResult) {
         const minPct = Math.min(100, Math.max(0, Number(res.minPercent) || 0));
         const maxPct = Math.min(100, Math.max(0, Number(res.maxPercent) || 0));
         damageBar.hidden = false;
@@ -1603,9 +1659,11 @@ function recalculate() {
         damageBarRange.textContent = `${minPct}% – ${maxPct}% of HP`;
         damageBarFill.classList.toggle('ko', maxPct >= 100);
         damageBarFill.classList.toggle('near-ko', maxPct >= 80 && maxPct < 100);
+    } else if (damageBar) {
+        damageBar.hidden = true;
     }
 
-    renderRollHeatmap(res.rolls, effHp);
+    renderRollHeatmap(utilityResult ? [] : res.rolls, effHp);
 
     syncMobileSummary();
 }
@@ -1641,6 +1699,17 @@ function renderMoveResults(p1Results, p2Results) {
             if (!res) return '';
             const active = selectedIdx === i ? 'active' : '';
             const dmg = res.minDmg != null ? `${res.minDmg}–${res.maxDmg}` : '';
+            let effectSummary = '';
+            if (res.effectKind === 'pain_split') {
+                effectSummary = `${res.userHpAfter} / ${res.targetHpAfter} HP`;
+            } else if (res.effectKind === 'healing' || res.effectKind === 'hp_loss') {
+                effectSummary = `${res.healMax >= 0 ? '+' : ''}${res.healMax} HP (${res.healPercentMax}%)`;
+            } else if (res.effectKind === 'failed') {
+                effectSummary = res.effectLabel || 'No effect';
+            } else if (res.healMin != null) {
+                const heal = res.healMin === res.healMax ? res.healMin : `${res.healMin}–${res.healMax}`;
+                effectSummary = `Heal ${heal} HP`;
+            }
             const move = pk.moves[i];
             const effType = getEffectiveMoveType(pk, move);
             const baseType = move?.type || 'Normal';
@@ -1661,7 +1730,9 @@ function renderMoveResults(p1Results, p2Results) {
                     </span>
                     <span class="move-damage-summary">
                         ${dmg ? `<span class="dmg-abs">${dmg}</span>` : ''}
-                        <span class="dmg-pct">${res.minPercent}% – ${res.maxPercent}%</span>
+                        ${effectSummary
+                            ? `<span class="dmg-pct">${effectSummary}</span>`
+                            : `<span class="dmg-pct">${res.minPercent}% – ${res.maxPercent}%</span>`}
                     </span>
                 </div>
             `;
@@ -2414,7 +2485,8 @@ function serializePokemon(pk) {
         m: (pk.moves || []).map(mv => ({
             n: mv.name,
             c: !!mv.crit,
-            h: mv.hits || undefined
+            h: mv.hits || undefined,
+            r: !!mv.roundBoosted || undefined
         })),
         shiny: !!pk.shiny
     };
@@ -2449,7 +2521,8 @@ function applySerializedPokemon(id, data) {
             if (rec) {
                 pk.moves[idx] = BattleCalc.MoveIndex.createMoveState(rec.name, {
                     crit: !!mv.c,
-                    ...(mv.h ? { hits: mv.h } : {})
+                    ...(mv.h ? { hits: mv.h } : {}),
+                    ...(mv.r ? { roundBoosted: true } : {})
                 });
             }
         });

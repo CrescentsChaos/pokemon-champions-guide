@@ -21,6 +21,20 @@
         };
     }
 
+    function getEffectiveWeight(pokemon, field) {
+        let weight = Math.max(0.1, Number(pokemon?.baseStats?.weight) || 10);
+        const ability = (pokemon?.ability || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const itemsOn = pokemon?.itemEnabled !== false && !field?.magicRoom;
+        const item = itemsOn ? (pokemon?.item || '').toLowerCase() : '';
+
+        if (ability === 'heavymetal') weight *= 2;
+        else if (ability === 'lightmetal') weight /= 2;
+        if (item === 'float stone') weight /= 2;
+
+        // In-game weight is stored in 0.1 kg increments and never drops below 0.1 kg.
+        return Math.max(0.1, Math.floor(weight * 10) / 10);
+    }
+
     function resolveMoveType(attacker, move, moveRecord, item, field) {
         let moveType = move.type;
         let basePower = move.basePower;
@@ -106,8 +120,14 @@
         if (variablePower === 'status_target' && defender.status !== 'Healthy') basePower = 130;
 
         if (variablePower === 'hp_ratio') {
-            const hpRatio = attacker.hpPercent / 100;
-            basePower = Math.max(1, Math.floor(150 * hpRatio));
+            const moveKey = (move.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (moveKey === 'crushgrip' || moveKey === 'wringout') {
+                const hpRatio = Math.max(0, Math.min(1, (defender.hpPercent ?? 100) / 100));
+                basePower = Math.max(1, Math.floor(120 * hpRatio) + 1);
+            } else {
+                const hpRatio = Math.max(0, Math.min(1, (attacker.hpPercent ?? 100) / 100));
+                basePower = Math.max(1, Math.floor(150 * hpRatio));
+            }
         }
 
         if (variablePower === 'low_hp') {
@@ -121,8 +141,8 @@
         }
 
         if (variablePower === 'weight_ratio') {
-            const atkWeight = attacker.baseStats?.weight || 10.0;
-            const defWeight = defender.baseStats?.weight || 10.0;
+            const atkWeight = getEffectiveWeight(attacker, field);
+            const defWeight = getEffectiveWeight(defender, field);
             const ratio = atkWeight / defWeight;
             if (ratio >= 5) basePower = 120;
             else if (ratio >= 4) basePower = 100;
@@ -132,13 +152,32 @@
         }
 
         if (variablePower === 'defender_weight') {
-            const defWeight = defender.baseStats?.weight || 10.0;
-            if (defWeight >= 200.0) basePower = 120;
-            else if (defWeight >= 100.0) basePower = 100;
-            else if (defWeight >= 50.0) basePower = 80;
-            else if (defWeight >= 25.0) basePower = 60;
-            else if (defWeight >= 10.0) basePower = 40;
+            const defWeight = getEffectiveWeight(defender, field);
+            if (defWeight > 200.0) basePower = 120;
+            else if (defWeight > 100.0) basePower = 100;
+            else if (defWeight > 50.0) basePower = 80;
+            else if (defWeight > 25.0) basePower = 60;
+            else if (defWeight > 10.0) basePower = 40;
             else basePower = 20;
+        }
+
+        if (variablePower === 'speed_ratio_def') {
+            const userSpeed = BC.getEffectiveSpeed(attacker, field);
+            const targetSpeed = BC.getEffectiveSpeed(defender, field);
+            basePower = userSpeed <= 0
+                ? 1
+                : Math.min(150, Math.floor((25 * targetSpeed) / userSpeed) + 1);
+        }
+
+        if (variablePower === 'speed_ratio') {
+            const userSpeed = BC.getEffectiveSpeed(attacker, field);
+            const targetSpeed = BC.getEffectiveSpeed(defender, field);
+            if (targetSpeed <= 0) basePower = 40;
+            else if (userSpeed >= targetSpeed * 4) basePower = 150;
+            else if (userSpeed >= targetSpeed * 3) basePower = 120;
+            else if (userSpeed >= targetSpeed * 2) basePower = 80;
+            else if (userSpeed >= targetSpeed) basePower = 60;
+            else basePower = 40;
         }
 
         if (variablePower === 'positive_boosts') {
@@ -160,6 +199,11 @@
         if (variablePower === 'times_hit' || moveKey === 'ragefist') {
             const hits = Math.max(0, Math.min(6, parseInt(attacker.timesHit, 10) || 0));
             basePower = 50 * (1 + hits);
+        }
+
+        // Every Round after the first one used on the field that turn doubles in power.
+        if (variablePower === 'round' || moveKey === 'round') {
+            basePower = move.roundBoosted ? 120 : 60;
         }
 
         // Knock Off: 1.5× if target holds an item (and item effects are active)
@@ -204,7 +248,8 @@
 
     function applyTeraBpFloor(attacker, move, moveType, basePower) {
         if (attacker.tera && moveType === attacker.teraType && basePower < 60 && basePower > 0 && attacker.teraType !== 'Stellar') {
-            if (!MoveIndex.isPriority(move.name) && !move.hits && !MoveIndex.getMultiHitInfo(move.name)) {
+            const variablePower = MoveIndex.getVariablePower(move.name);
+            if (!variablePower && !MoveIndex.isPriority(move.name) && !move.hits && !MoveIndex.getMultiHitInfo(move.name)) {
                 return 60;
             }
         }
@@ -215,4 +260,5 @@
     BC.resolveBasePower = resolveBasePower;
     BC.applyTeraBpFloor = applyTeraBpFloor;
     BC.weatherFlags = weatherFlags;
+    BC.getEffectiveWeight = getEffectiveWeight;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

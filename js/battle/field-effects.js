@@ -46,7 +46,8 @@
 
     function getEffectiveDefenderHp(defender, field) {
         const maxHp = defender.stats.hp || 0;
-        const current = Math.max(0, Math.floor(maxHp * ((defender.hpPercent ?? 100) / 100)));
+        // Match the calculator's raw-HP control when a percentage maps to fractional HP.
+        const current = Math.max(0, Math.round(maxHp * ((defender.hpPercent ?? 100) / 100)));
         const hazard = getHazardDamage(defender, field);
         return Math.max(1, current - hazard);
     }

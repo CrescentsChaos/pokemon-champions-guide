@@ -47,7 +47,7 @@
         'stormthrow', 'frostbreath', 'zippyzap', 'wickedtorque'
     ]);
     const IGNORE_DEF_BOOST_MOVES = new Set([
-        'darkestlariat', 'kowtowcleave', 'sacredsword', 'secretsword'
+        'darkestlariat', 'kowtowcleave', 'sacredsword'
     ]);
 
     function createMoveState(record, overrides = {}) {

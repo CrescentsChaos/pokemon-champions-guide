@@ -129,5 +129,144 @@ const qaFeather = sandbox.calculateDamage(
 );
 assert(qaFeather.minDmg === 44 && qaFeather.maxDmg === 54, 'Pixilate+Fairy Feather QA 44-54 matches Showdown');
 
+// Variable-power moves resolve their BP before the non-damaging move guard.
+const variableAtk = sandbox.setupPokemonState(1);
+const variableDef = sandbox.setupPokemonState(2);
+variableAtk.type1 = 'Steel';
+variableAtk.type2 = 'Fighting';
+variableAtk.stats = { hp: 150, atk: 120, def: 160, spa: 100, spd: 100, spe: 25 };
+variableAtk.baseStats = { weight: 100 };
+variableDef.type1 = 'Normal';
+variableDef.type2 = 'None';
+variableDef.stats = { hp: 180, atk: 100, def: 100, spa: 100, spd: 100, spe: 150 };
+variableDef.baseStats = { weight: 25 };
+
+const gyroBall = BC.MoveIndex.createMoveState('Gyro Ball');
+assert(BC.resolveBasePower(variableAtk, variableDef, gyroBall, BC.MoveIndex.get('Gyro Ball'), field) === 150, 'Gyro Ball uses effective Speed ratio and caps at 150 BP');
+assert(sandbox.calculateDamage(variableAtk, variableDef, gyroBall, field).minDmg > 0, 'Gyro Ball deals damage with null catalog BP');
+
+const electroBall = BC.MoveIndex.createMoveState('Electro Ball');
+assert(BC.resolveBasePower(variableDef, variableAtk, electroBall, BC.MoveIndex.get('Electro Ball'), field) === 150, 'Electro Ball uses effective Speed tiers');
+
+const heavySlam = BC.MoveIndex.createMoveState('Heavy Slam');
+assert(BC.resolveBasePower(variableAtk, variableDef, heavySlam, BC.MoveIndex.get('Heavy Slam'), field) === 100, 'Heavy Slam uses weight-ratio tiers');
+variableAtk.ability = 'Heavy Metal';
+assert(BC.resolveBasePower(variableAtk, variableDef, heavySlam, BC.MoveIndex.get('Heavy Slam'), field) === 120, 'Heavy Metal affects Heavy Slam weight');
+variableAtk.item = 'Float Stone';
+assert(BC.resolveBasePower(variableAtk, variableDef, heavySlam, BC.MoveIndex.get('Heavy Slam'), field) === 100, 'Float Stone affects effective weight');
+variableAtk.ability = 'None';
+variableAtk.item = 'None';
+
+const lowKick = BC.MoveIndex.createMoveState('Low Kick');
+variableDef.baseStats.weight = 100;
+assert(BC.resolveBasePower(variableAtk, variableDef, lowKick, BC.MoveIndex.get('Low Kick'), field) === 80, 'Low Kick handles exact weight boundaries');
+variableDef.baseStats.weight = 100.1;
+assert(BC.resolveBasePower(variableAtk, variableDef, lowKick, BC.MoveIndex.get('Low Kick'), field) === 100, 'Low Kick advances above weight boundary');
+assert(sandbox.calculateDamage(variableAtk, variableDef, lowKick, field).minDmg > 0, 'Low Kick deals damage with null catalog BP');
+
+variableAtk.tera = true;
+variableAtk.teraType = 'Steel';
+variableAtk.stats.spe = 150;
+variableDef.stats.spe = 25;
+const weakGyroBp = BC.resolveBasePower(variableAtk, variableDef, gyroBall, BC.MoveIndex.get('Gyro Ball'), field);
+assert(weakGyroBp < 60 && BC.applyTeraBpFloor(variableAtk, gyroBall, 'Steel', weakGyroBp) === weakGyroBp, 'Tera BP floor excludes variable-power moves');
+variableAtk.tera = false;
+
+const bodyPress = BC.MoveIndex.createMoveState('Body Press');
+variableAtk.stats.atk = 200;
+variableAtk.stats.def = 50;
+const lowDefensePress = sandbox.calculateDamage(variableAtk, variableDef, bodyPress, field);
+variableAtk.stats.atk = 50;
+variableAtk.stats.def = 200;
+const highDefensePress = sandbox.calculateDamage(variableAtk, variableDef, bodyPress, field);
+assert(highDefensePress.maxDmg > lowDefensePress.maxDmg, 'Body Press uses Defense instead of Attack');
+variableAtk.boosts.def = 2;
+const boostedPress = sandbox.calculateDamage(variableAtk, variableDef, bodyPress, field);
+assert(boostedPress.maxDmg > highDefensePress.maxDmg, 'Body Press uses Defense stages');
+
+variableAtk.boosts.def = 0;
+variableAtk.moves = [gyroBall, BC.MoveIndex.createMoveState('None'), BC.MoveIndex.createMoveState('None'), BC.MoveIndex.createMoveState('None')];
+assert(BC.findBestDamage(variableAtk, variableDef, field)?.move === 'Gyro Ball', 'Team analysis considers null-catalog variable-power moves');
+
+const specialAtk = sandbox.setupPokemonState(1);
+const mixedDef = sandbox.setupPokemonState(2);
+specialAtk.type1 = 'Psychic';
+specialAtk.type2 = 'None';
+specialAtk.stats = { hp: 150, atk: 50, def: 100, spa: 120, spd: 100, spe: 100 };
+mixedDef.type1 = 'Normal';
+mixedDef.type2 = 'None';
+mixedDef.stats = { hp: 180, atk: 100, def: 50, spa: 100, spd: 200, spe: 100 };
+const psyshock = BC.MoveIndex.createMoveState('Psyshock');
+const psychic = BC.MoveIndex.createMoveState('Psychic');
+const psyshockDamage = sandbox.calculateDamage(specialAtk, mixedDef, psyshock, field);
+const psychicDamage = sandbox.calculateDamage(specialAtk, mixedDef, psychic, field);
+assert(psyshockDamage.maxDmg > psychicDamage.maxDmg, 'Psyshock targets Defense while remaining Special');
+mixedDef.boosts.def = 2;
+const boostedDefensePsyshock = sandbox.calculateDamage(specialAtk, mixedDef, psyshock, field);
+assert(boostedDefensePsyshock.maxDmg < psyshockDamage.maxDmg, 'Psyshock respects target Defense stages');
+assert(!BC.MoveIndex.ignoresDefenseBoosts('Secret Sword'), 'Secret Sword respects target Defense stages');
+
+const hpUser = sandbox.setupPokemonState(1);
+const hpTarget = sandbox.setupPokemonState(2);
+hpUser.type1 = 'Fighting';
+hpUser.type2 = 'None';
+hpUser.stats = { hp: 200, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
+hpUser.hpPercent = 25;
+hpTarget.type1 = 'Normal';
+hpTarget.type2 = 'None';
+hpTarget.stats = { hp: 300, atk: 100, def: 100, spa: 100, spd: 100, spe: 100 };
+hpTarget.hpPercent = 50;
+
+const finalGambit = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Final Gambit'), field);
+assert(finalGambit.minDmg === 50 && finalGambit.userFaints, 'Final Gambit deals the user current HP and marks the user fainting');
+const endeavor = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Endeavor'), field);
+assert(endeavor.minDmg === 100 && endeavor.targetHpAfter === 50, 'Endeavor lowers target HP to user current HP');
+hpTarget.hpPercent = 10;
+const failedEndeavor = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Endeavor'), field);
+assert(failedEndeavor.effectKind === 'failed' && failedEndeavor.minDmg === 0, 'Endeavor fails when target HP is not higher');
+hpTarget.hpPercent = 50;
+
+const painSplit = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Pain Split'), field);
+assert(painSplit.userHpAfter === 100 && painSplit.targetHpAfter === 100, 'Pain Split averages current HP');
+assert(painSplit.userHpChange === 50 && painSplit.targetHpChange === -50, 'Pain Split reports both HP changes');
+
+const recover = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Recover'), field);
+assert(recover.healMin === 100 && recover.hpAfter === 150, 'Recover reports actual HP and percentage healing');
+const lifeDew = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Life Dew'), field);
+assert(lifeDew.healMin === 50, 'Life Dew heals one quarter max HP');
+
+hpUser.item = 'Big Root';
+const strengthSap = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Strength Sap'), field);
+assert(strengthSap.healMin === 130 && strengthSap.bigRootBoosted, 'Big Root boosts Strength Sap healing by 30%');
+hpTarget.ability = 'Sap Sipper';
+const blockedSap = sandbox.calculateDamage(hpUser, hpTarget, BC.MoveIndex.createMoveState('Strength Sap'), field);
+assert(blockedSap.effectKind === 'failed' && blockedSap.healMin == null, 'Sap Sipper blocks Strength Sap healing');
+hpTarget.ability = 'None';
+
+const gigaDrainMove = BC.MoveIndex.createMoveState('Giga Drain');
+hpUser.type1 = 'Grass';
+hpUser.stats.spa = 120;
+const gigaDrainBigRoot = sandbox.calculateDamage(hpUser, hpTarget, gigaDrainMove, field);
+hpUser.item = 'None';
+const gigaDrainNormal = sandbox.calculateDamage(hpUser, hpTarget, gigaDrainMove, field);
+assert(gigaDrainBigRoot.healMax > gigaDrainNormal.healMax, 'Big Root boosts draining move healing without changing damage');
+assert(gigaDrainBigRoot.maxDmg === gigaDrainNormal.maxDmg, 'Big Root does not boost draining move damage');
+assert(gigaDrainNormal.healMin === Math.max(1, Math.round(gigaDrainNormal.minDmg / 2)), 'Draining moves round base healing correctly');
+hpTarget.hpPercent = 1;
+const overkillDrain = sandbox.calculateDamage(hpUser, hpTarget, gigaDrainMove, field);
+assert(overkillDrain.healMax === 2, 'Draining move healing is capped by target current HP lost');
+hpTarget.hpPercent = 50;
+
+const roundingTarget = sandbox.setupPokemonState(2);
+roundingTarget.stats.hp = 101;
+roundingTarget.hpPercent = 50;
+assert(BC.getEffectiveDefenderHp(roundingTarget, field) === 51, 'Engine and UI use the same current-HP rounding');
+
+const roundMove = BC.MoveIndex.createMoveState('Round');
+const roundNormalBp = BC.resolveBasePower(hpUser, hpTarget, roundMove, BC.MoveIndex.get('Round'), field);
+roundMove.roundBoosted = true;
+const roundBoostedBp = BC.resolveBasePower(hpUser, hpTarget, roundMove, BC.MoveIndex.get('Round'), field);
+assert(roundNormalBp === 60 && roundBoostedBp === 120, 'Round option doubles BP after an earlier Round');
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

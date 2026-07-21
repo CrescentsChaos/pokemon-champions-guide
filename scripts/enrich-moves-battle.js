@@ -50,6 +50,8 @@ const VARIABLE_POWER = {
     'Facade': 'status_user',
     'Hex': 'status_target',
     'Foul Play': 'foul_play',
+    'Body Press': 'body_press',
+    'Round': 'round',
     'Weather Ball': 'weather_ball',
     'Techno Blast': 'techno_blast',
     'Multi Attack': 'multi_attack',
@@ -109,13 +111,14 @@ function enrichMove(move) {
     const tags = move.tags || [];
     const desc = move.short_descripton || '';
     const battle = {
+        ...(move.battle || {}),
         spread: isSpreadMove(move),
         sound: tags.includes('Sound-Based'),
         contact: tags.includes('Contact'),
         priority: move.priority > 0,
-        multiHit: MULTI_HIT_OVERRIDES[move.name] || parseMultiHit(desc),
-        variablePower: VARIABLE_POWER[move.name] || null,
-        dynamicType: DYNAMIC_TYPE[move.name] || null
+        multiHit: MULTI_HIT_OVERRIDES[move.name] || parseMultiHit(desc) || move.battle?.multiHit || null,
+        variablePower: VARIABLE_POWER[move.name] || move.battle?.variablePower || null,
+        dynamicType: DYNAMIC_TYPE[move.name] || move.battle?.dynamicType || null
     };
     return { ...move, battle };
 }

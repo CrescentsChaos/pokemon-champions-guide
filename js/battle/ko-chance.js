@@ -74,7 +74,7 @@
     function findBestDamage(attacker, defender, field) {
         let best = null;
         attacker.moves.forEach(move => {
-            if (!move || move.name === 'None' || move.basePower === 0) return;
+            if (!move || move.name === 'None') return;
             const res = BC.calculateDamage(attacker, defender, move, field);
             const maxPct = parseFloat(res.maxPercent);
             if (maxPct <= 0) return;

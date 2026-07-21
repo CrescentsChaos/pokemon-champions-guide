@@ -6904,7 +6904,10 @@
     "damage_class": "Special",
     "tags": [
       "Sound-Based"
-    ]
+    ],
+    "battle": {
+      "variablePower": "round"
+    }
   },
   {
     "name": "Echoed Voice",
@@ -11752,7 +11755,10 @@
     "damage_class": "Physical",
     "tags": [
       "Contact"
-    ]
+    ],
+    "battle": {
+      "variablePower": "body_press"
+    }
   },
   {
     "name": "Electro Shot",
