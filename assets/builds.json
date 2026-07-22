@@ -5867,7 +5867,7 @@
         "build": "Altaria @ Haban Berry\nAbility: Cloud Nine\nLevel: 50\nEVs: 32 HP / 20 Def / 14 SpD\nBold Nature\n- Fire Spin\n- Roost\n- Perish Song\n- Protect",
         "synergy": [
             "658",
-            "253",
+            "255",
             "259"
         ],
         "format": "Doubles",
@@ -5879,11 +5879,55 @@
         "build": "Vaporeon @ Leftovers\nLevel: 50\nEVs: 19 HP / 32 Def / 15 SpD\nRelaxed Nature\n- Flip Turn\n- Yawn\n- Ice Beam\n- Protect",
         "synergy": [
             "686",
-            "253",
+            "255",
             "658",
             "259"
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "688",
+        "pokemon": "Annihilape",
+        "build": "Annihilape @ Choice Scarf\nLevel: 50\nEVs: 2 HP / 32 Atk / 32 Spe\nAdamant Nature\n- Close Combat\n- U-turn\n- Rock Slide\n- Ice Punch",
+        "synergy": [
+            "582",
+            "558"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "689",
+        "pokemon": "Houndoom",
+        "build": "Houndoom @ Houndoominite\nAbility: Flash Fire\nLevel: 50\nEVs: 1 HP / 1 Def / 32 SpA / 32 Spe\nTimid Nature\n- Heat Wave\n- Overheat\n- Dark Pulse\n- Protect",
+        "synergy": [
+            "582",
+            "558",
+            "688"
+        ],
+        "format": "Doubles",
+        "isMeta": true
+    },
+    {
+        "id": "690",
+        "pokemon": "Metagross",
+        "build": "Metagross @ Metagrossite\nLevel: 50\nEVs: 32 HP / 10 Def / 10 SpD / 14 Spe\nImpish Nature\n- Psychic Fangs\n- Body Press\n- Cosmic Power\n- Protect",
+        "synergy": [
+            "601",
+            "260",
+            "653",
+            "255"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "691",
+        "pokemon": "Dragonite",
+        "build": "Dragonite @ Dragoninite\nAbility: Multiscale\nLevel: 50\nEVs: 17 HP / 25 SpA / 24 Spe\nModest Nature\n- Protect\n- Dragon Pulse\n- Tailwind\n- Heat Wave",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": true
     }
 ]
