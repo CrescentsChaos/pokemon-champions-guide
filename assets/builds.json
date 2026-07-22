@@ -622,7 +622,7 @@
         "build": "Ditto @ Focus Sash\nLevel: 50\nAbility: Imposter\nEVs: 32 HP / 32 Def / 2 SpD\nIVs: 0 Spe\nTera Type: Ghost\nRelaxed Nature\n- Transform",
         "synergy": [],
         "format": "Singles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "78",
@@ -3389,7 +3389,7 @@
         "build": "Meowscarada @ Choice Scarf\nAbility: Protean\nEVs: 32 Atk / 2 Def / 32 Spe\nTera Type: Ghost\nJolly Nature\n- Knock Off\n- U-turn\n- Triple Axel\n- Flower Trick",
         "synergy": [],
         "format": "Singles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "422",
@@ -5120,7 +5120,7 @@
     {
         "id": "611",
         "pokemon": "Venusaur",
-        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 2 HP / 32 SpA / 32 Spe\nModest Nature    \n- Energy Ball  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
+        "build": "Venusaur @ Life Orb  \nAbility: Chlorophyll  \nEVs: 4 HP / 12 Def /32 SpA / 18 Spe\nModest Nature    \n- Energy Ball  \n- Sludge Bomb  \n- Earth Power  \n- Protect",
         "synergy": [
             "610"
         ],
@@ -5753,7 +5753,7 @@
     {
         "id": "676",
         "pokemon": "Charizard",
-        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 28 HP / 25 Def / 13 SpA\nModest Nature    \n- Heat Wave  \n- Helping Hand  \n- Weather Ball  \n- Protect",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nTera Type: Fire  \nEVs: 28 HP / 24 Def / 1 SpA /13 Spe\nModest Nature    \n- Heat Wave  \n- Helping Hand  \n- Weather Ball  \n- Protect",
         "synergy": [
             "677"
         ],
@@ -5844,6 +5844,44 @@
         "synergy": [
             "545",
             "670"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "685",
+        "pokemon": "Annihilape",
+        "build": "Annihilape @ Focus Sash\nLevel: 50\nEVs: 32 Atk / 2 SpD / 32 Spe\nJolly Nature\n- Rock Tomb\n- Close Combat\n- Protect\n- Phantom Force",
+        "synergy": [
+            "611",
+            "676",
+            "571",
+            "529"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "686",
+        "pokemon": "Altaria",
+        "build": "Altaria @ Haban Berry\nAbility: Cloud Nine\nLevel: 50\nEVs: 32 HP / 20 Def / 14 SpD\nBold Nature\n- Fire Spin\n- Roost\n- Perish Song\n- Protect",
+        "synergy": [
+            "658",
+            "253",
+            "259"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "687",
+        "pokemon": "Vaporeon",
+        "build": "Vaporeon @ Leftovers\nLevel: 50\nEVs: 19 HP / 32 Def / 15 SpD\nRelaxed Nature\n- Flip Turn\n- Yawn\n- Ice Beam\n- Protect",
+        "synergy": [
+            "686",
+            "253",
+            "658",
+            "259"
         ],
         "format": "Doubles",
         "isMeta": false
