@@ -95,7 +95,7 @@
             "16"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "33",
@@ -3496,14 +3496,6 @@
         "isMeta": false
     },
     {
-        "id": "435",
-        "pokemon": "Armarouge",
-        "build": "Armarouge @ Life Orb\nLevel: 50\nAbility: Flash Fire\nEVs: 29 HP / 5 Def / 32 SpA / 0 Spe\nTera Type: Grass\nQuiet Nature\n- Expanding Force\n- Armor Cannon\n- Protect\n- Trick Room",
-        "synergy": [],
-        "format": "Doubles",
-        "isMeta": false
-    },
-    {
         "id": "436",
         "pokemon": "Ceruledge",
         "build": "Ceruledge @ Life Orb\nAbility: Weak Armor\nEVs: 32 Atk / 2 SpD / 32 Spe\nTera Type: Ghost\nJolly Nature\n- Swords Dance\n- Bitter Blade\n- Shadow Sneak\n- Poltergeist",
@@ -5895,7 +5887,7 @@
             "558"
         ],
         "format": "Doubles",
-        "isMeta": false
+        "isMeta": true
     },
     {
         "id": "689",
