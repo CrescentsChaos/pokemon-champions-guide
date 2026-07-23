@@ -1522,7 +1522,8 @@
                     <div class="opp-analysis-card">
                         <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds
                             <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.35);">— scout
-                                reference</span></h3>
+                                reference</span>
+                        </h3>
                         <div id="opponent-team-preview"></div>
                     </div>
                 </div>
@@ -2343,13 +2344,13 @@
                     const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const recCount = recommendedTeammates.get(tKey) || 0;
                     const isRec = recCount > 0;
-                    const isInChampions = pk.inChampions === true || pk.inChampions === false;
+                    const isInChampions = pk.inChampions === true;
                     // Priority: recommended teammate > inChampions > everything else
                     let rank = Infinity;
                     if (isRec && isInChampions) rank = -recCount - 10000;
                     else if (isRec) rank = -recCount;
                     else if (isInChampions) rank = 0;
-                    return { ...pk, eligible: isRec, inChampions: isInChampions, rank };
+                    return { ...pk, eligible: true, inChampions: isInChampions, rank };
                 });
             } else if (overlayTarget === 'item') {
                 const p = team[currentSlot];
