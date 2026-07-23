@@ -1315,7 +1315,8 @@
                     <button id="main-import-btn" class="analyze-btn"
                         style="padding: 10px 25px; font-size: 0.8rem;">IMPORT PASTE</button>
                     <button id="best-teams-btn" class="analyze-btn"
-                        style="padding: 10px 25px; font-size: 0.8rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST TEAMS</button>
+                        style="padding: 10px 25px; font-size: 0.8rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST
+                        TEAMS</button>
                     <button id="export-paste-btn" class="analyze-btn"
                         style="padding: 10px 25px; font-size: 0.8rem; background: transparent; border: 1px solid var(--glass-border);">EXPORT
                         PASTE</button>
@@ -1367,7 +1368,8 @@
                     your team's coverage, roles, and synergy.</p>
 
                 <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
-                    <div class="analysis-card build-prose-panel" id="build-prose-panel" data-analysis-mode="team" style="display:none;">
+                    <div class="analysis-card build-prose-panel" id="build-prose-panel" data-analysis-mode="team"
+                        style="display:none;">
                         <div class="build-prose-panel__head">
                             <h3 class="build-prose-panel__title">Team Analysis</h3>
                             <span class="build-prose-panel__format" id="build-prose-format"></span>
@@ -1375,7 +1377,8 @@
                         <nav class="build-prose-nav" aria-label="Analysis sections">
                             <a href="#build-prose-section-strategy">Strategy</a>
                         </nav>
-                        <section class="build-prose-section build-prose-section--strategy" id="build-prose-section-strategy">
+                        <section class="build-prose-section build-prose-section--strategy"
+                            id="build-prose-section-strategy">
                             <h4 class="build-prose-section__title">In-Depth Team Strategy</h4>
                             <div id="build-prose-strategy" class="build-prose-body"></div>
                         </section>
@@ -1452,7 +1455,8 @@
                 <div class="opp-prep-header">
                     <div>
                         <h2>OPPONENT PREP</h2>
-                        <p class="opp-prep-sub">Scout a 6-Pokémon opponent roster, predict their bring set, and get lead + counter recommendations using calc damage.</p>
+                        <p class="opp-prep-sub">Scout a 6-Pokémon opponent roster, predict their bring set, and get lead
+                            + counter recommendations using calc damage.</p>
                     </div>
                     <div class="format-toggle-wrapper"
                         style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
@@ -1464,7 +1468,8 @@
                 </div>
 
                 <div id="opponent-prep-gate">
-                    Complete all <strong>6 slots</strong> on your team before running matchup analysis. Singles brings <strong>3</strong> of 6; Doubles brings <strong>4</strong> of 6.
+                    Complete all <strong>6 slots</strong> on your team before running matchup analysis. Singles brings
+                    <strong>3</strong> of 6; Doubles brings <strong>4</strong> of 6.
                 </div>
 
                 <div class="opp-roster-section">
@@ -1472,11 +1477,14 @@
                         <h3 class="opp-section-title">Opponent Roster (6)</h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             <button type="button" class="analyze-btn" onclick="toggleLibrary('opponent')"
-                                style="padding: 8px 16px; font-size: 0.75rem; background: #4a90e2; border-color: rgba(120, 185, 255, 0.4);">MY LIBRARY</button>
+                                style="padding: 8px 16px; font-size: 0.75rem; background: #4a90e2; border-color: rgba(120, 185, 255, 0.4);">MY
+                                LIBRARY</button>
                             <button type="button" class="analyze-btn" onclick="openBestTeamsOverlay('opponent')"
-                                style="padding: 8px 16px; font-size: 0.75rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST TEAMS</button>
+                                style="padding: 8px 16px; font-size: 0.75rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST
+                                TEAMS</button>
                             <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
-                                style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR ALL</button>
+                                style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR
+                                ALL</button>
                         </div>
                     </div>
                     <div id="opponent-roster-grid"></div>
@@ -1486,18 +1494,23 @@
                     <div class="opp-analysis-card opp-summary-card" id="opp-matchup-summary"></div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #e040fb; margin-bottom: 1rem;">Battle Intel &amp; Game Plan</h3>
+                        <h3 class="opp-section-title" style="color: #e040fb; margin-bottom: 1rem;">Battle Intel &amp;
+                            Game Plan</h3>
                         <div id="opp-battle-intel"></div>
                     </div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against Each Threat</h3>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Answers from your <strong>recommended bring</strong> first — OHKO &gt; 2HKO. Roster-only / mirror / 2nd-Mega options marked as ALT.</p>
+                        <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against
+                            Each Threat</h3>
+                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Answers from
+                            your <strong>recommended bring</strong> first — OHKO &gt; 2HKO. Roster-only / mirror /
+                            2nd-Mega options marked as ALT.</p>
                         <div id="opp-counter-matrix"></div>
                     </div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #4caf50; margin-bottom: 1rem;">Recommended Bring Sets</h3>
+                        <h3 class="opp-section-title" style="color: #4caf50; margin-bottom: 1rem;">Recommended Bring
+                            Sets</h3>
                         <div id="opp-bring-panel"></div>
                     </div>
 
@@ -1507,7 +1520,9 @@
                     </div>
 
                     <div class="opp-analysis-card">
-                        <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.35);">— scout reference</span></h3>
+                        <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds
+                            <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.35);">— scout
+                                reference</span></h3>
                         <div id="opponent-team-preview"></div>
                     </div>
                 </div>
@@ -1681,9 +1696,11 @@
     <div class="overlay" id="opponent-build-overlay" style="display: none;">
         <div class="overlay-content" style="max-width: 520px;">
             <h2 id="opponent-build-overlay-title">Swap Build</h2>
-            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Choose a different library build for this opponent slot.</p>
+            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Choose a different library
+                build for this opponent slot.</p>
             <div id="opponent-build-list" class="opp-build-list"></div>
-            <button type="button" class="analyze-btn" style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+            <button type="button" class="analyze-btn"
+                style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
                 onclick="document.getElementById('opponent-build-overlay').style.display='none'">CANCEL</button>
         </div>
     </div>
@@ -1692,11 +1709,13 @@
     <div class="overlay" id="opponent-search-overlay" style="display: none;">
         <div class="overlay-content">
             <h2>Select Opponent Pokémon</h2>
-            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Champions-eligible only · Top meta shown first for your format</p>
+            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Champions-eligible only · Top
+                meta shown first for your format</p>
             <input type="text" id="opponent-overlay-search" class="builder-input" style="margin-top: 15px;"
                 placeholder="Search species...">
             <div class="search-results" id="opponent-search-results"></div>
-            <button type="button" class="analyze-btn" style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+            <button type="button" class="analyze-btn"
+                style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
                 onclick="document.getElementById('opponent-search-overlay').style.display='none'">CANCEL</button>
         </div>
     </div>
@@ -1737,14 +1756,16 @@
             <div class="best-teams-head">
                 <div>
                     <h2>Best Teams</h2>
-                    <p class="best-teams-sub">Curated library teams — preview the full six, then load into your builder or opponent prep.</p>
+                    <p class="best-teams-sub">Curated library teams — preview the full six, then load into your builder
+                        or opponent prep.</p>
                 </div>
                 <button type="button" class="analyze-btn" id="close-best-teams"
                     style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE</button>
             </div>
 
             <div class="best-teams-controls">
-                <input type="search" id="best-teams-search" class="builder-input" placeholder="Search team name or Pokémon…">
+                <input type="search" id="best-teams-search" class="builder-input"
+                    placeholder="Search team name or Pokémon…">
                 <div class="best-teams-filters">
                     <div class="format-toggle-wrapper best-teams-format-toggle">
                         <button type="button" class="toggle-btn active" data-best-format="All">ALL</button>
@@ -2322,7 +2343,7 @@
                     const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const recCount = recommendedTeammates.get(tKey) || 0;
                     const isRec = recCount > 0;
-                    const isInChampions = pk.inChampions === true;
+                    const isInChampions = pk.inChampions === true || pk.inChampions === false;
                     // Priority: recommended teammate > inChampions > everything else
                     let rank = Infinity;
                     if (isRec && isInChampions) rank = -recCount - 10000;
