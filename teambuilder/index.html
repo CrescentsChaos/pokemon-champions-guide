@@ -2339,7 +2339,7 @@
                 }
                 data = allPokemon.filter(pk => {
                     const n = pk.Name || '';
-                    return pk.inChampions === true && !n.includes('-Mega') && !n.includes('-Primal');
+                    return !n.includes('-Mega') && !n.includes('-Primal');
                 }).map(pk => {
                     const tKey = (pk.Name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                     const recCount = recommendedTeammates.get(tKey) || 0;
@@ -2350,7 +2350,7 @@
                     if (isRec && isInChampions) rank = -recCount - 10000;
                     else if (isRec) rank = -recCount;
                     else if (isInChampions) rank = 0;
-                    return { ...pk, eligible: true, inChampions: isInChampions, rank };
+                    return { ...pk, eligible: isRec, inChampions: isInChampions, rank };
                 });
             } else if (overlayTarget === 'item') {
                 const p = team[currentSlot];

@@ -685,7 +685,7 @@ function handleSearch(p, query) {
 
     // Filter base pokemon matches (Champions-eligible first)
     const filteredDB = pokemonDB
-        .filter(x => x.inChampions === true && (x.Name || '').toLowerCase().includes(q.toLowerCase()))
+        .filter(x => (x.Name || '').toLowerCase().includes(q.toLowerCase()))
         .slice(0, 10);
 
     // Matching builds for current format only
@@ -951,12 +951,12 @@ function populatePokemonUI(pk) {
             <select class="move-selector" onchange="updateMove(${pk.id}, ${i}, this.value)" style="width: 100%; margin-bottom: 6px;">
                 <option value="None">None</option>
                 ${sortedMoves.map(mName => {
-                    const mDB = movesDB.find(x => x.name === mName) || { name: mName };
-                    const isRec = recMoves.find(m => m.toLowerCase() === mName.toLowerCase());
-                    const label = (isRec ? '⭐ ' : '') + mDB.name;
-                    const selected = (move.name || '').toLowerCase() === (mDB.name || '').toLowerCase();
-                    return `<option value="${mDB.name}" ${selected ? 'selected' : ''}>${label}</option>`;
-                }).join('')}
+            const mDB = movesDB.find(x => x.name === mName) || { name: mName };
+            const isRec = recMoves.find(m => m.toLowerCase() === mName.toLowerCase());
+            const label = (isRec ? '⭐ ' : '') + mDB.name;
+            const selected = (move.name || '').toLowerCase() === (mDB.name || '').toLowerCase();
+            return `<option value="${mDB.name}" ${selected ? 'selected' : ''}>${label}</option>`;
+        }).join('')}
             </select>
             ${hasMove ? `
             <div class="move-edit-row">
@@ -1322,7 +1322,7 @@ function updateStatsUI(pk) {
     const choiceItem = (pk.item || '').toLowerCase();
     const choiceBoostStat = choiceItem === 'choice band' ? 'atk'
         : choiceItem === 'choice specs' ? 'spa'
-        : null; // Choice Scarf is applied via getEffectiveSpeed
+            : null; // Choice Scarf is applied via getEffectiveSpeed
 
     const side = pk.id === 1 ? field.side1 : field.side2;
     const speedMods = (typeof BattleCalc !== 'undefined' && BattleCalc.getSpeedModifiers)
@@ -1459,7 +1459,7 @@ function categoryIconHtml(category, size = 16) {
     const c = (category || 'Physical').toString().toLowerCase();
     const file = c === 'special' ? 'move-special.png'
         : c === 'status' ? 'move-status.png'
-        : 'move-physical.png';
+            : 'move-physical.png';
     const label = c === 'special' ? 'Special' : c === 'status' ? 'Status' : 'Physical';
     return `<img src="../assets/${file}" class="move-category-icon" alt="${label}" title="${label}" width="${size}" height="${size}" loading="lazy" onerror="this.style.display='none'">`;
 }
@@ -1754,8 +1754,8 @@ function renderMoveResults(p1Results, p2Results) {
                     <span class="move-damage-summary">
                         ${dmg ? `<span class="dmg-abs">${dmg}</span>` : ''}
                         ${effectSummary
-                            ? `<span class="dmg-pct">${effectSummary}</span>`
-                            : `<span class="dmg-pct">${res.minPercent}% – ${res.maxPercent}%</span>`}
+                    ? `<span class="dmg-pct">${effectSummary}</span>`
+                    : `<span class="dmg-pct">${res.minPercent}% – ${res.maxPercent}%</span>`}
                     </span>
                 </div>
             `;
@@ -2405,7 +2405,7 @@ window.handleSpriteError = function (img, name, shiny) {
         const hasSuffix = clean.endsWith(suffix) || clean.endsWith(suffix.replace('-', ''));
         const fileName = hasSuffix ? clean : `${clean}-${suffix}`;
         img.src = `../assets/mega-sprites/${fileName}.gif`;
-        
+
         if (img.classList.contains('mega-toggle')) img.dataset.mega = img.src;
         return;
     }
