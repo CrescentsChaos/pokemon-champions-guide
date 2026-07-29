@@ -5955,7 +5955,7 @@
     {
         "id": "693",
         "pokemon": "Watchog",
-        "build": "Watchog @ Chople Berry  \nAbility: Analytic  \nLevel: 50  \nEVs: 32 HP / 32 Def  \nImpish Nature  \n- Ice Punch  \n- Detect  \n- Low Kick  \n- Hypnosis",
+        "build": "Watchog @ Chople Berry  \nAbility: Analytic  \nLevel: 50  \nEVs: 32 HP / 2 Atk / 32 Def  \nImpish Nature  \n- Ice Punch  \n- Detect  \n- Low Kick  \n- Hypnosis",
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
