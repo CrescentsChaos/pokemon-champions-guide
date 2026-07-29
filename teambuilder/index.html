@@ -2309,7 +2309,38 @@
 
             updateSearchResults('');
         }
+        function formatPokemonName(rawName) {
+            if (!rawName) return '';
 
+            // Split name into base species and form variants (e.g. ["Charizard", "Mega", "X"])
+            const parts = rawName.split('-');
+            if (parts.length === 1) return rawName; // Return as-is if no hyphen
+
+            const baseName = parts[0];
+            const formParts = parts.slice(1);
+
+            // Regional form transformations
+            const regionMap = {
+                'Alola': 'Alolan',
+                'Galar': 'Galarian',
+                'Hisui': 'Hisuian',
+                'Paldea': 'Paldean'
+            };
+
+            // If it's a regional form (e.g., Ninetales-Alola -> Alolan Ninetales)
+            if (regionMap[formParts[0]]) {
+                return `${regionMap[formParts[0]]} ${baseName}`;
+            }
+
+            // If it's a Mega evolution (e.g., Charizard-Mega-X -> Mega Charizard X)
+            if (formParts[0] === 'Mega') {
+                const extra = formParts.slice(1).join(' '); // Handles 'X', 'Y', etc.
+                return `Mega ${baseName}${extra ? ' ' + extra : ''}`;
+            }
+
+            // For other form suffixes (e.g., Rotom-Wash -> Wash Rotom)
+            return `${formParts.join(' ')} ${baseName}`;
+        }
         function updateSearchResults(q) {
             resultsBox.innerHTML = '';
             let data = [];

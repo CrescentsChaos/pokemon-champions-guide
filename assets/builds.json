@@ -3898,7 +3898,7 @@
     {
         "id": "486",
         "pokemon": "Delphox",
-        "build": "Delphox @ Delphoxite  \nAbility: Magician  \nEVs: 25 HP / 1 Def / 10 SpA / 1 SpD / 29 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Psych Up  \n- Protect",
+        "build": "Delphox @ Delphoxite  \nAbility: Magician  \nEVs: 1 HP / 2 Def / 31 SpA / 32 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
         "synergy": [
             "253",
             "680"
@@ -5915,11 +5915,25 @@
         "isMeta": false
     },
     {
-        "id": "691",
+        "id": "287",
         "pokemon": "Dragonite",
         "build": "Dragonite @ Dragoninite\nAbility: Multiscale\nLevel: 50\nEVs: 17 HP / 25 SpA / 24 Spe\nModest Nature\n- Protect\n- Dragon Pulse\n- Tailwind\n- Heat Wave",
         "synergy": [],
         "format": "Doubles",
         "isMeta": true
+    },
+    {
+        "id": "435",
+        "pokemon": "Whimsicott",
+        "build": "Whimsicott @ Occa Berry  \nAbility: Prankster  \nLevel: 50  \nEVs: 28 HP / 32 Def / 6 Spe  \nTimid Nature  \n- Moonblast  \n- Tailwind  \n- Charm  \n- Light Screen",
+        "synergy": [
+            "486",
+            "482",
+            "545",
+            "173",
+            "259"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
