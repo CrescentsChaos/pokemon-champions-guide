@@ -5935,5 +5935,29 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "691",
+        "pokemon": "Charizard",
+        "build": "Charizard @ Charizardite Y  \nAbility: Blaze  \nLevel: 50  \nEVs: 2 HP / 32 SpA / 32 Spe  \nModest Nature  \n- Ancient Power  \n- Heat Wave  \n- Focus Blast  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "692",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Silk Scarf  \nAbility: Armor Tail  \nLevel: 50  \nEVs: 30 HP / 32 SpA / 4 Spe  \nModest Nature  \n- Psychic  \n- Imprison  \n- Trick Room  \n- Hyper Voice",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "693",
+        "pokemon": "Watchog",
+        "build": "Watchog @ Chople Berry  \nAbility: Analytic  \nLevel: 50  \nEVs: 32 HP / 32 Def  \nImpish Nature  \n- Ice Punch  \n- Detect  \n- Low Kick  \n- Hypnosis",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
