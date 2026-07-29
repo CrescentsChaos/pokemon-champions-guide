@@ -4861,7 +4861,10 @@
     "type": "Dragon",
     "generation": "Generation Iii",
     "short_descripton": "Raises the user's Attack and Speed by one stage.",
-    "damage_class": "Status","tags":["Dance"]
+    "damage_class": "Status",
+    "tags": [
+      "Dance"
+    ]
   },
   {
     "name": "Rock Blast",
@@ -12002,6 +12005,21 @@
     "tags": [
       "Contact",
       "Punching"
+    ]
+  },
+  {
+    "name": "Clangorous Soul",
+    "id": 889,
+    "accuracy": null,
+    "pp": 5,
+    "power": null,
+    "priority": 0,
+    "type": "Dragon",
+    "generation": "Generation Vii",
+    "short_descripton": "The user loses 1/3 of its max HP to boost its Attack, Defense, Sp. Atk, Sp. Def, and Speed stats by 1 stage. This move fails if the user doesn't have enough remaining HP.",
+    "damage_class": "Status",
+    "tags": [
+      "Sound-Based"
     ]
   }
 ]
