@@ -5959,5 +5959,13 @@
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "694",
+        "pokemon": "Kommo-o",
+        "build": "Kommo-o @ Life Orb  \nAbility: Overcoat  \nLevel: 50  \nEVs: 1 HP / 32 SpA / 1 SpD / 32 Spe  \nModest Nature  \n- Vacuum Wave  \n- Aura Sphere  \n- Clanging Scales  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
