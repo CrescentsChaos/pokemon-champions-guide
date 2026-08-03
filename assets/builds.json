@@ -4223,7 +4223,7 @@
     {
         "id": "522",
         "pokemon": "Aerodactyl",
-        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nEVs: 32 Atk / 2 SpD / 32 Spe\nJolly Nature  \n- Rock Slide  \n- Dual Wingbeat  \n- Protect  \n- Tailwind",
+        "build": "Aerodactyl @ Aerodactylite  \nAbility: Unnerve  \nEVs: 32 HP / 11 Atk / 3 SpD / 20 Spe\nJolly Nature  \n- Rock Slide  \n- Dual Wingbeat  \n- Protect  \n- Tailwind",
         "synergy": [
             "518"
         ],
@@ -6138,6 +6138,56 @@
             "709"
         ],
         "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "711",
+        "pokemon": "Abomasnow",
+        "build": "Abomasnow @ Abomasite  \nAbility: Snow Warning  \nLevel: 50  \nEVs: 32 HP / 2 Def / 32 SpA  \nQuiet Nature  \n- Blizzard  \n- Wood Hammer  \n- Earth Power  \n- Ice Shard",
+        "synergy": [
+            "675",
+            "522"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "712",
+        "pokemon": "Armarouge",
+        "build": "Armarouge @ Mental Herb  \nAbility: Flash Fire  \nLevel: 50  \nEVs: 31 HP / 4 Def / 30 SpA / 1 SpD  \nModest Nature  \n- Heat Wave  \n- Psychic  \n- Trick Room  \n- Protect",
+        "synergy": [
+            "675",
+            "522",
+            "711"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "713",
+        "pokemon": "Basculegion",
+        "build": "Basculegion @ Sitrus Berry  \nAbility: Adaptability  \nLevel: 50  \nEVs: 18 HP / 31 Atk / 7 Def / 10 Spe  \nAdamant Nature  \n- Agility  \n- Wave Crash  \n- Last Respects  \n- Protect",
+        "synergy": [
+            "675",
+            "522",
+            "711",
+            "712"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "714",
+        "pokemon": "Kangaskhan",
+        "build": "Kangaskhan @ Life Orb  \nAbility: Scrappy  \nLevel: 50  \nEVs: 32 HP / 32 Atk / 2 Def  \nAdamant Nature  \n- Fake Out  \n- Last Resort",
+        "synergy": [
+            "675",
+            "522",
+            "711",
+            "712",
+            "713"
+        ],
+        "format": "Doubles",
         "isMeta": false
     }
 ]
