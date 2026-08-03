@@ -6071,5 +6071,73 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "705",
+        "pokemon": "Gyarados",
+        "build": "Gyarados @ Gyaradosite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 1 HP / 32 Atk / 1 Def / 32 Spe  \nAdamant Nature  \n- Power Whip  \n- Earthquake  \n- Ice Fang  \n- Dragon Dance",
+        "synergy": [],
+        "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "706",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Focus Sash  \nAbility: Rough Skin  \nLevel: 50  \nEVs: 2 HP / 32 Atk / 32 Spe  \nJolly Nature  \n- Earthquake  \n- Scale Shot  \n- Rock Tomb  \n- Stealth Rock",
+        "synergy": [
+            "705"
+        ],
+        "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "707",
+        "pokemon": "Annihilape",
+        "build": "Annihilape @ Leftovers  \nAbility: Vital Spirit  \nLevel: 50  \nEVs: 30 HP / 2 Def / 2 SpD / 32 Spe  \nJolly Nature  \n- Rage Fist  \n- Drain Punch  \n- Taunt  \n- Bulk Up",
+        "synergy": [
+            "705",
+            "706"
+        ],
+        "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "708",
+        "pokemon": "Floette-Eternal",
+        "build": "Floette-Eternal @ Floettite  \nAbility: Flower Veil  \nLevel: 50  \nEVs: 6 Def / 28 SpA / 32 Spe  \nTimid Nature  \n- Light of Ruin  \n- Moonblast  \n- Draining Kiss  \n- Calm Mind",
+        "synergy": [
+            "705",
+            "706",
+            "707"
+        ],
+        "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "709",
+        "pokemon": "Meowscarada",
+        "build": "Meowscarada @ Choice Scarf  \nAbility: Protean  \nLevel: 50  \nEVs: 32 Atk / 2 Def / 32 Spe  \nJolly Nature  \n- Flower Trick  \n- Play Rough  \n- Knock Off  \n- U-turn",
+        "synergy": [
+            "705",
+            "706",
+            "707",
+            "708"
+        ],
+        "format": "Singles",
+        "isMeta": false
+    },
+    {
+        "id": "710",
+        "pokemon": "Skeledirge",
+        "build": "Skeledirge @ Sitrus Berry  \nAbility: Unaware  \nLevel: 50  \nEVs: 32 HP / 32 Def / 2 SpD  \nBold Nature  \n- Torch Song  \n- Slack Off  \n- Will-O-Wisp  \n- Shadow Ball",
+        "synergy": [
+            "705",
+            "706",
+            "707",
+            "708",
+            "709"
+        ],
+        "format": "Singles",
+        "isMeta": false
     }
 ]
