@@ -6189,5 +6189,44 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "715",
+        "pokemon": "Slowbro",
+        "build": "Slowbro @ Slowbronite  \nAbility: Regenerator  \nLevel: 50  \nEVs: 32 HP / 20 SpD / 14 Spe  \nCalm Nature  \n- Calm Mind  \n- Iron Defense  \n- Stored Power  \n- Body Press",
+        "synergy": [
+            "274",
+            "356",
+            "614"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "716",
+        "pokemon": "Incineroar",
+        "build": "Incineroar @ Charcoal  \nAbility: Intimidate  \nLevel: 50  \nEVs: 32 HP / 28 Atk / 4 SpD / 2 Spe  \nBrave Nature  \n- Fake Out  \n- Flare Blitz  \n- Drain Punch  \n- Bulk Up",
+        "synergy": [
+            "274",
+            "356",
+            "614",
+            "715"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "717",
+        "pokemon": "Audino",
+        "build": "Audino @ Mental Herb  \nAbility: Healer  \nLevel: 50  \nEVs: 29 HP / 28 Def / 9 SpD  \nRelaxed Nature  \n- Dazzling Gleam  \n- Heal Pulse  \n- Trick Room  \n- Simple Beam",
+        "synergy": [
+            "274",
+            "356",
+            "614",
+            "715",
+            "716"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
