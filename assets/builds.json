@@ -6003,5 +6003,73 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "699",
+        "pokemon": "Blastoise",
+        "build": "Blastoise @ Blastoisinite  \nAbility: Rain Dish  \nLevel: 50  \nEVs: 32 HP / 31 SpA / 3 Spe  \nModest Nature  \n- Fake Out  \n- Water Spout  \n- Aura Sphere  \n- Dark Pulse",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "700",
+        "pokemon": "Avalugg",
+        "build": "Avalugg @ Sitrus Berry  \nAbility: Sturdy  \nLevel: 50  \nEVs: 32 HP / 6 Def / 28 SpD  \nRelaxed Nature  \n- Ice Spinner  \n- Wide Guard  \n- Crunch  \n- Body Press",
+        "synergy": [
+            "699"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "701",
+        "pokemon": "Slowking-Galar",
+        "build": "Slowking-Galar @ Colbur Berry  \nAbility: Regenerator  \nLevel: 50  \nEVs: 32 HP / 24 Def / 10 SpD  \nCalm Nature  \n- Sludge Bomb  \n- Protect  \n- Trick Room  \n- Psychic Noise",
+        "synergy": [
+            "699",
+            "700"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "702",
+        "pokemon": "Appletun",
+        "build": "Appletun @ Leftovers  \nAbility: Thick Fat  \nLevel: 50  \nEVs: 29 HP / 17 Def / 20 SpD  \nSassy Nature  \n- Apple Acid  \n- Protect  \n- Sunny Day  \n- Draco Meteor",
+        "synergy": [
+            "699",
+            "700",
+            "701"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "703",
+        "pokemon": "Torterra",
+        "build": "Torterra @ White Herb  \nAbility: Shell Armor  \nLevel: 50  \nEVs: 2 HP / 32 Atk / 32 Spe  \nAdamant Nature  \n- Headlong Rush  \n- Shell Smash  \n- Protect  \n- Rock Slide",
+        "synergy": [
+            "699",
+            "700",
+            "701",
+            "702"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "704",
+        "pokemon": "Torkoal",
+        "build": "Torkoal @ Charcoal  \nAbility: Drought  \nLevel: 50  \nEVs: 28 HP / 32 SpA / 6 Spe  \nModest Nature  \n- Eruption  \n- Protect  \n- Overheat  \n- Heat Wave",
+        "synergy": [
+            "699",
+            "700",
+            "701",
+            "702",
+            "703"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
