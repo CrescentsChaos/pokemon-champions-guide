@@ -3901,7 +3901,12 @@
         "build": "Delphox @ Delphoxite  \nAbility: Magician  \nEVs: 1 HP / 2 Def / 31 SpA / 32 Spe\nTimid Nature    \n- Heat Wave  \n- Psychic  \n- Substitute  \n- Protect",
         "synergy": [
             "253",
-            "680"
+            "680",
+            "259",
+            "435",
+            "570",
+            "545",
+            "647"
         ],
         "format": "Doubles",
         "isMeta": false

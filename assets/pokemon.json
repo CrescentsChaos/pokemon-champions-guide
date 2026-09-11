@@ -2975,7 +2975,8 @@
     "Egg_Cycles": 10,
     "Past_Type": "Normal",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 435
+    "Total_Stats": 435,
+    "inChampions": true
   },
   {
     "id": 41,
@@ -3374,7 +3375,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 440
+    "Total_Stats": 440,
+    "inChampions": true
   },
   {
     "id": 54,
@@ -4937,7 +4939,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 377
+    "Total_Stats": 377,
+    "inChampions": true
   },
   {
     "id": 84,
@@ -6544,7 +6547,8 @@
     "Egg_Cycles": 25,
     "Past_Type": "Psychic",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 460
+    "Total_Stats": 460,
+    "inChampions": true
   },
   {
     "id": 123,
@@ -17556,7 +17560,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 467
+    "Total_Stats": 467,
+    "inChampions": true
   },
   {
     "id": 318,
@@ -20001,7 +20006,8 @@
       "Zen Headbutt"
     ],
     "Items": [],
-    "Teammates": []
+    "Teammates": [],
+    "inChampions": true
   },
   {
     "id": 360,
@@ -20517,7 +20523,8 @@
     "Egg_Cycles": 40,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 1,
-    "Total_Stats": 600
+    "Total_Stats": 600,
+    "inChampions": true
   },
   {
     "id": 373,
@@ -20546,7 +20553,8 @@
     "Total_Stats": 700,
     "Ability": [
       "Aerilate"
-    ]
+    ],
+    "inChampions": true
   },
   {
     "id": 374,
@@ -24498,7 +24506,8 @@
       "Zen Headbutt"
     ],
     "Items": [],
-    "Teammates": []
+    "Teammates": [],
+    "inChampions": true
   },
   {
     "id": 449,
@@ -36697,7 +36706,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 531
+    "Total_Stats": 531,
+    "inChampions": true
   },
   {
     "id": 674,
@@ -42968,7 +42978,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 530
+    "Total_Stats": 530,
+    "inChampions": true
   },
   {
     "id": 768,
@@ -44531,7 +44542,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 530
+    "Total_Stats": 530,
+    "inChampions": true
   },
   {
     "id": 813,
@@ -44609,7 +44621,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 530
+    "Total_Stats": 530,
+    "inChampions": true
   },
   {
     "id": 816,
@@ -44687,7 +44700,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 530
+    "Total_Stats": 530,
+    "inChampions": true
   },
   {
     "id": 819,
@@ -45012,7 +45026,8 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 455
+    "Total_Stats": 455,
+    "inChampions": true
   },
   {
     "id": 829,
@@ -45731,7 +45746,8 @@
     "Egg_Cycles": 25,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 502
+    "Total_Stats": 502,
+    "inChampions": true
   },
   {
     "id": 850,
@@ -45835,7 +45851,8 @@
     "Egg_Cycles": 25,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 480
+    "Total_Stats": 480,
+    "inChampions": true
   },
   {
     "id": 854,
@@ -46305,7 +46322,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 440
+    "Total_Stats": 440,
+    "inChampions": true
   },
   {
     "id": 864,
@@ -46357,7 +46375,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 507
+    "Total_Stats": 507,
+    "inChampions": true
   },
   {
     "id": 866,
@@ -46896,7 +46915,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 435
+    "Total_Stats": 435,
+    "inChampions": true
   },
   {
     "id": 872,
@@ -47026,7 +47046,8 @@
     "Egg_Cycles": 40,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 475
+    "Total_Stats": 475,
+    "inChampions": true
   },
   {
     "id": 876,
@@ -47052,7 +47073,8 @@
     "Egg_Cycles": 40,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 475
+    "Total_Stats": 475,
+    "inChampions": true
   },
   {
     "id": 877,
@@ -49273,7 +49295,8 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 490
+    "Total_Stats": 490,
+    "inChampions": true
   },
   {
     "id": 924,
@@ -49527,7 +49550,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 510
+    "Total_Stats": 510,
+    "inChampions": true
   },
   {
     "id": 931,
@@ -49553,7 +49577,8 @@
     "Egg_Cycles": 15,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 417
+    "Total_Stats": 417,
+    "inChampions": true
   },
   {
     "id": 932,
@@ -50106,7 +50131,8 @@
     "Egg_Cycles": 20,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 505
+    "Total_Stats": 505,
+    "inChampions": true
   },
   {
     "id": 944,
@@ -52428,7 +52454,8 @@
     "Egg_Cycles": 40,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 1,
-    "Total_Stats": 600
+    "Total_Stats": 600,
+    "inChampions": true
   },
   {
     "id": 998,
@@ -52457,7 +52484,8 @@
     "Total_Stats": 700,
     "Ability": [
       "Thermal Exchange"
-    ]
+    ],
+    "inChampions": true
   },
   {
     "id": 999,
