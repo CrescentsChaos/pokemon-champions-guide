@@ -6233,5 +6233,35 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "718",
+        "pokemon": "Salamence",
+        "build": "Salamence @ Salamencite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 1 HP / 32 SpA / 1 SpD / 32 Spe  \nModest Nature  \n- Hyper Voice  \n- Flamethrower  \n- Tailwind  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "719",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ Psychic Seed  \nAbility: Unburden  \nLevel: 50  \nEVs: 3 HP / 32 Atk / 31 Spe  \nAdamant Nature  \n- Dire Claw  \n- Close Combat  \n- Rock Slide  \n- Protect",
+        "synergy": [
+            "718",
+            "720"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "720",
+        "pokemon": "Indeedee",
+        "build": "Indeedee @ Choice Scarf  \nAbility: Psychic Surge  \nLevel: 50  \nEVs: 2 HP / 32 SpA / 32 Spe  \nModest Nature  \n- Expanding Force  \n- Hyper Voice  \n- Shadow Ball  \n- Trick",
+        "synergy": [
+            "718",
+            "719"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
