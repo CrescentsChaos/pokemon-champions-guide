@@ -1743,7 +1743,8 @@
     },
     {
         "name": "Absolite Z",
-        "description": "Enables the Mega Evolution of Mega Absol Z."
+        "description": "Enables the Mega Evolution of Mega Absol Z.",
+        "inChampions": true
     },
     {
         "name": "Staraptite",
@@ -1752,11 +1753,18 @@
     },
     {
         "name": "Garchompite Z",
-        "description": "Enables the Mega Evolution of Mega Garchomp Z."
+        "description": "Enables the Mega Evolution of Mega Garchomp Z.",
+        "inChampions": true
     },
     {
         "name": "Lucarionite Z",
-        "description": "Enables the Mega Evolution of Mega Lucario Z."
+        "description": "Enables the Mega Evolution of Mega Lucario Z.",
+        "inChampions": true
+    },
+    {
+        "name": "Salamencite",
+        "description": "Enables the Mega Evolution of Mega Salamence.",
+        "inChampions": true
     },
     {
         "name": "Golurkite",
@@ -1775,7 +1783,8 @@
     },
     {
         "name": "Golisopite",
-        "description": "Enables the Mega Evolution of Mega Golisopod."
+        "description": "Enables the Mega Evolution of Mega Golisopod.",
+        "inChampions": true
     },
     {
         "name": "Magearnite",
@@ -1788,7 +1797,8 @@
     },
     {
         "name": "Baxcalibrite",
-        "description": "Enables the Mega Evolution of Mega Baxcalibur."
+        "description": "Enables the Mega Evolution of Mega Baxcalibur.",
+        "inChampions": true
     },
     {
         "name": "Tatsugirinite",
