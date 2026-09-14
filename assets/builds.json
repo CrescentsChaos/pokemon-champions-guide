@@ -6263,5 +6263,46 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "721",
+        "pokemon": "Rillaboom",
+        "build": "Rillaboom @ Miracle Seed  \nAbility: Grassy Surge  \nLevel: 50  \nEVs: 8 HP / 32 Atk / 26 Spe  \nAdamant Nature  \n- Fake Out  \n- Grassy Glide  \n- Wood Hammer  \n- High Horsepower",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "722",
+        "pokemon": "Farigiraf",
+        "build": "Farigiraf @ Grassy Seed  \nAbility: Armor Tail  \nLevel: 50  \nEVs: 32 HP / 14 Def / 20 SpD  \nCalm Nature  \n- Trick Room  \n- Expanding Force  \n- Helping Hand  \n- Imprison",
+        "synergy": [
+            "721"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "723",
+        "pokemon": "Absol",
+        "build": "Absol @ Absolite Z  \nAbility: Justified  \nLevel: 50  \nEVs: 11 HP / 19 Atk / 4 Def / 32 Spe  \nJolly Nature  \n- Detect  \n- Night Slash  \n- Close Combat  \n- Icy Wind",
+        "synergy": [
+            "721",
+            "722"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "724",
+        "pokemon": "Salamence",
+        "build": "Salamence @ Salamencite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 9 HP / 32 SpA / 1 SpD / 24 Spe  \nTimid Nature  \n- Protect  \n- Tailwind  \n- Hyper Voice  \n- Draco Meteor",
+        "synergy": [
+            "721",
+            "722",
+            "723"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
