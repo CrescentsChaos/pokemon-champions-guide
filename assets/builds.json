@@ -6304,5 +6304,82 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "725",
+        "pokemon": "Absol",
+        "build": "Absol @ Absolite Z  \nAbility: Justified  \nLevel: 50  \nEVs: 29 HP / 16 Atk / 1 Def / 1 SpD / 19 Spe  \nAdamant Nature  \n- Night Slash  \n- Shadow Claw  \n- Focus Energy  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "726",
+        "pokemon": "Indeedee-F",
+        "build": "Indeedee-F @ Rocky Helmet  \nAbility: Psychic Surge  \nLevel: 50  \nEVs: 32 HP / 32 Def / 1 SpA / 1 Spe  \nCalm Nature  \n- Psychic  \n- Follow Me  \n- Helping Hand  \n- Trick Room",
+        "synergy": [
+            "719",
+            "725"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "727",
+        "pokemon": "Baxcalibur",
+        "build": "Baxcalibur @ Baxcalibrite  \nAbility: Thermal Exchange  \nLevel: 50  \nEVs: 21 HP / 16 Atk / 3 Def / 26 Spe  \nAdamant Nature  \n- Glaive Rush  \n- Icicle Spear  \n- Ice Shard  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "728",
+        "pokemon": "Arcanine",
+        "build": "Arcanine @ Sitrus Berry  \nAbility: Intimidate  \nLevel: 50  \nEVs: 31 HP / 3 Atk / 3 Def / 29 SpD  \nAdamant Nature  \n- Flare Blitz  \n- Extreme Speed  \n- Howl  \n- Protect",
+        "synergy": [
+            "727"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "729",
+        "pokemon": "Salamence",
+        "build": "Salamence @ Salamencite  \nAbility: Intimidate  \nLevel: 50  \nEVs: 1 HP / 21 Atk / 15 SpA / 29 Spe  \nNaive Nature  \n- Hyper Voice  \n- Double-Edge  \n- Tailwind  \n- Protect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "730",
+        "pokemon": "Arcanine-Hisui",
+        "build": "Arcanine-Hisui @ Focus Sash  \nAbility: Rock Head  \nLevel: 50  \nEVs: 2 HP / 32 Atk / 32 Spe  \nJolly Nature  \n- Flare Blitz  \n- Head Smash  \n- Extreme Speed  \n- Protect",
+        "synergy": [
+            "729"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "731",
+        "pokemon": "Rillaboom",
+        "build": "Rillaboom @ Sitrus Berry  \nAbility: Grassy Surge  \nLevel: 50  \nEVs: 18 HP / 25 Atk / 5 Def / 10 SpD / 8 Spe  \nAdamant Nature  \n- Wood Hammer  \n- Grassy Glide  \n- U-turn  \n- Fake Out",
+        "synergy": [
+            "732",
+            "729"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "732",
+        "pokemon": "Sneasler",
+        "build": "Sneasler @ Grassy Seed  \nAbility: Unburden  \nLevel: 50  \nEVs: 16 HP / 20 Atk / 30 Spe  \nAdamant Nature  \n- Dire Claw  \n- Close Combat  \n- Fake Out  \n- Protect",
+        "synergy": [
+            "731",
+            "729"
+        ],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
