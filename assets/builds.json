@@ -6453,5 +6453,13 @@
         "synergy": [],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "741",
+        "pokemon": "Toxtricity",
+        "build": "Toxtricity @ Choice Scarf  \nAbility: Punk Rock  \nLevel: 50  \nEVs: 2 HP / 32 SpA / 32 Spe  \nTimid Nature  \n- Overdrive  \n- Sludge Bomb  \n- Snarl  \n- Volt Switch",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
