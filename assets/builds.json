@@ -6381,5 +6381,77 @@
         ],
         "format": "Doubles",
         "isMeta": false
+    },
+    {
+        "id": "733",
+        "pokemon": "Pawmot",
+        "build": "Pawmot @ Focus Sash  \nAbility: Iron Fist  \nLevel: 50  \nEVs: 2 HP / 32 Atk / 32 Spe  \nJolly Nature  \n- Double Shock  \n- Close Combat  \n- Revival Blessing  \n- Fake Out",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "734",
+        "pokemon": "Golisopod",
+        "build": "Golisopod @ Golisopite  \nAbility: Emergency Exit  \nLevel: 50  \nEVs: 32 HP / 32 Atk / 2 SpD  \nBrave Nature  \n- Liquidation  \n- Iron Head  \n- Leech Life  \n- Protect",
+        "synergy": [
+            "582"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "735",
+        "pokemon": "Garchomp",
+        "build": "Garchomp @ Garchompite Z  \nAbility: Rough Skin  \nLevel: 50  \nEVs: 18 HP / 32 SpA / 16 Spe  \nTimid Nature  \n- Protect  \n- Draco Meteor  \n- Flamethrower  \n- Power Gem",
+        "synergy": [
+            "736"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "736",
+        "pokemon": "Torterra",
+        "build": "Torterra @ Life Orb  \nAbility: Overgrow  \nLevel: 50  \nEVs: 32 HP / 11 Atk / 15 Def / 8 Spe  \nAdamant Nature  \n- Wood Hammer  \n- Headlong Rush  \n- Earthquake  \n- Wide Guard",
+        "synergy": [
+            "735"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "737",
+        "pokemon": "Lucario",
+        "build": "Lucario @ Lucarionite Z  \nAbility: Inner Focus  \nLevel: 50  \nEVs: 2 HP / 32 SpA / 32 Spe  \nModest Nature  \n- Aura Sphere  \n- Steel Beam  \n- Protect  \n- Flash Cannon",
+        "synergy": [
+            "724"
+        ],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "738",
+        "pokemon": "Absol",
+        "build": "Absol @ Absolite Z  \nAbility: Pressure  \nLevel: 50  \nEVs: 2 HP / 32 Atk / 32 Spe  \nAdamant Nature  \n- Close Combat  \n- Shadow Claw  \n- Night Slash  \n- Detect",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "739",
+        "pokemon": "Gallade",
+        "build": "Gallade @ White Herb  \nAbility: Sharpness  \nLevel: 50  \nEVs: 32 HP / 32 Atk / 2 Def  \nAdamant Nature  \n- Sacred Sword  \n- Trick Room  \n- Psycho Cut  \n- Wide Guard",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
+    },
+    {
+        "id": "740",
+        "pokemon": "Persian-Alola",
+        "build": "Persian-Alola @ Focus Sash  \nAbility: Fur Coat  \nLevel: 50  \nEVs: 32 HP / 2 Def / 32 Spe  \nTimid Nature  \n- Foul Play  \n- Parting Shot  \n- Fake Out  \n- Snarl",
+        "synergy": [],
+        "format": "Doubles",
+        "isMeta": false
     }
 ]
