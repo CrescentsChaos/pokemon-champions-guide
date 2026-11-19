@@ -1456,7 +1456,7 @@
   {
     "name": "Screech",
     "id": 103,
-    "accuracy": 85,
+    "accuracy": 100,
     "pp": 40,
     "power": null,
     "priority": 0,
@@ -2192,13 +2192,13 @@
   {
     "name": "Rock Slide",
     "id": 157,
-    "accuracy": 90,
+    "accuracy": 95,
     "pp": 10,
     "power": 75,
     "priority": 0,
     "type": "Rock",
     "generation": "Generation I",
-    "short_descripton": "Has a 30% chance to make the target flinch.",
+    "short_descripton": "Has a 20% chance to make the target flinch.",
     "damage_class": "Physical",
     "tags": [
       "All Opponents"
@@ -2942,7 +2942,7 @@
   {
     "name": "Steel Wing",
     "id": 211,
-    "accuracy": 90,
+    "accuracy": 100,
     "pp": 25,
     "power": 70,
     "priority": 0,
@@ -4430,7 +4430,7 @@
   {
     "name": "Metal Sound",
     "id": 319,
-    "accuracy": 85,
+    "accuracy": 100,
     "pp": 40,
     "power": null,
     "priority": 0,
@@ -7275,7 +7275,7 @@
   {
     "name": "Frost Breath",
     "id": 524,
-    "accuracy": 90,
+    "accuracy": 100,
     "pp": 10,
     "power": 60,
     "priority": 0,

@@ -1132,7 +1132,8 @@
       "Toxic Spikes",
       "U-turn",
       "Venoshock",
-      "X-Scissor"
+      "X-Scissor",
+      "Roost"
     ],
     "inChampions": true
   },
@@ -1217,7 +1218,8 @@
       "Toxic Spikes",
       "U-turn",
       "Venoshock",
-      "X-Scissor"
+      "X-Scissor",
+      "Roost"
     ],
     "Items": [
       "Beedrillite"
@@ -4149,7 +4151,8 @@
       "Trick",
       "Trick Room",
       "Wonder Room",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "inChampions": true
   },
@@ -6711,7 +6714,8 @@
       "Waterfall",
       "Whirlpool",
       "Wonder Room",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "inChampions": true
   },
@@ -6919,7 +6923,8 @@
       "Trick Room",
       "Uproar",
       "Wide Guard",
-      "Wonder Room"
+      "Wonder Room",
+      "Psych Up"
     ]
   },
   {
@@ -7949,7 +7954,8 @@
       "Weather Ball",
       "Whirlpool",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Play Rough"
     ],
     "inChampions": true
   },
@@ -8041,7 +8047,8 @@
       "Weather Ball",
       "Wild Charge",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Play Rough"
     ],
     "inChampions": true
   },
@@ -8131,7 +8138,8 @@
       "Weather Ball",
       "Will-O-Wisp",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Play Rough"
     ],
     "inChampions": true
   },
@@ -11292,7 +11300,8 @@
       "Weather Ball",
       "Wish",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Play Rough"
     ],
     "Items": [
       "Focus Sash",
@@ -11406,7 +11415,9 @@
       "Trailblaze",
       "Weather Ball",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Wonder Room",
+      "Play Rough"
     ],
     "Items": [
       "Leftovers",
@@ -16891,7 +16902,8 @@
       "Taunt",
       "Thunder Fang",
       "Thunder Punch",
-      "Tickle"
+      "Tickle",
+      "Psych Up"
     ],
     "Items": [
       "Mawilite",
@@ -18860,7 +18872,8 @@
       "Uproar",
       "Weather Ball",
       "Will-O-Wisp",
-      "Wonder Room"
+      "Wonder Room",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -19529,7 +19542,8 @@
       "Thunder",
       "Thunder Wave",
       "Thunderbolt",
-      "Weather Ball"
+      "Weather Ball",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -20166,7 +20180,8 @@
       "Trailblaze",
       "Will-O-Wisp",
       "X-Scissor",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -22895,7 +22910,8 @@
       "Uproar",
       "Venoshock",
       "Weather Ball",
-      "Worry Seed"
+      "Worry Seed",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -25751,7 +25767,8 @@
       "Triple Axel",
       "Upper Hand",
       "Water Pulse",
-      "X-Scissor"
+      "X-Scissor",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -26153,7 +26170,8 @@
       "Weather Ball",
       "Wish",
       "X-Scissor",
-      "Yawn"
+      "Yawn",
+      "Play Rough"
     ],
     "Items": [],
     "Teammates": []
@@ -26246,7 +26264,8 @@
       "Water Pulse",
       "Weather Ball",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Play Rough"
     ],
     "Items": [],
     "Teammates": []
@@ -27114,7 +27133,8 @@
       "Trick",
       "Uproar",
       "Volt Switch",
-      "Will-O-Wisp"
+      "Will-O-Wisp",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -27191,7 +27211,8 @@
       "Trick",
       "Uproar",
       "Volt Switch",
-      "Will-O-Wisp"
+      "Will-O-Wisp",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -27268,7 +27289,8 @@
       "Trick",
       "Uproar",
       "Volt Switch",
-      "Will-O-Wisp"
+      "Will-O-Wisp",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -27345,7 +27367,8 @@
       "Trick",
       "Uproar",
       "Volt Switch",
-      "Will-O-Wisp"
+      "Will-O-Wisp",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -27421,7 +27444,8 @@
       "Trick",
       "Uproar",
       "Volt Switch",
-      "Will-O-Wisp"
+      "Will-O-Wisp",
+      "Psych Up"
     ],
     "Items": [
       "Leftovers",
@@ -28345,7 +28369,8 @@
       "Wild Charge",
       "Will-O-Wisp",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Slack Off"
     ],
     "Items": [],
     "Teammates": []
@@ -28457,7 +28482,8 @@
       "Wild Charge",
       "Will-O-Wisp",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Slack Off"
     ],
     "Items": [],
     "Teammates": [],
@@ -29022,7 +29048,8 @@
       "Trailblaze",
       "Trick",
       "U-turn",
-      "Yawn"
+      "Yawn",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -29470,7 +29497,8 @@
       "Trick Room",
       "Wonder Room",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -30036,7 +30064,8 @@
       "Wild Charge",
       "Wish",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -30138,7 +30167,8 @@
       "Wild Charge",
       "Wish",
       "Yawn",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": [],
@@ -31653,7 +31683,8 @@
       "Trick Room",
       "Will-O-Wisp",
       "Wonder Room",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -32707,7 +32738,8 @@
       "Tickle",
       "U-turn",
       "Volt Switch",
-      "Wild Charge"
+      "Wild Charge",
+      "Tailwind"
     ],
     "Items": [],
     "Teammates": []
@@ -34839,7 +34871,8 @@
       "Tri Attack",
       "U-turn",
       "Uproar",
-      "Zen Headbutt"
+      "Zen Headbutt",
+      "Roost"
     ],
     "Items": [
       "Choice Scarf",
@@ -38246,7 +38279,8 @@
       "Thunder",
       "Thunderbolt",
       "Wish",
-      "Yawn"
+      "Yawn",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -44167,7 +44201,8 @@
       "Tickle",
       "Tri Attack",
       "Uproar",
-      "Whirlwind"
+      "Whirlwind",
+      "Psych Up"
     ],
     "Items": [],
     "Teammates": []
@@ -52872,7 +52907,8 @@
       "Torment",
       "Uproar",
       "U-turn",
-      "Vacuum Wave"
+      "Vacuum Wave",
+      "Psych Up"
     ],
     "Items": [
       "Leftovers",

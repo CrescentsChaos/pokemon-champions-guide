@@ -289,7 +289,7 @@
   },
   {
     "name": "Flash Fire",
-    "description": "If hit by a Fire-type move, the Pokémon absorbs the flames and uses them to power up its own Fire-type moves."
+    "description": "If hit by a Fire-type move, the Pokémon absorbs the flames to get Fire Boost status that power up its own Fire-type moves. Stays even after mega evolving."
   },
   {
     "name": "Flower Gift",
