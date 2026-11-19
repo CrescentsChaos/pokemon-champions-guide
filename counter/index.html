@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/theme-boot.js"></script>
     <title>Counter Tool | Pokemon Champions Guide</title>
     <meta name="description" content="Find counters for Champions meta threats — matchup analysis and recommended builds.">
     <link rel="icon" type="image/png" href="../assets/champions-logo.png">
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="../css/counter.css">
     <style>
         :root {
-            --input-bg: rgba(0, 0, 0, 0.4);
+            --input-bg: var(--field-bg);
             --focus-border: var(--primary-red);
         }
 
@@ -22,7 +23,7 @@
         .target-editor {
             margin-top: 0;
         }
-            background: rgba(255, 255, 255, 0.02);
+            background: rgb(var(--ink-rgb) / 0.02);
             border: 1px dashed var(--glass-border);
             padding: 1.5rem;
             border-radius: 16px;
@@ -32,7 +33,7 @@
         }
 
         .target-editor-toggle:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(var(--ink-rgb) / 0.05);
             border-style: solid;
             border-color: var(--primary-red);
         }
@@ -52,7 +53,7 @@
         }
 
         .counter-card-premium {
-            background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.4));
+            background: linear-gradient(160deg, rgb(var(--ink-rgb) / 0.03), rgb(0 0 0 / calc(0.4 * var(--scrim-k))));
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
@@ -63,7 +64,7 @@
 
         .counter-card-premium:hover {
             transform: translateY(-5px);
-            border-color: rgba(255, 62, 62, 0.4);
+            border-color: rgb(var(--accent-rgb) / 0.4);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         }
 
@@ -81,7 +82,7 @@
 
         .counter-meta-premium h4 {
             font-size: 1.1rem;
-            color: white;
+            color: var(--text-strong);
             margin-bottom: 4px;
         }
 
@@ -89,20 +90,20 @@
             position: absolute;
             top: 0;
             right: 0;
-            background: linear-gradient(135deg, #ff3e3e, #ff8000);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-red), #ff8000);
+            color: var(--on-accent);
             font-size: 0.6rem;
-            font-weight: 900;
+            font-weight: 700;
             padding: 5px 12px;
             border-bottom-left-radius: 15px;
-            box-shadow: -5px 5px 15px rgba(255, 62, 62, 0.2);
+            box-shadow: -5px 5px 15px rgb(var(--accent-rgb) / 0.2);
         }
 
         .rationale-list-premium {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
             padding: 1rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid rgb(var(--ink-rgb) / 0.03);
         }
 
         .rationale-item-premium {
@@ -125,37 +126,36 @@
 
         .build-btn-premium {
             width: 100%;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             border: 1px solid var(--glass-border);
             color: var(--text-muted);
             padding: 10px;
             border-radius: 10px;
             font-size: 0.7rem;
-            font-weight: 800;
+            font-weight: 700;
             margin-top: 1.2rem;
             cursor: pointer;
             transition: var(--transition);
-            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .build-btn-premium:hover {
             background: var(--primary-red);
-            color: white;
+            color: var(--on-accent);
             border-color: var(--primary-red);
         }
 
         .build-raw-premium {
             display: none;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgb(0 0 0 / calc(0.5 * var(--scrim-k)));
             padding: 1rem;
             border-radius: 10px;
             margin-top: 10px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 0.7rem;
             color: #ccc;
             white-space: pre-wrap;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
         }
 
         .manage-controls {
@@ -165,9 +165,9 @@
         }
 
         .secondary-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(var(--ink-rgb) / 0.05);
             border: 1px solid var(--glass-border);
-            color: white;
+            color: var(--text-strong);
             padding: 0.8rem;
             border-radius: 12px;
             font-size: 0.8rem;
@@ -178,14 +178,14 @@
         }
 
         .secondary-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(var(--ink-rgb) / 0.1);
             border-color: white;
         }
 
         .premade-builds-panel {
             margin-top: 1.25rem;
             padding-top: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgb(var(--ink-rgb) / 0.08);
             position: relative;
             z-index: 1;
         }
@@ -201,19 +201,18 @@
 
         .premade-builds-panel__head span {
             font-size: 0.72rem;
-            font-weight: 900;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.72);
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            color: rgb(var(--ink-rgb) / 0.72);
         }
 
         .premade-search {
             width: 100%;
             padding: 0.7rem 1rem;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
+            color: var(--text-strong);
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 0.65rem;
@@ -239,9 +238,9 @@
             gap: 0.75rem;
             padding: 0.6rem 0.75rem;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #fff;
+            background: rgb(var(--ink-rgb) / 0.03);
+            border: 1px solid rgb(var(--ink-rgb) / 0.08);
+            color: var(--text-strong);
             font-size: 0.78rem;
             font-weight: 700;
             cursor: pointer;
@@ -250,17 +249,16 @@
         }
 
         .premade-build-item:hover {
-            background: rgba(255, 62, 62, 0.12);
-            border-color: rgba(255, 62, 62, 0.35);
+            background: rgb(var(--accent-rgb) / 0.12);
+            border-color: rgb(var(--accent-rgb) / 0.35);
             transform: translateX(3px);
         }
 
         .premade-build-item__meta {
             font-size: 0.62rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            font-weight: 700;
+            color: rgb(var(--ink-rgb) / 0.5);
+            letter-spacing: 0.01em;
             white-space: nowrap;
         }
 
@@ -269,9 +267,8 @@
             align-items: center;
             gap: 0.35rem;
             font-size: 0.62rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.01em;
             margin-top: 0.35rem;
         }
 
@@ -297,9 +294,9 @@
             width: 100%;
             padding: 0.75rem 1rem;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
             border: 1px solid var(--glass-border);
-            color: #fff;
+            color: var(--text-strong);
             font-weight: 700;
         }
 
@@ -314,7 +311,6 @@
             font-size: 0.65rem;
             font-weight: 700;
             color: var(--text-muted);
-            text-transform: uppercase;
             margin-bottom: 0.35rem;
         }
 
@@ -323,9 +319,9 @@
             width: 100%;
             padding: 0.55rem;
             border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
+            color: var(--text-strong);
         }
 
         @media (max-width: 768px) {
@@ -334,6 +330,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="../css/theme.css?v=1">
 </head>
 
 <body class="counter-page">
@@ -512,7 +509,7 @@
 
                 <div id="counter-results" class="counter-grid">
                     <div class="placeholder-text"
-                        style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;">
+                        style="background: rgb(var(--ink-rgb) / 0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;">
                         <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>
                         Import a build on the left to begin strategic analysis.
                     </div>
@@ -837,7 +834,7 @@
 
             const shown = pool.slice(0, 40);
             if (!shown.length) {
-                list.innerHTML = '<div style="font-size:0.75rem;color:rgba(255,255,255,0.45);padding:0.5rem;">No premade builds match.</div>';
+                list.innerHTML = '<div style="font-size:0.75rem;color:rgb(var(--ink-rgb) / 0.45);padding:0.5rem;">No premade builds match.</div>';
                 return;
             }
 
@@ -846,8 +843,8 @@
                 const tagged = (typeof isBuildMarkedMeta === 'function' ? isBuildMarkedMeta(b) : b.isMeta === true);
                 const rank = getMetaRank(b.pokemon, bFmt);
                 const metaLabel = rank >= 0
-                    ? ` <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META #${rank + 1}</span>`
-                    : (tagged ? ' <span style="color:#ffd76f;font-weight:900;font-size:0.65rem;">META SET</span>' : '');
+                    ? ` <span style="color:#ffd76f;font-weight:700;font-size:0.65rem;">META #${rank + 1}</span>`
+                    : (tagged ? ' <span style="color:#ffd76f;font-weight:700;font-size:0.65rem;">META SET</span>' : '');
                 return `
                 <button type="button" class="premade-build-item" data-build-id="${b.id}">
                     <span>${b.pokemon}${metaLabel}</span>
@@ -1073,7 +1070,7 @@
                 document.getElementById('paste-input').value = '';
                 targetBuild = { name: '', item: '', ability: '', nature: 'Hardy', level: 50, format: keepFormat, moves: [], evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }, types: ['None'] };
                 lastCounters = [];
-                document.getElementById('counter-results').innerHTML = `<div class="placeholder-text" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;"><div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>Import a build on the left to begin strategic analysis.</div>`;
+                document.getElementById('counter-results').innerHTML = `<div class="placeholder-text" style="background: rgb(var(--ink-rgb) / 0.02); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 6rem;"><div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>Import a build on the left to begin strategic analysis.</div>`;
                 document.getElementById('results-count').innerText = '0 RESULTS FOUND';
                 const rf = document.getElementById('results-filter');
                 const rs = document.getElementById('results-sort');
@@ -1630,7 +1627,7 @@
                         <img src="${getSpriteUrl(spriteSpecies, false)}" class="counter-sprite-premium" alt="${escapeHtml(c.pokemon)}" onerror="handleSpriteError(this, '${safeSpecies}', false)">
                         <div class="counter-meta-premium">
                             <h4>${escapeHtml(c.pokemon)} ${metaBadge}</h4>
-                            <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 800; letter-spacing: 0.5px;">
+                            <div style="font-size: 0.65rem; color: var(--primary-yellow); font-weight: 700; letter-spacing: 0.5px;">
                                 ${escapeHtml((c.format || 'Singles').toUpperCase())} · BUILD #${c.id}${itemLine}
                             </div>
                             ${c.verdict ? `<div class="counter-verdict counter-verdict--${c.verdict}">${c.verdict === 'ohko' ? '● OHKO Threat' : c.verdict === 'tank' ? '● Defensive Answer' : '● Offensive Pressure'}</div>` : ''}

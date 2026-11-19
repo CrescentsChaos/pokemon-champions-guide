@@ -2,8 +2,7 @@
 
 body.counter-page {
     padding-top: 8rem;
-    background:
-        radial-gradient(circle at top right, rgba(255, 62, 62, 0.06), transparent 42%),
+    background: radial-gradient(circle at top right, rgb(var(--accent-rgb) / 0.06), transparent 42%),
         radial-gradient(circle at bottom left, rgba(255, 204, 0, 0.03), transparent 38%),
         var(--bg-color);
 }
@@ -30,10 +29,9 @@ body.counter-page {
 .counter-import-card__title {
     margin-bottom: 1rem;
     font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.85);
 }
 
 .counter-import-actions {
@@ -49,12 +47,12 @@ body.counter-page {
 .import-area {
     width: 100%;
     height: 11rem;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
     border: 1px solid var(--glass-border);
     border-radius: 14px;
     padding: 1rem 1.1rem;
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-strong);
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     resize: vertical;
     min-height: 8rem;
@@ -65,7 +63,7 @@ body.counter-page {
 .import-area:focus {
     outline: none;
     border-color: var(--primary-red);
-    box-shadow: 0 0 20px rgba(255, 62, 62, 0.15);
+    box-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.15);
 }
 
 .premade-builds-panel {
@@ -83,19 +81,18 @@ body.counter-page {
 
 .premade-builds-panel__head span {
     font-size: 0.72rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.72);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.72);
 }
 
 .premade-search {
     width: 100%;
     padding: 0.7rem 1rem;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
+    border: 1px solid rgb(var(--ink-rgb) / 0.1);
+    color: var(--text-strong);
     font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 0.65rem;
@@ -118,7 +115,7 @@ body.counter-page {
 .premade-build-list--loading {
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgb(var(--ink-rgb) / 0.45);
     font-size: 0.78rem;
     font-weight: 600;
 }
@@ -130,9 +127,9 @@ body.counter-page {
     gap: 0.75rem;
     padding: 0.65rem 0.8rem;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #fff;
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
+    color: var(--text-strong);
     font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
@@ -142,24 +139,23 @@ body.counter-page {
 }
 
 .premade-build-item:hover {
-    background: rgba(255, 62, 62, 0.12);
-    border-color: rgba(255, 62, 62, 0.35);
+    background: rgb(var(--accent-rgb) / 0.12);
+    border-color: rgb(var(--accent-rgb) / 0.35);
     transform: translateX(3px);
 }
 
 .premade-build-item__meta {
     font-size: 0.62rem;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-weight: 700;
+    color: rgb(var(--ink-rgb) / 0.5);
+    letter-spacing: 0.01em;
     white-space: nowrap;
     flex-shrink: 0;
 }
 
 .target-preview-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.55));
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(145deg, rgb(var(--ink-rgb) / 0.05), rgb(0 0 0 / calc(0.55 * var(--scrim-k))));
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
     border-radius: 18px;
     padding: 1.5rem;
     backdrop-filter: blur(15px);
@@ -178,9 +174,9 @@ body.counter-page {
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary-red);
-    color: #fff;
+    color: var(--on-accent);
     font-size: 0.65rem;
-    font-weight: 900;
+    font-weight: 700;
     padding: 4px 15px;
     border-radius: 20px;
     letter-spacing: 1px;
@@ -206,7 +202,7 @@ body.counter-page {
 .target-details h3 {
     font-size: 1.25rem;
     margin-bottom: 5px;
-    color: #fff;
+    color: var(--text-strong);
     word-break: break-word;
 }
 
@@ -214,7 +210,7 @@ body.counter-page {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
     padding: 1rem;
     border-radius: 12px;
     margin-bottom: 1.25rem;
@@ -229,13 +225,13 @@ body.counter-page {
 
 .stat-label-mini {
     font-size: 0.6rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
 }
 
 .stat-bar-mini {
     height: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(var(--ink-rgb) / 0.05);
     border-radius: 2px;
     overflow: hidden;
 }
@@ -255,7 +251,7 @@ body.counter-page {
 
 .stat-val-mini {
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     text-align: right;
 }
 
@@ -275,10 +271,10 @@ body.counter-page {
     -webkit-appearance: none;
     -moz-appearance: none;
     padding: 0.55rem 2.1rem 0.55rem 0.85rem;
-    background-color: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgb(0 0 0 / calc(0.45 * var(--scrim-k)));
+    border: 1px solid rgb(var(--ink-rgb) / 0.14);
     border-radius: 10px;
-    color: #fff;
+    color: var(--text-strong);
     font-size: 0.82rem;
     font-weight: 700;
     font-family: inherit;
@@ -294,8 +290,8 @@ body.counter-page {
 }
 
 .counter-page .dex-select:hover {
-    border-color: rgba(255, 255, 255, 0.28);
-    background-color: rgba(0, 0, 0, 0.55);
+    border-color: rgb(var(--ink-rgb) / 0.28);
+    background-color: rgb(0 0 0 / calc(0.55 * var(--scrim-k)));
 }
 
 .counter-page .dex-select:focus {
@@ -305,16 +301,15 @@ body.counter-page {
 }
 
 .counter-page .dex-select option {
-    background: #16161f;
-    color: #fff;
+    background: var(--bg-elevated);
+    color: var(--on-accent);
     font-weight: 600;
 }
 
 .counter-format-bar__label {
     font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: var(--text-muted);
 }
 
@@ -350,8 +345,8 @@ body.counter-page {
     padding: 3px 7px;
     border-radius: 6px;
     background: #e63946;
-    color: #fff;
-    font-weight: 900;
+    color: var(--on-accent);
+    font-weight: 700;
     letter-spacing: 0.04em;
 }
 
@@ -384,17 +379,16 @@ body.counter-page {
     gap: 0.4rem;
     margin: 0.55rem 0 0.65rem;
     font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.45);
 }
 
 .premade-counts span {
     padding: 0.28rem 0.55rem;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(var(--ink-rgb) / 0.04);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
 }
 
 .premade-counts .is-meta {
@@ -417,7 +411,7 @@ body.counter-page {
     cursor: pointer;
     user-select: none;
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.04em;
     color: rgba(232, 200, 114, 0.9);
 }
@@ -443,9 +437,8 @@ body.counter-page {
     align-items: center;
     gap: 0.45rem;
     font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: var(--text-muted);
 }
 
@@ -456,7 +449,7 @@ body.counter-page {
 }
 
 .move-tag-mini {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(var(--ink-rgb) / 0.03);
     border: 1px solid var(--glass-border);
     padding: 8px;
     border-radius: 8px;
@@ -514,7 +507,7 @@ body.counter-page {
 }
 
 .counter-card-premium {
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.45));
+    background: linear-gradient(160deg, rgb(var(--ink-rgb) / 0.04), rgb(0 0 0 / calc(0.45 * var(--scrim-k))));
     border: 1px solid var(--glass-border);
     border-radius: 18px;
     padding: 1.35rem;
@@ -525,7 +518,7 @@ body.counter-page {
 
 .counter-card-premium:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 62, 62, 0.35);
+    border-color: rgb(var(--accent-rgb) / 0.35);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
 }
 
@@ -550,7 +543,7 @@ body.counter-page {
 
 .counter-meta-premium h4 {
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-strong);
     margin-bottom: 4px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -561,19 +554,19 @@ body.counter-page {
     position: absolute;
     top: 0;
     right: 0;
-    background: linear-gradient(135deg, #ff3e3e, #ff8000);
-    color: #fff;
+    background: linear-gradient(135deg, var(--primary-red), #ff8000);
+    color: var(--on-accent);
     font-size: 0.58rem;
-    font-weight: 900;
+    font-weight: 700;
     padding: 5px 12px;
     border-bottom-left-radius: 14px;
 }
 
 .rationale-list-premium {
-    background: rgba(0, 0, 0, 0.22);
+    background: rgb(0 0 0 / calc(0.22 * var(--scrim-k)));
     padding: 0.85rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid rgb(var(--ink-rgb) / 0.04);
 }
 
 .rationale-item-premium {
@@ -581,7 +574,7 @@ body.counter-page {
     gap: 0.5rem;
     font-size: 0.78rem;
     line-height: 1.45;
-    color: rgba(255, 255, 255, 0.82);
+    color: rgb(var(--ink-rgb) / 0.82);
     margin-bottom: 0.35rem;
 }
 
@@ -597,9 +590,8 @@ body.counter-page {
 .counter-verdict {
     display: inline-flex;
     font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     margin-top: 0.35rem;
 }
 
@@ -611,9 +603,9 @@ body.counter-page {
     display: none;
     margin-top: 0.75rem;
     padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
     border-radius: 10px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.68rem;
     white-space: pre-wrap;
     word-break: break-word;
@@ -626,22 +618,22 @@ body.counter-page {
     width: 100%;
     padding: 0.55rem;
     border-radius: 8px;
-    background: rgba(255, 62, 62, 0.15);
-    border: 1px solid rgba(255, 62, 62, 0.35);
-    color: #fff;
+    background: rgb(var(--accent-rgb) / 0.15);
+    border: 1px solid rgb(var(--accent-rgb) / 0.35);
+    color: var(--on-accent);
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .build-btn-premium:hover {
-    background: rgba(255, 62, 62, 0.28);
+    background: rgb(var(--accent-rgb) / 0.28);
 }
 
 .placeholder-text {
     text-align: center;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgb(var(--ink-rgb) / 0.45);
     font-size: 0.9rem;
     line-height: 1.6;
 }
@@ -653,7 +645,7 @@ body.counter-page {
     padding: 0.15rem 0.45rem;
     border-radius: 999px;
     font-size: 0.58rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.06em;
     vertical-align: middle;
     color: #ffd666;

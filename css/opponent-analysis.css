@@ -14,13 +14,13 @@
 }
 
 .opp-prep-header h2 {
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -1px;
     margin: 0;
 }
 
 .opp-prep-sub {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
     font-size: 0.9rem;
     margin: 0.35rem 0 0;
 }
@@ -37,8 +37,8 @@
 }
 
 .opp-roster-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
     border-radius: 20px;
     padding: 1.25rem 1.5rem;
     margin-bottom: 1.5rem;
@@ -55,9 +55,8 @@
 
 .opp-section-title {
     font-size: 0.9rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: #e91e63;
     margin: 0;
 }
@@ -70,8 +69,8 @@
 
 .opp-slot {
     position: relative;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px dashed rgba(255, 255, 255, 0.12);
+    background: rgb(0 0 0 / calc(0.25 * var(--scrim-k)));
+    border: 1px dashed rgb(var(--ink-rgb) / 0.12);
     border-radius: 14px;
     transition: border-color 0.2s, transform 0.2s;
 }
@@ -101,9 +100,9 @@
     position: absolute;
     top: 6px;
     right: 8px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / calc(0.5 * var(--scrim-k)));
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(var(--ink-rgb) / 0.6);
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -114,7 +113,7 @@
 }
 
 .opp-slot-clear:hover {
-    color: #fff;
+    color: var(--text-strong);
     background: rgba(244, 67, 54, 0.6);
 }
 
@@ -136,17 +135,16 @@
 }
 
 .opp-slot-name {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.8rem;
-    color: #fff;
+    color: var(--text-strong);
     display: block;
 }
 
 .opp-slot-meta {
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.35);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    color: rgb(var(--ink-rgb) / 0.35);
+    letter-spacing: 0.01em;
 }
 
 .opp-slot-types {
@@ -158,7 +156,7 @@
 .opp-slot-badge {
     display: inline-block;
     font-size: 0.5rem;
-    font-weight: 800;
+    font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
     margin-top: 4px;
@@ -172,8 +170,8 @@
 }
 
 .opp-slot-badge--default {
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.45);
+    background: rgb(var(--ink-rgb) / 0.06);
+    color: rgb(var(--ink-rgb) / 0.45);
 }
 
 #opponent-prep-results {
@@ -183,18 +181,17 @@
 }
 
 .opp-analysis-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
     border-radius: 20px;
     padding: 1.25rem 1.5rem;
 }
 
 .opp-section-label {
     font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.45);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.45);
     margin: 0 0 0.75rem;
 }
 
@@ -216,9 +213,9 @@
     display: flex;
     gap: 12px;
     padding: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgb(var(--ink-rgb) / 0.05);
 }
 
 .opp-preview-sprite {
@@ -241,14 +238,14 @@
 }
 
 .opp-preview-name {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.95rem;
-    color: #fff;
+    color: var(--text-strong);
 }
 
 .opp-preview-item {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(var(--ink-rgb) / 0.5);
 }
 
 .opp-preview-roles {
@@ -267,7 +264,7 @@
 
 .opp-preview-stats {
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(var(--ink-rgb) / 0.35);
     display: flex;
     gap: 10px;
 }
@@ -286,8 +283,7 @@
 
 .opp-bring-col h4 {
     font-size: 0.8rem;
-    font-weight: 900;
-    text-transform: uppercase;
+    font-weight: 700;
     margin: 0 0 0.75rem;
 }
 
@@ -311,9 +307,9 @@
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgb(0 0 0 / calc(0.25 * var(--scrim-k)));
     border-radius: 10px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.85rem;
 }
 
@@ -348,7 +344,7 @@
     gap: 12px;
     padding: 10px 14px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
 }
 
 .opp-lead-card--you {
@@ -369,20 +365,20 @@
 
 .opp-lead-name {
     display: block;
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.9rem;
 }
 
 .opp-lead-reason {
     display: block;
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(var(--ink-rgb) / 0.5);
     margin-top: 2px;
     line-height: 1.4;
 }
 
 .opp-lead-reasoning {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
     border-radius: 12px;
     padding: 1rem 1.25rem;
     margin-bottom: 1rem;
@@ -410,23 +406,23 @@
 .opp-matchup-table td {
     padding: 8px 10px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 .opp-matchup-table th {
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 800;
+    color: rgb(var(--ink-rgb) / 0.4);
+    font-weight: 700;
     text-transform: uppercase;
     font-size: 0.65rem;
     letter-spacing: 0.05em;
 }
 
-.opp-match-score.pos { color: #66bb6a; font-weight: 900; }
-.opp-match-score.neg { color: #ef5350; font-weight: 900; }
+.opp-match-score.pos { color: #66bb6a; font-weight: 700; }
+.opp-match-score.neg { color: #ef5350; font-weight: 700; }
 
 .opp-counter-row {
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 .opp-counter-row:last-child {
@@ -442,7 +438,7 @@
 }
 
 .opp-counter-name {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.95rem;
 }
 
@@ -453,11 +449,10 @@
 .opp-counter-label {
     display: block;
     font-size: 0.6rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+    color: rgb(var(--ink-rgb) / 0.35);
     margin-bottom: 6px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
 }
 
 .opp-counter-chips {
@@ -482,7 +477,7 @@
 
 .opp-summary-grade {
     font-size: 2.5rem;
-    font-weight: 900;
+    font-weight: 700;
     width: 72px;
     height: 72px;
     display: flex;
@@ -507,15 +502,14 @@
 
 .opp-summary-num {
     font-size: 1.35rem;
-    font-weight: 900;
-    color: #fff;
+    font-weight: 700;
+    color: var(--text-strong);
 }
 
 .opp-summary-lbl {
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.4);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: rgb(var(--ink-rgb) / 0.4);
+    letter-spacing: 0.01em;
 }
 
 .opp-summary-gap,
@@ -546,8 +540,8 @@
 }
 
 #opponent-search-overlay .search-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(var(--ink-rgb) / 0.04);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
     border-radius: 10px;
     padding: 10px;
     text-align: center;
@@ -578,9 +572,8 @@
     margin-top: 6px;
     padding: 5px 8px;
     font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     background: rgba(156, 39, 176, 0.15);
     border: 1px solid rgba(156, 39, 176, 0.35);
     color: #ce93d8;
@@ -611,12 +604,12 @@
 
 .opp-build-option {
     text-align: left;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgb(var(--ink-rgb) / 0.04);
+    border: 1px solid rgb(var(--ink-rgb) / 0.1);
     border-radius: 12px;
     padding: 12px 14px;
     cursor: pointer;
-    color: #eee;
+    color: var(--text-main);
     transition: border-color 0.2s, background 0.2s;
 }
 
@@ -638,7 +631,7 @@
 }
 
 .opp-build-option__fmt {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.8rem;
     color: #e040fb;
 }
@@ -651,7 +644,7 @@
 .opp-build-option__current {
     margin-left: auto;
     font-size: 0.55rem;
-    font-weight: 900;
+    font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
     background: rgba(76, 175, 80, 0.2);
@@ -661,14 +654,14 @@
 .opp-build-option__detail {
     display: block;
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(var(--ink-rgb) / 0.6);
     margin-bottom: 4px;
 }
 
 .opp-build-option__moves {
     display: block;
     font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgb(var(--ink-rgb) / 0.45);
     line-height: 1.4;
 }
 
@@ -684,10 +677,9 @@
 }
 
 .opp-archetype-label {
-    font-weight: 900;
-    text-transform: uppercase;
+    font-weight: 700;
     font-size: 0.65rem;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.01em;
     opacity: 0.7;
     margin-right: 8px;
 }
@@ -704,7 +696,7 @@
 
 .opp-preview-tag {
     font-size: 0.55rem;
-    font-weight: 900;
+    font-weight: 700;
     padding: 2px 7px;
     border-radius: 4px;
     letter-spacing: 0.04em;
@@ -716,23 +708,22 @@
 }
 
 .opp-preview-tag--bench {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.45);
+    background: rgb(var(--ink-rgb) / 0.08);
+    color: rgb(var(--ink-rgb) / 0.45);
 }
 
 .opp-preview-item-line {
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(var(--ink-rgb) / 0.5);
     margin-bottom: 4px;
 }
 
 .opp-preview-moves-label {
     font-size: 0.58rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.3);
+    font-weight: 700;
+    color: rgb(var(--ink-rgb) / 0.3);
     margin: 8px 0 4px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.01em;
 }
 
 .opp-preview-actions {
@@ -745,7 +736,7 @@
 
 .opp-preview-build {
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(var(--ink-rgb) / 0.35);
 }
 
 .threat-move-pill--dim {
@@ -760,7 +751,7 @@
 
 .opp-bring-mon__name {
     display: block;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.85rem;
     margin-bottom: 4px;
 }
@@ -772,16 +763,15 @@
 }
 
 .opp-bring-mon--highlight {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgb(var(--ink-rgb) / 0.12);
 }
 
 .opp-bench-title {
     font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+    color: rgb(var(--ink-rgb) / 0.35);
     margin: 1rem 0 0.5rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
 }
 
 .opp-bring-list--bench .opp-bring-mon {
@@ -793,7 +783,7 @@
     margin: 0.75rem 0 0;
     padding-left: 1.1rem;
     font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgb(var(--ink-rgb) / 0.55);
     line-height: 1.55;
 }
 
@@ -809,8 +799,8 @@
 }
 
 .opp-action-card {
-    background: rgba(0, 0, 0, 0.22);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(0 0 0 / calc(0.22 * var(--scrim-k)));
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
     border-radius: 16px;
     padding: 1rem 1.15rem;
 }
@@ -826,7 +816,7 @@
     align-items: flex-start;
     margin-bottom: 12px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 .opp-action-card__sprite {
@@ -841,7 +831,7 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.95rem;
     margin-bottom: 6px;
 }
@@ -872,21 +862,21 @@
 }
 
 .opp-action--alt {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 .opp-action--gap {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
     font-size: 0.8rem;
     font-style: italic;
 }
 
 .opp-action__label {
     font-size: 0.6rem;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
     min-width: 28px;
     padding-top: 2px;
 }
@@ -906,8 +896,8 @@
 }
 
 .opp-action__mon {
-    font-weight: 900;
-    color: #fff;
+    font-weight: 700;
+    color: var(--text-strong);
 }
 
 .opp-action__arrow {
@@ -915,19 +905,19 @@
 }
 
 .opp-action__move {
-    font-weight: 800;
+    font-weight: 700;
     color: #ffcc80;
 }
 
 .opp-action__dmg {
-    font-weight: 900;
+    font-weight: 700;
     color: #81c784;
     font-family: monospace;
 }
 
 .opp-action__ko {
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #aed581;
     padding: 2px 6px;
     border-radius: 4px;
@@ -936,11 +926,11 @@
 
 .opp-speed-tag {
     font-size: 0.62rem;
-    font-weight: 800;
+    font-weight: 700;
     padding: 2px 7px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.5);
+    background: rgb(var(--ink-rgb) / 0.06);
+    color: rgb(var(--ink-rgb) / 0.5);
 }
 
 .opp-speed-tag--fast {
@@ -964,8 +954,7 @@
 .opp-watch-label {
     display: block;
     font-size: 0.62rem;
-    font-weight: 900;
-    text-transform: uppercase;
+    font-weight: 700;
     color: #ffb74d;
     margin-bottom: 4px;
 }
@@ -973,7 +962,7 @@
 .opp-watch-item {
     display: block;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgb(var(--ink-rgb) / 0.55);
     line-height: 1.45;
 }
 
@@ -984,7 +973,7 @@
 /* Battle intel panel */
 .opp-intel-intro {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgb(var(--ink-rgb) / 0.55);
     line-height: 1.6;
     margin: 0 0 1.25rem;
 }
@@ -992,7 +981,7 @@
 .opp-intel-block {
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 .opp-intel-block:last-child {
@@ -1002,9 +991,8 @@
 
 .opp-intel-block__title {
     font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: #e040fb;
     margin: 0 0 0.65rem;
 }
@@ -1034,7 +1022,7 @@
 .opp-mega-card {
     padding: 10px 12px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -1052,25 +1040,24 @@
 
 .opp-mega-card__side {
     font-size: 0.58rem;
-    font-weight: 900;
-    text-transform: uppercase;
+    font-weight: 700;
     opacity: 0.5;
 }
 
 .opp-mega-card__name {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.88rem;
-    color: #fff;
+    color: var(--text-strong);
 }
 
 .opp-mega-card__item {
     font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(var(--ink-rgb) / 0.5);
 }
 
 .opp-mega-card__speed {
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffcc80;
     font-family: monospace;
 }
@@ -1078,7 +1065,7 @@
 .opp-mega-badge {
     display: inline-block;
     font-size: 0.62rem;
-    font-weight: 900;
+    font-weight: 700;
     padding: 3px 8px;
     border-radius: 5px;
     background: rgba(255, 51, 51, 0.15);
@@ -1096,7 +1083,7 @@
 
 .opp-mega-calc-note {
     font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgb(var(--ink-rgb) / 0.45);
     margin: 6px 0 0;
     line-height: 1.45;
 }
@@ -1105,10 +1092,9 @@
 .opp-search-section-head {
     grid-column: 1 / -1;
     font-size: 0.65rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.4);
     padding: 12px 4px 6px;
     margin-top: 4px;
 }
@@ -1132,7 +1118,7 @@
 .opp-search-rank {
     display: block;
     font-size: 0.55rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffd700;
     margin-top: 4px;
     letter-spacing: 0.04em;
@@ -1143,7 +1129,7 @@
 }
 
 .opp-search-rank--champ {
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(var(--ink-rgb) / 0.35);
 }
 
 .opp-lead-weather {
@@ -1153,7 +1139,7 @@
     background: rgba(255, 193, 7, 0.08);
     border: 1px solid rgba(255, 193, 7, 0.25);
     font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgb(var(--ink-rgb) / 0.85);
 }
 
 .opp-intel-block--critical {
@@ -1198,8 +1184,8 @@
 .opp-warn-item {
     padding: 10px 12px;
     border-radius: 8px;
-    border-left: 3px solid rgba(255, 255, 255, 0.15);
-    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid rgb(var(--ink-rgb) / 0.15);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
 }
 
 .opp-warn-item--high {
@@ -1207,23 +1193,23 @@
 }
 
 .opp-warn-item--scout {
-    border-left-color: rgba(255, 255, 255, 0.25);
+    border-left-color: rgb(var(--ink-rgb) / 0.25);
     opacity: 0.85;
 }
 
 .opp-warn-item__head {
     display: block;
-    font-weight: 900;
+    font-weight: 700;
     font-size: 0.78rem;
     margin-bottom: 4px;
-    color: #fff;
+    color: var(--text-strong);
 }
 
 .opp-warn-item p {
     margin: 0;
     font-size: 0.78rem;
     line-height: 1.55;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(var(--ink-rgb) / 0.6);
 }
 
 .opp-warn-item strong {
@@ -1252,9 +1238,8 @@
 .opp-mirror-note__label {
     display: block;
     font-size: 0.65rem;
-    font-weight: 900;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: #ce93d8;
     margin-bottom: 4px;
 }
@@ -1263,7 +1248,7 @@
     margin: 0;
     font-size: 0.78rem;
     line-height: 1.55;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgb(var(--ink-rgb) / 0.65);
 }
 
 .opp-action__body .opp-preview-tag {
@@ -1281,7 +1266,7 @@
 
 .opp-int-tag {
     font-size: 0.62rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     padding: 2px 6px;

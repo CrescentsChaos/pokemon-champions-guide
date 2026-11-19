@@ -303,7 +303,6 @@
         font-size: 0.65rem;
         font-weight: 700;
         color: var(--text-muted);
-        text-transform: uppercase;
     }
 
     .editor-field input,
@@ -312,8 +311,8 @@
         padding: 0.55rem;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #fff;
+        border: 1px solid rgb(var(--ink-rgb) / 0.1);
+        color: var(--text-strong);
     }
 
     #target-moves-container {

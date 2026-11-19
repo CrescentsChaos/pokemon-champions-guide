@@ -641,7 +641,7 @@ function buildMetaSearchSection(format) {
 
     const fmt = (format || 'Singles').toLowerCase();
     const fmtBadge = fmt === 'doubles' ? '#4a90e2' : '#e63946';
-    let html = `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Top ${format} Meta · Latest Builds</div>`;
+    let html = `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgb(var(--ink-rgb) / 0.05); text-transform: uppercase; letter-spacing: 0.05em;">Top ${format} Meta · Latest Builds</div>`;
 
     topMetaNames.slice(0, 12).forEach(name => {
         const latest = findLatestBuildForSpecies(name, format, buildsDB);
@@ -721,7 +721,7 @@ function handleSearch(p, query) {
 
     let html = '';
     if (metaMatches.length > 0) {
-        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Meta Matches · ${format}</div>`;
+        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgb(var(--ink-rgb) / 0.05); text-transform: uppercase; letter-spacing: 0.05em;">Meta Matches · ${format}</div>`;
         metaMatches.slice(0, 6).forEach(name => {
             const latest = findLatestBuildForSpecies(name, format, buildsDB);
             if (latest && latest.build) {
@@ -752,7 +752,7 @@ function handleSearch(p, query) {
 
     // Add Build results
     if (shownBuilds.length > 0) {
-        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.05em;">Available Builds</div>`;
+        html += `<div style="padding: 5px 15px; font-size: 0.75rem; color: #aaa; background: rgb(var(--ink-rgb) / 0.05); text-transform: uppercase; letter-spacing: 0.05em;">Available Builds</div>`;
         html += shownBuilds.map(b => {
             const key = `${b.pokemon}|${b.format}|${b.role}`;
             const isClash = labelCount[key] > 1;
@@ -1359,7 +1359,7 @@ function updateStatsUI(pk) {
         }
 
         const choiceStyle = isChoiceBoosted || speedBoosted
-            ? 'color: #ffd76f; font-weight: 900; text-shadow: 0 0 8px rgba(255,200,80,0.6);'
+            ? 'color: #ffd76f; font-weight: 700; text-shadow: 0 0 8px rgba(255,200,80,0.6);'
             : '';
         const choiceTitle = isChoiceBoosted
             ? ` title="×1.5 from ${pk.item}"`
@@ -1370,8 +1370,8 @@ function updateStatsUI(pk) {
         let natureStyle = choiceStyle;
         if (!isChoiceBoosted && !speedBoosted && k !== 'hp') {
             const mod = natureMods[natureStatIdx[k]] || 1;
-            if (mod > 1) natureStyle = 'color: #ff5c5c; font-weight: 900;';
-            else if (mod < 1) natureStyle = 'color: #9ec5ff; font-weight: 800;';
+            if (mod > 1) natureStyle = 'color: #ff5c5c; font-weight: 700;';
+            else if (mod < 1) natureStyle = 'color: #9ec5ff; font-weight: 700;';
         }
 
         const evMax = isChampionsMode ? 32 : 252;

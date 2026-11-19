@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/theme-boot.js"></script>
     <meta name="description"
         content="Team builder for Pokémon Champions — Champions EV mode (66/32), legality checks, and shareable team pastes.">
     <title>Team Builder | Pokemon Champions Guide</title>
@@ -87,14 +88,13 @@
 
         .tab-name {
             font-size: 0.85rem;
-            font-weight: 800;
-            color: white;
+            font-weight: 700;
+            color: var(--text-strong);
         }
 
         .tab-role {
             font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
+            color: rgb(var(--ink-rgb) / 0.5);
         }
 
         /* Builder Layout */
@@ -121,7 +121,7 @@
         .big-sprite-box {
             width: 150px;
             height: 150px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             border-radius: 8px;
             display: flex;
             justify-content: center;
@@ -144,9 +144,8 @@
 
         .input-label {
             font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
-            font-weight: 800;
+            color: rgb(var(--ink-rgb) / 0.4);
+            font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
@@ -154,11 +153,11 @@
         .builder-input,
         select {
             width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgb(var(--ink-rgb) / 0.08);
+            border: 1px solid rgb(var(--ink-rgb) / 0.2);
             border-radius: 4px;
             padding: 10px 15px;
-            color: white;
+            color: var(--text-strong);
             font-size: 1rem;
             outline: none;
             transition: var(--transition);
@@ -170,19 +169,18 @@
         .builder-input:focus,
         select:focus {
             border-color: var(--primary-red);
-            box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
+            box-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.2);
         }
 
         /* Nature Dropdown Styling */
         select option {
-            background-color: #1a1a1c;
-            color: white;
+            background-color: var(--bg-elevated);
+            color: var(--on-accent);
             padding: 12px;
         }
 
         #nature-input {
-            font-weight: 800;
-            text-transform: uppercase;
+            font-weight: 700;
         }
 
         /* Scaled Team Preview */
@@ -194,8 +192,8 @@
         }
 
         .pokemon-config {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.6));
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(145deg, rgb(var(--ink-rgb) / 0.05), rgb(0 0 0 / calc(0.6 * var(--scrim-k))));
+            border: 1px solid rgb(var(--ink-rgb) / 0.08);
             border-radius: 6px;
             padding: 1.2rem !important;
             backdrop-filter: blur(15px);
@@ -235,21 +233,21 @@
 
         .stat-label {
             font-size: 0.85rem;
-            font-weight: 800;
-            color: white;
+            font-weight: 700;
+            color: var(--text-strong);
         }
 
         .base-val {
             font-size: 0.95rem;
-            color: white;
-            font-weight: 800;
+            color: var(--text-strong);
+            font-weight: 700;
             text-align: center;
         }
 
         .slider-wrap {
             width: 100%;
             height: 6px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(var(--ink-rgb) / 0.05);
             border-radius: 10px;
             position: relative;
         }
@@ -273,19 +271,19 @@
 
         .ev-input,
         .iv-input {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgb(var(--ink-rgb) / 0.15);
+            border: 1px solid rgb(var(--ink-rgb) / 0.3);
             border-radius: 5px;
-            color: white;
+            color: var(--text-strong);
             padding: 4px;
             text-align: center;
             font-size: 0.9rem;
-            font-weight: 800;
+            font-weight: 700;
         }
 
         .actual-stat {
             font-size: 1rem;
-            font-weight: 900;
+            font-weight: 700;
             color: var(--primary-red);
             text-align: right;
         }
@@ -293,13 +291,13 @@
         .ev-remaining {
             text-align: right;
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgb(var(--ink-rgb) / 0.5);
             margin-top: 15px;
         }
 
         .ev-remaining span {
-            color: white;
-            font-weight: 800;
+            color: var(--text-strong);
+            font-weight: 700;
         }
 
         .overlay {
@@ -308,7 +306,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgb(0 0 0 / calc(0.8 * var(--scrim-k)));
             backdrop-filter: blur(10px);
             z-index: 1000;
             display: none;
@@ -339,7 +337,7 @@
 
         .search-item {
             padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -374,7 +372,7 @@
         }
 
         .best-teams-sub {
-            color: rgba(255, 255, 255, 0.45);
+            color: rgb(var(--ink-rgb) / 0.45);
             font-size: 0.85rem;
             margin-top: 8px;
             line-height: 1.45;
@@ -398,17 +396,17 @@
 
         .best-teams-format-toggle {
             display: flex;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             padding: 5px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgb(var(--ink-rgb) / 0.08);
             gap: 2px;
         }
 
         .best-teams-dest {
             display: inline-flex;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgb(var(--ink-rgb) / 0.03);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
             border-radius: 12px;
             padding: 4px;
             gap: 4px;
@@ -417,11 +415,10 @@
         .best-dest-btn {
             border: none;
             background: transparent;
-            color: rgba(255, 255, 255, 0.55);
+            color: rgb(var(--ink-rgb) / 0.55);
             font-size: 0.72rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.01em;
             padding: 8px 14px;
             border-radius: 9px;
             cursor: pointer;
@@ -434,7 +431,7 @@
         }
 
         .best-teams-meta {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgb(var(--ink-rgb) / 0.4);
             font-size: 0.75rem;
             margin: 0 0 12px;
         }
@@ -451,10 +448,9 @@
             gap: 14px;
             padding: 16px 18px;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background:
-                linear-gradient(145deg, rgba(255, 196, 80, 0.07), transparent 42%),
-                rgba(255, 255, 255, 0.03);
+            border: 1px solid rgb(var(--ink-rgb) / 0.08);
+            background: linear-gradient(145deg, rgba(255, 196, 80, 0.07), transparent 42%),
+                rgb(var(--ink-rgb) / 0.03);
             transition: border-color 0.2s, transform 0.15s, background 0.2s;
         }
 
@@ -473,15 +469,15 @@
         .best-team-card__title {
             margin: 0;
             font-size: 1.05rem;
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: -0.02em;
-            color: #fff;
+            color: var(--text-strong);
         }
 
         .best-team-card__badge {
             flex-shrink: 0;
             font-size: 0.62rem;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             padding: 5px 9px;
@@ -511,8 +507,8 @@
             min-width: 0;
             padding: 8px 4px 10px;
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.22);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgb(0 0 0 / calc(0.22 * var(--scrim-k)));
+            border: 1px solid rgb(var(--ink-rgb) / 0.06);
         }
 
         .best-team-mon__sprite-wrap {
@@ -533,7 +529,7 @@
         .best-team-mon__name {
             font-size: 0.62rem;
             font-weight: 700;
-            color: rgba(255, 255, 255, 0.78);
+            color: rgb(var(--ink-rgb) / 0.78);
             text-align: center;
             line-height: 1.2;
             max-width: 100%;
@@ -544,7 +540,7 @@
 
         .best-team-mon__item {
             font-size: 0.55rem;
-            color: rgba(255, 255, 255, 0.38);
+            color: rgb(var(--ink-rgb) / 0.38);
             text-align: center;
             max-width: 100%;
             overflow: hidden;
@@ -566,7 +562,7 @@
         .best-team-empty {
             text-align: center;
             padding: 48px 20px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgb(var(--ink-rgb) / 0.4);
             font-size: 0.9rem;
         }
 
@@ -589,13 +585,12 @@
             gap: 6px;
             padding: 10px 18px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgb(var(--ink-rgb) / 0.12);
             background: linear-gradient(180deg, rgba(255, 70, 70, 0.95), rgba(220, 40, 40, 0.92));
-            color: #fff;
+            color: var(--on-accent);
             font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.01em;
             cursor: pointer;
             transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
             box-shadow: 0 6px 16px rgba(255, 51, 51, 0.18);
@@ -603,7 +598,7 @@
 
         .analyze-btn:hover {
             transform: translateY(-1px);
-            border-color: rgba(255, 255, 255, 0.22);
+            border-color: rgb(var(--ink-rgb) / 0.22);
             box-shadow: 0 10px 22px rgba(255, 51, 51, 0.28);
         }
 
@@ -613,10 +608,10 @@
 
         .builder-container .format-toggle-wrapper {
             display: flex;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgb(var(--ink-rgb) / 0.04);
             padding: 4px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
             gap: 2px;
         }
 
@@ -627,40 +622,40 @@
         }
 
         .builder-container .toggle-btn.active {
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: rgb(var(--ink-rgb) / 0.12);
         }
 
         /* Boxes / inputs polish */
         .team-tab {
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
+            background: rgb(var(--ink-rgb) / 0.04);
         }
 
         .team-tab:hover {
             opacity: 0.9;
-            border-color: rgba(255, 255, 255, 0.18);
+            border-color: rgb(var(--ink-rgb) / 0.18);
         }
 
         .builder-input,
         select {
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgb(var(--ink-rgb) / 0.14);
+            background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
         }
 
         .stat-rows {
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
+            background: rgb(0 0 0 / calc(0.28 * var(--scrim-k)));
             padding: 20px;
         }
 
         .ev-input,
         .iv-input {
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgb(var(--ink-rgb) / 0.16);
+            background: rgb(0 0 0 / calc(0.4 * var(--scrim-k)));
             padding: 6px 4px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
@@ -673,9 +668,9 @@
         }
 
         .big-sprite-box {
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
         }
 
         .moves-grid .builder-input,
@@ -685,12 +680,12 @@
 
         .overlay-content {
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgb(var(--ink-rgb) / 0.12);
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
         }
 
         .search-item {
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgb(var(--ink-rgb) / 0.08);
             border-radius: 10px;
         }
 
@@ -711,15 +706,15 @@
         .tb-stat-row__label {
             width: 30px;
             flex-shrink: 0;
-            color: rgba(255, 255, 255, 0.4);
-            font-weight: 900;
+            color: rgb(var(--ink-rgb) / 0.4);
+            font-weight: 700;
             font-family: monospace;
         }
 
         .tb-stat-row__bar {
             flex: 1;
             height: 6px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgb(0 0 0 / calc(0.4 * var(--scrim-k)));
             border-radius: 3px;
             overflow: hidden;
             min-width: 0;
@@ -729,7 +724,7 @@
             width: 36px;
             flex-shrink: 0;
             text-align: right;
-            font-weight: 900;
+            font-weight: 700;
             font-size: 0.9rem;
             letter-spacing: -0.5px;
             font-variant-numeric: tabular-nums;
@@ -740,10 +735,10 @@
             min-width: 1.65rem;
             padding: 1px 5px;
             border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.35);
-            color: rgba(255, 255, 255, 0.35);
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
+            background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
+            color: rgb(var(--ink-rgb) / 0.35);
+            font-family: var(--font-mono);
             font-size: 0.62rem;
             font-weight: 700;
             text-align: center;
@@ -1151,7 +1146,7 @@
 
         .analysis-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgb(var(--ink-rgb) / 0.2);
         }
 
         .type-badge-grid {
@@ -1166,13 +1161,13 @@
             border-radius: 10px;
             text-align: center;
             font-size: 0.65rem;
-            font-weight: 900;
-            color: white;
+            font-weight: 700;
+            color: var(--text-strong);
             text-transform: uppercase;
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
         }
 
         .type-score {
@@ -1185,7 +1180,7 @@
 
         .role-tag {
             font-size: 0.7rem;
-            font-weight: 800;
+            font-weight: 700;
             padding: 4px 10px;
             border-radius: 100px;
             background: rgba(255, 51, 51, 0.1);
@@ -1199,10 +1194,10 @@
             align-items: center;
             gap: 15px;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             border-radius: 16px;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgb(var(--ink-rgb) / 0.05);
         }
 
         .synergy-icon {
@@ -1212,7 +1207,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(var(--ink-rgb) / 0.05);
             border-radius: 12px;
             flex-shrink: 0;
         }
@@ -1227,7 +1222,7 @@
 
         .coverage-meter {
             height: 4px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(var(--ink-rgb) / 0.05);
             border-radius: 2px;
             margin-top: 5px;
             overflow: hidden;
@@ -1252,19 +1247,19 @@
             gap: 8px;
             margin-bottom: 20px;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgb(var(--ink-rgb) / 0.03);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgb(var(--ink-rgb) / 0.05);
         }
 
         .preset-chip {
             padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgb(var(--ink-rgb) / 0.05);
+            border: 1px solid rgb(var(--ink-rgb) / 0.1);
             border-radius: 100px;
             font-size: 0.7rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            color: rgb(var(--ink-rgb) / 0.6);
             cursor: pointer;
             transition: all 0.2s ease;
             text-transform: uppercase;
@@ -1272,8 +1267,8 @@
         }
 
         .preset-chip:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: rgb(var(--ink-rgb) / 0.1);
+            color: var(--text-strong);
             transform: translateY(-2px);
         }
 
@@ -1291,7 +1286,7 @@
 
         /* Capture Overrides */
         .is-capturing {
-            background: #0f0f11 !important;
+            background: var(--bg-elevated) !important;
             padding: 40px !important;
             width: fit-content !important;
         }
@@ -1300,10 +1295,11 @@
             transform: none !important;
             transition: none !important;
             /* Fallback for backdrop-filter which html2canvas doesn't support */
-            background: rgba(30, 30, 35, 0.95) !important;
+            background: rgb(var(--surface-rgb) / 0.95) !important;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
         }
     </style>
+    <link rel="stylesheet" href="../css/theme.css?v=1">
 </head>
 
 <body>
@@ -1326,7 +1322,7 @@
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <button id="champions-mode-toggle" class="analyze-btn" aria-label="Toggle Champions EV Mode"
-                        style="padding: 10px 20px; font-size: 0.8rem; background: var(--primary-red); border: 1px solid var(--glass-border); color: white;"
+                        style="padding: 10px 20px; font-size: 0.8rem; background: var(--primary-red); border: 1px solid var(--glass-border); color: var(--text-strong);"
                         onclick="toggleChampionsMode()">CHAMPIONS EV MODE: ON</button>
                     <button onclick="toggleLibrary()" class="analyze-btn" aria-label="Open My Saved Builds Library"
                         style="padding: 10px 25px; font-size: 0.8rem; background: var(--primary-red); border-color: transparent;">MY
@@ -1342,7 +1338,7 @@
             <div id="team-view" style="display: none; margin-top: 20px;">
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                     <button onclick="downloadTeamImage()" id="download-btn" class="analyze-btn"
-                        style="background: var(--primary-red); border: none; padding: 12px 25px; font-weight: 800; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 51, 51, 0.2);">
+                        style="background: var(--primary-red); border: none; padding: 12px 25px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 51, 51, 0.2);">
                         DOWNLOAD TEAM IMAGE 📸
                     </button>
                 </div>
@@ -1355,16 +1351,16 @@
             <div id="analysis-view" style="display: none; margin-top: 20px;">
                 <div
                     style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px; margin-bottom: 5px;">
-                    <h2 style="font-weight: 900; letter-spacing: -1px; margin: 0;">STRATEGIC INSIGHTS</h2>
+                    <h2 style="font-weight: 700; letter-spacing: -1px; margin: 0;">STRATEGIC INSIGHTS</h2>
                     <div class="format-toggle-wrapper"
-                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
+                        style="display: flex; background: rgb(var(--ink-rgb) / 0.03); padding: 5px; border-radius: 12px; border: 1px solid rgb(var(--ink-rgb) / 0.08); gap: 2px;">
                         <button id="analysis-toggle-singles" class="toggle-btn active"
                             onclick="setTeamAnalysisFormat('Singles')">SINGLES</button>
                         <button id="analysis-toggle-doubles" class="toggle-btn"
                             onclick="setTeamAnalysisFormat('Doubles')">DOUBLES</button>
                     </div>
                 </div>
-                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1rem;">Advanced analysis of
+                <p style="color: rgb(var(--ink-rgb) / 0.4); font-size: 0.9rem; margin-bottom: 1rem;">Advanced analysis of
                     your team's coverage, roles, and synergy.</p>
 
                 <div id="analysis-dashboard" style="margin-bottom: 1.5rem;">
@@ -1385,9 +1381,9 @@
                     </div>
 
                     <div class="analysis-card" id="strategy-overview-card"
-                        style="margin-bottom: 25px; border-color: rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(35, 35, 40, 0.7), rgba(15, 15, 18, 0.9)); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                        style="margin-bottom: 25px; border-color: rgb(var(--ink-rgb) / 0.2); background: linear-gradient(135deg, rgb(var(--surface-rgb) / 0.7), rgb(var(--surface-rgb) / 0.9)); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.1);">
                         <h3
-                            style="font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: white;">
+                            style="font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: var(--text-strong);">
                             <span style="font-size: 1.2rem;">🧠</span> Build Strategy Summary
                         </h3>
                         <p id="strategy-overview-text"
@@ -1398,18 +1394,18 @@
                     <div class="analysis-grid analysis-dashboard-grid">
                         <div style="display: flex; flex-direction: column; gap: 25px;">
                             <div class="analysis-card"
-                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                style="background: rgb(var(--ink-rgb) / 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.05);">
                                 <h3
-                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
+                                    style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--primary-red); margin-bottom: 15px;">
                                     Offensive Coverage</h3>
                                 <div class="type-badge-grid" id="offensive-coverage"
                                     style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
                                 </div>
                             </div>
                             <div class="analysis-card"
-                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                style="background: rgb(var(--ink-rgb) / 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.05);">
                                 <h3
-                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
+                                    style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #2196F3; margin-bottom: 15px;">
                                     Defensive Weaknesses</h3>
                                 <div class="type-badge-grid" id="defensive-coverage"
                                     style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
@@ -1418,32 +1414,32 @@
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 25px;">
                             <div class="analysis-card"
-                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                style="background: rgb(var(--ink-rgb) / 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.05);">
                                 <h3
-                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
+                                    style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #FF9800; margin-bottom: 15px;">
                                     Synergy Role Map</h3>
                                 <div id="pokemon-roles" style="display: flex; flex-direction: column; gap: 12px;"></div>
                             </div>
                             <div class="analysis-card"
-                                style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                                style="background: rgb(var(--ink-rgb) / 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.05);">
                                 <h3
-                                    style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
+                                    style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #4CAF50; margin-bottom: 15px;">
                                     Synergy Insights</h3>
                                 <div id="meta-threat-insights"></div>
                                 <div id="synergy-insights"></div>
                                 <div id="move-diversity"
-                                    style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                    style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgb(var(--ink-rgb) / 0.05);">
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="analysis-card"
-                        style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 25px;">
+                        style="background: rgb(var(--ink-rgb) / 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgb(var(--ink-rgb) / 0.05); margin-top: 25px;">
                         <h3
-                            style="font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
+                            style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #E91E63; margin-bottom: 15px;">
                             ⚔️ Meta Threat Matchup</h3>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 15px;">How your team
+                        <p style="font-size: 0.7rem; color: rgb(var(--ink-rgb) / 0.4); margin-bottom: 15px;">How your team
                             stacks up against the top-ranked meta threats for this format.</p>
                         <div id="threat-matchup" style="max-height: 600px; overflow-y: auto; padding-right: 4px;"></div>
                     </div>
@@ -1459,7 +1455,7 @@
                             + counter recommendations using calc damage.</p>
                     </div>
                     <div class="format-toggle-wrapper"
-                        style="display: flex; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); gap: 2px;">
+                        style="display: flex; background: rgb(var(--ink-rgb) / 0.03); padding: 5px; border-radius: 12px; border: 1px solid rgb(var(--ink-rgb) / 0.08); gap: 2px;">
                         <button id="opponent-toggle-singles" class="toggle-btn active"
                             onclick="setOpponentPrepFormat('Singles')">SINGLES</button>
                         <button id="opponent-toggle-doubles" class="toggle-btn"
@@ -1483,7 +1479,7 @@
                                 style="padding: 8px 16px; font-size: 0.75rem; background: linear-gradient(180deg, rgba(255, 196, 80, 0.95), rgba(201, 140, 30, 0.92)); border-color: rgba(255, 200, 80, 0.35); color: #1a1408;">BEST
                                 TEAMS</button>
                             <button type="button" class="analyze-btn" onclick="clearOpponentTeam()"
-                                style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.15);">CLEAR
+                                style="padding: 8px 16px; font-size: 0.75rem; background: transparent; border: 1px solid rgb(var(--ink-rgb) / 0.15);">CLEAR
                                 ALL</button>
                         </div>
                     </div>
@@ -1502,7 +1498,7 @@
                     <div class="opp-analysis-card">
                         <h3 class="opp-section-title" style="color: #ff9800; margin-bottom: 0.5rem;">What To Use Against
                             Each Threat</h3>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Answers from
+                        <p style="font-size: 0.7rem; color: rgb(var(--ink-rgb) / 0.4); margin-bottom: 1rem;">Answers from
                             your <strong>recommended bring</strong> first — OHKO &gt; 2HKO. Roster-only / mirror /
                             2nd-Mega options marked as ALT.</p>
                         <div id="opp-counter-matrix"></div>
@@ -1521,7 +1517,7 @@
 
                     <div class="opp-analysis-card">
                         <h3 class="opp-section-title" style="color: #9c27b0; margin-bottom: 1rem;">Opponent Team Builds
-                            <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.35);">— scout
+                            <span style="font-size:0.65rem;font-weight:600;color:rgb(var(--ink-rgb) / 0.35);">— scout
                                 reference</span>
                         </h3>
                         <div id="opponent-team-preview"></div>
@@ -1599,7 +1595,7 @@
                             <input type="text" id="tera-input" class="builder-input" placeholder="Optional"
                                 style="flex-grow: 1;">
                             <label id="forme-toggle-group"
-                                style="display: none; align-items: center; gap: 5px; cursor: pointer; color: white; white-space: nowrap;">
+                                style="display: none; align-items: center; gap: 5px; cursor: pointer; color: var(--text-strong); white-space: nowrap;">
                                 <input type="checkbox" id="forme-toggle" style="width: 16px; height: 16px;">
                                 Battle Forme
                             </label>
@@ -1622,7 +1618,7 @@
                 <div class="stat-rows" id="stat-rows">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <span class="input-label" style="font-size: 1.2rem; color: white;">Base Stats & EV Spread</span>
+                        <span class="input-label" style="font-size: 1.2rem; color: var(--text-strong);">Base Stats & EV Spread</span>
                         <input type="text" id="nature-input" class="builder-input" readonly placeholder="Select Nature"
                             style="width: 150px; background: rgba(255,51,51,0.1); border-color: var(--primary-red); cursor: pointer; text-align: center;">
                     </div>
@@ -1697,11 +1693,11 @@
     <div class="overlay" id="opponent-build-overlay" style="display: none;">
         <div class="overlay-content" style="max-width: 520px;">
             <h2 id="opponent-build-overlay-title">Swap Build</h2>
-            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Choose a different library
+            <p style="color: rgb(var(--ink-rgb) / 0.45); font-size: 0.8rem; margin-top: 8px;">Choose a different library
                 build for this opponent slot.</p>
             <div id="opponent-build-list" class="opp-build-list"></div>
             <button type="button" class="analyze-btn"
-                style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+                style="margin-top: 15px; background: transparent; border: 1px solid rgb(var(--ink-rgb) / 0.15);"
                 onclick="document.getElementById('opponent-build-overlay').style.display='none'">CANCEL</button>
         </div>
     </div>
@@ -1710,13 +1706,13 @@
     <div class="overlay" id="opponent-search-overlay" style="display: none;">
         <div class="overlay-content">
             <h2>Select Opponent Pokémon</h2>
-            <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; margin-top: 8px;">Champions-eligible only · Top
+            <p style="color: rgb(var(--ink-rgb) / 0.45); font-size: 0.8rem; margin-top: 8px;">Champions-eligible only · Top
                 meta shown first for your format</p>
             <input type="text" id="opponent-overlay-search" class="builder-input" style="margin-top: 15px;"
                 placeholder="Search species...">
             <div class="search-results" id="opponent-search-results"></div>
             <button type="button" class="analyze-btn"
-                style="margin-top: 15px; background: transparent; border: 1px solid rgba(255,255,255,0.15);"
+                style="margin-top: 15px; background: transparent; border: 1px solid rgb(var(--ink-rgb) / 0.15);"
                 onclick="document.getElementById('opponent-search-overlay').style.display='none'">CANCEL</button>
         </div>
     </div>
@@ -1735,17 +1731,17 @@
     <div class="overlay" id="import-overlay">
         <div class="overlay-content">
             <h2>Import PokePaste</h2>
-            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 10px;">Paste a team export
+            <p style="color: rgb(var(--ink-rgb) / 0.5); font-size: 0.85rem; margin-top: 10px;">Paste a team export
                 <strong>or</strong> a PokePaste URL (e.g. <code
-                    style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-size:0.8rem;">https://pokepast.es/abc123</code>)
+                    style="background:rgb(var(--ink-rgb) / 0.08); padding:2px 6px; border-radius:4px; font-size:0.8rem;">https://pokepast.es/abc123</code>)
             </p>
             <textarea id="import-textarea" class="builder-input" style="height: 300px; margin-top: 15px;"
                 placeholder="Paste team text or a pokepast.es URL here..."></textarea>
             <div id="import-status"
-                style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 10px; display: none;"></div>
+                style="color: rgb(var(--ink-rgb) / 0.5); font-size: 0.8rem; margin-top: 10px; display: none;"></div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
                 <button id="close-import" class="analyze-btn"
-                    style="background: transparent; border: 1px solid rgba(255,255,255,0.15);">CANCEL</button>
+                    style="background: transparent; border: 1px solid rgb(var(--ink-rgb) / 0.15);">CANCEL</button>
                 <button id="confirm-import" class="analyze-btn">LOAD TEAM</button>
             </div>
         </div>
@@ -1761,7 +1757,7 @@
                         or opponent prep.</p>
                 </div>
                 <button type="button" class="analyze-btn" id="close-best-teams"
-                    style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE</button>
+                    style="background:transparent; border: 1px solid rgb(var(--ink-rgb) / 0.2);">CLOSE</button>
             </div>
 
             <div class="best-teams-controls">
@@ -1807,7 +1803,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>My Local Library</h2>
                 <button onclick="document.getElementById('library-overlay').style.display='none'" class="analyze-btn"
-                    style="background:transparent; border: 1px solid rgba(255,255,255,0.2);">CLOSE</button>
+                    style="background:transparent; border: 1px solid rgb(var(--ink-rgb) / 0.2);">CLOSE</button>
             </div>
             <div id="library-grid" class="search-results"
                 style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
@@ -2139,7 +2135,7 @@
                         const emptyCard = document.createElement('div');
                         emptyCard.className = 'pokemon-config';
                         emptyCard.style.cssText = 'padding:20px; text-align:center; opacity:0.3; border: 2px dashed rgba(255,255,255,0.1); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:180px;';
-                        emptyCard.innerHTML = '<div style="font-size:2rem; margin-bottom:10px;">+</div><div style="font-size:0.7rem; font-weight:800;">SELECT POKEMON</div>';
+                        emptyCard.innerHTML = '<div style="font-size:2rem; margin-bottom:10px;">+</div><div style="font-size:0.7rem; font-weight:700;">SELECT POKEMON</div>';
                         emptyCard.onclick = () => switchSlot(i);
                         grid.appendChild(emptyCard);
                         return;
@@ -2206,7 +2202,7 @@
 
                     // Move processing
                     let movesHtml = p.moves.map(m => {
-                        if (!m) return `<div style="height:16px; border-left:2px solid rgba(255,255,255,0.03); margin-bottom:2px;"></div>`;
+                        if (!m) return `<div style="height:16px; border-left:2px solid rgb(var(--ink-rgb) / 0.03); margin-bottom:2px;"></div>`;
                         const searchKey = m.toLowerCase().replace(/[^a-z0-9]/g, '');
                         const moveRef = movesMap[searchKey] || (allMoves || []).find(x => (x.name || '').toLowerCase().replace(/[^a-z0-9]/g, '') === searchKey) || {};
                         const type = (moveRef.type || 'Normal').toLowerCase();
@@ -2215,7 +2211,7 @@
                         const desc = (moveRef.short_descripton || moveRef.short_description || moveRef.desc || 'No description available.').replace(/"/g, '&quot;');
                         const tooltip = `Type: ${type.toUpperCase()}\nCategory: ${moveRef.damage_class || 'Status'}\nPower: ${pwr} | Accuracy: ${acc} | PP: ${moveRef.pp || '-'}\n\n${desc}`;
                         return `
-                        <div title="${tooltip}" style="display:flex; align-items:center; gap:6px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.03); cursor:default;">
+                        <div title="${tooltip}" style="display:flex; align-items:center; gap:6px; margin-bottom:3px; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; border:1px solid rgb(var(--ink-rgb) / 0.03); cursor:default;">
                             <img src="../assets/type-icons/${type}_type.png" alt="${type}" style="height:14px; border-radius:3px; pointer-events:none;">
                             <span style="font-size:0.68rem; color:#eee; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1;">${m}</span>
                         </div>
@@ -2223,16 +2219,16 @@
                     }).join('');
 
                     card.innerHTML = `
-                    <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                    <div style="display:flex; gap:12px; align-items:center; padding-bottom:10px; border-bottom:1px solid rgb(var(--ink-rgb) / 0.1);">
+                        <div style="position:relative; width:64px; height:64px; background:radial-gradient(circle, rgb(var(--ink-rgb) / 0.1) 0%, transparent 70%); border-radius:12px; display:flex; align-items:center; justify-content:center;">
                             <img src="${sprite}" ${megaSpriteUrl ? `class="mega-toggle" data-base="${sprite}" data-mega="${megaSpriteUrl}" data-current-src="base"` : ''} style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.5));" onerror="handleSpriteError(this, '${p.species}', ${p.shiny})">
                             ${p.item ? `<img src="${itemSprite}" style="position:absolute; bottom:-4px; right:-4px; width:24px; height:24px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onerror="handleItemError(this, '${p.item.replace(/'/g, "\\'")}')">` : ''}
                         </div>
                         <div style="flex:1; min-width:0;">
-                            <div style="font-weight:900; font-size:1.1rem; color:#fff; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
+                            <div style="font-weight:700; font-size:1.1rem; color: var(--text-strong); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 4px rgba(0,0,0,0.5);">
                                 ${p.nickname ? `${p.nickname} <span style="font-size:0.8rem; opacity:0.6; font-weight:400;">(${p.species})</span>` : p.species}
                             </div>
-                            <div style="font-size:0.75rem; color:rgba(255,255,255,0.6); margin-top:2px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            <div style="font-size:0.75rem; color:rgb(var(--ink-rgb) / 0.6); margin-top:2px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                                 ${p.item ? `Held: ${p.item}` : 'No Item'}
                             </div>
                             <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
@@ -2240,30 +2236,30 @@
                                     <img src="../assets/type-icons/${t1Base}_type.png" alt="${t1Base}" class="type-icon ${isMegaActive ? 'mega-toggle-type1' : ''}" ${isMegaActive ? `data-base-type="${t1Base}" data-mega-type="${t1Mega}"` : ''} style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
                                     <img src="../assets/type-icons/${(t2Base || 'normal')}_type.png" alt="${t2Base || ''}" class="type-icon ${isMegaActive ? 'mega-toggle-type2' : ''}" ${isMegaActive ? `data-base-type="${t2Base || ''}" data-mega-type="${t2Mega || ''}"` : ''} style="height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); display: ${t2Base ? 'inline-block' : 'none'};">
                                 </div>
-                                <span style="font-size:0.7rem; color:rgba(255,255,255,0.4); font-weight:900; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
+                                <span style="font-size:0.7rem; color:rgb(var(--ink-rgb) / 0.4); font-weight:700; margin-left:auto; letter-spacing:1px;">LV.${p.level}</span>
                             </div>
                         </div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1.25fr 1fr; gap:12px; flex:1; margin-top:8px;">
                         <div style="display:flex; flex-direction:column;">
-                            <div style="font-size:0.6rem; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:900; margin-bottom:6px; letter-spacing:1px;">Core Moves</div>
+                            <div style="font-size:0.6rem; text-transform:uppercase; color:rgb(var(--ink-rgb) / 0.3); font-weight:700; margin-bottom:6px; letter-spacing:1px;">Core Moves</div>
                             <div style="display:flex; flex-direction:column; gap:4px;">
                                 ${movesHtml}
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; border-left:1px solid rgba(255,255,255,0.1); padding-left:10px;">
-                            <div style="font-size:0.6rem; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:900; margin-bottom:6px; letter-spacing:1px;">Battle Stats</div>
+                        <div style="display:flex; flex-direction:column; border-left:1px solid rgb(var(--ink-rgb) / 0.1); padding-left:10px;">
+                            <div style="font-size:0.6rem; text-transform:uppercase; color:rgb(var(--ink-rgb) / 0.3); font-weight:700; margin-bottom:6px; letter-spacing:1px;">Battle Stats</div>
                             ${statsHtml}
                         </div>
                     </div>
-                    <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:space-between;">
+                    <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgb(var(--ink-rgb) / 0.1); display:flex; align-items:center; justify-content:space-between;">
                         <div style="display:flex; gap:10px; align-items:center;">
                             ${p.tera ? `
                                 <img src="../assets/type-icons/tera_type_${p.tera.toLowerCase()}.png" alt="Tera ${p.tera}" class="tera-icon" style="height: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
                             ` : ''}
-                            <span style="font-size:0.8rem; color:${natureMap[p.nature].color}; font-weight:900; text-transform:uppercase; text-shadow: 0 0 10px ${natureMap[p.nature].color}44;">${p.nature}</span>
+                            <span style="font-size:0.8rem; color:${natureMap[p.nature].color}; font-weight:700; text-transform:uppercase; text-shadow: 0 0 10px ${natureMap[p.nature].color}44;">${p.nature}</span>
                         </div>
-                        <span class="${isMegaActive ? 'mega-ability-text' : ''}" ${isMegaActive ? `data-base-ability="${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}" data-mega-ability="${((dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : p.ability) || 'No Ability'}"` : ''} style="font-size:0.75rem; color:rgba(255,255,255,0.6); font-weight:800; text-transform:uppercase;">${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}</span>
+                        <span class="${isMegaActive ? 'mega-ability-text' : ''}" ${isMegaActive ? `data-base-ability="${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}" data-mega-ability="${((dbMega.Ability && dbMega.Ability.length > 0) ? dbMega.Ability[0] : p.ability) || 'No Ability'}"` : ''} style="font-size:0.75rem; color:rgb(var(--ink-rgb) / 0.6); font-weight:700; text-transform:uppercase;">${((dbBase.Ability && dbBase.Ability.length > 0) ? dbBase.Ability[0] : p.ability) || 'No Ability'}</span>
                     </div>
                 `;
                     grid.appendChild(card);
@@ -2671,7 +2667,7 @@
                             id: b.id || idx,
                             name: `${b.format || 'Standard'} Build`,
                             Name: `${b.format || 'Standard'} Build`,
-                            description: parsed ? `<span style="color:#00ffcc">${parsed.item ? '@ ' + parsed.item : 'No Item'}</span> | <span style="color:#ffeb3b">${parsed.ability || 'No Ability'}</span><br><span style="color:#fff">${parsed.moves.join(' / ')}</span>` : 'Invalid Build',
+                            description: parsed ? `<span style="color:#00ffcc">${parsed.item ? '@ ' + parsed.item : 'No Item'}</span> | <span style="color:#ffeb3b">${parsed.ability || 'No Ability'}</span><br><span style="color: var(--text-strong)">${parsed.moves.join(' / ')}</span>` : 'Invalid Build',
                             buildObj: parsed,
                             eligible: true,
                             rank: idx
@@ -2726,19 +2722,19 @@
                     const champBadge = item.inChampions ? `<span style="font-size:0.5rem; background:rgba(255,200,0,0.2); color:#ffd700; border:1px solid rgba(255,200,0,0.4); border-radius:3px; padding:1px 5px; display:block; margin-top:2px; letter-spacing:0.5px;">🏆 IN CHAMPIONS</span>` : '';
                     card.innerHTML = `
                         <img src="${sprUrl}" onerror="handleSpriteError(this, '${name.replace(/'/g, "\\'")}', false)" style="width:52px;height:52px;object-fit:contain;display:block;margin:0 auto;">
-                        <div style="font-weight:900; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : (item.inChampions ? 'color:#ffd700;' : '')}">${idStr}${name} ${starStr}</div>
+                        <div style="font-weight:700; font-size:0.85rem; ${item.eligible ? 'color:var(--primary-red);' : (item.inChampions ? 'color:#ffd700;' : '')}">${idStr}${name} ${starStr}</div>
                         <div style="display:flex; justify-content:center; gap:2px; margin-top:2px;">${typeIcon1}${typeIcon2}</div>
                         ${recBadge}
                         ${champBadge}
                     `;
                 } else {
                     const champLabel = (overlayTarget === 'item' && item.inChampions) ? `<span style="font-size:0.5rem; background:rgba(255,200,0,0.15); color:#ffd700; border:1px solid rgba(255,200,0,0.35); border-radius:3px; padding:1px 5px; margin-left:5px; vertical-align:middle; letter-spacing:0.5px;">🏆 IN CHAMPIONS</span>` : '';
-                    card.innerHTML = `<div style="font-weight:900; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px; ${item.eligible ? 'color: var(--primary-red);' : (overlayTarget === 'item' && item.inChampions ? 'color:#ffd700;' : '')}">${iconHtml}<span>${idStr}${name} ${starStr}</span>${champLabel}</div>`;
+                    card.innerHTML = `<div style="font-weight:700; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px; ${item.eligible ? 'color: var(--primary-red);' : (overlayTarget === 'item' && item.inChampions ? 'color:#ffd700;' : '')}">${iconHtml}<span>${idStr}${name} ${starStr}</span>${champLabel}</div>`;
                     if (item.Type_1) card.innerHTML += `<div style="font-size:0.7rem;">${item.Type_1} ${item.Type_2 || ''}</div>`;
 
                     if (overlayTarget && overlayTarget.startsWith('move')) {
                         const typeIcon = item.type ? `<img src="../assets/type-icons/${item.type.toLowerCase()}_type.png" style="height:14px; vertical-align:middle; margin-right:4px;" alt="${item.type}">` : '';
-                        const classIcon = item.damage_class ? `<span style="font-size:0.6rem; background:rgba(255,255,255,0.1); padding:2px 4px; border-radius:2px; vertical-align:middle;">${item.damage_class.toUpperCase()}</span>` : '';
+                        const classIcon = item.damage_class ? `<span style="font-size:0.6rem; background:rgb(var(--ink-rgb) / 0.1); padding:2px 4px; border-radius:2px; vertical-align:middle;">${item.damage_class.toUpperCase()}</span>` : '';
 
                         const pwr = item.power || '--';
                         const acc = item.accuracy || '--';
@@ -2749,7 +2745,7 @@
                             ${typeIcon}
                             ${classIcon}
                         </div>
-                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.7); font-family:monospace; margin-top:6px;">
+                        <div style="font-size:0.75rem; color:rgb(var(--ink-rgb) / 0.7); font-family:monospace; margin-top:6px;">
                             PWR: ${pwr} | ACC: ${acc} | PP: ${pp}
                         </div>
                     `;
@@ -2764,8 +2760,8 @@
                 } // end else (non-species)
 
                 if (overlayTarget === 'build') {
-                    card.innerHTML = `<div style="font-weight:900; color:#e040fb; margin-bottom: 5px;">✨ ${item.name}</div>
-                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.8); line-height: 1.4;">${item.description}</div>`;
+                    card.innerHTML = `<div style="font-weight:700; color:#e040fb; margin-bottom: 5px;">✨ ${item.name}</div>
+                    <div style="font-size:0.75rem; color:rgb(var(--ink-rgb) / 0.8); line-height: 1.4;">${item.description}</div>`;
                     card.onclick = () => {
                         const b = item.buildObj;
                         const t = team[currentSlot];
@@ -3478,7 +3474,7 @@
             grid.innerHTML = '';
 
             if (library.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.3); padding: 40px;">No saved builds found. Create a build and click "Save to Library" to see it here.</p>';
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgb(var(--ink-rgb) / 0.3); padding: 40px;">No saved builds found. Create a build and click "Save to Library" to see it here.</p>';
                 return;
             }
 
@@ -3498,9 +3494,9 @@
 
                 card.innerHTML = `
                     <img src="${getSpriteUrl(pTemp)}" onerror="handleSpriteError(this, '${pTemp.species}', false)" style="width: 80px; height: 80px; object-fit: contain;">
-                    <div style="font-weight: 800;">${escapeLibraryHtml(displayName)}</div>
-                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.55);">${parsedTeam.length} Pokémon</div>
-                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4);">${item.timestamp}</div>
+                    <div style="font-weight: 700;">${escapeLibraryHtml(displayName)}</div>
+                    <div style="font-size: 0.65rem; color: rgb(var(--ink-rgb) / 0.55);">${parsedTeam.length} Pokémon</div>
+                    <div style="font-size: 0.65rem; color: rgb(var(--ink-rgb) / 0.4);">${item.timestamp}</div>
                     <div style="display: flex; gap: 5px; width: 100%; margin-top: 10px;">
                         <button onclick="loadFromLibrary(${item.id})" class="analyze-btn" style="flex: 1; padding: 5px; font-size: 0.7rem;">${loadLabel}</button>
                         <button onclick="renameLibraryTeam(${item.id})" class="analyze-btn" aria-label="Rename saved team" style="flex: 0; padding: 5px 8px; font-size: 0.65rem; background: rgba(74,144,226,0.2); border-color: rgba(74,144,226,0.35);">RENAME</button>

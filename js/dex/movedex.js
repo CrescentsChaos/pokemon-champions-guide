@@ -182,7 +182,7 @@
                         ${D.typeIconHtml(move.type, 48)}
                     </div>
                     <h2 class="dex-detail-name">${D.escapeHtml(move.name)}</h2>
-                    <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
+                    <p style="color:rgb(var(--ink-rgb) / 0.65);font-size:0.85rem;">${D.escapeHtml(move.generation || '')}</p>
                     <div class="dex-detail-category-row">
                         ${D.dmgClassHtml(move.damage_class, 32)}
                     </div>

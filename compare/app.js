@@ -750,7 +750,7 @@ function updateEvTotals() {
         const total = STATS.reduce((s, k) => s + (parseInt(p.evs[k], 10) || 0), 0);
         const max = isChampionsMode ? 66 : 508;
         el.textContent = `${total} / ${max}`;
-        el.style.color = total > max ? '#ff8a8a' : 'rgba(255,255,255,0.55)';
+        el.style.color = total > max ? '#ff8a8a' : 'rgb(var(--ink-rgb) / 0.55)';
     });
 }
 
@@ -947,7 +947,7 @@ function renderStatsEditor(num) {
             <td style="text-align: center;">
                 <input type="number" class="type-input" style="width: 50px; text-align: center; padding: 4px;" id="p${num}-iv-${stat}" value="${p.ivs[stat]}" min="0" max="31">
             </td>
-            <td style="text-align: center; font-weight: 800; color: #fff;">${p.stats[stat] || 0}</td>
+            <td style="text-align: center; font-weight: 700; color: #fff;">${p.stats[stat] || 0}</td>
         `;
         tbody.appendChild(row);
 

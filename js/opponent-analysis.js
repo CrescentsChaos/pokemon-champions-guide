@@ -1507,7 +1507,7 @@ function updateOpponentSearchResults(q) {
             else badge = '<span class="opp-search-rank opp-search-rank--champ">🏆</span>';
             card.innerHTML = `
                 <img src="${spr}" style="width:48px;height:48px;object-fit:contain" onerror="this.style.display='none'">
-                <div style="font-weight:900;font-size:0.85rem;color:#ffd700">${escapeAnalysisHtml(name)}</div>
+                <div style="font-weight:700;font-size:0.85rem;color:#ffd700">${escapeAnalysisHtml(name)}</div>
                 <div>${t1 ? `<img src="${typeIconSrc(t1)}" height="12">` : ''}${t2 ? `<img src="${typeIconSrc(t2)}" height="12">` : ''}</div>
                 ${badge}`;
             card.onclick = () => {
@@ -1877,7 +1877,7 @@ function showOpponentPrepView() {
         if (!existing) {
             const loading = document.createElement('div');
             loading.className = 'opp-prep-loading';
-            loading.style.cssText = 'padding:16px;text-align:center;color:rgba(255,255,255,0.7);font-weight:700;font-size:0.85rem;';
+            loading.style.cssText = 'padding:16px;text-align:center;color:rgb(var(--ink-rgb) / 0.7);font-weight:700;font-size:0.85rem;';
             loading.textContent = 'Analyzing matchup…';
             results.insertBefore(loading, results.firstChild);
         }

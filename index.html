@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/theme-boot.js"></script>
     <title>Pokemon Champions Guide | Competitive Team Building & Analysis</title>
     <meta name="description"
         content="The Champions-format competitive Pokémon toolkit — team builder, damage calculator with 66/32 EV rules, meta builds, matchup counters, and build comparison.">
@@ -15,6 +16,7 @@
     <link rel="icon" type="image/png" href="assets/champions-logo.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/theme.css?v=1">
 </head>
 
 <body class="home-page">
@@ -22,42 +24,54 @@
     <main id="main-content" tabindex="-1">
     <section class="home-hero" aria-labelledby="hero-title">
         <div class="home-hero__bg" aria-hidden="true">
-            <img src="assets/hero_bg.png" alt="">
-            <div class="home-hero__scrim"></div>
+            <img src="assets/hero_bg.png" alt="" onerror="this.remove()">
         </div>
 
         <div class="container home-hero__inner">
-            <div class="home-hero__copy fade-in">
-                <div class="home-hero__badge">
+            <div class="home-hero__copy">
+                <p class="home-hero__badge" data-seq="0">
                     <span class="home-hero__badge-dot"></span>
-                    Champions Format Toolkit
-                </div>
-                <h1 id="hero-title" class="home-hero__title">
-                    Build smarter.<br>Win with <em>data.</em>
-                </h1>
-                <p class="home-hero__lead">
-                    Built for Pokémon Champions — curated legal builds, Champions EV calc (66/32),
-                    team construction, and matchup analysis for singles and doubles.
+                    Built for the Champions format
                 </p>
-                <div class="home-hero__actions">
-                    <a href="builds/" class="home-btn home-btn--primary">Browse Meta Builds</a>
-                    <a href="counter/" class="home-btn home-btn--ghost">Counter Threats</a>
-                    <a href="teambuilder/" class="home-btn home-btn--ghost">Open Team Builder</a>
+                <h1 id="hero-title" class="home-hero__title" data-seq="1">
+                    Build smarter.<br>Win with data.
+                </h1>
+                <p class="home-hero__lead" data-seq="2">
+                    Curated legal builds, a damage calculator with the 66/32 EV rules built in,
+                    team construction and matchup analysis for singles and doubles.
+                </p>
+                <div class="home-hero__actions" data-seq="3">
+                    <a href="builds/" class="home-btn home-btn--primary">Browse meta builds</a>
+                    <a href="counter/" class="home-btn home-btn--ghost">Counter threats</a>
+                    <a href="teambuilder/" class="home-btn home-btn--ghost">Open team builder</a>
                 </div>
-                <ul class="home-hero__points">
-                    <li>Champions EV rules by default (66/32)</li>
-                    <li>Champions-eligible builds &amp; Pokédex</li>
-                    <li>Singles &amp; doubles workflows</li>
+                <ul class="home-hero__points" data-seq="4">
+                    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Champions EV rules by default (66/32)</li>
+                    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Champions-eligible builds and Pokédex</li>
+                    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Singles and doubles workflows</li>
                 </ul>
             </div>
 
-            <aside class="home-hero__panel fade-in" aria-label="Platform preview">
-                <p class="home-hero__panel-label">Meta intelligence</p>
-                <img src="assets/feature_meta.png" alt="Competitive meta analysis visualization">
-                <p class="home-hero__panel-copy">
-                    Track usage trends, compare spreads, and pressure-test teams against the current meta before you
-                    queue.
-                </p>
+            <aside class="roll" aria-label="Example damage calculation" data-seq="2">
+                <div class="roll__head">
+                    <span class="roll__title">Damage roll</span>
+                    <span class="roll__chip">Example</span>
+                </div>
+                <div class="roll__matchup">
+                    <div class="roll__mon"><span class="roll__role">Attacker</span><strong id="roll-atk">Garchomp</strong></div>
+                    <svg class="roll__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+                    <div class="roll__mon roll__mon--right"><span class="roll__role">Defender</span><strong id="roll-def">Corviknight</strong></div>
+                </div>
+                <div class="roll__move"><span id="roll-move">Earthquake</span><span class="roll__field">Singles</span></div>
+                <div class="roll__hp" role="img" aria-label="Defender HP after the roll">
+                    <div class="roll__hp-max" id="roll-max"></div>
+                    <div class="roll__hp-min" id="roll-min"></div>
+                </div>
+                <div class="roll__readout">
+                    <span class="roll__range mono" id="roll-range">0% – 0%</span>
+                    <span class="roll__verdict" id="roll-verdict">Calculating</span>
+                </div>
+                <p class="roll__foot">Illustrative values. Open the calculator for exact rolls with your own spreads.</p>
             </aside>
         </div>
     </section>
@@ -66,19 +80,19 @@
         <div class="container">
             <div class="home-stats__grid fade-in">
                 <div class="home-stat">
-                    <span class="home-stat__value" id="stat-pokemon">—</span>
+                    <span class="home-stat__value mono" id="stat-pokemon">—</span>
                     <span class="home-stat__label">Pokémon indexed</span>
                 </div>
                 <div class="home-stat">
-                    <span class="home-stat__value" id="stat-moves">—</span>
+                    <span class="home-stat__value mono" id="stat-moves">—</span>
                     <span class="home-stat__label">Moves catalogued</span>
                 </div>
                 <div class="home-stat">
-                    <span class="home-stat__value" id="stat-builds">—</span>
+                    <span class="home-stat__value mono" id="stat-builds">—</span>
                     <span class="home-stat__label">Competitive builds</span>
                 </div>
                 <div class="home-stat">
-                    <span class="home-stat__value">6</span>
+                    <span class="home-stat__value mono">6</span>
                     <span class="home-stat__label">Integrated tools</span>
                 </div>
             </div>
@@ -88,41 +102,40 @@
     <section class="home-workflow" aria-labelledby="workflow-title">
         <div class="container">
             <div class="home-section__head fade-in">
-                <span class="home-section__eyebrow">Workflow</span>
                 <h2 id="workflow-title">From meta scan to matchup answers</h2>
-                <p>Four connected steps — each tool feeds the next so your prep stays consistent.</p>
+                <p>Four connected steps. Each tool feeds the next so your prep stays consistent.</p>
             </div>
-            <ol class="home-workflow__steps fade-in">
-                <li class="home-workflow__step">
+            <ol class="home-workflow__steps">
+                <li class="home-workflow__step fade-in">
                     <span class="home-workflow__num">1</span>
                     <div>
                         <h3>Browse meta builds</h3>
-                        <p>Filter singles and doubles sets by role, typing, and Champions eligibility.</p>
-                        <a href="builds/">Open library →</a>
+                        <p>Filter singles and doubles sets by role, typing and Champions eligibility.</p>
+                        <a href="builds/">Open library</a>
                     </div>
                 </li>
-                <li class="home-workflow__step">
+                <li class="home-workflow__step fade-in">
                     <span class="home-workflow__num">2</span>
                     <div>
                         <h3>Import or draft a team</h3>
                         <p>Paste Showdown sets into the team builder or adapt a library build.</p>
-                        <a href="teambuilder/">Build a team →</a>
+                        <a href="teambuilder/">Build a team</a>
                     </div>
                 </li>
-                <li class="home-workflow__step">
+                <li class="home-workflow__step fade-in">
                     <span class="home-workflow__num">3</span>
                     <div>
                         <h3>Pressure-test damage</h3>
-                        <p>Validate OHKOs, speed tiers, and field conditions with the damage calculator.</p>
-                        <a href="calc/">Run calcs →</a>
+                        <p>Validate OHKOs, speed tiers and field conditions with the damage calculator.</p>
+                        <a href="calc/">Run calcs</a>
                     </div>
                 </li>
-                <li class="home-workflow__step">
+                <li class="home-workflow__step fade-in">
                     <span class="home-workflow__num">4</span>
                     <div>
                         <h3>Find counters</h3>
                         <p>Load any premade or pasted threat and rank answers from the build database.</p>
-                        <a href="counter/">Counter tool →</a>
+                        <a href="counter/">Counter tool</a>
                     </div>
                 </li>
             </ol>
@@ -132,50 +145,46 @@
     <section class="home-section" id="tools" aria-labelledby="tools-title">
         <div class="container">
             <div class="home-section__head fade-in">
-                <span class="home-section__eyebrow">Toolkit</span>
                 <h2 id="tools-title">Everything you need in one place</h2>
-                <p>
-                    Each module is built for competitive workflows — fast lookups, accurate calculations, and
-                    tournament-ready outputs you can trust in prep and on stream.
-                </p>
+                <p>Each module is built for competitive workflows: fast lookups, accurate calculations and outputs you can trust in prep and on stream.</p>
             </div>
 
             <div class="home-tools">
+                <a href="calc/" class="home-tool-card home-tool-card--wide fade-in">
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg></span>
+                    <h3>Damage calculator</h3>
+                    <p>Model OHKO thresholds, multi-hit sequences, screens, weather and item-boosted scenarios.</p>
+                    <span class="home-tool-card__link">Run calcs</span>
+                </a>
                 <a href="teambuilder/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">TB</span>
-                    <h3>Team Builder</h3>
-                    <p>Construct full rosters with EV validation, coverage checks, and Champions-format stat rules.</p>
-                    <span class="home-tool-card__link">Open builder →</span>
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg></span>
+                    <h3>Team builder</h3>
+                    <p>Construct full rosters with EV validation, coverage checks and Champions stat rules.</p>
+                    <span class="home-tool-card__link">Open builder</span>
                 </a>
                 <a href="builds/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">BL</span>
-                    <h3>Builds Library</h3>
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 12 3l8 3.5-8 3.5z"/><path d="m4 11.5 8 3.5 8-3.5"/><path d="m4 16.5 8 3.5 8-3.5"/></svg></span>
+                    <h3>Builds library</h3>
                     <p>Browse curated singles and doubles sets from the current meta, ready to import or adapt.</p>
-                    <span class="home-tool-card__link">View builds →</span>
-                </a>
-                <a href="calc/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">DC</span>
-                    <h3>Damage Calculator</h3>
-                    <p>Model OHKO thresholds, multi-hit sequences, screens, weather, and item-boosted scenarios.</p>
-                    <span class="home-tool-card__link">Run calcs →</span>
+                    <span class="home-tool-card__link">View builds</span>
                 </a>
                 <a href="pokedex/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">DX</span>
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/><path d="M8.5 11h5M11 8.5v5"/></svg></span>
                     <h3>Elite Pokédex</h3>
-                    <p>Search base stats, typings, and abilities with a database tuned for competitive reference.</p>
-                    <span class="home-tool-card__link">Search dex →</span>
+                    <p>Search base stats, typings and abilities in a database tuned for competitive reference.</p>
+                    <span class="home-tool-card__link">Search the dex</span>
                 </a>
                 <a href="compare/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">CP</span>
-                    <h3>Compare Builds</h3>
-                    <p>Import Pokepastes and compare stats, speed tiers, and move sets side by side.</p>
-                    <span class="home-tool-card__link">Compare sets →</span>
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4v16M16 4v16"/><path d="m4 8 4-4 4 4M12 16l4 4 4-4"/></svg></span>
+                    <h3>Compare builds</h3>
+                    <p>Import Pokepastes and compare stats, speed tiers and move sets side by side.</p>
+                    <span class="home-tool-card__link">Compare sets</span>
                 </a>
                 <a href="counter/" class="home-tool-card fade-in">
-                    <span class="home-tool-card__icon" aria-hidden="true">CT</span>
-                    <h3>Counter Tool</h3>
+                    <span class="home-tool-card__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 8 7.5 9.5 4.4-1.5 7.5-5 7.5-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
+                    <h3>Counter tool</h3>
                     <p>Identify answers and pressure points against imported threats using the build library.</p>
-                    <span class="home-tool-card__link">Find counters →</span>
+                    <span class="home-tool-card__link">Find counters</span>
                 </a>
             </div>
         </div>
@@ -184,51 +193,48 @@
     <section class="home-section home-section--alt" aria-labelledby="platform-title">
         <div class="container home-split">
             <div class="fade-in">
-                <span class="home-section__eyebrow">Why Champions Guide</span>
                 <h2 id="platform-title">Built for preparation, not guesswork</h2>
                 <p class="home-section__lead">
-                    Whether you are tuning EV spreads for a regional or theorycrafting a new core for online ladder,
+                    Whether you are tuning EV spreads for a regional or theorycrafting a new core for ladder,
                     the platform keeps your analysis consistent across every tool.
                 </p>
                 <ul class="home-feature-list">
                     <li>
-                        <span class="home-feature-list__num">01</span>
                         <div>
                             <h4>Accurate battle math</h4>
-                            <p>Damage calculations account for Gen 9 mechanics, abilities, items, terrain, weather, and
-                                multi-hit move combinations.</p>
+                            <p>Damage calculations account for Gen 9 mechanics, abilities, items, terrain, weather and multi-hit move combinations.</p>
                         </div>
                     </li>
                     <li>
-                        <span class="home-feature-list__num">02</span>
                         <div>
                             <h4>Format-aware workflows</h4>
-                            <p>Switch between singles and doubles contexts across builds, calcs, and team analysis
-                                without rebuilding from scratch.</p>
+                            <p>Switch between singles and doubles across builds, calcs and team analysis without rebuilding from scratch.</p>
                         </div>
                     </li>
                     <li>
-                        <span class="home-feature-list__num">03</span>
                         <div>
                             <h4>Champions EV rules</h4>
-                            <p>Optional 66-total / 32-per-stat EV mode with direct stat conversion for custom
-                                competitive formats.</p>
+                            <p>A 66-total, 32-per-stat EV mode with direct stat conversion for the Champions format.</p>
                         </div>
                     </li>
                 </ul>
             </div>
 
             <div class="home-meta-panel fade-in">
-                <h3>Top singles meta · current patch</h3>
+                <h3>Top singles meta</h3>
                 <div class="home-meta-tags" id="meta-tags-singles" aria-live="polite">
-                    <span class="home-meta-tag">Loading…</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
                 </div>
-                <h3>Top doubles meta · current patch</h3>
+                <h3>Top doubles meta</h3>
                 <div class="home-meta-tags" id="meta-tags-doubles" aria-live="polite">
-                    <span class="home-meta-tag">Loading…</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
+                    <span class="home-meta-tag skeleton">Loading</span>
                 </div>
                 <p class="home-meta-note">
-                    Click a Pokémon to open the counter tool with that threat pre-loaded, or
+                    Pick a Pokémon to open the counter tool with that threat loaded, or
                     <a href="builds/" class="home-meta-link">browse all builds</a>.
                 </p>
             </div>
@@ -240,12 +246,11 @@
             <div class="home-cta__box fade-in">
                 <div>
                     <h2>Ready to prep your next team?</h2>
-                    <p>Start from a proven build or draft a fresh roster — then validate every matchup before you hit
-                        battle.</p>
+                    <p>Start from a proven build or draft a fresh roster, then validate every matchup before you queue.</p>
                 </div>
                 <div class="home-cta__actions">
-                    <a href="builds/" class="home-btn home-btn--primary">Explore Builds</a>
-                    <a href="calc/" class="home-btn home-btn--ghost">Damage Calculator</a>
+                    <a href="builds/" class="home-btn home-btn--primary">Explore builds</a>
+                    <a href="calc/" class="home-btn home-btn--ghost">Damage calculator</a>
                 </div>
             </div>
         </div>
@@ -257,20 +262,16 @@
     <script>
         (async function loadHomeData() {
             const fmt = (n) => n.toLocaleString('en-US');
+            const reduced = () => document.documentElement.getAttribute('data-motion') === 'off';
 
             function animateStat(el, target) {
                 if (!el || !Number.isFinite(target)) return;
-                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                    || document.documentElement.getAttribute('data-a11y-motion') === 'reduce';
-                if (reduce) {
-                    el.textContent = fmt(target);
-                    return;
-                }
-                const duration = 900;
+                if (reduced()) { el.textContent = fmt(target); return; }
+                const duration = 1100;
                 const start = performance.now();
                 function frame(now) {
                     const t = Math.min(1, (now - start) / duration);
-                    const eased = 1 - Math.pow(1 - t, 3);
+                    const eased = 1 - Math.pow(1 - t, 4);
                     el.textContent = fmt(Math.round(target * eased));
                     if (t < 1) requestAnimationFrame(frame);
                 }
@@ -282,7 +283,8 @@
                 if (!el || !names.length) return;
                 el.innerHTML = names.slice(0, 10).map((name, i) => {
                     const enc = encodeURIComponent(name);
-                    return `<a href="counter/?species=${enc}" class="home-meta-tag${i < 3 ? ' home-meta-tag--hot' : ''}" title="Find counters for ${name}">${name}</a>`;
+                    const safe = name.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+                    return `<a href="counter/?species=${enc}" class="home-meta-tag${i < 3 ? ' home-meta-tag--hot' : ''}" style="--i:${i}" title="Find counters for ${safe}">${safe}</a>`;
                 }).join('');
             }
 
@@ -293,15 +295,75 @@
                     fetch('assets/builds.json').then(r => r.json()),
                     fetch('assets/top_pokemons.json').then(r => r.json())
                 ]);
-
-                animateStat(document.getElementById('stat-pokemon'), pokemon.length);
-                animateStat(document.getElementById('stat-moves'), moves.length);
-                animateStat(document.getElementById('stat-builds'), builds.length);
+                // Count up when the stats strip scrolls into view
+                const strip = document.querySelector('.home-stats__grid');
+                const run = () => {
+                    animateStat(document.getElementById('stat-pokemon'), pokemon.length);
+                    animateStat(document.getElementById('stat-moves'), moves.length);
+                    animateStat(document.getElementById('stat-builds'), builds.length);
+                };
+                if (strip && 'IntersectionObserver' in window) {
+                    const io = new IntersectionObserver((entries) => {
+                        if (entries.some(e => e.isIntersecting)) { run(); io.disconnect(); }
+                    }, { threshold: 0.4 });
+                    io.observe(strip);
+                } else run();
 
                 renderMetaTags('meta-tags-singles', topMeta.Singles || []);
                 renderMetaTags('meta-tags-doubles', topMeta.Doubles || []);
             } catch (e) {
                 console.warn('Home data load failed', e);
+                document.querySelectorAll('.home-meta-tag.skeleton').forEach(n => n.remove());
+            }
+        })();
+
+        /* Hero: example damage roll that cycles through sample matchups */
+        (function damageRollDemo() {
+            const samples = [
+                { atk: 'Garchomp', def: 'Corviknight', move: 'Earthquake', field: 'Singles', min: 31.4, max: 37.2, verdict: '3HKO' },
+                { atk: 'Dragonite', def: 'Rillaboom', move: 'Ice Spinner', field: 'Doubles', min: 58.6, max: 69.1, verdict: '2HKO' },
+                { atk: 'Kingambit', def: 'Gholdengo', move: 'Sucker Punch', field: 'Singles', min: 84.3, max: 99.4, verdict: 'Possible 2HKO' },
+                { atk: 'Dragapult', def: 'Sinistcha', move: 'Shadow Ball', field: 'Doubles', min: 91.8, max: 108.0, verdict: 'Chance to OHKO' }
+            ];
+            const $ = (id) => document.getElementById(id);
+            const maxEl = $('roll-max'), minEl = $('roll-min');
+            if (!maxEl) return;
+            let i = 0, raf = 0;
+            const reduced = () => document.documentElement.getAttribute('data-motion') === 'off';
+            const fmt = (n) => n.toFixed(1);
+
+            function show(s, animate) {
+                $('roll-atk').textContent = s.atk;
+                $('roll-def').textContent = s.def;
+                $('roll-move').textContent = s.move;
+                document.querySelector('.roll__field').textContent = s.field;
+                $('roll-verdict').textContent = s.verdict;
+                const remMax = Math.max(0, 100 - s.min), remMin = Math.max(0, 100 - s.max);
+                const dur = animate ? 1100 : 0;
+                // HP bars: the light zone is the range of possible remaining HP
+                maxEl.style.transition = minEl.style.transition = animate ? 'transform 1.1s cubic-bezier(0.22,1,0.36,1)' : 'none';
+                maxEl.style.transform = 'scaleX(' + remMax / 100 + ')';
+                minEl.style.transform = 'scaleX(' + remMin / 100 + ')';
+                const start = performance.now();
+                cancelAnimationFrame(raf);
+                (function tick(now) {
+                    const t = dur ? Math.min(1, (now - start) / dur) : 1;
+                    const e = 1 - Math.pow(1 - t, 3);
+                    $('roll-range').textContent = fmt(s.min * e) + '% – ' + fmt(s.max * e) + '%';
+                    if (t < 1) raf = requestAnimationFrame(tick);
+                })(start);
+            }
+
+            // Start full, then drain to the first sample
+            maxEl.style.transform = minEl.style.transform = 'scaleX(1)';
+            setTimeout(() => show(samples[0], !reduced()), reduced() ? 0 : 700);
+            if (!reduced()) {
+                setInterval(() => {
+                    if (document.hidden || reduced()) return;
+                    maxEl.style.transition = minEl.style.transition = 'transform 0.35s ease-in';
+                    maxEl.style.transform = minEl.style.transform = 'scaleX(1)';
+                    setTimeout(() => { i = (i + 1) % samples.length; show(samples[i], true); }, 380);
+                }, 5200);
             }
         })();
     </script>

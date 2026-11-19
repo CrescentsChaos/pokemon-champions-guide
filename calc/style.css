@@ -1,23 +1,16 @@
 :root {
-    --primary-red: #ff4d4d;
-    --primary-blue: #4d94ff;
-    --accent-gold: #ffd700;
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --panel-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    --text-muted: rgba(255, 255, 255, 0.5);
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.calc-page {
-    background-color: #06060a;
+    background-color: var(--bg-color);
     background-image:
         radial-gradient(ellipse 80% 50% at 15% 10%, rgba(77, 148, 255, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse 70% 45% at 85% 85%, rgba(255, 77, 77, 0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 45% at 85% 85%, rgb(var(--accent-rgb) / 0.1) 0%, transparent 55%),
         radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.04) 0%, transparent 40%);
-    color: #f0f0f0;
-    font-family: 'Outfit', 'Inter', sans-serif;
+    color: var(--text-main);
+    font-family: var(--font-sans);
     min-height: 100vh;
 }
 
@@ -59,7 +52,7 @@ body.calc-page main.container {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(8, 8, 10, 0.8);
+    background: rgb(var(--surface-rgb) / 0.8);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--glass-border);
     padding: 1rem 5%;
@@ -88,14 +81,14 @@ body.calc-page main.container {
 .logo-img {
     width: 32px;
     height: 32px;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    filter: drop-shadow(0 0 10px rgb(var(--ink-rgb) / 0.2));
 }
 
 .logo-text {
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -1px;
     font-size: 1.1rem;
-    background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+    background: linear-gradient(180deg, var(--text-strong) 0%, var(--text-muted) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -110,15 +103,14 @@ body.calc-page main.container {
     text-decoration: none;
     font-size: 0.8rem;
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 1px;
     transition: var(--transition-fast);
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: #fff;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    color: var(--text-strong);
+    text-shadow: 0 0 15px rgb(var(--ink-rgb) / 0.4);
 }
 
 /* --- Damage Banner (top summary under nav) --- */
@@ -133,24 +125,24 @@ body.calc-page main.container {
     padding: 1.1rem 1.35rem;
     margin-bottom: 0.85rem;
     text-align: left;
-    background: linear-gradient(135deg, rgba(77, 148, 255, 0.08) 0%, rgba(255, 77, 77, 0.06) 50%, rgba(255, 255, 255, 0.02) 100%);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    background: linear-gradient(135deg, rgba(77, 148, 255, 0.08) 0%, rgb(var(--accent-rgb) / 0.06) 50%, rgb(var(--ink-rgb) / 0.02) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgb(var(--ink-rgb) / 0.06);
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
 }
 
 #main-result {
     font-size: clamp(1.15rem, 2.2vw, 1.75rem);
-    font-weight: 900;
+    font-weight: 700;
     margin-bottom: 0.4rem;
     letter-spacing: -0.5px;
-    color: #fff;
+    color: var(--text-strong);
     background: none;
-    -webkit-text-fill-color: #fff;
+    -webkit-text-fill-color: var(--text-strong);
 }
 
 #sub-result {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     color: var(--text-muted);
     letter-spacing: 0.3px;
@@ -158,7 +150,7 @@ body.calc-page main.container {
 }
 
 .speed-result {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: rgba(77, 148, 255, 0.95);
     margin: 0.15rem 0 0.55rem;
@@ -169,8 +161,8 @@ body.calc-page main.container {
     position: relative;
     height: 14px;
     border-radius: 7px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(var(--ink-rgb) / 0.06);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
     overflow: hidden;
     margin: 0.35rem 0 0.55rem;
 }
@@ -179,7 +171,7 @@ body.calc-page main.container {
     position: absolute;
     inset: 0 auto 0 0;
     width: 0;
-    background: linear-gradient(90deg, #4d94ff, #ff4d4d);
+    background: linear-gradient(90deg, #4d94ff, var(--primary-red));
     transition: width 0.35s ease;
     border-radius: 7px;
 }
@@ -191,15 +183,15 @@ body.calc-page main.container {
     bottom: 0;
     left: 0;
     width: var(--bar-min, 0%);
-    background: rgba(255, 255, 255, 0.22);
+    background: rgb(var(--ink-rgb) / 0.22);
 }
 
 .damage-bar__fill.near-ko {
-    background: linear-gradient(90deg, #ffb347, #ff4d4d);
+    background: linear-gradient(90deg, #ffb347, var(--primary-red));
 }
 
 .damage-bar__fill.ko {
-    background: linear-gradient(90deg, #ff4d4d, #ff1a1a);
+    background: linear-gradient(90deg, var(--primary-red), #ff1a1a);
 }
 
 .damage-bar__range {
@@ -208,10 +200,10 @@ body.calc-page main.container {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-strong);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     pointer-events: none;
 }
@@ -234,7 +226,7 @@ body.calc-page main.container {
 }
 
 .roll-heatmap__bar.is-ko {
-    background: rgba(255, 77, 77, 0.85);
+    background: rgb(var(--accent-rgb) / 0.85);
 }
 
 .banner-toolbar {
@@ -270,7 +262,7 @@ body.calc-page main.container {
 
 .acc-ko-result {
     margin-top: 0.35rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 700;
     color: #ffb070;
@@ -309,10 +301,9 @@ body.calc-page main.container {
 .calc-tool-head h4 {
     margin: 0;
     font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--text-strong);
 }
 
 .calc-tool-hint {
@@ -348,8 +339,8 @@ body.calc-page main.container {
     margin: 0;
     font-size: 0.78rem;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.78);
-    font-family: 'JetBrains Mono', monospace;
+    color: rgb(var(--ink-rgb) / 0.78);
+    font-family: var(--font-mono);
 }
 
 .calc-vs-meta-list {
@@ -367,14 +358,14 @@ body.calc-page main.container {
     align-items: center;
     padding: 6px 8px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.05);
     font-size: 0.75rem;
 }
 
 .calc-vs-meta-row .cvm-name {
     font-weight: 700;
-    color: #fff;
+    color: var(--text-strong);
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -382,13 +373,13 @@ body.calc-page main.container {
 }
 
 .calc-vs-meta-row .cvm-dmg {
-    font-family: 'JetBrains Mono', monospace;
-    color: rgba(255, 255, 255, 0.75);
+    font-family: var(--font-mono);
+    color: rgb(var(--ink-rgb) / 0.75);
     white-space: nowrap;
 }
 
 .calc-vs-meta-row .cvm-ko {
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary-red);
     white-space: nowrap;
     font-size: 0.68rem;
@@ -409,12 +400,11 @@ body.calc-page main.container {
 
 #ko-result {
     margin-top: 0.5rem;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.95rem;
     color: var(--primary-red);
-    text-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    text-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.3);
+    letter-spacing: 0.01em;
 }
 
 .champions-ev-btn {
@@ -424,9 +414,9 @@ body.calc-page main.container {
 
 .champions-ev-btn.active {
     background: var(--primary-red) !important;
-    color: #fff !important;
+    color: var(--on-accent) !important;
     border-color: var(--primary-red) !important;
-    box-shadow: 0 0 20px rgba(255, 77, 77, 0.35);
+    box-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.35);
 }
 
 .field-hint {
@@ -455,14 +445,14 @@ body.calc-page main.container {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, transparent 45%);
+    background: linear-gradient(160deg, rgb(var(--ink-rgb) / 0.04) 0%, transparent 45%);
     pointer-events: none;
     border-radius: inherit;
 }
 
 .calc-panel:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: rgb(var(--ink-rgb) / 0.18);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
@@ -471,7 +461,7 @@ body.calc-page main.container {
     top: 14px;
     right: 14px;
     font-size: 0.62rem;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 4px 10px;
@@ -486,9 +476,9 @@ body.calc-page main.container {
 }
 
 .defender-badge {
-    background: rgba(255, 77, 77, 0.15);
+    background: rgb(var(--accent-rgb) / 0.15);
     color: #ff8a8a;
-    border: 1px solid rgba(255, 77, 77, 0.35);
+    border: 1px solid rgb(var(--accent-rgb) / 0.35);
 }
 
 .middle-panel {
@@ -497,8 +487,8 @@ body.calc-page main.container {
 }
 
 .middle-panel .field-section {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
+    border: 1px solid rgb(var(--ink-rgb) / 0.05);
     border-radius: 12px;
     padding: 14px;
     margin-bottom: 14px;
@@ -519,7 +509,7 @@ body.calc-page main.container {
 
 .defender-panel {
     border-top: 2px solid var(--primary-red);
-    box-shadow: 0 0 30px rgba(255, 77, 77, 0.05);
+    box-shadow: 0 0 30px rgb(var(--accent-rgb) / 0.05);
 }
 
 /* --- Sprite Styling & Headers --- */
@@ -535,13 +525,13 @@ body.calc-page main.container {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgb(var(--ink-rgb) / 0.05) 0%, transparent 70%);
     border-radius: 50%;
 }
 
 .sprite-container img:not(.sprite-item-badge) {
     max-height: 100px;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+    filter: drop-shadow(0 0 15px rgb(var(--ink-rgb) / 0.2));
     transition: transform 0.3s ease;
 }
 
@@ -568,11 +558,11 @@ body.calc-page main.container {
 /* --- Form Components --- */
 .search-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 14px 20px;
-    color: #fff;
+    color: var(--text-strong);
     font-weight: 600;
     font-size: 1rem;
     transition: var(--transition-fast);
@@ -580,17 +570,17 @@ body.calc-page main.container {
 
 .search-input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    border-color: rgb(var(--ink-rgb) / 0.3);
+    background: rgb(0 0 0 / calc(0.4 * var(--scrim-k)));
+    box-shadow: 0 0 15px rgb(var(--ink-rgb) / 0.05);
 }
 
 select,
 input {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(var(--ink-rgb) / 0.03);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-strong);
     padding: 8px 12px;
     font-size: 0.85rem;
     font-weight: 600;
@@ -600,7 +590,7 @@ input {
 select {
     appearance: none;
     -webkit-appearance: none;
-    background-color: #1a1a20;
+    background-color: var(--bg-elevated);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffffcc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -612,14 +602,14 @@ select {
 }
 
 select option {
-    background-color: #15151a;
-    color: #fff;
+    background-color: var(--bg-elevated);
+    color: var(--on-accent);
 }
 
 .type-select:hover,
 select:hover,
 input:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgb(var(--ink-rgb) / 0.15);
 }
 
 /* --- Pokemon Config Grid --- */
@@ -657,12 +647,12 @@ input:hover {
     align-items: center;
     gap: 8px;
     flex: 1 1 160px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgb(var(--ink-rgb) / 0.02);
     border: 1px solid var(--glass-border);
     padding: 4px 10px;
     border-radius: 8px;
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
     cursor: pointer;
     transition: var(--transition-fast);
@@ -687,9 +677,9 @@ input:hover {
 }
 
 .tera-toggle:has(input:checked) {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-strong);
+    border-color: rgb(var(--ink-rgb) / 0.3);
+    background: rgb(var(--ink-rgb) / 0.05);
 }
 
 .mega-btn {
@@ -709,9 +699,8 @@ input:hover {
 
 .level-row span {
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
@@ -733,9 +722,8 @@ input:hover {
     border-radius: 8px;
     padding: 8px 14px;
     font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     cursor: pointer;
     transition: var(--transition-fast);
 }
@@ -759,9 +747,9 @@ input:hover {
 }
 
 .reset-side-btn {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-    color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: linear-gradient(135deg, rgb(var(--ink-rgb) / 0.08), rgb(var(--ink-rgb) / 0.03));
+    color: rgb(var(--ink-rgb) / 0.7);
+    border: 1px solid rgb(var(--ink-rgb) / 0.14);
 }
 
 .import-btn:hover,
@@ -796,7 +784,7 @@ input:hover {
     padding: 6px 2px;
     border-radius: 10px;
     border: 1px solid transparent;
-    background: rgba(0, 0, 0, 0.18);
+    background: rgb(0 0 0 / calc(0.18 * var(--scrim-k)));
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s, transform 0.15s;
 }
@@ -822,7 +810,7 @@ input:hover {
 .calc-team-tray__name {
     font-size: 0.55rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgb(var(--ink-rgb) / 0.75);
     text-align: center;
     max-width: 100%;
     overflow: hidden;
@@ -862,7 +850,7 @@ input:hover {
 }
 
 .best-teams-meta {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
     font-size: 0.75rem;
     margin: 0 0 12px;
 }
@@ -876,10 +864,9 @@ input:hover {
 .calc-best-team-card {
     padding: 14px 16px;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background:
-        linear-gradient(145deg, rgba(255, 196, 80, 0.07), transparent 42%),
-        rgba(255, 255, 255, 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
+    background: linear-gradient(145deg, rgba(255, 196, 80, 0.07), transparent 42%),
+        rgb(var(--ink-rgb) / 0.03);
 }
 
 .calc-best-team-card__top {
@@ -893,14 +880,14 @@ input:hover {
 .calc-best-team-card__title {
     margin: 0;
     font-size: 1rem;
-    font-weight: 900;
-    color: #fff;
+    font-weight: 700;
+    color: var(--text-strong);
 }
 
 .calc-best-team-card__badge {
     flex-shrink: 0;
     font-size: 0.6rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 4px 8px;
@@ -930,8 +917,8 @@ input:hover {
     min-width: 0;
     padding: 8px 4px;
     border-radius: 12px;
-    background: rgba(0, 0, 0, 0.22);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgb(0 0 0 / calc(0.22 * var(--scrim-k)));
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s, transform 0.15s;
 }
@@ -957,7 +944,7 @@ input:hover {
 .calc-best-team-mon__name {
     font-size: 0.6rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgb(var(--ink-rgb) / 0.8);
     text-align: center;
     max-width: 100%;
     overflow: hidden;
@@ -967,7 +954,7 @@ input:hover {
 
 .calc-best-team-mon__item {
     font-size: 0.52rem;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgb(var(--ink-rgb) / 0.38);
     text-align: center;
     max-width: 100%;
     overflow: hidden;
@@ -978,13 +965,13 @@ input:hover {
 .calc-best-team-hint {
     margin: 10px 0 0;
     font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
 }
 
 .calc-best-teams-empty {
     text-align: center;
     padding: 36px 16px;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgb(var(--ink-rgb) / 0.4);
     font-size: 0.9rem;
 }
 
@@ -1020,10 +1007,10 @@ input:hover {
 }
 
 .hits-select {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
     border: 1px solid var(--glass-border);
     border-radius: 6px;
-    color: #fff;
+    color: var(--text-strong);
     padding: 4px 8px;
     font-size: 0.7rem;
     font-weight: 700;
@@ -1039,14 +1026,14 @@ input:hover {
 
 .crit-text {
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.5px;
 }
 
 .crit-label input[type="checkbox"]:checked+.crit-text {
     color: var(--primary-red);
-    text-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+    text-shadow: 0 0 10px rgb(var(--accent-rgb) / 0.4);
 }
 
 .crit-label.crit-locked {
@@ -1077,9 +1064,8 @@ input:hover {
 
 .select-group label {
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
@@ -1103,7 +1089,7 @@ input:hover {
 
 .hp-row {
     margin-top: 0.65rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgb(var(--ink-rgb) / 0.05);
     padding-top: 0.65rem;
 }
 
@@ -1116,17 +1102,16 @@ input:hover {
 
 .hp-header label {
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .hp-max-label {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-strong);
+    font-family: var(--font-mono);
 }
 
 .hp-slider {
@@ -1150,8 +1135,8 @@ input:hover {
         to right,
         var(--primary-blue) 0%,
         var(--primary-blue) var(--hp-fill, 100%),
-        rgba(0, 0, 0, 0.35) var(--hp-fill, 100%),
-        rgba(0, 0, 0, 0.35) 100%
+        rgb(0 0 0 / calc(0.35 * var(--scrim-k))) var(--hp-fill, 100%),
+        rgb(0 0 0 / calc(0.35 * var(--scrim-k))) 100%
     );
 }
 
@@ -1173,7 +1158,7 @@ input:hover {
     height: 8px;
     border-radius: 999px;
     border: 1px solid var(--glass-border);
-    background: rgba(0, 0, 0, 0.35);
+    background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
 }
 
 .hp-slider::-moz-range-thumb {
@@ -1211,7 +1196,7 @@ input:hover {
 
 .hp-input-group label {
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
     min-width: 24px;
 }
@@ -1225,22 +1210,21 @@ input:hover {
     margin-bottom: 8px;
     padding: 10px 12px;
     border-bottom: none;
-    background: rgba(0, 0, 0, 0.18);
+    background: rgb(0 0 0 / calc(0.18 * var(--scrim-k)));
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgb(var(--ink-rgb) / 0.06);
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .move-row:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgb(var(--ink-rgb) / 0.12);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 .moves-section h4 {
     font-size: 0.75rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     color: var(--text-muted);
     margin-bottom: 8px;
 }
@@ -1252,12 +1236,12 @@ input:hover {
 #export-output {
     width: 100%;
     height: 220px;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgb(0 0 0 / calc(0.35 * var(--scrim-k)));
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 1.25rem;
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-strong);
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
@@ -1277,9 +1261,8 @@ input:hover {
     flex-direction: column;
     gap: 4px;
     font-size: 0.62rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-muted);
-    text-transform: uppercase;
     letter-spacing: 0.4px;
     min-width: 0;
 }
@@ -1303,12 +1286,12 @@ input:hover {
     flex: 1 1 auto;
     min-width: 0;
     line-height: 1.3;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
 }
 
 .boost-select {
     width: 55px;
-    background: rgba(0, 0, 0, 0.2) !important;
+    background: rgb(0 0 0 / calc(0.2 * var(--scrim-k))) !important;
     border: 1px solid var(--glass-border);
     border-radius: 6px;
     padding: 4px !important;
@@ -1319,7 +1302,7 @@ input:hover {
 /* HP Bar Design matching Teambuilder */
 .hp-bar-wrap {
     height: 10px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
     border-radius: 10px;
     overflow: hidden;
     margin-top: 15px;
@@ -1351,22 +1334,22 @@ input:hover {
 .stats-table input[type="number"] {
     width: 72px;
     text-align: center;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgb(0 0 0 / calc(0.15 * var(--scrim-k)));
     padding: 8px 4px;
 }
 
 .stat-label {
     text-align: left !important;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
 .stat-total {
-    font-weight: 900;
+    font-weight: 700;
     font-size: 1.1rem;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    color: var(--text-strong);
+    text-shadow: 0 0 10px rgb(var(--ink-rgb) / 0.1);
 }
 
 /* --- Move Results Summary --- */
@@ -1379,18 +1362,16 @@ input:hover {
 
 .move-results-column h4 {
     font-size: 0.75rem;
-    text-transform: uppercase;
     color: var(--text-muted);
     margin-bottom: 0.55rem;
-    letter-spacing: 0.12em;
-    font-weight: 800;
+    letter-spacing: 0.01em;
+    font-weight: 700;
 }
 
 .result-move-box {
-    --type-accent: rgba(255, 255, 255, 0.25);
-    background:
-        linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 22%, transparent) 0%, transparent 42%),
-        rgba(255, 255, 255, 0.03);
+    --type-accent: rgb(var(--ink-rgb) / 0.25);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 22%, transparent) 0%, transparent 42%),
+        rgb(var(--ink-rgb) / 0.03);
     border: 1px solid color-mix(in srgb, var(--type-accent) 45%, var(--glass-border));
     border-left: 3px solid var(--type-accent);
     border-radius: 16px;
@@ -1407,15 +1388,13 @@ input:hover {
 
 .result-move-box:hover {
     transform: translateX(3px);
-    background:
-        linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 30%, transparent) 0%, transparent 50%),
-        rgba(255, 255, 255, 0.06);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 30%, transparent) 0%, transparent 50%),
+        rgb(var(--ink-rgb) / 0.06);
     border-color: color-mix(in srgb, var(--type-accent) 70%, #fff);
 }
 
 .result-move-box.active {
-    background:
-        linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 38%, transparent) 0%, rgba(77, 148, 255, 0.12) 55%),
+    background: linear-gradient(90deg, color-mix(in srgb, var(--type-accent) 38%, transparent) 0%, rgba(77, 148, 255, 0.12) 55%),
         rgba(77, 148, 255, 0.1) !important;
     border-color: var(--primary-blue) !important;
     box-shadow: 0 0 0 1px rgba(77, 148, 255, 0.35), 0 10px 28px rgba(0, 0, 0, 0.35);
@@ -1438,7 +1417,7 @@ input:hover {
 
 .move-name-label {
     font-size: 0.95rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.01em;
     white-space: nowrap;
     overflow: hidden;
@@ -1449,7 +1428,7 @@ input:hover {
     display: inline-flex;
     align-self: flex-start;
     font-size: 0.58rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #1a1208;
@@ -1479,7 +1458,7 @@ input:hover {
     align-items: center;
     gap: 6px;
     min-width: 0;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgb(var(--ink-rgb) / 0.02);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2px 6px 2px 4px;
@@ -1522,7 +1501,7 @@ input:hover {
     display: inline-block;
     margin-left: 4px;
     font-size: 0.65rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffd76f;
     vertical-align: middle;
 }
@@ -1562,31 +1541,31 @@ input:hover {
     flex-direction: column;
     align-items: flex-end;
     gap: 2px;
-    font-weight: 900;
-    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-family: var(--font-mono);
     flex-shrink: 0;
 }
 
 .move-damage-summary .dmg-abs {
-    color: #fff;
+    color: var(--text-strong);
     font-size: 0.82rem;
 }
 
 .move-damage-summary .dmg-pct {
     color: var(--primary-red);
     font-size: 0.78rem;
-    text-shadow: 0 0 12px rgba(255, 77, 77, 0.25);
+    text-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.25);
 }
 
 /* --- Field Controls --- */
 .middle-panel {
-    background: rgba(255, 255, 255, 0.015);
+    background: rgb(var(--ink-rgb) / 0.015);
 }
 
 .field-section {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.03);
 }
 
 .field-section:last-child {
@@ -1595,7 +1574,6 @@ input:hover {
 
 .field-section h4 {
     font-size: 0.7rem;
-    text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--text-muted);
     margin-bottom: 1rem;
@@ -1613,7 +1591,6 @@ input:hover {
 
 .side-controls h5 {
     font-size: 0.7rem;
-    text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-muted);
     margin-bottom: 8px;
@@ -1628,7 +1605,7 @@ input:hover {
 
 .field-btn {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(var(--ink-rgb) / 0.03);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     color: var(--text-muted);
@@ -1639,21 +1616,21 @@ input:hover {
 }
 
 .field-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #fff;
+    background: rgb(var(--ink-rgb) / 0.06);
+    color: var(--text-strong);
 }
 
 .field-btn.active {
     background: #fff;
     color: #000;
     border-color: #fff;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgb(var(--ink-rgb) / 0.3);
 }
 
 /* --- HP Bar --- */
 .hp-bar-wrap {
     height: 8px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
     border-radius: 10px;
     overflow: hidden;
     margin-top: 8px;
@@ -1672,16 +1649,15 @@ input:hover {
     color: var(--primary-blue);
     padding: 6px 12px;
     border-radius: 6px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.7rem;
-    text-transform: uppercase;
     cursor: pointer;
     transition: var(--transition-fast);
 }
 
 .import-btn:hover {
     background: var(--primary-blue);
-    color: #fff;
+    color: var(--on-accent);
 }
 
 .mega-btn {
@@ -1696,7 +1672,7 @@ input:hover {
     top: 100%;
     left: 0;
     right: 0;
-    background: #0a0a0c;
+    background: var(--bg-color);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     margin-top: 8px;
@@ -1717,19 +1693,19 @@ input:hover {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgb(var(--ink-rgb) / 0.03);
     position: relative;
 }
 
 .search-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(var(--ink-rgb) / 0.05);
 }
 
 /* Build Pokepaste Hover Tooltip */
 .build-paste-tooltip {
     display: none;
     position: fixed;
-    background: #0f0f14;
+    background: var(--bg-elevated);
     border: 1px solid rgba(106, 176, 245, 0.35);
     border-radius: 10px;
     padding: 12px 14px;
@@ -1738,7 +1714,7 @@ input:hover {
     z-index: 99999;
     pointer-events: none;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(106, 176, 245, 0.1);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     line-height: 1.6;
     color: #c8d8e8;
@@ -1758,8 +1734,8 @@ input:hover {
 }
 
 .search-item-name {
-    font-weight: 800;
-    color: #fff;
+    font-weight: 700;
+    color: var(--text-strong);
 }
 
 .search-item-types {
@@ -1775,7 +1751,7 @@ input:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgb(0 0 0 / calc(0.4 * var(--scrim-k)));
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
@@ -1794,12 +1770,11 @@ input:hover {
 .modal-content {
     width: 90%;
     max-width: 500px;
-    background: rgba(15, 15, 20, 0.7);
+    background: rgb(var(--surface-rgb) / 0.7);
     backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.5),
-        inset 0 0 20px rgba(255, 255, 255, 0.02);
+    border: 1px solid rgb(var(--ink-rgb) / 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgb(var(--ink-rgb) / 0.02);
     padding: 2.5rem;
     border-radius: 24px;
     position: relative;
@@ -1825,16 +1800,16 @@ input:hover {
 }
 
 .modal-close:hover {
-    color: #fff;
+    color: var(--text-strong);
     transform: rotate(90deg);
 }
 
 .modal-content h3 {
     font-size: 1.5rem;
-    font-weight: 900;
+    font-weight: 700;
     margin-bottom: 0.5rem;
     letter-spacing: -0.5px;
-    background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+    background: linear-gradient(180deg, var(--text-strong) 0%, var(--text-muted) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -1844,19 +1819,18 @@ input:hover {
     color: var(--text-muted);
     font-weight: 700;
     margin-bottom: 2rem;
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 #paste-input {
     width: 100%;
     height: 200px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgb(0 0 0 / calc(0.3 * var(--scrim-k)));
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 1.25rem;
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-strong);
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     line-height: 1.6;
     margin-bottom: 2rem;
@@ -1867,7 +1841,7 @@ input:hover {
 #paste-input:focus {
     outline: none;
     border-color: var(--primary-blue);
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / calc(0.5 * var(--scrim-k)));
     box-shadow: 0 0 20px rgba(77, 148, 255, 0.1);
 }
 
@@ -1891,7 +1865,7 @@ input:hover {
 }
 
 .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgb(var(--ink-rgb) / 0.05) !important;
 }
 
 .toast {
@@ -1899,14 +1873,14 @@ input:hover {
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%) translateY(120%);
-    background: rgba(255, 77, 77, 0.9);
-    color: #fff;
+    background: rgb(var(--accent-rgb) / 0.9);
+    color: var(--on-accent);
     padding: 12px 24px;
     border-radius: 12px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.9rem;
     z-index: 10000;
-    box-shadow: 0 10px 30px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 10px 30px rgb(var(--accent-rgb) / 0.4);
     transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease, visibility 0.25s ease;
     backdrop-filter: blur(10px);
     opacity: 0;
@@ -1981,8 +1955,8 @@ input:hover {
         margin: 0 0 0.85rem;
         padding: 0.65rem 0.8rem;
         border-radius: 12px;
-        background: rgba(10, 12, 18, 0.96);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgb(var(--surface-rgb) / 0.96);
+        border: 1px solid rgb(var(--ink-rgb) / 0.1);
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -2004,7 +1978,7 @@ input:hover {
 
     .cms-ko {
         font-size: 0.7rem;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         color: var(--primary-red);
@@ -2018,9 +1992,9 @@ input:hover {
         width: 36px;
         height: 36px;
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.06);
-        color: #fff;
+        border: 1px solid rgb(var(--ink-rgb) / 0.14);
+        background: rgb(var(--ink-rgb) / 0.06);
+        color: var(--text-strong);
         font-size: 1.05rem;
         font-weight: 700;
         cursor: pointer;
@@ -2038,7 +2012,7 @@ input:hover {
         font-size: 0.74rem;
         font-weight: 600;
         line-height: 1.35;
-        color: rgba(255, 255, 255, 0.88);
+        color: rgb(var(--ink-rgb) / 0.88);
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -2056,8 +2030,8 @@ input:hover {
         height: calc(var(--calc-nav-h) + env(safe-area-inset-bottom, 0px));
         padding: 0.3rem 0.5rem calc(0.3rem + env(safe-area-inset-bottom, 0px));
         gap: 0.3rem;
-        background: rgba(6, 8, 14, 0.98);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgb(var(--surface-rgb) / 0.98);
+        border-top: 1px solid rgb(var(--ink-rgb) / 0.1);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
@@ -2078,7 +2052,7 @@ input:hover {
         border: none;
         border-radius: 10px;
         background: transparent;
-        color: rgba(255, 255, 255, 0.45);
+        color: rgb(var(--ink-rgb) / 0.45);
         cursor: pointer;
         padding: 0.3rem 0.15rem;
         font-family: inherit;
@@ -2087,7 +2061,7 @@ input:hover {
     }
 
     .calc-mobile-nav-btn.active {
-        color: #fff;
+        color: var(--text-strong);
         background: rgba(77, 148, 255, 0.18);
         box-shadow: inset 0 -2px 0 var(--primary-blue);
     }
@@ -2098,13 +2072,13 @@ input:hover {
     }
 
     .calc-mobile-nav-btn[data-calc-tab="p2"].active {
-        background: rgba(255, 77, 77, 0.18);
+        background: rgb(var(--accent-rgb) / 0.18);
         box-shadow: inset 0 -2px 0 var(--primary-red);
     }
 
     .cmn-icon {
         font-size: 0.9rem;
-        font-weight: 900;
+        font-weight: 700;
         line-height: 1;
         width: 1.25rem;
         height: 1.25rem;
@@ -2121,7 +2095,7 @@ input:hover {
     }
 
     .cmn-def {
-        background: rgba(255, 77, 77, 0.35);
+        background: rgb(var(--accent-rgb) / 0.35);
         color: #ffb0b0;
         font-size: 0.68rem;
     }
@@ -2130,7 +2104,6 @@ input:hover {
         font-size: 0.58rem;
         font-weight: 700;
         letter-spacing: 0.03em;
-        text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -2356,7 +2329,7 @@ input:hover {
 
     .type-select-wrap .type-select {
         border: 1px solid var(--glass-border);
-        background: rgba(255, 255, 255, 0.03);
+        background: rgb(var(--ink-rgb) / 0.03);
         border-radius: 8px;
         min-height: 44px;
         padding-left: 8px;
@@ -2369,7 +2342,7 @@ input:hover {
         min-height: 44px;
         padding: 6px 10px;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgb(var(--ink-rgb) / 0.03);
         border: 1px solid var(--glass-border);
     }
 
@@ -2445,8 +2418,8 @@ input:hover {
         align-items: center;
         gap: 6px;
         padding: 8px 8px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: rgb(var(--ink-rgb) / 0.04);
+        border: 1px solid rgb(var(--ink-rgb) / 0.07);
         border-radius: 12px;
         width: 100%;
         box-sizing: border-box;
@@ -2461,7 +2434,7 @@ input:hover {
     }
 
     .stats-table td.stat-label {
-        font-weight: 800;
+        font-weight: 700;
         font-size: 0.68rem;
         letter-spacing: 0.04em;
         color: var(--text-muted);
@@ -2472,10 +2445,9 @@ input:hover {
     .stats-table td:nth-child(4)::before {
         display: block;
         font-size: 0.52rem;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.35);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        color: rgb(var(--ink-rgb) / 0.35);
         margin-bottom: 2px;
     }
 
@@ -2501,7 +2473,7 @@ input:hover {
     }
 
     .stats-table .stat-total {
-        font-weight: 900;
+        font-weight: 700;
         font-size: 0.95rem;
         text-align: right;
     }
@@ -2521,8 +2493,8 @@ input:hover {
         margin-top: 1rem;
         padding: 12px;
         border-radius: 14px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgb(var(--ink-rgb) / 0.03);
+        border: 1px solid rgb(var(--ink-rgb) / 0.06);
     }
 
     .hp-slider {
@@ -2546,8 +2518,8 @@ input:hover {
         padding: 12px;
         border-radius: 12px;
         margin-bottom: 10px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgb(0 0 0 / calc(0.2 * var(--scrim-k)));
+        border: 1px solid rgb(var(--ink-rgb) / 0.06);
     }
 
     .move-selector {
@@ -2582,13 +2554,13 @@ input:hover {
         min-height: 44px;
         padding: 6px 10px;
         border-radius: 8px;
-        background: rgba(255, 77, 77, 0.08);
-        border: 1px solid rgba(255, 77, 77, 0.2);
+        background: rgb(var(--accent-rgb) / 0.08);
+        border: 1px solid rgb(var(--accent-rgb) / 0.2);
     }
 
     /* Field tab: denser, clearer sections */
     .middle-panel {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgb(var(--ink-rgb) / 0.02);
         border: 1px solid var(--glass-border);
         border-radius: 16px;
         padding: 12px !important;
@@ -2598,8 +2570,8 @@ input:hover {
         margin-bottom: 10px;
         padding: 12px;
         border-radius: 12px;
-        background: rgba(0, 0, 0, 0.22);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgb(0 0 0 / calc(0.22 * var(--scrim-k)));
+        border: 1px solid rgb(var(--ink-rgb) / 0.05);
     }
 
     .middle-panel .field-section h4 {
@@ -2641,14 +2613,14 @@ input:hover {
         gap: 8px;
         padding: 10px;
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgb(var(--ink-rgb) / 0.03);
     }
 
     .side-controls h5 {
         grid-column: 1 / -1;
         margin-bottom: 2px;
         font-size: 0.75rem;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .side-controls .field-btn {
@@ -2769,8 +2741,7 @@ input:hover {
 
 .spikes-label {
     font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
     color: var(--text-muted);
     margin-right: 4px;
     flex: 0 0 100%;
@@ -2787,8 +2758,8 @@ input:hover {
     margin: 0.65rem 0 0.85rem;
     padding: 0.55rem 0.65rem;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(var(--ink-rgb) / 0.03);
+    border: 1px solid rgb(var(--ink-rgb) / 0.08);
 }
 
 .fallen-header {
@@ -2801,10 +2772,9 @@ input:hover {
 
 .fallen-header label {
     font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.85);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ink-rgb) / 0.85);
 }
 
 .fallen-hint {
@@ -2857,10 +2827,10 @@ input:hover {
     width: 100%;
     min-width: 0;
     padding: 6px 28px 6px 8px;
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: rgb(var(--ink-rgb) / 0.04);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-strong);
     font-size: 0.75rem;
     font-weight: 600;
 }

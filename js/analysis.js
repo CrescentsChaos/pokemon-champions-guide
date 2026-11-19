@@ -717,7 +717,7 @@ function renderScoreboard(ctx, activeMons) {
 }
 
 function renderInsightCard(issue) {
-    const palette = { synergy: '#4CAF50', high: '#f44336', medium: '#FFC107', low: 'rgba(255,255,255,0.2)', champions: '#ffb74d' };
+    const palette = { synergy: '#4CAF50', high: '#f44336', medium: '#FFC107', low: 'rgb(var(--ink-rgb) / 0.2)', champions: '#ffb74d' };
     const defaultIcons = { synergy: '⭐', high: '⚠️', medium: '⚡', low: '🔍', champions: '🏆' };
     const type = issue.type || 'low';
     const iconVal = issue.icon || defaultIcons[type];
@@ -1935,7 +1935,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
     const dangerStyles = {
         critical: { bg: 'rgba(244, 67, 54, 0.12)', border: '#f44336', label: 'CRITICAL', labelBg: '#f44336' },
         warning: { bg: 'rgba(255, 152, 0, 0.08)', border: '#FF9800', label: 'CAUTION', labelBg: '#FF9800' },
-        safe: { bg: 'rgba(255, 255, 255, 0.02)', border: 'rgba(255,255,255,0.08)', label: 'NEUTRAL', labelBg: 'rgba(255,255,255,0.15)' },
+        safe: { bg: 'rgb(var(--ink-rgb) / 0.02)', border: 'rgb(var(--ink-rgb) / 0.08)', label: 'NEUTRAL', labelBg: 'rgb(var(--ink-rgb) / 0.15)' },
         covered: { bg: 'rgba(76, 175, 80, 0.08)', border: '#4CAF50', label: 'COVERED', labelBg: '#4CAF50' }
     };
 
@@ -1975,7 +1975,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
             : '<span class="threat-move-pill" style="opacity:0.55;">No build data — using STAB types</span>';
 
         const buildBadge = threat.buildId
-            ? `<span style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.35);">Build #${threat.buildId}</span>`
+            ? `<span style="font-size:0.55rem; font-weight:700; color:rgb(var(--ink-rgb) / 0.35);">Build #${threat.buildId}</span>`
             : '';
 
         const renderCheckChip = (entry, kind) => {
@@ -1996,11 +1996,11 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
 
         const threatensHtml = threat.defensiveHits?.length
             ? threat.defensiveHits.map(d => renderCheckChip(d, 'threat')).join('')
-            : '<span style="font-size:0.58rem; color:rgba(255,255,255,0.35);">Minimal offensive pressure</span>';
+            : '<span style="font-size:0.58rem; color:rgb(var(--ink-rgb) / 0.35);">Minimal offensive pressure</span>';
 
         const teammateCounterHtml = threat.teammateCounters?.length
             ? `<div style="margin-top:8px;">
-                <div style="font-size:0.55rem; font-weight:800; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Counters Your Teammates</div>
+                <div style="font-size:0.55rem; font-weight:700; color:rgb(var(--ink-rgb) / 0.4); text-transform:uppercase; margin-bottom:4px;">Counters Your Teammates</div>
                 <div style="display:flex; gap:4px; flex-wrap:wrap;">
                     ${threat.teammateCounters.map(c => {
                 const label = c.neutralizesCheck ? 'removes check' : (c.removesCoverage ? 'breaks coverage' : 'pressure');
@@ -2030,7 +2030,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                             <span class="threat-rank">#${threat.rank}</span>
                             ${buildBadge}
                             ${typeImgs}
-                            <span style="font-size:0.55rem; font-weight:900; padding:2px 6px; border-radius:4px; background:${style.labelBg}; color:white; letter-spacing:0.5px;">${style.label}</span>
+                            <span style="font-size:0.55rem; font-weight:700; padding:2px 6px; border-radius:4px; background:${style.labelBg}; color:white; letter-spacing:0.5px;">${style.label}</span>
                         </div>
                         <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:4px;">${movesStr}</div>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
@@ -2039,7 +2039,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                                     <span class="threat-meta-label">Your Coverage</span>
                                     <span class="threat-meta-value" style="color:${offColor};">${threat.teamCanHitSE}/${teamSize}</span>
                                 </div>
-                                <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                <div style="height:4px; background:rgb(var(--ink-rgb) / 0.05); border-radius:2px; overflow:hidden;">
                                     <div style="height:100%; width:${offPct}%; background:${offColor}; border-radius:2px; transition:width 0.5s ease;"></div>
                                 </div>
                             </div>
@@ -2048,7 +2048,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                                     <span class="threat-meta-label">Threat Level</span>
                                     <span class="threat-meta-value" style="color:${defColor};">${threat.threatCanHitSE}/${teamSize}</span>
                                 </div>
-                                <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                                <div style="height:4px; background:rgb(var(--ink-rgb) / 0.05); border-radius:2px; overflow:hidden;">
                                     <div style="height:100%; width:${defPct}%; background:${defColor}; border-radius:2px; transition:width 0.5s ease;"></div>
                                 </div>
                             </div>
@@ -2066,7 +2066,7 @@ function renderThreatMatchup(container, threats, teamSize, format = 'Singles') {
                         </div>
                     </div>
                 </div>
-                ${threat.hasImmunity ? '<div style="font-size:0.6rem; font-weight:900; color:#4CAF50; text-align:right; white-space:nowrap;">🛡️ IMMUNE</div>' : ''}
+                ${threat.hasImmunity ? '<div style="font-size:0.6rem; font-weight:700; color:#4CAF50; text-align:right; white-space:nowrap;">🛡️ IMMUNE</div>' : ''}
             </div>
         `;
     });
