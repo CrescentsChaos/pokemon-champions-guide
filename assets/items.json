@@ -1627,7 +1627,8 @@
     },
     {
         "name": "Heatranite",
-        "description": "Enables the Mega Evolution of Mega Heatran."
+        "description": "Enables the Mega Evolution of Mega Heatran.",
+        "inChampions":true
     },
     {
         "name": "Darkranite",
@@ -1802,7 +1803,8 @@
     },
     {
         "name": "Tatsugirinite",
-        "description": "Enables the Mega Evolution of Mega Tatsugiri."
+        "description": "Enables the Mega Evolution of Mega Tatsugiri.",
+        "inChampions":true
     },
     {
         "name": "Glimmoranite",

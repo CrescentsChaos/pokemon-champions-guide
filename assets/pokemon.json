@@ -27745,7 +27745,8 @@
     "Egg_Cycles": 10,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 600
+    "Total_Stats": 600,
+    "inChampions":true
   },
   {
     "id": 485,
@@ -27773,8 +27774,9 @@
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 700,
     "Ability": [
-      "Earth Eater"
-    ]
+      "Water Compaction"
+    ],
+    "inChampions":true
   },
   {
     "id": 486,
@@ -52745,7 +52747,9 @@
     "Egg_Cycles": 40,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 530
+    "Total_Stats": 530,
+    "inChampions":true,
+    "Ability":["Unaware","Oblivious","Water Veil"]
   },
   {
     "id": 978,
@@ -52771,7 +52775,9 @@
     "Egg_Cycles": 35,
     "Past_Type": "",
     "Is_Pseudo_Legendary": 0,
-    "Total_Stats": 475
+    "Total_Stats": 475,
+    "inChampions":true,
+    "Ability":["Commander","Storm Drain"]
   },
   {
     "id": 978,
@@ -52799,8 +52805,9 @@
     "Is_Pseudo_Legendary": 0,
     "Total_Stats": 575,
     "Ability": [
-      "Commander"
-    ]
+      "Premium Grade"
+    ],
+    "inChampions":true
   },
   {
     "id": 979,

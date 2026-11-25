@@ -480,6 +480,10 @@
     "description": "Inflicts damage on the attacker upon contact with iron barbs."
   },
   {
+    "name": "Premium Grade",
+    "description": "Boosts the Pokémon’s Special Attack stat when the Pokémon enters a battle."
+  },
+  {
     "name": "Iron Fist",
     "description": "The power of punching moves is increased by 20%. "
   },
